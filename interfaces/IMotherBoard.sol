@@ -26,6 +26,8 @@ interface IMotherBoard {
 
     /// @notice Main minting function to be called by a depositor
     /// This mints using the exact input amount and mints at least `minMintedAmount`
+    /// All the `inputTokens` should be approved for the motherboard to spend at least
+    /// `inputAmounts` on behalf of the sender
     /// @param inputTokens the input tokens used to mint GYD
     /// @param inputAmounts the amounts of each tokens, should be the same length as `tokens`
     /// @param minMintedAmount the minimum amount of GYD to be minted

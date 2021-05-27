@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "OpenZeppelin/openzeppelin-contracts@4.1.0/contracts/token/ERC20/IERC20.sol";
 
-/// @title IGYDToken is the GYD token contract
+/// @notice IGYDToken is the GYD token contract
 interface IGYDToken is IERC20 {
     /// @notice Set the address allowed to mint new GYD tokens
     /// @dev This should typically be the motherboard that will mint or burn GYD tokens
