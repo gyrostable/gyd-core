@@ -58,7 +58,7 @@ interface IMotherBoard {
     /// @param minMintedAmount the minimum amount of GYD to be minted
     /// @return error a non-zero value in case an error would happen when minting GYD
     /// @return mintedGYDAmount the amount that would be minted, or 0 if it an error would occur
-    function simulateMint(
+    function dryMint(
         address[] memory inputTokens,
         uint256[] memory inputAmounts,
         uint256 minMintedAmount
@@ -71,7 +71,7 @@ interface IMotherBoard {
     /// @param maxRedeemedAmount the maximum amount of GYD to redeem
     /// @return error a non-zero value in case an error would happen when redeeming
     /// @return redeemedGYDAmount the amount of redeemed GYD tokens
-    function simulateRedeem(
+    function dryRedeem(
         address[] memory outputTokens,
         uint256[] memory outputAmounts,
         uint256 maxRedeemedAmount
