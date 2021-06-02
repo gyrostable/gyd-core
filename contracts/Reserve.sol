@@ -8,6 +8,17 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * Reserve contains the logic for the Gyroscope Reserve
  */
-abstract contract Reserve is IReserve, Ownable {
+contract Reserve is IReserve, Ownable {
+    struct VaultProperties {
+        address vaultAddress;
+        uint256 initialVaultWeight;
+        uint256 initialVaultPrice;
+    }
 
+    struct ReserveStatus {
+        bool _allVaultsHealthy;
+        bool _allVaultsWithinEpsilon;
+        bool[] _inputVaultHealth;
+        bool[] _vaultsWithinEpsilon;
+    }
 }
