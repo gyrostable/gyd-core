@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 /// @notice ILPTokenExchanger transforms underlying tokens to/from lp tokens supported by Gyro vaults
 /// It can also be used to give estimates about these conversions

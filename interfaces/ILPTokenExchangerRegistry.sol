@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 /// @notice A registry of LP token exchangers that allow to transform an arbitrary ERC-20
 /// token into an LP token accepted by one of the vaults in Gyro

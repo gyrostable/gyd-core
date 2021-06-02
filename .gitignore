@@ -1,6 +1,12 @@
-__pycache__
-.history
-.hypothesis/
+node_modules
+
+#Hardhat files
+cache
+artifacts
+typechain
+deployments/localhost
+dist/
+.env
 build/
-reports/
-packages
+__pycache__
+

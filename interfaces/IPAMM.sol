@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 /// @title IPAMM is the pricing contract for the Primary Market
 interface IPAMM {
