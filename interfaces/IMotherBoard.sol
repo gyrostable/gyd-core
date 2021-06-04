@@ -20,6 +20,10 @@ interface IMotherBoard {
     /// @return the PAMM address
     function PAMMAddress() external returns (address);
 
+    /// @notice Returns the address of the exchanger registry
+    /// @return the exchanger registry address
+    function exchangerRegistryAddress() external returns (address);
+
     /// @notice Set the address of the primary AMM (P-AMM) to be used when minting and redeeming GYD tokens
     /// @param _pamAddress the address of the P-AMM to use
     function setPAMMAddress(address _pamAddress) external;
