@@ -27,9 +27,17 @@ contract Motherboard is IMotherBoard {
     /// @inheritdoc IMotherBoard
     address public override exchangerRegistryAddress;
 
-    constructor(address _gydTokenAddress, address _exchangerRegistryAddress) {
+    /// @inheritdoc IMotherBoard
+    address public override reserveAddress;
+
+    constructor(
+        address _gydTokenAddress,
+        address _exchangerRegistryAddress,
+        address _reserveAddress
+    ) {
         GYDTokenAddress = _gydTokenAddress;
         exchangerRegistryAddress = _exchangerRegistryAddress;
+        reserveAddress = _reserveAddress;
     }
 
     /// @inheritdoc IMotherBoard
@@ -58,6 +66,7 @@ contract Motherboard is IMotherBoard {
 
         address[] memory lpTokens = new address[](routes.length);
         uint256[] memory lpTokenAmounts = new uint256[](routes.length);
+        uint256[] memory vaultTokenAmounts = new uint256[](routes.length);
 
         for (uint256 i = 0; i < routes.length; i++) {
             DataTypes.Route memory route = routes[i];
@@ -70,6 +79,9 @@ contract Motherboard is IMotherBoard {
             uint256 lpTokenAmount = exchanger.deposit(route.token, route.amount, lpToken);
             lpTokens[i] = lpToken;
             lpTokenAmounts[i] = lpTokenAmount;
+
+            uint256 vaultTokenAmount = vault.depositFor(lpTokenAmount, reserveAddress);
+            vaultTokenAmounts[i] = vaultTokenAmount;
         }
 
         return 0;

@@ -20,6 +20,10 @@ interface IMotherBoard {
     /// @return the PAMM address
     function PAMMAddress() external returns (address);
 
+    /// @notice Returns the address for the reserve
+    /// @return the address of the reserve
+    function reserveAddress() external returns (address);
+
     /// @notice Returns the address of the exchanger registry
     /// @return the exchanger registry address
     function exchangerRegistryAddress() external returns (address);
