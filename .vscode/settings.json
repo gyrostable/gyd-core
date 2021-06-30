@@ -3,5 +3,8 @@
   "solidity.packageDefaultDependenciesDirectory": "packages",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "[solidity]": {
+    "editor.tabSize": 4
+  }
 }

@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "./auth/Governable.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
+import "./auth/Governable.sol";
+import "../libraries/Errors.sol";
 
 contract LPTokenExchangerRegistry is ILPTokenExchangerRegistry, Governable {
-    mapping(address => address) private tokenExchangers;
+    mapping(address => address) internal tokenExchangers;
 
-    function getTokenExchanger(address lpToken)
-        external
-        view
-        override
-        returns (address)
-    {
-        return tokenExchangers[lpToken];
+    /// @inheritdoc ILPTokenExchangerRegistry
+    function getTokenExchanger(address lpToken) external view override returns (ILPTokenExchanger) {
+        address tokenExchangerAddress = tokenExchangers[lpToken];
+        require(tokenExchangerAddress != address(0), Errors.EXCHANGER_NOT_FOUND);
+        return ILPTokenExchanger(tokenExchangerAddress);
     }
 
+    /// @inheritdoc ILPTokenExchangerRegistry
     function registerTokenExchanger(address lpToken, address lpTokenExchanger)
         external
         override
@@ -24,11 +24,8 @@ contract LPTokenExchangerRegistry is ILPTokenExchangerRegistry, Governable {
         tokenExchangers[lpToken] = lpTokenExchanger;
     }
 
-    function deregisterTokenExchanger(address lpToken)
-        external
-        override
-        governanceOnly
-    {
+    /// @inheritdoc ILPTokenExchangerRegistry
+    function deregisterTokenExchanger(address lpToken) external override governanceOnly {
         delete tokenExchangers[lpToken];
     }
 }

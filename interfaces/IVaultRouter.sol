@@ -8,17 +8,17 @@ import "../libraries/DataTypes.sol";
 interface IVaultRouter {
     /// @notice Adds a vault address to the router so it is able to route funds to it
     /// @dev This function will only be called through governance
-    /// @param _vaultAddress the vault address to be added
-    function addVault(address _vaultAddress) external;
+    /// @param vaultAddress the vault address to be added
+    function addVault(address vaultAddress) external;
 
     /// @notice Removes a vault supported by this router
     /// @dev This function will only be called through governance
-    /// @param _vaultAddress the vault address to be removed
-    function removeVault(address _vaultAddress) external;
+    /// @param vaultAddress the vault address to be removed
+    function removeVault(address vaultAddress) external;
 
     /// @notice Returns the list of vaults supported by the router
     /// @return the vaults supported by the router
-    function supportedVaults() external returns (address[] memory);
+    function supportedVaults() external view returns (address[] memory);
 
     /// @notice Computes the routing given the input tokens and amounts
     /// @dev Explain to a developer any extra details
@@ -26,5 +26,6 @@ interface IVaultRouter {
     /// @return a list of routes to deposit `inputTokens` and `inputAmounts`
     function computeInputRoutes(DataTypes.TokenAmount[] memory inputTokenAmounts)
         external
+        view
         returns (DataTypes.Route[] memory);
 }

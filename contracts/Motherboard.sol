@@ -89,15 +89,9 @@ contract Motherboard is IMotherBoard, Governable {
             IVault vault = IVault(route.vaultAddress);
             address lpTokenAddress = vault.lpToken();
 
-            ILPTokenExchanger exchanger = ILPTokenExchanger(
-                exchangerRegistry.getTokenExchanger(lpTokenAddress)
-            );
+            ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
 
-            DataTypes.TokenAmount memory tokenAmount = DataTypes.TokenAmount({
-                token: route.token,
-                amount: route.amount
-            });
-            uint256 lpTokenAmount = exchanger.deposit(tokenAmount, lpTokenAddress);
+            uint256 lpTokenAmount = exchanger.deposit(route.tokenAmount, lpTokenAddress);
 
             uint256 vaultTokenAmount = vault.depositFor(lpTokenAmount, address(reserve));
             vaultTokenAmounts[i] = DataTypes.TokenAmount({
