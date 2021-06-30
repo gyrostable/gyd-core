@@ -14,4 +14,10 @@ interface IGYDToken is IERC20 {
     /// @notice Gets the address for the minter contract
     /// @return the address of the minter contract
     function minter() external returns (address);
+
+    /// @notice Mints `amount` of GYD token
+    function mint(uint256 amount) external;
+
+    /// @notice Mints `amount` of GYD token on behalf of `account`
+    function mintFor(uint256 amount, address account) external;
 }

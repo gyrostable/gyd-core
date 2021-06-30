@@ -11,4 +11,10 @@ library DataTypes {
         uint256 amount;
         address vaultAddress;
     }
+
+    /// @notice Contains a token and the amount associated with it
+    struct TokenAmount {
+        address token;
+        uint256 amount;
+    }
 }

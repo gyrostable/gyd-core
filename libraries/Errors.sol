@@ -5,4 +5,11 @@ pragma solidity ^0.8.4;
 library Errors {
     string public constant TOKEN_AND_AMOUNTS_LENGTH_DIFFER = "1";
     string public constant NOT_ENOUGH_GYRO_MINTED = "2";
+
+    string public constant X_OUT_OF_BOUNDS = "20";
+    string public constant Y_OUT_OF_BOUNDS = "21";
+    string public constant PRODUCT_OUT_OF_BOUNDS = "22";
+    string public constant INVALID_EXPONENT = "23";
+    string public constant OUT_OF_BOUNDS = "24";
+    string public constant ZERO_DIVISION = "25";
 }
