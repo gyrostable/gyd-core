@@ -9,7 +9,7 @@ import "../../interfaces/ILPTokenExchanger.sol";
 import "../BaseVaultRouter.sol";
 
 /// @title Mock implementation of IVaultRouter
-contract MockVaultRouter is BaseVaultRouter {
+abstract contract MockVaultRouter is BaseVaultRouter {
     /// @inheritdoc IVaultRouter
     function computeInputRoutes(DataTypes.TokenAmount[] memory inputTokenAmounts)
         external
