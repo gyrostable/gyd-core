@@ -15,9 +15,8 @@ interface ILPTokenExchanger {
     /// @notice Deposits `underlyingAmountAmount` to the liquidity pool
     /// and sends back the received LP tokens
     /// @param underlyingTokenAmount the underlying token and amount to deposit
-    /// @param lpToken the LP token to exchange the `underlyingToken` into
     /// @return lpTokenAmount the amount of LP token deposited and sent back
-    function deposit(DataTypes.TokenAmount memory underlyingTokenAmount, address lpToken)
+    function deposit(DataTypes.TokenAmount memory underlyingTokenAmount)
         external
         returns (uint256 lpTokenAmount);
 }

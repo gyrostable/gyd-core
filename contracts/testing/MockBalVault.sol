@@ -6,7 +6,7 @@ interface IAsset {
     // solhint-disable-previous-line no-empty-blocks
 }
 
-contract MockVault {
+contract MockBalVault {
     // function getAuthorizer() external view returns (IAuthorizer);
 
     // function setAuthorizer(IAuthorizer newAuthorizer) external;

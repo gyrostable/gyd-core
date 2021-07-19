@@ -13,10 +13,17 @@ contract MockLPTokenExchanger {
         // address[] memory supportedTokens = []
     }
 
-    function deposit(DataTypes.TokenAmount memory underlyingTokenAmount, address lpToken)
+    function deposit(DataTypes.TokenAmount memory underlyingTokenAmount)
         external
         returns (uint256 lpTokenAmount)
     {
-        return block.timestamp;
+        return underlyingTokenAmount.amount;
+    }
+
+    function withdraw(DataTypes.TokenAmount memory lpTokenAmount)
+        external
+        returns (uint256 underlyingTokenAmount)
+    {
+        return lpTokenAmount.amount;
     }
 }

@@ -91,7 +91,7 @@ contract Motherboard is IMotherBoard, Governable {
 
             ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
 
-            uint256 lpTokenAmount = exchanger.deposit(route.tokenAmount, lpTokenAddress);
+            uint256 lpTokenAmount = exchanger.deposit(route.tokenAmount);
 
             uint256 vaultTokenAmount = vault.depositFor(lpTokenAmount, address(reserve));
             vaultTokenAmounts[i] = DataTypes.TokenAmount({
