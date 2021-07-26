@@ -1,5 +1,8 @@
 pragma solidity ^0.8.4;
 
+import "OpenZeppelin/openzeppelin-contracts@4.1.0/contracts/token/ERC20/utils/SafeERC20.sol";
+import "OpenZeppelin/openzeppelin-contracts@4.1.0/contracts/token/ERC20/IERC20.sol";
+
 import "../../libraries/DataTypes.sol";
 import "../../interfaces/IVaultRouter.sol";
 import "../../interfaces/IVault.sol";
@@ -9,6 +12,8 @@ import "../BaseVaultRouter.sol";
 
 /// @title Mock implementation of IVaultRouter
 contract MockLPTokenExchanger {
+    using SafeERC20 for IERC20;
+
     function getSupportedTokens() external view returns (address[] memory) {
         // address[] memory supportedTokens = []
     }
@@ -17,6 +22,7 @@ contract MockLPTokenExchanger {
         external
         returns (uint256 lpTokenAmount)
     {
+        // IERC20.safeTransfer()
         return underlyingTokenAmount.amount;
     }
 
