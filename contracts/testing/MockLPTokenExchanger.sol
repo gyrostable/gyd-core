@@ -18,18 +18,23 @@ contract MockLPTokenExchanger {
         // address[] memory supportedTokens = []
     }
 
-    function deposit(DataTypes.TokenAmount memory underlyingTokenAmount)
+    function deposit(DataTypes.TokenAmount memory underlyingToken)
         external
         returns (uint256 lpTokenAmount)
     {
-        // IERC20.safeTransfer()
-        return underlyingTokenAmount.amount;
+        IERC20(underlyingToken.token).transferFrom(
+            msg.sender,
+            address(this),
+            underlyingToken.amount
+        );
+        // return underlyingToken.amount;
     }
 
-    function withdraw(DataTypes.TokenAmount memory lpTokenAmount)
+    function withdraw(DataTypes.TokenAmount memory lpToken)
         external
         returns (uint256 underlyingTokenAmount)
     {
-        return lpTokenAmount.amount;
+        IERC20(lpToken.token).transferFrom(address(this), msg.sender, lpToken.amount);
+        // return lpToken.amount;
     }
 }

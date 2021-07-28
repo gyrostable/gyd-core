@@ -30,3 +30,26 @@ def usdc(Token):
 @pytest.fixture(scope="module")
 def usdt(Token):
     yield Token.deploy("Tether", "USDT", 6, 1e20, {"from": accounts[0]})
+
+
+@pytest.fixture
+def distribute_dai(dai):
+    for i in range(1, 10):
+        dai.transfer(accounts[i], 100, {"from": accounts[0]})
+
+
+@pytest.fixture
+def distribute_usdt(usdt):
+    for i in range(1, 10):
+        usdt.transfer(accounts[i], 100, {"from": accounts[0]})
+
+
+@pytest.fixture
+def distribute_usdc(usdc):
+    for i in range(1, 10):
+        usdc.transfer(accounts[i], 100, {"from": accounts[0]})
+
+
+@pytest.fixture(autouse=True)
+def shared_setup(fn_isolation):
+    pass
