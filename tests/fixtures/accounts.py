@@ -3,24 +3,24 @@ import pytest
 
 @pytest.fixture(scope="session")
 def alice(accounts):
-    return accounts[0]
-
-
-@pytest.fixture(scope="session")
-def bob(accounts):
     return accounts[1]
 
 
 @pytest.fixture(scope="session")
-def charlie(accounts):
+def bob(accounts):
     return accounts[2]
 
 
 @pytest.fixture(scope="session")
-def admin(accounts):
+def charlie(accounts):
     return accounts[3]
 
 
 @pytest.fixture(scope="session")
-def gov(accounts):
+def admin(accounts):
     return accounts[4]
+
+
+@pytest.fixture(scope="session")
+def gov(accounts):
+    return accounts[5]
