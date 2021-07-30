@@ -73,16 +73,14 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function mint(DataTypes.TokenAmount[] memory inputTokenAmounts, uint256 minMintedAmount)
+    function mint(DataTypes.TokenTuple[] memory inputTokenTuples, uint256 minMintedAmount)
         external
         override
         returns (uint256 mintedGYDAmount)
     {
-        DataTypes.Route[] memory routes = vaultRouter.computeInputRoutes(inputTokenAmounts);
+        DataTypes.Route[] memory routes = vaultRouter.computeInputRoutes(inputTokenTuples);
 
-        DataTypes.TokenAmount[] memory vaultTokenAmounts = new DataTypes.TokenAmount[](
-            routes.length
-        );
+        DataTypes.TokenTuple[] memory vaultTokenTuples = new DataTypes.TokenTuple[](routes.length);
 
         for (uint256 i = 0; i < routes.length; i++) {
             DataTypes.Route memory route = routes[i];
@@ -91,17 +89,18 @@ contract Motherboard is IMotherBoard, Governable {
 
             ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
 
-            uint256 lpTokenAmount = exchanger.deposit(route.tokenAmount);
+            uint256 lpTokenAmount = exchanger.deposit(route.tokenTuple);
 
             uint256 vaultTokenAmount = vault.depositFor(lpTokenAmount, address(reserve));
-            vaultTokenAmounts[i] = DataTypes.TokenAmount({
-                token: address(vault),
+
+            vaultTokenTuples[i] = DataTypes.TokenTuple({
+                tokenAddress: address(vault),
                 amount: vaultTokenAmount
             });
         }
 
         uint256 mintFeeFraction = gyroConfig.getMintFee();
-        uint256 gyroToMint = pamm.calculateAndRecordGYDToMint(vaultTokenAmounts, mintFeeFraction);
+        uint256 gyroToMint = pamm.calculateAndRecordGYDToMint(vaultTokenTuples, mintFeeFraction);
 
         uint256 feeToPay = gyroToMint.mulUp(mintFeeFraction);
 
@@ -118,7 +117,7 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function redeem(DataTypes.TokenAmount[] memory outputTokenAmounts, uint256 maxRedeemedAmount)
+    function redeem(DataTypes.TokenTuple[] memory outputTokenTuples, uint256 maxRedeemedAmount)
         external
         override
         returns (uint256 redeemedGYDAmount)
@@ -127,14 +126,14 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function dryMint(DataTypes.TokenAmount[] memory inputTokenAmounts, uint256 minMintedAmount)
+    function dryMint(DataTypes.TokenTuple[] memory inputTokenTuples, uint256 minMintedAmount)
         external
         override
         returns (uint256 error, uint256 mintedGYDAmount)
     {}
 
     /// @inheritdoc IMotherBoard
-    function dryRedeem(DataTypes.TokenAmount[] memory outputTokenAmounts, uint256 maxRedeemedAmount)
+    function dryRedeem(DataTypes.TokenTuple[] memory outputTokenTuples, uint256 maxRedeemedAmount)
         external
         override
         returns (uint256 error, uint256 redeemedGYDAmount)

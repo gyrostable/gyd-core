@@ -11,17 +11,17 @@ import "../BaseVaultRouter.sol";
 /// @title Mock implementation of IVaultRouter
 abstract contract MockVaultRouter is BaseVaultRouter {
     /// @inheritdoc IVaultRouter
-    function computeInputRoutes(DataTypes.TokenAmount[] memory inputTokenAmounts)
+    function computeInputRoutes(DataTypes.TokenTuple[] memory inputTokenTuples)
         external
         view
         override
         returns (DataTypes.Route[] memory)
     {
-        DataTypes.Route[] memory routes = new DataTypes.Route[](inputTokenAmounts.length);
-        for (uint256 i = 0; i < inputTokenAmounts.length; i++) {
-            DataTypes.TokenAmount memory inputTokenAmount = inputTokenAmounts[i];
-            address vault = selectVaultForToken(inputTokenAmount.token);
-            routes[i] = DataTypes.Route({tokenAmount: inputTokenAmount, vaultAddress: vault});
+        DataTypes.Route[] memory routes = new DataTypes.Route[](inputTokenTuples.length);
+        for (uint256 i = 0; i < inputTokenTuples.length; i++) {
+            DataTypes.TokenTuple memory inputTokenTuple = inputTokenTuples[i];
+            address vault = selectVaultForToken(inputTokenTuple.tokenAddress);
+            routes[i] = DataTypes.Route({tokenTuple: inputTokenTuple, vaultAddress: vault});
         }
         return routes;
     }

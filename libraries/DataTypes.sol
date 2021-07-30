@@ -4,8 +4,8 @@ pragma solidity ^0.8.4;
 /// @notice Contains the data structures to express token routing
 library DataTypes {
     /// @notice Contains a token and the amount associated with it
-    struct TokenAmount {
-        address token;
+    struct TokenTuple {
+        address tokenAddress;
         uint256 amount;
     }
 
@@ -13,7 +13,7 @@ library DataTypes {
     /// This is used to determine in which vault the token should be deposited
     /// or from which vault it should be withdrawn
     struct Route {
-        TokenAmount tokenAmount;
+        TokenTuple tokenTuple;
         address vaultAddress;
     }
 }

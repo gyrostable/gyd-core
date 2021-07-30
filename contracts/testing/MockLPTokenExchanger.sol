@@ -15,11 +15,11 @@ contract MockLPTokenExchanger {
         // address[] memory supportedTokens = []
     }
 
-    function depositFor(DataTypes.TokenAmount memory underlyingToken, address userAddress)
+    function depositFor(DataTypes.TokenTuple memory underlyingToken, address userAddress)
         external
         returns (uint256 lpTokenAmount)
     {
-        IERC20(underlyingToken.token).transferFrom(
+        IERC20(underlyingToken.tokenAddress).transferFrom(
             userAddress,
             address(this),
             underlyingToken.amount
@@ -27,11 +27,11 @@ contract MockLPTokenExchanger {
         return underlyingToken.amount / 2;
     }
 
-    function withdrawFor(DataTypes.TokenAmount memory lpToken, address userAddress)
+    function withdrawFor(DataTypes.TokenTuple memory lpToken, address userAddress)
         external
         returns (uint256 underlyingTokenAmount)
     {
-        IERC20(lpToken.token).transferFrom(address(this), userAddress, lpToken.amount);
+        IERC20(lpToken.tokenAddress).transferFrom(address(this), userAddress, lpToken.amount);
         return lpToken.amount;
     }
 }
