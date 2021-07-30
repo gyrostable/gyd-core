@@ -15,7 +15,7 @@ contract MockLPTokenExchanger {
         // address[] memory supportedTokens = []
     }
 
-    function depositFor(DataTypes.TokenTuple memory underlyingToken, address userAddress)
+    function swapIn(DataTypes.TokenTuple memory underlyingToken, address userAddress)
         external
         returns (uint256 lpTokenAmount)
     {
@@ -27,7 +27,7 @@ contract MockLPTokenExchanger {
         return underlyingToken.amount / 2;
     }
 
-    function withdrawFor(DataTypes.TokenTuple memory lpToken, address userAddress)
+    function swapOut(DataTypes.TokenTuple memory lpToken, address userAddress)
         external
         returns (uint256 underlyingTokenAmount)
     {
