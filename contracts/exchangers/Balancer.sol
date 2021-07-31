@@ -34,7 +34,7 @@ interface BalancerV2Factory {
 }
 
 /// @title Balancer token exchanger
-contract BalancerExchanger is ILPTokenExchanger {
+abstract contract BalancerExchanger is ILPTokenExchanger {
     using FixedPoint for uint256;
     using SafeERC20 for IERC20;
 
@@ -75,14 +75,14 @@ contract BalancerExchanger is ILPTokenExchanger {
 
         bytes32 poolId = getChosenBalancerPool(underlyingTokenTuple);
 
-        BalancerV2Factory.JoinPoolRequest memory request = BalancerV2Factory.JoinPoolRequest({
-            assets: [underlyingTokenTuple.tokenAddress],
-            maxAmountsIn: [underlyingTokenTuple.amount],
-            userData: bytes(0),
-            fromInternalBalance: false
-        });
+        // BalancerV2Factory.JoinPoolRequest memory request = BalancerV2Factory.JoinPoolRequest({
+        //     assets: [underlyingTokenTuple.tokenAddress],
+        //     maxAmountsIn: [underlyingTokenTuple.amount],
+        //     userData: bytes,
+        //     fromInternalBalance: false
+        // });
 
-        request = balancerV2Vault.joinPool(poolId, address(this), msg.sender, request);
+        // request = balancerV2Vault.joinPool(poolId, address(this), msg.sender, request);
     }
 
     function swapOut(uint256 lpTokenAmount)
