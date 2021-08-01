@@ -47,17 +47,38 @@ interface BalancerVaultFactory {
     }
 }
 
+interface BalancerHelperFactory {
+    function queryJoin(
+        bytes32 poolId,
+        address sender,
+        address recipient,
+        BalancerVaultFactory.JoinPoolRequest memory request
+    ) external returns (uint256 bptOut, uint256[] memory amountsIn);
+
+    function queryExit(
+        bytes32 poolId,
+        address sender,
+        address recipient,
+        BalancerVaultFactory.ExitPoolRequest memory request
+    ) external returns (uint256 bptIn, uint256[] memory amountsOut);
+}
+
 /// @title Balancer token exchanger
 abstract contract BalancerExchanger is ILPTokenExchanger {
     using FixedPoint for uint256;
     using SafeERC20 for IERC20;
 
-    address private BalancerV2VaultAddress;
-
     IBalancerPoolRegistry public poolRegistry;
+    BalancerHelperFactory public balancerHelper;
+    BalancerVaultFactory public balancerV2Vault;
 
-    constructor(address _BalancerV2Vault, address _balancerPoolRegistryAddress) {
-        BalancerV2VaultAddress = _BalancerV2Vault;
+    constructor(
+        address _balancerV2Vault,
+        address _balancerPoolRegistryAddress,
+        address _balancerHelperAddress
+    ) {
+        balancerV2Vault = BalancerVaultFactory(_balancerV2Vault);
+        balancerHelper = BalancerHelperFactory(_balancerHelperAddress);
         poolRegistry = IBalancerPoolRegistry(_balancerPoolRegistryAddress);
     }
 
@@ -85,8 +106,6 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         );
         require(tokenTransferred, "failed to transfer tokens from user to token exchanger");
 
-        BalancerVaultFactory balancerV2Vault = BalancerVaultFactory(BalancerV2VaultAddress);
-
         bytes32 poolId = getChosenBalancerPool(underlyingTokenTuple);
 
         IAsset[] memory assetsArray = new IAsset[](1);
@@ -102,11 +121,16 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
             fromInternalBalance: false
         });
 
+        (uint256 expectedBptOut, uint256[] memory expectedAmountsIn) = balancerHelper.queryJoin(
+            poolId,
+            address(this),
+            msg.sender,
+            request
+        );
+
         balancerV2Vault.joinPool(poolId, address(this), msg.sender, request);
 
-        bptTokens = 0;
-
-        return bptTokens;
+        return expectedBptOut;
     }
 
     function swapOut(DataTypes.TokenTuple memory tokenToWithdraw)
@@ -114,8 +138,6 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         override
         returns (DataTypes.TokenTuple memory receivedToken)
     {
-        BalancerVaultFactory balancerV2Vault = BalancerVaultFactory(BalancerV2VaultAddress);
-
         bytes32 poolId = getChosenBalancerPool(tokenToWithdraw);
 
         IAsset[] memory assetsArray = new IAsset[](1);
@@ -130,6 +152,13 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
             userData: "null",
             toInternalBalance: false
         });
+
+        (uint256 expctedBptIn, uint256[] memory expectedAmountsOut) = balancerHelper.queryExit(
+            poolId,
+            address(this),
+            msg.sender,
+            request
+        );
 
         balancerV2Vault.exitPool(poolId, address(this), payable(msg.sender), request);
     }
