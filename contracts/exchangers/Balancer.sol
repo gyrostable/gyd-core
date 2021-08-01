@@ -25,11 +25,25 @@ interface BalancerV2Factory {
         JoinPoolRequest memory request
     ) external payable;
 
+    function exitPool(
+        bytes32 poolId,
+        address sender,
+        address payable recipient,
+        ExitPoolRequest memory request
+    ) external;
+
     struct JoinPoolRequest {
         IAsset[] assets;
         uint256[] maxAmountsIn;
         bytes userData;
         bool fromInternalBalance;
+    }
+
+    struct ExitPoolRequest {
+        IAsset[] assets;
+        uint256[] minAmountsOut;
+        bytes userData;
+        bool toInternalBalance;
     }
 }
 
@@ -59,11 +73,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         return balancerPoolRegistry[0];
     }
 
-    function swapIn(DataTypes.TokenTuple memory underlyingTokenTuple)
-        external
-        override
-        returns (uint256 lpTokenAmount)
-    {
+    function swapIn(DataTypes.TokenTuple memory underlyingTokenTuple) external override {
         bool tokenTransferred = IERC20(underlyingTokenTuple.tokenAddress).transferFrom(
             msg.sender,
             address(this),
@@ -75,19 +85,40 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
 
         bytes32 poolId = getChosenBalancerPool(underlyingTokenTuple);
 
-        // BalancerV2Factory.JoinPoolRequest memory request = BalancerV2Factory.JoinPoolRequest({
-        //     assets: [underlyingTokenTuple.tokenAddress],
-        //     maxAmountsIn: [underlyingTokenTuple.amount],
-        //     userData: bytes,
-        //     fromInternalBalance: false
-        // });
+        IAsset[] memory assetsArray = new IAsset[](1);
+        assetsArray[0] = IAsset(underlyingTokenTuple.tokenAddress);
 
-        // request = balancerV2Vault.joinPool(poolId, address(this), msg.sender, request);
+        uint256[] memory maxAmountsIn = new uint256[](1);
+        maxAmountsIn[0] = underlyingTokenTuple.amount;
+
+        BalancerV2Factory.JoinPoolRequest memory request = BalancerV2Factory.JoinPoolRequest({
+            assets: assetsArray,
+            maxAmountsIn: maxAmountsIn,
+            userData: "null",
+            fromInternalBalance: false
+        });
+
+        balancerV2Vault.joinPool(poolId, address(this), msg.sender, request);
     }
 
-    function swapOut(uint256 lpTokenAmount)
-        external
-        override
-        returns (DataTypes.TokenTuple memory underlyingTokenTuple)
-    {}
+    function swapOut(DataTypes.TokenTuple memory underlyingTokenTuple) external override {
+        BalancerV2Factory balancerV2Vault = BalancerV2Factory(BalancerV2VaultAddress);
+
+        bytes32 poolId = getChosenBalancerPool(underlyingTokenTuple);
+
+        IAsset[] memory assetsArray = new IAsset[](1);
+        assetsArray[0] = IAsset(underlyingTokenTuple.tokenAddress);
+
+        uint256[] memory minAmountsOut = new uint256[](1);
+        minAmountsOut[0] = underlyingTokenTuple.amount;
+
+        BalancerV2Factory.ExitPoolRequest memory request = BalancerV2Factory.ExitPoolRequest({
+            assets: assetsArray,
+            minAmountsOut: minAmountsOut,
+            userData: "null",
+            toInternalBalance: false
+        });
+
+        balancerV2Vault.exitPool(poolId, address(this), payable(msg.sender), request);
+    }
 }
