@@ -73,7 +73,11 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         return balancerPoolRegistry[0];
     }
 
-    function swapIn(DataTypes.TokenTuple memory underlyingTokenTuple) external override {
+    function swapIn(DataTypes.TokenTuple memory underlyingTokenTuple)
+        external
+        override
+        returns (uint256 bptTokens)
+    {
         bool tokenTransferred = IERC20(underlyingTokenTuple.tokenAddress).transferFrom(
             msg.sender,
             address(this),
@@ -99,18 +103,26 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         });
 
         balancerV2Vault.joinPool(poolId, address(this), msg.sender, request);
+
+        bptTokens = 0;
+
+        return bptTokens;
     }
 
-    function swapOut(DataTypes.TokenTuple memory underlyingTokenTuple) external override {
+    function swapOut(DataTypes.TokenTuple memory tokenToWithdraw)
+        external
+        override
+        returns (DataTypes.TokenTuple memory receivedToken)
+    {
         BalancerV2Factory balancerV2Vault = BalancerV2Factory(BalancerV2VaultAddress);
 
-        bytes32 poolId = getChosenBalancerPool(underlyingTokenTuple);
+        bytes32 poolId = getChosenBalancerPool(tokenToWithdraw);
 
         IAsset[] memory assetsArray = new IAsset[](1);
-        assetsArray[0] = IAsset(underlyingTokenTuple.tokenAddress);
+        assetsArray[0] = IAsset(tokenToWithdraw.tokenAddress);
 
         uint256[] memory minAmountsOut = new uint256[](1);
-        minAmountsOut[0] = underlyingTokenTuple.amount;
+        minAmountsOut[0] = tokenToWithdraw.amount;
 
         BalancerV2Factory.ExitPoolRequest memory request = BalancerV2Factory.ExitPoolRequest({
             assets: assetsArray,
