@@ -17,7 +17,7 @@ interface IAsset {
     // solhint-disable-previous-line no-empty-blocks
 }
 
-interface BalancerV2Factory {
+interface BalancerVaultFactory {
     function joinPool(
         bytes32 poolId,
         address sender,
@@ -85,7 +85,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         );
         require(tokenTransferred, "failed to transfer tokens from user to token exchanger");
 
-        BalancerV2Factory balancerV2Vault = BalancerV2Factory(BalancerV2VaultAddress);
+        BalancerVaultFactory balancerV2Vault = BalancerVaultFactory(BalancerV2VaultAddress);
 
         bytes32 poolId = getChosenBalancerPool(underlyingTokenTuple);
 
@@ -95,7 +95,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         uint256[] memory maxAmountsIn = new uint256[](1);
         maxAmountsIn[0] = underlyingTokenTuple.amount;
 
-        BalancerV2Factory.JoinPoolRequest memory request = BalancerV2Factory.JoinPoolRequest({
+        BalancerVaultFactory.JoinPoolRequest memory request = BalancerVaultFactory.JoinPoolRequest({
             assets: assetsArray,
             maxAmountsIn: maxAmountsIn,
             userData: "null",
@@ -114,7 +114,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         override
         returns (DataTypes.TokenTuple memory receivedToken)
     {
-        BalancerV2Factory balancerV2Vault = BalancerV2Factory(BalancerV2VaultAddress);
+        BalancerVaultFactory balancerV2Vault = BalancerVaultFactory(BalancerV2VaultAddress);
 
         bytes32 poolId = getChosenBalancerPool(tokenToWithdraw);
 
@@ -124,7 +124,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         uint256[] memory minAmountsOut = new uint256[](1);
         minAmountsOut[0] = tokenToWithdraw.amount;
 
-        BalancerV2Factory.ExitPoolRequest memory request = BalancerV2Factory.ExitPoolRequest({
+        BalancerVaultFactory.ExitPoolRequest memory request = BalancerVaultFactory.ExitPoolRequest({
             assets: assetsArray,
             minAmountsOut: minAmountsOut,
             userData: "null",
