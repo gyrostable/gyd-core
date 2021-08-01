@@ -97,7 +97,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
     function swapIn(DataTypes.TokenTuple memory underlyingTokenTuple)
         external
         override
-        returns (uint256 bptTokens)
+        returns (uint256)
     {
         bool tokenTransferred = IERC20(underlyingTokenTuple.tokenAddress).transferFrom(
             msg.sender,
@@ -136,7 +136,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
     function swapOut(DataTypes.TokenTuple memory tokenToWithdraw)
         external
         override
-        returns (DataTypes.TokenTuple memory receivedToken)
+        returns (uint256)
     {
         bytes32 poolId = getChosenBalancerPool(tokenToWithdraw);
 
@@ -153,7 +153,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
             toInternalBalance: false
         });
 
-        (uint256 expctedBptIn, uint256[] memory expectedAmountsOut) = balancerHelper.queryExit(
+        (uint256 expectedBptIn, uint256[] memory expectedAmountsOut) = balancerHelper.queryExit(
             poolId,
             address(this),
             msg.sender,
@@ -161,5 +161,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         );
 
         balancerV2Vault.exitPool(poolId, address(this), payable(msg.sender), request);
+
+        return expectedBptIn;
     }
 }
