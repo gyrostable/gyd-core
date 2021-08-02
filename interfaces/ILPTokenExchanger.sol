@@ -15,10 +15,14 @@ interface ILPTokenExchanger {
     /// @notice Deposits `underlyingTokenTuple` to the liquidity pool
     /// and sends back the received LP tokens as `lpTokenAmount`
     /// @param tokenToDeposit the underlying token and amount to deposit
-    function swapIn(DataTypes.TokenTuple memory tokenToDeposit) external returns (uint256 bptOut);
+    function swapIn(DataTypes.TokenTuple memory tokenToDeposit)
+        external
+        returns (uint256 lpTokenAmount);
 
-    /// @notice Withdraws token to Withdraw from the liquidity pool
+    /// @notice Withdraws token from the liquidity pool
     /// and sends back an underlyingTokenTuple
     /// @param tokenToWithdraw the underlying token and amount to withdraw
-    function swapOut(DataTypes.TokenTuple memory tokenToWithdraw) external returns (uint256 bptIn);
+    function swapOut(DataTypes.TokenTuple memory tokenToWithdraw)
+        external
+        returns (uint256 lpTokenAmount);
 }
