@@ -42,12 +42,13 @@ contract BalancerPoolRegistry is IBalancerPoolRegistry, Governable {
         override
         governanceOnly
     {
-        bytes32[] memory poolIdsforToken = poolIdRegistry[underlyingTokenAddress];
-        for (uint256 i = 0; i < poolIdsforToken.length; i++) {
-            bytes32 poolIdInArray = poolIdsforToken[i];
-            if (poolIdInArray == poolId) {
-                delete poolIdsforToken[i];
-                poolIdRegistry[underlyingTokenAddress] = poolIdsforToken;
+        for (uint256 i = 0; i < poolIdRegistry[underlyingTokenAddress].length; i++) {
+            bytes32 _id = poolIdRegistry[underlyingTokenAddress][i];
+            if (_id == poolId) {
+                poolIdRegistry[underlyingTokenAddress][i] = poolIdRegistry[underlyingTokenAddress][
+                    poolIdRegistry[underlyingTokenAddress].length - 1
+                ];
+                poolIdRegistry[underlyingTokenAddress].pop();
                 break;
             }
         }

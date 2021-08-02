@@ -27,7 +27,7 @@ def bal_exchanger(admin, BalancerExchanger):
     return admin.deploy(BalancerExchanger)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def bal_pool_registry(admin, BalancerPoolRegistry):
     return admin.deploy(BalancerPoolRegistry)
 
