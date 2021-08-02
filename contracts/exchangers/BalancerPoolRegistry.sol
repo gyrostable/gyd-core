@@ -8,6 +8,8 @@ import "../../libraries/Errors.sol";
 contract BalancerPoolRegistry is IBalancerPoolRegistry, Governable {
     mapping(address => bytes32[]) internal poolIdRegistry;
 
+    event PoolIDRegistered(address underlyingTokenAddress, bytes32 poolId);
+
     /// @inheritdoc IBalancerPoolRegistry
     /// @notice this returns an array of poolIds for a given token since an underlying
     /// may be supported by multiple Balancer pools
@@ -31,6 +33,7 @@ contract BalancerPoolRegistry is IBalancerPoolRegistry, Governable {
         bytes32[] storage poolIdsforToken = poolIdRegistry[underlyingTokenAddress];
         poolIdsforToken.push(poolId);
         poolIdRegistry[underlyingTokenAddress] = poolIdsforToken;
+        emit PoolIDRegistered(underlyingTokenAddress, poolId);
     }
 
     /// @inheritdoc IBalancerPoolRegistry

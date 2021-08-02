@@ -22,6 +22,16 @@ def mock_lp_token_exchanger(admin, MockLPTokenExchanger):
     return admin.deploy(MockLPTokenExchanger)
 
 
+@pytest.fixture()
+def bal_exchanger(admin, BalancerExchanger):
+    return admin.deploy(BalancerExchanger)
+
+
+@pytest.fixture()
+def bal_pool_registry(admin, BalancerPoolRegistry):
+    return admin.deploy(BalancerPoolRegistry)
+
+
 @pytest.fixture(scope="module", autouse=True)
 def dai(Token):
     yield Token.deploy("Dai Token", "DAI", 18, 1e20, {"from": accounts[0]})
@@ -58,10 +68,3 @@ def distribute_usdt(usdt):
 def distribute_usdc(usdc):
     for i in range(1, 10):
         usdc.transfer(accounts[i], 100, {"from": accounts[0]})
-
-
-# @pytest.fixture(scope="session", autouse=True)
-# def balv2vault(interface):
-#     contract = Contract.from_explorer("0xBA12222222228d8Ba445958a75a0704d566BF2C8")
-#     contract.set_alias("balv2vault")
-#     yield contract
