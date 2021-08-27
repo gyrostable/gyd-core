@@ -52,6 +52,14 @@ library FixedPoint {
         }
     }
 
+    function squareUp(uint256 a) internal pure returns (uint256) {
+        return mulUp(a, a);
+    }
+
+    function squareDown(uint256 a) internal pure returns (uint256) {
+        return mulDown(a, a);
+    }
+
     function divDown(uint256 a, uint256 b) internal pure returns (uint256) {
         require(b != 0, Errors.ZERO_DIVISION);
 
