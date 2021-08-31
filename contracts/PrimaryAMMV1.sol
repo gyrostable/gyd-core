@@ -25,8 +25,8 @@ contract PrimaryAMMV1 {
 
     struct State {
         uint256 redemptionLevel; // x
-        uint256 totalGyroSupply; // y
         uint256 reserveValue; // b
+        uint256 totalGyroSupply; // y
     }
 
     struct Params {
@@ -46,10 +46,15 @@ contract PrimaryAMMV1 {
     }
 
     /// @notice parmaters of the primary AMM
-    Params systemParams;
+    Params public systemParams;
 
     /// @notice current state of the primary AMM
-    State systemState;
+    State public systemState;
+
+    /// @notice Initializes the PAAM with the given system parameters
+    constructor(Params memory params) {
+        systemParams = params;
+    }
 
     /// Helpers to compute various parameters
 
@@ -66,7 +71,7 @@ contract PrimaryAMMV1 {
         } else {
             slope = (ONE - targetReserveRatio)**2 / (ba - targetReserveRatio.mulDown(ya)) / 2;
         }
-        return slope < slopeLowerBound ? slopeLowerBound : slope;
+        return slope.max(slopeLowerBound);
     }
 
     function computeFixedReserve(
@@ -83,7 +88,7 @@ contract PrimaryAMMV1 {
         if (x <= xl) {
             return ba - x + (alpha * (x - xu).squareDown()) / TWO;
         }
-        // x >= xl:
+        // x > xl:
         uint256 rl = ONE - alpha.mulDown(xl - xu);
         return rl.mulDown(ya - x);
     }
@@ -94,10 +99,10 @@ contract PrimaryAMMV1 {
         uint256 alpha,
         uint256 xu
     ) internal pure returns (uint256) {
-        if (ba / ya >= 1) {
+        if (ba.divDown(ya) >= ONE) {
             return ya;
         }
-        return ya - ((ya - xu).squareDown() - ((TWO * (ya - ba)) / alpha)).sqrt();
+        return ya - ((ya - xu).squareUp() - ((TWO * (ya - ba)) / alpha)).sqrt();
     }
 
     function computeUpperRedemptionThreshold(
@@ -109,16 +114,18 @@ contract PrimaryAMMV1 {
     ) internal pure returns (uint256) {
         uint256 delta = ya - ba;
         uint256 xu;
-        uint256 xuMax = stableRedeemThresholdUpperBound.mulUp(ya);
-        if (alpha.mulDown(delta) <= (targetUtilizationCeiling * targetUtilizationCeiling) / TWO) {
-            xu = ya - ((TWO * delta) / alpha).sqrt();
+        if (alpha.mulDown(delta) <= targetUtilizationCeiling**2 / TWO) {
+            uint256 rh = ((TWO * delta) / alpha);
+            xu = ya.squareDown() < rh ? 0 : ya - rh.sqrt();
         } else {
             xu =
                 ya -
                 delta.divDown(targetUtilizationCeiling) -
                 targetUtilizationCeiling.divDown(2 * alpha);
         }
-        return xuMax < xu ? xuMax : xu;
+
+        uint256 xuMax = stableRedeemThresholdUpperBound.mulUp(ya);
+        return xu.min(xuMax);
     }
 
     function computeRelativeReserve(
@@ -139,9 +146,9 @@ contract PrimaryAMMV1 {
         require(ya >= xu, "ya must be greater than xu");
 
         uint256 yz = ya - xu;
-        uint256 targetUsage = ONE - params.targetReserveRatioFloor;
         if (ONE - alpha.mulDown(yz) >= params.targetReserveRatioFloor)
             return ya - (alpha * yz.squareDown()) / TWO;
+        uint256 targetUsage = ONE - params.targetReserveRatioFloor;
         return ya - targetUsage.mulDown(yz) + targetUsage**2 / (2 * params.decaySlopeLowerBound);
     }
 
@@ -162,8 +169,8 @@ contract PrimaryAMMV1 {
         derived.lowerRedemptionThreshold = computeLowerRedemptionThreshold(
             derived.reserveValueThresholdFirstRegion,
             ONE,
-            params.stableRedeemThresholdUpperBound,
-            params.decaySlopeLowerBound
+            params.decaySlopeLowerBound,
+            params.stableRedeemThresholdUpperBound
         );
 
         uint256 targetUtilizationCeiling = ONE - params.targetReserveRatioFloor;
@@ -176,8 +183,8 @@ contract PrimaryAMMV1 {
             derived.reserveHighLowThreshold,
             ONE,
             params.decaySlopeLowerBound,
-            targetUtilizationCeiling,
-            params.stableRedeemThresholdUpperBound
+            params.stableRedeemThresholdUpperBound,
+            targetUtilizationCeiling
         );
 
         derived.lastRegionHighLowThreshold = (ONE + params.targetReserveRatioFloor) / 2;
@@ -287,8 +294,6 @@ contract PrimaryAMMV1 {
         Params memory params,
         DerivedParams memory derived
     ) internal pure returns (Region) {
-        uint256 thetha = ONE - params.targetReserveRatioFloor;
-
         if (isInFirstRegion(scaledState, params, derived)) {
             // case I
             if (scaledState.redemptionLevel <= params.stableRedeemThresholdUpperBound)
@@ -309,6 +314,7 @@ contract PrimaryAMMV1 {
                 return Region.CASE_II_H;
             }
 
+            uint256 thetha = ONE - params.targetReserveRatioFloor;
             if (
                 scaledState.reserveValue -
                     uint256(params.targetReserveRatioFloor).mulDown(scaledState.totalGyroSupply) >=

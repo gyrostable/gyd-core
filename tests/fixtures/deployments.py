@@ -1,7 +1,8 @@
-import pytest
 from collections import namedtuple
-from brownie import ZERO_ADDRESS, Contract, accounts
 
+import pytest
+from brownie import accounts
+from tests.support import constants
 
 MotherboardArgs = namedtuple(
     "MotherboardArgs",
@@ -124,3 +125,11 @@ def distribute_usdt(usdt):
 def distribute_usdc(usdc):
     for i in range(1, 10):
         usdc.transfer(accounts[i], 100, {"from": accounts[0]})
+
+
+@pytest.fixture
+def pamm(TestingPAMMV1):
+    return TestingPAMMV1.deploy(
+        (constants.ALPHA_MIN_REL, constants.XU_MAX_REL, constants.THETA_FLOOR),
+        {"from": accounts[0]},
+    )

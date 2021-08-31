@@ -2,6 +2,11 @@ import pytest
 
 
 @pytest.fixture(scope="session")
+def deployer(accounts):
+    return accounts[0]
+
+
+@pytest.fixture(scope="session")
 def alice(accounts):
     return accounts[1]
 

@@ -127,4 +127,18 @@ library FixedPoint {
     function complement(uint256 x) internal pure returns (uint256) {
         return (x < ONE) ? (ONE - x) : 0;
     }
+
+    /**
+     * @dev returns the minimum between x and y
+     */
+    function min(uint256 x, uint256 y) internal pure returns (uint256) {
+        return x < y ? x : y;
+    }
+
+    /**
+     * @dev returns the maximum between x and y
+     */
+    function max(uint256 x, uint256 y) internal pure returns (uint256) {
+        return x > y ? x : y;
+    }
 }
