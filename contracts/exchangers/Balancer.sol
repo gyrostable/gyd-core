@@ -63,7 +63,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         return balancerPoolRegistry[0];
     }
 
-    function swapIn(DataTypes.TokenTuple memory underlyingTokenTuple)
+    function deposit(DataTypes.TokenTuple memory underlyingTokenTuple)
         external
         override
         returns (uint256)
@@ -102,7 +102,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         return expectedBptOut;
     }
 
-    function swapOut(DataTypes.TokenTuple memory tokenToWithdraw)
+    function withdraw(DataTypes.TokenTuple memory tokenToWithdraw)
         external
         override
         returns (uint256)

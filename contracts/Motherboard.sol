@@ -73,28 +73,37 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function mint(DataTypes.TokenTuple[] memory inputTokenTuples, uint256 minMintedAmount)
+    function mint(DataTypes.TokenTuple[] memory inputTokens, uint256 minMintedAmount)
         external
         override
         returns (uint256 mintedGYDAmount)
     {
-        DataTypes.Route[] memory routes = vaultRouter.computeInputRoutes(inputTokenTuples);
+        DataTypes.TokenToVaultMapping[] memory tokenToVaultMappings = vaultRouter
+            .computeInputRoutes(inputTokens);
 
-        DataTypes.TokenTuple[] memory vaultTokenTuples = new DataTypes.TokenTuple[](routes.length);
+        require(tokenToVaultMappings.length == inputTokens.length);
 
-        for (uint256 i = 0; i < routes.length; i++) {
-            DataTypes.Route memory route = routes[i];
-            IVault vault = IVault(route.vaultAddress);
+        DataTypes.TokenTuple[] memory vaultTokenTuples = new DataTypes.TokenTuple[](
+            tokenToVaultMappings.length
+        );
+
+        for (uint256 i = 0; i < tokenToVaultMappings.length; i++) {
+            DataTypes.TokenToVaultMapping memory tokenToVaultMapping = tokenToVaultMappings[i];
+
+            IVault vault = IVault(tokenToVaultMapping.vault);
+
             address lpTokenAddress = vault.lpToken();
 
             ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
 
-            uint256 lpTokenAmount = exchanger.swapIn(route.tokenTuple);
+            uint256 lpTokenAmount = exchanger.deposit(
+                DataTypes.TokenTuple(inputTokens[i].tokenAddress, inputTokens[i].amount)
+            );
 
             uint256 vaultTokenAmount = vault.depositFor(lpTokenAmount, address(reserve));
 
             vaultTokenTuples[i] = DataTypes.TokenTuple({
-                tokenAddress: address(vault),
+                tokenAddress: tokenToVaultMapping.vault,
                 amount: vaultTokenAmount
             });
         }

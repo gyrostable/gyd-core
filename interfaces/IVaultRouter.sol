@@ -27,5 +27,5 @@ interface IVaultRouter {
     function computeInputRoutes(DataTypes.TokenTuple[] memory inputTokenTuples)
         external
         view
-        returns (DataTypes.Route[] memory);
+        returns (DataTypes.TokenToVaultMapping[] memory);
 }
