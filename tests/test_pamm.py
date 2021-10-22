@@ -136,20 +136,28 @@ def test_compute_region(pamm):
         assert computed_region == expected_region
 
 
+COMPUTE_RESERVE_CASES = [
+    (("0.8", "0.9", "1"), "1", 0.9),  # TODO: check precision error
+    (("0.1", "0.75", "1"), "1", 0.75),
+    (("0.2", "0.75", "1"), "1", 0.75),
+    (("0.4", "0.85", "1"), "0.5", 0.85),  # TODO: check precision error
+    (("0.7", "0.8499", "1"), "0.5", 0.8499),  # TODO: check precision error
+    (("0.7", "0.8501", "1"), "0.5", 0.8501),  # TODO: check precision error
+    (("0.2", "0.65", "1"), "1", 0.65),
+    (("0.7", "0.85", "1"), "0.3", 0.85),
+    (("0.7", "0.8499", "1"), "0.3", 0.8499),
+    (("0.7", "0.8501", "1"), "0.3", 0.8501),  # TODO: check precision error
+]
+
+
 def test_compute_reserve_value(pamm):
-    cases = [
-        (("0.8", "0.9", "1"), "1", 0.9),  # TODO: check precision error
-        (("0.1", "0.75", "1"), "1", 0.75),
-        (("0.2", "0.75", "1"), "1", 0.75),
-        (("0.4", "0.85", "1"), "0.5", 0.85),  # TODO: check precision error
-        (("0.7", "0.8499", "1"), "0.5", 0.8499),  # TODO: check precision error
-        (("0.7", "0.8501", "1"), "0.5", 0.8501),  # TODO: check precision error
-        (("0.2", "0.65", "1"), "1", 0.65),
-        (("0.7", "0.85", "1"), "0.3", 0.85),
-        (("0.7", "0.8499", "1"), "0.3", 0.8499),
-        (("0.7", "0.8501", "1"), "0.3", 0.8501),  # TODO: check precision error
-    ]
-    for state, alpha_min, expected_reserve in cases:
+    for state, alpha_min, expected_reserve in COMPUTE_RESERVE_CASES:
         pamm.setDecaySlopeLowerBound(scale(alpha_min))
         computed_reserve = pamm.computeReserveValue(scale_args(state))
         assert computed_reserve / 10 ** 18 == pytest.approx(expected_reserve)
+
+
+def test_compute_reserve_value_gas(pamm):
+    for state, alpha_min, _ in COMPUTE_RESERVE_CASES:
+        pamm.setDecaySlopeLowerBound(scale(alpha_min))
+        pamm.computeReserveValueWithGas(scale_args(state))

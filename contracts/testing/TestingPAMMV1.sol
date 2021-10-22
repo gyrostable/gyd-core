@@ -28,7 +28,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         return computeNextReserveValueRegion(state, systemParams, derived);
     }
 
-    function computeReserveValue(State calldata scaledState) external view returns (uint256) {
+    function computeReserveValue(State calldata scaledState) public view returns (uint256) {
         Params memory params = systemParams;
         DerivedParams memory derived = createDerivedParams(systemParams);
         uint256 b = computeReserve(
@@ -44,6 +44,10 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             totalGyroSupply: y
         });
         return computeNextReserveValue(state, params, derived);
+    }
+
+    function computeReserveValueWithGas(State calldata scaledState) external returns (uint256) {
+        return computeReserveValue(scaledState);
     }
 
     function testComputeFixedReserve(
