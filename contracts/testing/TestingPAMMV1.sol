@@ -28,6 +28,24 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         return computeNextReserveValueRegion(state, systemParams, derived);
     }
 
+    function computeReserveValue(State calldata scaledState) external view returns (uint256) {
+        Params memory params = systemParams;
+        DerivedParams memory derived = createDerivedParams(systemParams);
+        uint256 b = computeReserve(
+            scaledState.redemptionLevel,
+            scaledState.reserveValue,
+            scaledState.totalGyroSupply,
+            systemParams
+        );
+        uint256 y = scaledState.totalGyroSupply - scaledState.redemptionLevel;
+        State memory state = State({
+            redemptionLevel: scaledState.redemptionLevel,
+            reserveValue: b,
+            totalGyroSupply: y
+        });
+        return computeNextReserveValue(state, params, derived);
+    }
+
     function testComputeFixedReserve(
         uint256 x,
         uint256 ba,

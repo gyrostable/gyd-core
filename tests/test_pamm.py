@@ -132,3 +132,19 @@ def test_compute_region(pamm):
         pamm.setDecaySlopeLowerBound(scale(alpha_min))
         computed_region = pamm.computeRegion(scale_args(state))
         assert computed_region == expected_region
+
+
+def test_compute_reserve_value(pamm):
+    cases = [
+        # (("0.8", "0.9", "1"), "1", "0.9"), TODO: check precision error
+        (("0.1", "0.75", "1"), "1", "0.75"),
+        (("0.2", "0.75", "1"), "1", "0.75"),
+        (("0.2", "0.65", "1"), "1", "0.65"),
+        (("0.7", "0.85", "1"), "0.3", "0.85"),
+        (("0.7", "0.8499", 1), "0.3", "0.8499"),
+        # (("0.7", "0.8501", 1), "0.3", "0.8501"), TODO: check precision error
+    ]
+    for state, alpha_min, expected_reserve in cases:
+        pamm.setDecaySlopeLowerBound(scale(alpha_min))
+        computed_reserve = pamm.computeReserveValue(scale_args(state))
+        assert computed_reserve == scale(expected_reserve)

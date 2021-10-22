@@ -373,18 +373,19 @@ contract PrimaryAMMV1 {
             uint256 delta = (params.decaySlopeLowerBound *
                 (vars.usedRatio.divDown(params.decaySlopeLowerBound) +
                     (scaledState.totalGyroSupply / 2)).squareDown()) / TWO;
-            return scaledState.totalGyroSupply - delta;
+            return vars.ya - delta;
         }
 
         if (region == Region.CASE_II_L) {
             uint256 p = vars.thetha.mulDown(
-                (vars.thetha.divDown(2 * params.decaySlopeLowerBound) + scaledState.totalGyroSupply)
+                vars.thetha.divDown(2 * params.decaySlopeLowerBound) + scaledState.totalGyroSupply
             );
             uint256 d = 2 *
                 (vars.thetha**2 / params.decaySlopeLowerBound).mulDown(
-                    scaledState.reserveValue - params.targetReserveRatioFloor
+                    scaledState.reserveValue -
+                        scaledState.totalGyroSupply.mulDown(params.targetReserveRatioFloor)
                 );
-            return scaledState.totalGyroSupply - p + d.sqrt();
+            return vars.ya + d.sqrt() - p;
         }
 
         if (region == Region.CASE_III_H) {
