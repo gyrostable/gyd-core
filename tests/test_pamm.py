@@ -1,10 +1,12 @@
+import pytest
+
+from tests.support.constants import XU_MAX_REL, ALPHA_MIN_REL, THETA_FLOOR
+from tests.support.utils import scale, truncate
+
 # State:
 # uint256 redemptionLevel; // x
 # uint256 totalGyroSupply; // y
 # uint256 reserveValue; // b
-
-from tests.support.constants import XU_MAX_REL, ALPHA_MIN_REL, THETA_FLOOR
-from tests.support.utils import scale, truncate
 
 
 class Region:
@@ -136,15 +138,18 @@ def test_compute_region(pamm):
 
 def test_compute_reserve_value(pamm):
     cases = [
-        # (("0.8", "0.9", "1"), "1", "0.9"), TODO: check precision error
-        (("0.1", "0.75", "1"), "1", "0.75"),
-        (("0.2", "0.75", "1"), "1", "0.75"),
-        (("0.2", "0.65", "1"), "1", "0.65"),
-        (("0.7", "0.85", "1"), "0.3", "0.85"),
-        (("0.7", "0.8499", 1), "0.3", "0.8499"),
-        # (("0.7", "0.8501", 1), "0.3", "0.8501"), TODO: check precision error
+        (("0.8", "0.9", "1"), "1", 0.9),  # TODO: check precision error
+        (("0.1", "0.75", "1"), "1", 0.75),
+        (("0.2", "0.75", "1"), "1", 0.75),
+        (("0.4", "0.85", "1"), "0.5", 0.85),  # TODO: check precision error
+        (("0.7", "0.8499", "1"), "0.5", 0.8499),  # TODO: check precision error
+        (("0.7", "0.8501", "1"), "0.5", 0.8501),  # TODO: check precision error
+        (("0.2", "0.65", "1"), "1", 0.65),
+        (("0.7", "0.85", "1"), "0.3", 0.85),
+        (("0.7", "0.8499", "1"), "0.3", 0.8499),
+        (("0.7", "0.8501", "1"), "0.3", 0.8501),  # TODO: check precision error
     ]
     for state, alpha_min, expected_reserve in cases:
         pamm.setDecaySlopeLowerBound(scale(alpha_min))
         computed_reserve = pamm.computeReserveValue(scale_args(state))
-        assert computed_reserve == scale(expected_reserve)
+        assert computed_reserve / 10 ** 18 == pytest.approx(expected_reserve)
