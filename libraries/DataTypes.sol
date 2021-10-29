@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 /// @notice Contains the data structures to express token routing
 library DataTypes {
     /// @notice Contains a token and the amount associated with it
-    struct TokenTuple {
+    struct MonetaryAmount {
         address tokenAddress;
         uint256 amount;
     }

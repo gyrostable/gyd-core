@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.1.0/contracts/token/ERC20/utils/SafeERC20.sol";
-import "OpenZeppelin/openzeppelin-contracts@4.1.0/contracts/token/ERC20/IERC20.sol";
+import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/utils/SafeERC20.sol";
+import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
 
 import "../../libraries/DataTypes.sol";
 import "../../interfaces/IBalancerPoolRegistry.sol";
@@ -51,37 +51,37 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         poolRegistry = IBalancerPoolRegistry(_balancerPoolRegistryAddress);
     }
 
-    function getChosenBalancerPool(DataTypes.TokenTuple memory underlyingTokenTuple)
+    function getChosenBalancerPool(DataTypes.MonetaryAmount memory underlyingMonetaryAmount)
         internal
         returns (bytes32 poolId)
     {
         bytes32[] memory balancerPoolRegistry = poolRegistry.getPoolIds(
-            underlyingTokenTuple.tokenAddress
+            underlyingMonetaryAmount.tokenAddress
         );
 
         /// Dummy logic to just return the first now. Change this.
         return balancerPoolRegistry[0];
     }
 
-    function deposit(DataTypes.TokenTuple memory underlyingTokenTuple)
+    function deposit(DataTypes.MonetaryAmount memory underlyingMonetaryAmount)
         external
         override
         returns (uint256)
     {
-        bool tokenTransferred = IERC20(underlyingTokenTuple.tokenAddress).transferFrom(
+        bool tokenTransferred = IERC20(underlyingMonetaryAmount.tokenAddress).transferFrom(
             msg.sender,
             address(this),
-            underlyingTokenTuple.amount
+            underlyingMonetaryAmount.amount
         );
         require(tokenTransferred, "failed to transfer tokens from user to token exchanger");
 
-        bytes32 poolId = getChosenBalancerPool(underlyingTokenTuple);
+        bytes32 poolId = getChosenBalancerPool(underlyingMonetaryAmount);
 
         IAsset[] memory assetsArray = new IAsset[](1);
-        assetsArray[0] = IAsset(underlyingTokenTuple.tokenAddress);
+        assetsArray[0] = IAsset(underlyingMonetaryAmount.tokenAddress);
 
         uint256[] memory maxAmountsIn = new uint256[](1);
-        maxAmountsIn[0] = underlyingTokenTuple.amount;
+        maxAmountsIn[0] = underlyingMonetaryAmount.amount;
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
             assets: assetsArray,
@@ -102,7 +102,7 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         return expectedBptOut;
     }
 
-    function withdraw(DataTypes.TokenTuple memory tokenToWithdraw)
+    function withdraw(DataTypes.MonetaryAmount memory tokenToWithdraw)
         external
         override
         returns (uint256)

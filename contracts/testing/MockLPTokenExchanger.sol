@@ -1,6 +1,6 @@
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.1.0/contracts/token/ERC20/IERC20.sol";
+import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
 
 import "../../libraries/DataTypes.sol";
 import "../../interfaces/IVaultRouter.sol";
@@ -15,7 +15,7 @@ contract MockLPTokenExchanger {
         // address[] memory supportedTokens = []
     }
 
-    function swapIn(DataTypes.TokenTuple memory underlyingToken, address userAddress)
+    function swapIn(DataTypes.MonetaryAmount memory underlyingToken, address userAddress)
         external
         returns (uint256 lpTokenAmount)
     {
@@ -27,7 +27,7 @@ contract MockLPTokenExchanger {
         return underlyingToken.amount / 2;
     }
 
-    function swapOut(DataTypes.TokenTuple memory lpToken, address userAddress)
+    function swapOut(DataTypes.MonetaryAmount memory lpToken, address userAddress)
         external
         returns (uint256 underlyingTokenAmount)
     {

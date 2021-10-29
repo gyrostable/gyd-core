@@ -12,17 +12,17 @@ interface ILPTokenExchanger {
     /// but we could also support swapping tokens before depositing them
     function getSupportedTokens() external view returns (address[] memory);
 
-    /// @notice Deposits `underlyingTokenTuple` to the liquidity pool
+    /// @notice Deposits `underlyingMonetaryAmount` to the liquidity pool
     /// and sends back the received LP tokens as `lpTokenAmount`
     /// @param tokenToDeposit the underlying token and amount to deposit
-    function deposit(DataTypes.TokenTuple memory tokenToDeposit)
+    function deposit(DataTypes.MonetaryAmount memory tokenToDeposit)
         external
         returns (uint256 lpTokenAmount);
 
     /// @notice Withdraws token from the liquidity pool
-    /// and sends back an underlyingTokenTuple
+    /// and sends back an underlyingMonetaryAmount
     /// @param tokenToWithdraw the underlying token and amount to withdraw
-    function withdraw(DataTypes.TokenTuple memory tokenToWithdraw)
+    function withdraw(DataTypes.MonetaryAmount memory tokenToWithdraw)
         external
         returns (uint256 lpTokenAmount);
 }

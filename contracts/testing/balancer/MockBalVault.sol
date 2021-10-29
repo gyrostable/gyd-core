@@ -14,7 +14,7 @@
 
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.1.0/contracts/token/ERC20/IERC20.sol";
+import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
 
 import "../balancer/interfaces/IVault.sol";
 import "../balancer/interfaces/IBasePool.sol";

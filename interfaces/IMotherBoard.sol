@@ -52,40 +52,43 @@ interface IMotherBoard {
     /// This mints using the exact input amount and mints at least `minMintedAmount`
     /// All the `inputTokens` should be approved for the motherboard to spend at least
     /// `inputAmounts` on behalf of the sender
-    /// @param inputTokenTuples the input tokens and associated amounts used to mint GYD
+    /// @param inputMonetaryAmounts the input tokens and associated amounts used to mint GYD
     /// @param minMintedAmount the minimum amount of GYD to be minted
     /// @return mintedGYDAmount GYD token minted amount
-    function mint(DataTypes.TokenTuple[] memory inputTokenTuples, uint256 minMintedAmount)
+    function mint(DataTypes.MonetaryAmount[] memory inputMonetaryAmounts, uint256 minMintedAmount)
         external
         returns (uint256 mintedGYDAmount);
 
     /// @notice Main redemption function to be called by a withdrawer
     /// This redeems using at most `maxRedeemedAmount` of GYD and returns the
     /// exact outputs as specified by `tokens` and `amounts`
-    /// @param outputTokenTuples the output tokens and associated amounts to return against GYD
+    /// @param outputMonetaryAmounts the output tokens and associated amounts to return against GYD
     /// @param maxRedeemedAmount the maximum amount of GYD to redeem
     /// @return redeemedGYDAmount the amount of redeemed GYD tokens
-    function redeem(DataTypes.TokenTuple[] memory outputTokenTuples, uint256 maxRedeemedAmount)
-        external
-        returns (uint256 redeemedGYDAmount);
+    function redeem(
+        DataTypes.MonetaryAmount[] memory outputMonetaryAmounts,
+        uint256 maxRedeemedAmount
+    ) external returns (uint256 redeemedGYDAmount);
 
     /// @notice Simulates a mint to know whether it would succeed and how much would be minted
     /// The parameters are the same as the `mint` function
-    /// @param inputTokenTuples the input tokens and associated amounts used to mint GYD
+    /// @param inputMonetaryAmounts the input tokens and associated amounts used to mint GYD
     /// @param minMintedAmount the minimum amount of GYD to be minted
     /// @return error a non-zero value in case an error would happen when minting GYD
     /// @return mintedGYDAmount the amount that would be minted, or 0 if it an error would occur
-    function dryMint(DataTypes.TokenTuple[] memory inputTokenTuples, uint256 minMintedAmount)
-        external
-        returns (uint256 error, uint256 mintedGYDAmount);
+    function dryMint(
+        DataTypes.MonetaryAmount[] memory inputMonetaryAmounts,
+        uint256 minMintedAmount
+    ) external returns (uint256 error, uint256 mintedGYDAmount);
 
     /// @notice Simulates a redemption execution and returns the amount of GYD
     /// redeems or an error code if the redeem would fail
-    /// @param outputTokenTuples the output tokens and associated amounts to return against GYD
+    /// @param outputMonetaryAmounts the output tokens and associated amounts to return against GYD
     /// @param maxRedeemedAmount the maximum amount of GYD to redeem
     /// @return error a non-zero value in case an error would happen when redeeming
     /// @return redeemedGYDAmount the amount of redeemed GYD tokens
-    function dryRedeem(DataTypes.TokenTuple[] memory outputTokenTuples, uint256 maxRedeemedAmount)
-        external
-        returns (uint256 error, uint256 redeemedGYDAmount);
+    function dryRedeem(
+        DataTypes.MonetaryAmount[] memory outputMonetaryAmounts,
+        uint256 maxRedeemedAmount
+    ) external returns (uint256 error, uint256 redeemedGYDAmount);
 }

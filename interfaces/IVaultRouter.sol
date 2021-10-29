@@ -22,9 +22,9 @@ interface IVaultRouter {
 
     /// @notice Computes the routing given the input tokens and amounts
     /// @dev Explain to a developer any extra details
-    /// @param inputTokenTuples the input tokens and associated amounts used to mint GYD
+    /// @param inputMonetaryAmounts the input tokens and associated amounts used to mint GYD
     /// @return a list of routes to deposit `inputTokens` and `inputAmounts`
-    function computeInputRoutes(DataTypes.TokenTuple[] memory inputTokenTuples)
+    function computeInputRoutes(DataTypes.MonetaryAmount[] memory inputMonetaryAmounts)
         external
         view
         returns (DataTypes.TokenToVaultMapping[] memory);

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.1.0/contracts/token/ERC20/utils/SafeERC20.sol";
-import "OpenZeppelin/openzeppelin-contracts@4.1.0/contracts/token/ERC20/IERC20.sol";
+import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/utils/SafeERC20.sol";
+import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IMotherBoard.sol";
 import "../interfaces/IVaultRouter.sol";
@@ -73,7 +73,7 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function mint(DataTypes.TokenTuple[] memory inputTokens, uint256 minMintedAmount)
+    function mint(DataTypes.MonetaryAmount[] memory inputTokens, uint256 minMintedAmount)
         external
         override
         returns (uint256 mintedGYDAmount)
@@ -83,7 +83,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         require(tokenToVaultMappings.length == inputTokens.length);
 
-        DataTypes.TokenTuple[] memory vaultTokenTuples = new DataTypes.TokenTuple[](
+        DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts = new DataTypes.MonetaryAmount[](
             tokenToVaultMappings.length
         );
 
@@ -97,19 +97,22 @@ contract Motherboard is IMotherBoard, Governable {
             ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
 
             uint256 lpTokenAmount = exchanger.deposit(
-                DataTypes.TokenTuple(inputTokens[i].tokenAddress, inputTokens[i].amount)
+                DataTypes.MonetaryAmount(inputTokens[i].tokenAddress, inputTokens[i].amount)
             );
 
             uint256 vaultTokenAmount = vault.depositFor(lpTokenAmount, address(reserve));
 
-            vaultTokenTuples[i] = DataTypes.TokenTuple({
+            vaultMonetaryAmounts[i] = DataTypes.MonetaryAmount({
                 tokenAddress: tokenToVaultMapping.vault,
                 amount: vaultTokenAmount
             });
         }
 
         uint256 mintFeeFraction = gyroConfig.getMintFee();
-        uint256 gyroToMint = pamm.calculateAndRecordGYDToMint(vaultTokenTuples, mintFeeFraction);
+        uint256 gyroToMint = pamm.calculateAndRecordGYDToMint(
+            vaultMonetaryAmounts,
+            mintFeeFraction
+        );
 
         uint256 feeToPay = gyroToMint.mulUp(mintFeeFraction);
 
@@ -126,27 +129,24 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function redeem(DataTypes.TokenTuple[] memory outputTokenTuples, uint256 maxRedeemedAmount)
-        external
-        override
-        returns (uint256 redeemedGYDAmount)
-    {
+    function redeem(
+        DataTypes.MonetaryAmount[] memory outputMonetaryAmounts,
+        uint256 maxRedeemedAmount
+    ) external override returns (uint256 redeemedGYDAmount) {
         return 0;
     }
 
     /// @inheritdoc IMotherBoard
-    function dryMint(DataTypes.TokenTuple[] memory inputTokenTuples, uint256 minMintedAmount)
-        external
-        override
-        returns (uint256 error, uint256 mintedGYDAmount)
-    {}
+    function dryMint(
+        DataTypes.MonetaryAmount[] memory inputMonetaryAmounts,
+        uint256 minMintedAmount
+    ) external override returns (uint256 error, uint256 mintedGYDAmount) {}
 
     /// @inheritdoc IMotherBoard
-    function dryRedeem(DataTypes.TokenTuple[] memory outputTokenTuples, uint256 maxRedeemedAmount)
-        external
-        override
-        returns (uint256 error, uint256 redeemedGYDAmount)
-    {
+    function dryRedeem(
+        DataTypes.MonetaryAmount[] memory outputMonetaryAmounts,
+        uint256 maxRedeemedAmount
+    ) external override returns (uint256 error, uint256 redeemedGYDAmount) {
         return (0, 0);
     }
 }
