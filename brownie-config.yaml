@@ -29,7 +29,9 @@ compiler:
     optimizer:
       enabled: true
       runs: 200
-    remappings: null
+    remappings:
+      # - "@balancer-labs=balancer-labs/balancer-v2-monorepo@stable-deployment"
+      # - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.3.2"
   vyper:
     version: null
 
@@ -60,4 +62,5 @@ hypothesis:
 autofetch_sources: false
 dependencies:
   - OpenZeppelin/openzeppelin-contracts@4.1.0
+  - balancer-labs/balancer-v2-monorepo@stable-deployment
 dev_deployment_artifacts: false

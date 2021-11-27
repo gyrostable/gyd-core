@@ -5,8 +5,8 @@ import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/utils/Sa
 import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IMotherBoard.sol";
-import "../interfaces/IVaultRouter.sol";
-import "../interfaces/IVault.sol";
+import "../interfaces/IGyroVaultRouter.sol";
+import "../interfaces/IGyroVault.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
 import "../interfaces/ILPTokenExchanger.sol";
 import "../interfaces/IPAMM.sol";
@@ -33,7 +33,7 @@ contract Motherboard is IMotherBoard, Governable {
     IGYDToken public override gydToken;
 
     /// @inheritdoc IMotherBoard
-    IVaultRouter public override vaultRouter;
+    IGyroVaultRouter public override vaultRouter;
 
     /// @inheritdoc IMotherBoard
     IPAMM public override pamm;
@@ -63,8 +63,12 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function setVaultRouter(address vaultRouterAddress) external override governanceOnly {
-        vaultRouter = IVaultRouter(vaultRouterAddress);
+    function setVaultRouter(address vaultRouterAddress)
+        external
+        override
+        governanceOnly
+    {
+        vaultRouter = IGyroVaultRouter(vaultRouterAddress);
     }
 
     /// @inheritdoc IMotherBoard
@@ -73,34 +77,45 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function mint(DataTypes.MonetaryAmount[] memory inputTokens, uint256 minMintedAmount)
-        external
-        override
-        returns (uint256 mintedGYDAmount)
-    {
-        DataTypes.TokenToVaultMapping[] memory tokenToVaultMappings = vaultRouter
-            .computeInputRoutes(inputTokens);
+    function mint(
+        DataTypes.MonetaryAmount[] memory inputTokens,
+        uint256 minMintedAmount
+    ) external override returns (uint256 mintedGYDAmount) {
+        DataTypes.TokenToVaultMapping[]
+            memory tokenToVaultMappings = vaultRouter.computeInputRoutes(
+                inputTokens
+            );
 
         require(tokenToVaultMappings.length == inputTokens.length);
 
-        DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts = new DataTypes.MonetaryAmount[](
-            tokenToVaultMappings.length
-        );
+        DataTypes.MonetaryAmount[]
+            memory vaultMonetaryAmounts = new DataTypes.MonetaryAmount[](
+                tokenToVaultMappings.length
+            );
 
         for (uint256 i = 0; i < tokenToVaultMappings.length; i++) {
-            DataTypes.TokenToVaultMapping memory tokenToVaultMapping = tokenToVaultMappings[i];
+            DataTypes.TokenToVaultMapping
+                memory tokenToVaultMapping = tokenToVaultMappings[i];
 
-            IVault vault = IVault(tokenToVaultMapping.vault);
+            IGyroVault vault = IGyroVault(tokenToVaultMapping.vault);
 
             address lpTokenAddress = vault.lpToken();
 
-            ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
-
-            uint256 lpTokenAmount = exchanger.deposit(
-                DataTypes.MonetaryAmount(inputTokens[i].tokenAddress, inputTokens[i].amount)
+            ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(
+                lpTokenAddress
             );
 
-            uint256 vaultTokenAmount = vault.depositFor(lpTokenAmount, address(reserve));
+            uint256 lpTokenAmount = exchanger.deposit(
+                DataTypes.MonetaryAmount(
+                    inputTokens[i].tokenAddress,
+                    inputTokens[i].amount
+                )
+            );
+
+            uint256 vaultTokenAmount = vault.depositFor(
+                lpTokenAmount,
+                address(reserve)
+            );
 
             vaultMonetaryAmounts[i] = DataTypes.MonetaryAmount({
                 tokenAddress: tokenToVaultMapping.vault,
@@ -118,7 +133,10 @@ contract Motherboard is IMotherBoard, Governable {
 
         uint256 remainingGyro = gyroToMint - feeToPay;
 
-        require(remainingGyro >= minMintedAmount, Errors.NOT_ENOUGH_GYRO_MINTED);
+        require(
+            remainingGyro >= minMintedAmount,
+            Errors.NOT_ENOUGH_GYRO_MINTED
+        );
         gydToken.mint(gyroToMint);
         gydToken.safeApprove(address(feeBank), feeToPay);
         feeBank.depositFees(address(gydToken), feeToPay);

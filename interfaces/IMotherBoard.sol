@@ -6,7 +6,7 @@ import "./ILPTokenExchangerRegistry.sol";
 import "./IGYDToken.sol";
 import "./IReserve.sol";
 import "./IPAMM.sol";
-import "./IVaultRouter.sol";
+import "./IGyroVaultRouter.sol";
 import "./IFeeBank.sol";
 
 /// @title IMotherBoard is the central contract connecting the different pieces
@@ -18,7 +18,7 @@ interface IMotherBoard {
 
     /// @notice Returns the address of the vault router used to route the input tokens
     /// @return the address of the router
-    function vaultRouter() external view returns (IVaultRouter);
+    function vaultRouter() external view returns (IGyroVaultRouter);
 
     /// @notice Sets the address for the vault router
     /// @param vaultRouterAddress the address to be used as the Vault Router
@@ -38,7 +38,10 @@ interface IMotherBoard {
 
     /// @notice Returns the address of the exchanger registry
     /// @return the exchanger registry address
-    function exchangerRegistry() external view returns (ILPTokenExchangerRegistry);
+    function exchangerRegistry()
+        external
+        view
+        returns (ILPTokenExchangerRegistry);
 
     /// @notice Set the address of the primary AMM (P-AMM) to be used when minting and redeeming GYD tokens
     /// @param pamAddress the address of the P-AMM to use
@@ -55,9 +58,10 @@ interface IMotherBoard {
     /// @param inputMonetaryAmounts the input tokens and associated amounts used to mint GYD
     /// @param minMintedAmount the minimum amount of GYD to be minted
     /// @return mintedGYDAmount GYD token minted amount
-    function mint(DataTypes.MonetaryAmount[] memory inputMonetaryAmounts, uint256 minMintedAmount)
-        external
-        returns (uint256 mintedGYDAmount);
+    function mint(
+        DataTypes.MonetaryAmount[] memory inputMonetaryAmounts,
+        uint256 minMintedAmount
+    ) external returns (uint256 mintedGYDAmount);
 
     /// @notice Main redemption function to be called by a withdrawer
     /// This redeems using at most `maxRedeemedAmount` of GYD and returns the
