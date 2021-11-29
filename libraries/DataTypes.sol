@@ -16,4 +16,31 @@ library DataTypes {
         address inputToken;
         address vault;
     }
+
+    struct TokenProperties {
+        address oracleAddress;
+        string tokenSymbol;
+        uint16 tokenIndex;
+    }
+
+    struct PoolProperties {
+        bytes32 poolId;
+        address poolAddress;
+        uint256 initialPoolWeight;
+        uint256 initialPoolPrice;
+    }
+
+    struct PoolsHealth {
+        bool[] poolHealth;
+    }
+
+    struct Reserve {
+        address[] vaultAddresses;
+        uint256[] idealVaultWeights;
+        uint256[] currentVaultWeights;
+        uint256[] inputVaultWeights;
+        uint256[] hypotheticalVaultWeights;
+        bool[] vaultsWithinEpsilon;
+        bool allVaultsWithinEpsilon;
+    }
 }

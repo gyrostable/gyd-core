@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/utils/SafeERC20.sol";
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../../libraries/DataTypes.sol";
 import "../../interfaces/IBalancerPoolRegistry.sol";
@@ -13,8 +13,8 @@ import "../../libraries/FixedPoint.sol";
 
 import "../auth/Governable.sol";
 
-import "../../interfaces/balancer/interfaces/IVault.sol";
-import "../../interfaces/balancer/interfaces/IAsset.sol";
+import "../../interfaces/balancer/IVault.sol";
+import "../../interfaces/balancer/IAsset.sol";
 
 interface BalancerHelperFactory {
     function queryJoin(

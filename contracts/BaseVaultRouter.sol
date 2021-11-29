@@ -2,13 +2,13 @@
 pragma solidity ^0.8.4;
 
 import "../libraries/DataTypes.sol";
-import "../interfaces/IVaultRouter.sol";
-import "../interfaces/IVault.sol";
+import "../interfaces/IGyroVaultRouter.sol";
+import "../interfaces/IGyroVault.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
 import "../interfaces/ILPTokenExchanger.sol";
 
 /// @title Base implementation of IVaultRouter containing logic to manage vaults
-abstract contract BaseVaultRouter is IVaultRouter {
+abstract contract BaseVaultRouter is IGyroVaultRouter {
     ILPTokenExchangerRegistry internal exchangerRegistry;
 
     address[] internal vaults;
@@ -20,16 +20,18 @@ abstract contract BaseVaultRouter is IVaultRouter {
         exchangerRegistry = ILPTokenExchangerRegistry(exchangerRegistryAddress);
     }
 
-    /// @inheritdoc IVaultRouter
+    /// @inheritdoc IGyroVaultRouter
     function addVault(address vaultAddress) external override {
         vaults.push(vaultAddress);
-        address[] memory supportedTokens = getTokensSupportedByVault(vaultAddress);
+        address[] memory supportedTokens = getTokensSupportedByVault(
+            vaultAddress
+        );
         for (uint256 i = 0; i < supportedTokens.length; i++) {
             vaultsIncludingToken[supportedTokens[i]].push(vaultAddress);
         }
     }
 
-    /// @inheritdoc IVaultRouter
+    /// @inheritdoc IGyroVaultRouter
     function removeVault(address vaultAddress) external override {
         for (uint256 i = 0; i < vaults.length; i++) {
             if (vaults[i] == vaultAddress) {
@@ -39,14 +41,21 @@ abstract contract BaseVaultRouter is IVaultRouter {
             }
         }
 
-        address[] memory supportedTokens = getTokensSupportedByVault(vaultAddress);
+        address[] memory supportedTokens = getTokensSupportedByVault(
+            vaultAddress
+        );
         for (uint256 i = 0; i < supportedTokens.length; i++) {
             address token = supportedTokens[i];
-            address[] storage currentVaultsSupportingToken = vaultsIncludingToken[token];
+            address[]
+                storage currentVaultsSupportingToken = vaultsIncludingToken[
+                    token
+                ];
             uint256 vaultsCount = currentVaultsSupportingToken.length;
             for (uint256 j = 0; j < vaultsCount; j++) {
                 if (currentVaultsSupportingToken[j] == vaultAddress) {
-                    currentVaultsSupportingToken[j] = currentVaultsSupportingToken[vaultsCount - 1];
+                    currentVaultsSupportingToken[
+                        j
+                    ] = currentVaultsSupportingToken[vaultsCount - 1];
                     currentVaultsSupportingToken.pop();
                     break;
                 }
@@ -59,13 +68,20 @@ abstract contract BaseVaultRouter is IVaultRouter {
         view
         returns (address[] memory)
     {
-        address lpToken = IVault(vaultAddress).lpToken();
-        ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpToken);
+        address lpToken = IGyroVault(vaultAddress).lpToken();
+        ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(
+            lpToken
+        );
         return exchanger.getSupportedTokens();
     }
 
-    /// @inheritdoc IVaultRouter
-    function supportedVaults() external view override returns (address[] memory) {
+    /// @inheritdoc IGyroVaultRouter
+    function supportedVaults()
+        external
+        view
+        override
+        returns (address[] memory)
+    {
         return vaults;
     }
 }

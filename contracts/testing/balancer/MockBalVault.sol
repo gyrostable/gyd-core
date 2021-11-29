@@ -16,10 +16,10 @@ pragma solidity ^0.8.4;
 
 import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
 
-import "../balancer/interfaces/IVault.sol";
-import "../balancer/interfaces/IBasePool.sol";
-import "../balancer/interfaces/IPoolSwapStructs.sol";
-import "../balancer/interfaces/IMinimalSwapInfoPool.sol";
+import "../../../interfaces/balancer/IVault.sol";
+import "../../../interfaces/balancer/IBasePool.sol";
+import "../../../interfaces/balancer/IPoolSwapStructs.sol";
+import "../../../interfaces/balancer/IMinimalSwapInfoPool.sol";
 
 contract MockVault is IPoolSwapStructs {
     struct Pool {
@@ -68,7 +68,11 @@ contract MockVault is IPoolSwapStructs {
         }
     }
 
-    function registerPool(IVault.PoolSpecialization) external view returns (bytes32) {
+    function registerPool(IVault.PoolSpecialization)
+        external
+        view
+        returns (bytes32)
+    {
         // solhint-disable-previous-line no-empty-blocks
     }
 
@@ -106,9 +110,10 @@ contract MockVault is IPoolSwapStructs {
         uint256 protocolFeePercentage,
         bytes memory userData
     ) external {
-        (uint256[] memory amountsIn, uint256[] memory dueProtocolFeeAmounts) = IBasePool(
-            poolAddress
-        ).onJoinPool(
+        (
+            uint256[] memory amountsIn,
+            uint256[] memory dueProtocolFeeAmounts
+        ) = IBasePool(poolAddress).onJoinPool(
                 poolId,
                 msg.sender,
                 recipient,
@@ -129,7 +134,13 @@ contract MockVault is IPoolSwapStructs {
             deltas[i] = int256(amountsIn[i]);
         }
 
-        emit PoolBalanceChanged(poolId, msg.sender, tokens, deltas, dueProtocolFeeAmounts);
+        emit PoolBalanceChanged(
+            poolId,
+            msg.sender,
+            tokens,
+            deltas,
+            dueProtocolFeeAmounts
+        );
     }
 
     function callExitPool(
@@ -141,9 +152,10 @@ contract MockVault is IPoolSwapStructs {
         uint256 protocolFeePercentage,
         bytes memory userData
     ) external {
-        (uint256[] memory amountsOut, uint256[] memory dueProtocolFeeAmounts) = IBasePool(
-            poolAddress
-        ).onExitPool(
+        (
+            uint256[] memory amountsOut,
+            uint256[] memory dueProtocolFeeAmounts
+        ) = IBasePool(poolAddress).onExitPool(
                 poolId,
                 msg.sender,
                 recipient,
@@ -164,6 +176,12 @@ contract MockVault is IPoolSwapStructs {
             deltas[i] = int256((type(uint256).max - amountsOut[i] + 1));
         }
 
-        emit PoolBalanceChanged(poolId, msg.sender, tokens, deltas, dueProtocolFeeAmounts);
+        emit PoolBalanceChanged(
+            poolId,
+            msg.sender,
+            tokens,
+            deltas,
+            dueProtocolFeeAmounts
+        );
     }
 }

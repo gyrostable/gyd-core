@@ -30,8 +30,12 @@ compiler:
       enabled: true
       runs: 200
     remappings:
-      # - "@balancer-labs=balancer-labs/balancer-v2-monorepo@stable-deployment"
-      # - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.3.2"
+      - "@balancer-labs/v2-solidity-utils=balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/solidity-utils"
+      - "@balancer-labs/v2-pool-utils=balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/pool-utils"
+      - "@balancer-labs/v2-asset-manager-utils=balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/asset-manager-utils"
+      - "@balancer-labs/v2-pool-weighted=balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/pool-weighted"
+      - "@balancer-labs/v2-vault=balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/vault"
+      - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.3.2"
   vyper:
     version: null
 
@@ -62,5 +66,5 @@ hypothesis:
 autofetch_sources: false
 dependencies:
   - OpenZeppelin/openzeppelin-contracts@4.1.0
-  - balancer-labs/balancer-v2-monorepo@stable-deployment
+  - balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable
 dev_deployment_artifacts: false

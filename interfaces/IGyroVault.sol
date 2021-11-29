@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @notice A vault is one of the component of the reserve and has a one-to-one
 /// mapping to an underlying pool (e.g. Balancer pool, Curve pool, Uniswap pool...)

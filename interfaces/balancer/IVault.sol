@@ -12,7 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./IWETH.sol";
 import "./IAsset.sol";
@@ -84,7 +84,10 @@ interface IVault is ISignaturesValidator, ITemporarilyPausable {
     /**
      * @dev Returns true if `user` has approved `relayer` to act as a relayer for them.
      */
-    function hasApprovedRelayer(address user, address relayer) external view returns (bool);
+    function hasApprovedRelayer(address user, address relayer)
+        external
+        view
+        returns (bool);
 
     /**
      * @dev Allows `relayer` to act as a relayer for `sender` if `approved` is true, and disallows it otherwise.
@@ -100,7 +103,11 @@ interface IVault is ISignaturesValidator, ITemporarilyPausable {
     /**
      * @dev Emitted every time a relayer is approved or disapproved by `setRelayerApproval`.
      */
-    event RelayerApprovalChanged(address indexed relayer, address indexed sender, bool approved);
+    event RelayerApprovalChanged(
+        address indexed relayer,
+        address indexed sender,
+        bool approved
+    );
 
     // Internal Balance
     //
@@ -193,7 +200,11 @@ interface IVault is ISignaturesValidator, ITemporarilyPausable {
      * Because Internal Balance works exclusively with ERC20 tokens, ETH deposits and withdrawals will use the WETH
      * address.
      */
-    event InternalBalanceChanged(address indexed user, IERC20 indexed token, int256 delta);
+    event InternalBalanceChanged(
+        address indexed user,
+        IERC20 indexed token,
+        int256 delta
+    );
 
     /**
      * @dev Emitted when a user's Vault ERC20 allowance is used by the Vault to transfer tokens to an external account.
@@ -241,7 +252,9 @@ interface IVault is ISignaturesValidator, ITemporarilyPausable {
      *
      * Emits a `PoolRegistered` event.
      */
-    function registerPool(PoolSpecialization specialization) external returns (bytes32);
+    function registerPool(PoolSpecialization specialization)
+        external
+        returns (bytes32);
 
     /**
      * @dev Emitted when a Pool is registered by calling `registerPool`.
@@ -255,7 +268,10 @@ interface IVault is ISignaturesValidator, ITemporarilyPausable {
     /**
      * @dev Returns a Pool's contract address and specialization setting.
      */
-    function getPool(bytes32 poolId) external view returns (address, PoolSpecialization);
+    function getPool(bytes32 poolId)
+        external
+        view
+        returns (address, PoolSpecialization);
 
     /**
      * @dev Registers `tokens` for the `poolId` Pool. Must be called by the Pool's contract.
@@ -288,7 +304,11 @@ interface IVault is ISignaturesValidator, ITemporarilyPausable {
     /**
      * @dev Emitted when a Pool registers tokens by calling `registerTokens`.
      */
-    event TokensRegistered(bytes32 indexed poolId, IERC20[] tokens, address[] assetManagers);
+    event TokensRegistered(
+        bytes32 indexed poolId,
+        IERC20[] tokens,
+        address[] assetManagers
+    );
 
     /**
      * @dev Deregisters `tokens` for the `poolId` Pool. Must be called by the Pool's contract.
