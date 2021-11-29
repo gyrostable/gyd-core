@@ -16,4 +16,18 @@ library DataTypes {
         address inputToken;
         address vault;
     }
+
+    /// @notice Asset used to mint
+    struct MintAsset {
+        address inputToken;
+        uint256 inputAmount;
+        address destinationVault;
+    }
+
+    /// @notice Asset to redeem
+    struct RedeemAsset {
+        address outputToken;
+        uint256 vaultTokenAmount;
+        address originVault;
+    }
 }

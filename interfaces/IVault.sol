@@ -27,7 +27,12 @@ interface IVault is IERC20 {
     /// @notice Dry-run version of deposit
     function dryDeposit(uint256 lpTokenAmount)
         external
-        returns (uint256 errorCode, uint256 vaultTokenAmount);
+        returns (uint256 vaultTokenAmount, string memory error);
+
+    /// @notice Dry-run version of depositFor
+    function dryDepositFor(uint256 lpTokenAmount, address beneficiary)
+        external
+        returns (uint256 vaultTokenAmount, string memory error);
 
     /// @notice Withdraws `vaultTokenAmount` of LP token supported
     /// and burns the vault tokens
@@ -38,7 +43,7 @@ interface IVault is IERC20 {
     /// @notice Dry-run version of `withdraw`
     function dryWithdraw(uint256 vaultTokenAmount)
         external
-        returns (uint256 errorCode, uint256 lpTokenAmount);
+        returns (uint256 lpTokenAmount, string memory error);
 
     /// @return The address of the current strategy used by the vault
     function strategy() external view returns (address);
