@@ -15,6 +15,7 @@ import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeBank.sol";
 
 import "../libraries/DataTypes.sol";
+import "../libraries/ConfigKeys.sol";
 import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 
@@ -28,6 +29,16 @@ contract Motherboard is IMotherBoard, Governable {
     using SafeERC20 for IGYDToken;
 
     // NOTE: dryMint and dryRedeem should be calling the safety check functions to ensure that the Reserve will remain stable.
+
+    struct Addresses {
+        address gydToken;
+        address vaultRouter;
+        address exchangerRegistry;
+        address pamm;
+        address gyroConfig;
+        address feeBank;
+        address reserve;
+    }
 
     /// @inheritdoc IMotherBoard
     IGYDToken public override gydToken;
@@ -50,16 +61,14 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     IFeeBank public override feeBank;
 
-    constructor(
-        address gydTokenAddress,
-        address exchangerRegistryAddress,
-        address reserveAddress,
-        address gyroConfigAddress
-    ) {
-        gydToken = IGYDToken(gydTokenAddress);
-        exchangerRegistry = ILPTokenExchangerRegistry(exchangerRegistryAddress);
-        reserve = IReserve(reserveAddress);
-        gyroConfig = IGyroConfig(gyroConfigAddress);
+    constructor(Addresses memory addresses) {
+        gydToken = IGYDToken(addresses.gydToken);
+        exchangerRegistry = ILPTokenExchangerRegistry(addresses.exchangerRegistry);
+        pamm = IPAMM(addresses.pamm);
+        reserve = IReserve(addresses.reserve);
+        gyroConfig = IGyroConfig(addresses.gyroConfig);
+        vaultRouter = IVaultRouter(addresses.vaultRouter);
+        feeBank = IFeeBank(addresses.feeBank);
     }
 
     /// @inheritdoc IMotherBoard
@@ -83,7 +92,7 @@ contract Motherboard is IMotherBoard, Governable {
         );
 
         for (uint256 i = 0; i < assets.length; i++) {
-            DataTypes.MintAsset memory asset = assets[i];
+            DataTypes.MintAsset calldata asset = assets[i];
 
             IVault vault = IVault(asset.destinationVault);
             address lpTokenAddress = vault.lpToken();
@@ -101,7 +110,7 @@ contract Motherboard is IMotherBoard, Governable {
                     DataTypes.MonetaryAmount(asset.inputToken, asset.inputAmount)
                 );
             }
-            vaultTokenAmount = vault.depositFor(lpTokenAmount, address(reserve));
+            vaultTokenAmount = vault.depositFor(address(reserve), lpTokenAmount);
 
             vaultAmounts[i] = DataTypes.MonetaryAmount({
                 tokenAddress: asset.destinationVault,
@@ -109,7 +118,7 @@ contract Motherboard is IMotherBoard, Governable {
             });
         }
 
-        uint256 mintFeeFraction = gyroConfig.getMintFee();
+        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
         uint256 gyroToMint = pamm.calculateAndRecordGYDToMint(vaultAmounts, mintFeeFraction);
 
         uint256 feeToPay = gyroToMint.mulUp(mintFeeFraction);
@@ -180,7 +189,7 @@ contract Motherboard is IMotherBoard, Governable {
                 }
             }
 
-            (vaultTokenAmount, err) = vault.dryDepositFor(lpTokenAmount, address(reserve));
+            (vaultTokenAmount, err) = vault.dryDepositFor(address(reserve), lpTokenAmount);
             if (bytes(err).length > 0) {
                 return (0, err);
             }
@@ -191,7 +200,7 @@ contract Motherboard is IMotherBoard, Governable {
             });
         }
 
-        uint256 mintFeeFraction = gyroConfig.getMintFee();
+        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
         mintedGYDAmount = pamm.calculateGYDToMint(vaultAmounts, mintFeeFraction);
 
         uint256 feeToPay = mintedGYDAmount.mulUp(mintFeeFraction);

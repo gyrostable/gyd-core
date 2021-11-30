@@ -14,4 +14,6 @@ library Errors {
     string public constant INVALID_EXPONENT = "23";
     string public constant OUT_OF_BOUNDS = "24";
     string public constant ZERO_DIVISION = "25";
+
+    string public constant NOT_AUTHORIZED = "30";
 }

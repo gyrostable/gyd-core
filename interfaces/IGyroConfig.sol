@@ -3,6 +3,23 @@ pragma solidity ^0.8.4;
 
 /// @notice IGyroConfig stores the global configuration of the Gyroscope protocol
 interface IGyroConfig {
-    /// @notice Returns the current fees for minting as a percentage (with 1e18 scale)
-    function getMintFee() external view returns (uint256 mintFee);
+    /// @notice Event emitted every time a configuration is changed
+    event ConfigChanged(bytes32 key, uint256 previousValue, uint256 newValue);
+    event ConfigChanged(bytes32 key, address previousValue, address newValue);
+
+    /// @notice Returns a set of known configuration keys
+    function listKeys() external view returns (bytes32[] memory);
+
+    /// @notice Returns a uint256 value from the config
+    function getUint(bytes32 key) external view returns (uint256);
+
+    /// @notice Returns an address value from the config
+    function getAddress(bytes32 key) external view returns (address);
+
+    /// @notice Set a uint256 config
+    /// NOTE: We avoid overloading to avoid complications with some clients
+    function setUint(bytes32 key, uint256 newValue) external;
+
+    /// @notice Set an address config
+    function setAddress(bytes32 key, address newValue) external;
 }
