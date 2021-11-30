@@ -16,14 +16,6 @@ interface IMotherBoard {
     /// @return the address of the GYD token
     function gydToken() external view returns (IGYDToken);
 
-    /// @notice Returns the address of the vault router used to route the input tokens
-    /// @return the address of the router
-    function vaultRouter() external view returns (IVaultRouter);
-
-    /// @notice Sets the address for the vault router
-    /// @param vaultRouterAddress the address to be used as the Vault Router
-    function setVaultRouter(address vaultRouterAddress) external;
-
     /// @notice Returns the address for the PAMM
     /// @return the PAMM address
     function pamm() external view returns (IPAMM);

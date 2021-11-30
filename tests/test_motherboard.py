@@ -1,2 +1,2 @@
-def test_mint_vault_lp():
+def test_mint_vault_lp(motherboard):
     pass

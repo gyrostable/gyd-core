@@ -1,5 +1,19 @@
 import pytest
-from brownie import Contract, accounts
+from collections import namedtuple
+from brownie import ZERO_ADDRESS, Contract, accounts
+
+
+MotherboardArgs = namedtuple(
+    "MotherboardArgs",
+    [
+        "gydToken",
+        "exchangerRegistry",
+        "pamm",
+        "gyroConfig",
+        "feeBank",
+        "reserve",
+    ],
+)
 
 
 @pytest.fixture(autouse=True)
@@ -13,8 +27,18 @@ def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry):
 
 
 @pytest.fixture(scope="module")
-def mock_vault_router(admin, MockVaultRouter):
-    return admin.deploy(MockVaultRouter)
+def gyd_token(admin, ERC20):
+    return admin.deploy(ERC20, "GYD Token", "GYD")
+
+
+@pytest.fixture(scope="module")
+def fee_bank(admin, FeeBank):
+    return admin.deploy(FeeBank)
+
+
+@pytest.fixture(scope="module")
+def reserve(admin, Reserve):
+    return admin.deploy(Reserve)
 
 
 @pytest.fixture(scope="module")
@@ -55,6 +79,33 @@ def usdt(Token):
 @pytest.fixture(scope="module")
 def lp_token(Token):
     yield Token.deploy("LP Token", "LPT", 18, 1e20, {"from": accounts[0]})
+
+
+@pytest.fixture(scope="module")
+def mock_pamm(admin, MockPAMM):
+    return admin.deploy(MockPAMM)
+
+
+@pytest.fixture(scope="module")
+def motherboard(
+    admin,
+    Motherboard,
+    gyd_token,
+    fee_bank,
+    gyro_config,
+    lp_token_exchanger_registry,
+    mock_pamm,
+    reserve,
+):
+    args = MotherboardArgs(
+        gydToken=gyd_token,
+        exchangerRegistry=lp_token_exchanger_registry,
+        pamm=mock_pamm,
+        gyroConfig=gyro_config,
+        feeBank=fee_bank,
+        reserve=reserve,
+    )
+    return admin.deploy(Motherboard, args)
 
 
 @pytest.fixture(scope="module")

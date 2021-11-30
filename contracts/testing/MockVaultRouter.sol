@@ -9,7 +9,9 @@ import "../../interfaces/ILPTokenExchanger.sol";
 import "../BaseVaultRouter.sol";
 
 /// @title Mock implementation of IVaultRouter
-abstract contract MockVaultRouter is BaseVaultRouter {
+contract MockVaultRouter is BaseVaultRouter {
+    constructor(address exchangerRegistryAddress) BaseVaultRouter(exchangerRegistryAddress) {}
+
     /// @inheritdoc IVaultRouter
     function computeInputRoutes(DataTypes.MonetaryAmount[] memory inputMonetaryAmounts)
         external

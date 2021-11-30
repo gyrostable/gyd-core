@@ -5,7 +5,6 @@ import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/utils/Sa
 import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IMotherBoard.sol";
-import "../interfaces/IVaultRouter.sol";
 import "../interfaces/IVault.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
 import "../interfaces/ILPTokenExchanger.sol";
@@ -32,7 +31,6 @@ contract Motherboard is IMotherBoard, Governable {
 
     struct Addresses {
         address gydToken;
-        address vaultRouter;
         address exchangerRegistry;
         address pamm;
         address gyroConfig;
@@ -42,9 +40,6 @@ contract Motherboard is IMotherBoard, Governable {
 
     /// @inheritdoc IMotherBoard
     IGYDToken public override gydToken;
-
-    /// @inheritdoc IMotherBoard
-    IVaultRouter public override vaultRouter;
 
     /// @inheritdoc IMotherBoard
     IPAMM public override pamm;
@@ -67,13 +62,8 @@ contract Motherboard is IMotherBoard, Governable {
         pamm = IPAMM(addresses.pamm);
         reserve = IReserve(addresses.reserve);
         gyroConfig = IGyroConfig(addresses.gyroConfig);
-        vaultRouter = IVaultRouter(addresses.vaultRouter);
         feeBank = IFeeBank(addresses.feeBank);
-    }
-
-    /// @inheritdoc IMotherBoard
-    function setVaultRouter(address vaultRouterAddress) external override governanceOnly {
-        vaultRouter = IVaultRouter(vaultRouterAddress);
+        gydToken.safeApprove(addresses.feeBank, type(uint256).max);
     }
 
     /// @inheritdoc IMotherBoard
@@ -126,8 +116,8 @@ contract Motherboard is IMotherBoard, Governable {
         uint256 remainingGyro = gyroToMint - feeToPay;
 
         require(remainingGyro >= minReceivedAmount, Errors.NOT_ENOUGH_GYRO_MINTED);
+
         gydToken.mint(gyroToMint);
-        gydToken.safeApprove(address(feeBank), feeToPay);
         feeBank.depositFees(address(gydToken), feeToPay);
 
         gydToken.safeTransfer(msg.sender, remainingGyro);

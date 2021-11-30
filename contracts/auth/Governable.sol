@@ -2,11 +2,10 @@
 pragma solidity ^0.8.4;
 
 import "../../libraries/Errors.sol";
+import "../../interfaces/IGovernable.sol";
 
-contract Governable {
-    event GovernorChanged(address oldGovernor, address newGovernor);
-
-    address public governor;
+contract Governable is IGovernable {
+    address public override governor;
 
     constructor() {
         governor = msg.sender;
@@ -20,7 +19,7 @@ contract Governable {
 
     /// @notice Changes the governor
     /// can only be called by the current governor
-    function changeGovernor(address newGovernor) external {
+    function changeGovernor(address newGovernor) external override {
         address currentCovernor = governor;
         require(msg.sender == currentCovernor, Errors.NOT_AUTHORIZED);
 

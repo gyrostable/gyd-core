@@ -12,7 +12,7 @@ interface IPAMM {
     function calculateGYDToMint(
         DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts,
         uint256 mintFee
-    ) external returns (uint256 gydAmount);
+    ) external view returns (uint256 gydAmount);
 
     /// @notice This function has the same input and outputs than `calculateGYDToMint`
     /// but actually executes the minting, recording the required information
@@ -29,5 +29,5 @@ interface IPAMM {
     function calculateGYDToBurn(
         DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts,
         uint256 redeemFee
-    ) external returns (uint256 gydAmount);
+    ) external view returns (uint256 gydAmount);
 }
