@@ -23,6 +23,10 @@ contract ReserveSafetyChecks is Ownable {
         }
     }
 
+    function allPoolsInVaultHealthy() internal returns (bool) {
+        //Loop through all pools in one vault and return a bool if all healthy
+    }
+
     function checkVaultsWithinEpsilon(DataTypes.Reserve memory reserve)
         internal
         view
@@ -54,17 +58,18 @@ contract ReserveSafetyChecks is Ownable {
         return (_allVaultsWithinEpsilon, _vaultsWithinEpsilon);
     }
 
-    function safeToMintOutsideEpsilon(
-        DataTypes.PoolsHealth memory poolsHealth,
-        DataTypes.Reserve memory reserve
-    ) internal pure returns (bool _anyCheckFail) {
+    function safeToMintOutsideEpsilon(DataTypes.Reserve memory reserve)
+        internal
+        pure
+        returns (bool _anyCheckFail)
+    {
         //Check that amount above epsilon is decreasing
         //Check that unhealthy pools have input weight below ideal weight
         //If both true, then mint
         //note: should always be able to mint at the ideal weights!
         _anyCheckFail = false;
         for (uint256 i; i < reserve.vaultAddresses.length; i++) {
-            if (!reserve.vaultsWithinEpsilon[i]) {
+            if (!reserve.vaultHealth[i]) {
                 if (
                     reserve.inputVaultWeights[i] > reserve.idealVaultWeights[i]
                 ) {
@@ -96,13 +101,14 @@ contract ReserveSafetyChecks is Ownable {
         }
     }
 
-    function checkUnhealthyMovesToIdeal(
-        DataTypes.PoolsHealth memory poolsHealth,
-        DataTypes.Reserve memory reserve
-    ) internal pure returns (bool _launch) {
+    function checkUnhealthyMovesToIdeal(DataTypes.Reserve memory reserve)
+        internal
+        pure
+        returns (bool _launch)
+    {
         bool _unhealthyMovesTowardIdeal = true;
         for (uint256 i; i < reserve.vaultAddresses.length; i++) {
-            if (!reserve.vaultsWithinEpsilon[i]) {
+            if (!reserve.vaultHealth[i]) {
                 if (
                     reserve.inputVaultWeights[i] > reserve.idealVaultWeights[i]
                 ) {

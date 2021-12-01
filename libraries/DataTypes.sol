@@ -30,10 +30,6 @@ library DataTypes {
         uint256 initialPoolPrice;
     }
 
-    struct PoolsHealth {
-        bool[] poolHealth;
-    }
-
     struct Reserve {
         address[] vaultAddresses;
         uint256[] idealVaultWeights;
@@ -42,5 +38,6 @@ library DataTypes {
         uint256[] hypotheticalVaultWeights;
         bool[] vaultsWithinEpsilon;
         bool allVaultsWithinEpsilon;
+        bool[] vaultHealth;
     }
 }
