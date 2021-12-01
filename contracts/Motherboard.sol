@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/utils/SafeERC20.sol";
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IMotherBoard.sol";
-import "../interfaces/IVault.sol";
+import "../interfaces/IGyroVault.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
 import "../interfaces/ILPTokenExchanger.sol";
 import "../interfaces/IPAMM.sol";
@@ -84,7 +84,7 @@ contract Motherboard is IMotherBoard, Governable {
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.MintAsset calldata asset = assets[i];
 
-            IVault vault = IVault(asset.destinationVault);
+            IGyroVault vault = IGyroVault(asset.destinationVault);
             address lpTokenAddress = vault.lpToken();
 
             IERC20(asset.inputToken).safeTransferFrom(msg.sender, address(this), asset.inputAmount);
@@ -115,7 +115,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         uint256 remainingGyro = gyroToMint - feeToPay;
 
-        require(remainingGyro >= minReceivedAmount, Errors.NOT_ENOUGH_GYRO_MINTED);
+        require(remainingGyro >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
 
         gydToken.mint(gyroToMint);
         feeBank.depositFees(address(gydToken), feeToPay);
@@ -138,7 +138,7 @@ contract Motherboard is IMotherBoard, Governable {
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.RedeemAsset memory asset = assets[i];
 
-            IVault vault = IVault(asset.originVault);
+            IGyroVault vault = IGyroVault(asset.originVault);
             address lpTokenAddress = vault.lpToken();
 
             uint256 outputTokenAmount;
@@ -161,7 +161,7 @@ contract Motherboard is IMotherBoard, Governable {
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.MintAsset memory asset = assets[i];
 
-            IVault vault = IVault(asset.destinationVault);
+            IGyroVault vault = IGyroVault(asset.destinationVault);
             address lpTokenAddress = vault.lpToken();
 
             uint256 lpTokenAmount;
@@ -198,7 +198,7 @@ contract Motherboard is IMotherBoard, Governable {
         uint256 remainingGyro = mintedGYDAmount - feeToPay;
 
         if (remainingGyro < minReceivedAmount) {
-            err = Errors.NOT_ENOUGH_GYRO_MINTED;
+            err = Errors.TOO_MUCH_SLIPPAGE;
         }
     }
 

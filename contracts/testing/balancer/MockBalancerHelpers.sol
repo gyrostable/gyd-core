@@ -15,8 +15,8 @@
 pragma solidity ^0.8.4;
 
 import "../../../libraries/FixedPoint.sol";
-import "./interfaces/IAsset.sol";
-import "./interfaces/IVault.sol";
+import "../../../interfaces/balancer/IAsset.sol";
+import "../../../interfaces/balancer/IVault.sol";
 
 /**
  * @dev This contract simply builds on top of the Balancer V2 architecture to provide useful helpers to users.

@@ -5,7 +5,7 @@ import "../libraries/DataTypes.sol";
 
 /// @title IVaultRouter is used to map input tokens to the differnt vaults
 /// of the Gyro reserve
-interface IVaultRouter {
+interface IGyroVaultRouter {
     /// @notice Adds a vault address to the router so it is able to route funds to it
     /// @dev This function will only be called through governance
     /// @param vaultAddress the vault address to be added
@@ -24,8 +24,7 @@ interface IVaultRouter {
     /// @dev Explain to a developer any extra details
     /// @param inputMonetaryAmounts the input tokens and associated amounts used to mint GYD
     /// @return a list of routes to deposit `inputTokens` and `inputAmounts`
-    function computeInputRoutes(DataTypes.MonetaryAmount[] memory inputMonetaryAmounts)
-        external
-        view
-        returns (DataTypes.TokenToVaultMapping[] memory);
+    function computeInputRoutes(
+        DataTypes.MonetaryAmount[] memory inputMonetaryAmounts
+    ) external view returns (DataTypes.TokenToVaultMapping[] memory);
 }
