@@ -54,10 +54,10 @@ interface IMotherBoard {
     /// @notice Main redemption function to be called by a withdrawer
     /// This redeems using at most `maxRedeemedAmount` of GYD and returns the
     /// exact outputs as specified by `tokens` and `amounts`
+    /// @param redeemAmount the maximum amount of GYD to redeem
     /// @param assets the output tokens and associated amounts to return against GYD
-    /// @param maxRedeemedAmount the maximum amount of GYD to redeem
     /// @return redeemedGYDAmount the amount of redeemed GYD tokens
-    function redeem(DataTypes.RedeemAsset[] calldata assets, uint256 maxRedeemedAmount)
+    function redeem(uint256 redeemAmount, DataTypes.RedeemAsset[] calldata assets)
         external
         returns (uint256 redeemedGYDAmount);
 

@@ -27,7 +27,8 @@ library DataTypes {
     /// @notice Asset to redeem
     struct RedeemAsset {
         address outputToken;
-        uint256 vaultTokenAmount;
+        uint256 minOutputAmount;
+        uint256 valueRatio;
         address originVault;
     }
 }

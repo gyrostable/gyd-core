@@ -126,7 +126,7 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function redeem(DataTypes.RedeemAsset[] calldata assets, uint256 maxRedeemedAmount)
+    function redeem(uint256 redeemAmount, DataTypes.RedeemAsset[] calldata assets)
         external
         override
         returns (uint256 redeemedGYDAmount)
@@ -142,7 +142,7 @@ contract Motherboard is IMotherBoard, Governable {
             address lpTokenAddress = vault.lpToken();
 
             uint256 outputTokenAmount;
-            uint256 lpTokenAmount = vault.withdraw(asset.vaultTokenAmount);
+            // uint256 lpTokenAmount = vault.withdraw(asset.vaultTokenAmount);
         }
 
         return 0;
