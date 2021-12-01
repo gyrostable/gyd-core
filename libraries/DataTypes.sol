@@ -32,6 +32,15 @@ library DataTypes {
         address originVault;
     }
 
+    /// @notice Vault with metadata
+    struct VaultInfo {
+        address vault;
+        uint256 price;
+        uint256 reserveBalance;
+        uint256 idealWeight;
+        uint256 currentWeight;
+    }
+
     struct TokenProperties {
         address oracleAddress;
         string tokenSymbol;

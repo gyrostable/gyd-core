@@ -6,25 +6,41 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "../libraries/DataTypes.sol";
+import "../libraries/FixedPoint.sol";
+import "../interfaces/IVaultManager.sol";
 import "../interfaces/balancer/IVault.sol";
 
 contract ReserveSafetyChecks is Ownable {
+    using FixedPoint for uint256;
+
     uint256 private portfolioWeightEpsilon;
 
-    function absValueSub(uint256 _number1, uint256 _number2)
-        internal
-        pure
-        returns (uint256)
-    {
-        if (_number1 >= _number2) {
-            return _number1 - _number2;
-        } else {
-            return _number2 - _number1;
-        }
-    }
+    IVaultManager vaultManager;
 
     function allPoolsInVaultHealthy() internal returns (bool) {
         //Loop through all pools in one vault and return a bool if all healthy
+    }
+
+    // function computeCurrentVaultWeights() external {}
+
+    function checkVaultsWithinEpsilon(DataTypes.VaultInfo[] memory vaults)
+        external
+        view
+        returns (bool, bool[] memory)
+    {
+        bool allVaultsWithinEpsilon = true;
+        bool[] memory vaultsWithinEpsilon = new bool[](vaults.length);
+
+        for (uint256 i = 0; i < vaults.length; i++) {
+            DataTypes.VaultInfo memory vault = vaults[i];
+            vaultsWithinEpsilon[i] = true;
+            if (vault.idealWeight.absSub(vault.currentWeight) > portfolioWeightEpsilon) {
+                allVaultsWithinEpsilon = false;
+                vaultsWithinEpsilon[i] = false;
+            }
+        }
+
+        return (allVaultsWithinEpsilon, vaultsWithinEpsilon);
     }
 
     function checkVaultsWithinEpsilon(DataTypes.Reserve memory reserve)
@@ -34,9 +50,7 @@ contract ReserveSafetyChecks is Ownable {
     {
         bool _allVaultsWithinEpsilon = true;
 
-        bool[] memory _vaultsWithinEpsilon = new bool[](
-            reserve.vaultAddresses.length
-        );
+        bool[] memory _vaultsWithinEpsilon = new bool[](reserve.vaultAddresses.length);
 
         for (uint256 i = 0; i < reserve.vaultAddresses.length; i++) {
             _vaultsWithinEpsilon[i] = true;
@@ -70,9 +84,7 @@ contract ReserveSafetyChecks is Ownable {
         _anyCheckFail = false;
         for (uint256 i; i < reserve.vaultAddresses.length; i++) {
             if (!reserve.vaultHealth[i]) {
-                if (
-                    reserve.inputVaultWeights[i] > reserve.idealVaultWeights[i]
-                ) {
+                if (reserve.inputVaultWeights[i] > reserve.idealVaultWeights[i]) {
                     _anyCheckFail = true;
                     break;
                 }
@@ -80,12 +92,10 @@ contract ReserveSafetyChecks is Ownable {
 
             if (!reserve.vaultsWithinEpsilon[i]) {
                 // check if _hypotheticalWeights[i] is closer to _idealWeights[i] than _currentWeights[i]
-                uint256 _distanceHypotheticalToIdeal = absValueSub(
-                    reserve.hypotheticalVaultWeights[i],
+                uint256 _distanceHypotheticalToIdeal = reserve.hypotheticalVaultWeights[i].absSub(
                     reserve.idealVaultWeights[i]
                 );
-                uint256 _distanceCurrentToIdeal = absValueSub(
-                    reserve.currentVaultWeights[i],
+                uint256 _distanceCurrentToIdeal = reserve.currentVaultWeights[i].absSub(
                     reserve.idealVaultWeights[i]
                 );
 
@@ -109,9 +119,7 @@ contract ReserveSafetyChecks is Ownable {
         bool _unhealthyMovesTowardIdeal = true;
         for (uint256 i; i < reserve.vaultAddresses.length; i++) {
             if (!reserve.vaultHealth[i]) {
-                if (
-                    reserve.inputVaultWeights[i] > reserve.idealVaultWeights[i]
-                ) {
+                if (reserve.inputVaultWeights[i] > reserve.idealVaultWeights[i]) {
                     _unhealthyMovesTowardIdeal = false;
                     break;
                 }

@@ -26,6 +26,10 @@ library FixedPoint {
     // Minimum base for the power function when the exponent is 'free' (larger than ONE).
     uint256 internal constant MIN_POW_BASE_FREE_EXPONENT = 0.7e18;
 
+    function absSub(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a >= b ? a - b : b - a;
+    }
+
     function mulDown(uint256 a, uint256 b) internal pure returns (uint256) {
         uint256 product = a * b;
 
