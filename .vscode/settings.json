@@ -7,5 +7,14 @@
   "solidity.formatter": "prettier",
   "[solidity]": {
     "editor.tabSize": 4
-  }
+  },
+  "solidity.defaultCompiler": "localNodeModule",
+  "solidity.remappings": [
+    "@balancer-labs/v2-solidity-utils=packages/balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/solidity-utils",
+    "@balancer-labs/v2-pool-utils=packages/balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/pool-utils",
+    "@balancer-labs/v2-asset-manager-utils=packages/balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/asset-manager-utils",
+    "@balancer-labs/v2-pool-weighted=packages/balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/pool-weighted",
+    "@balancer-labs/v2-vault=packages/balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/vault",
+    "@openzeppelin=packages/OpenZeppelin/openzeppelin-contracts@4.3.2"
+  ]
 }
