@@ -39,6 +39,9 @@ library DataTypes {
         uint256 reserveBalance;
         uint256 idealWeight;
         uint256 currentWeight;
+        uint256 requestedWeight;
+        bool operatingNormally;
+        bool withinEpsilon;
     }
 
     struct TokenProperties {
@@ -52,16 +55,5 @@ library DataTypes {
         address poolAddress;
         uint256 initialPoolWeight;
         uint256 initialPoolPrice;
-    }
-
-    struct Reserve {
-        address[] vaultAddresses;
-        uint256[] idealVaultWeights;
-        uint256[] currentVaultWeights;
-        uint256[] inputVaultWeights;
-        uint256[] hypotheticalVaultWeights;
-        bool[] vaultsWithinEpsilon;
-        bool allVaultsWithinEpsilon;
-        bool[] vaultHealth;
     }
 }

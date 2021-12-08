@@ -57,11 +57,8 @@ contract BalancerSafetyChecks is Ownable {
 
         IVault balVault = IVault(balancerVaultAddress);
 
-        (
-            IERC20[] memory tokens,
-            uint256[] memory balances,
-            uint256 lastChangeBlock
-        ) = balVault.getPoolTokens(_poolId);
+        (IERC20[] memory tokens, uint256[] memory balances, ) = balVault
+            .getPoolTokens(_poolId);
 
         //Need to make sure that correspondence between all underlying prices and tokens is maintained
 

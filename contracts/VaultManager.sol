@@ -63,7 +63,10 @@ contract VaultManager is IVaultManager, Governable {
                 idealWeight: idealWeight,
                 reserveBalance: reserveBalance,
                 price: price,
-                currentWeight: 0
+                currentWeight: 0,
+                requestedWeight: 0,
+                operatingNormally: false,
+                withinEpsilon: false
             });
         }
 
@@ -71,7 +74,9 @@ contract VaultManager is IVaultManager, Governable {
             uint256 reserveUSDValue = 0;
             uint256[] memory usdValues = new uint256[](length);
             for (uint256 i = 0; i < length; i++) {
-                uint256 usdValue = result[i].price.mulDown(result[i].reserveBalance);
+                uint256 usdValue = result[i].price.mulDown(
+                    result[i].reserveBalance
+                );
                 usdValues[i] = usdValue;
                 reserveUSDValue += usdValue;
             }
@@ -84,24 +89,42 @@ contract VaultManager is IVaultManager, Governable {
     }
 
     /// @inheritdoc IVaultManager
-    function getVaultPriceOracle() external view override returns (IVaultPriceOracle) {
+    function getVaultPriceOracle()
+        external
+        view
+        override
+        returns (IVaultPriceOracle)
+    {
         return vaultPriceOracle;
     }
 
     /// @inheritdoc IVaultManager
-    function setVaultPriceOracle(address priceOracle) external override governanceOnly {
+    function setVaultPriceOracle(address priceOracle)
+        external
+        override
+        governanceOnly
+    {
         address currentOracle = address(vaultPriceOracle);
         vaultPriceOracle = IVaultPriceOracle(priceOracle);
         emit NewVaultPriceOracle(currentOracle, priceOracle);
     }
 
     /// @inheritdoc IVaultManager
-    function getVaultWeightManager() external view override returns (IVaultWeightManager) {
+    function getVaultWeightManager()
+        external
+        view
+        override
+        returns (IVaultWeightManager)
+    {
         return vaultWeightManager;
     }
 
     /// @inheritdoc IVaultManager
-    function setVaultWeightManager(address vaultManager) external override governanceOnly {
+    function setVaultWeightManager(address vaultManager)
+        external
+        override
+        governanceOnly
+    {
         address currentManager = address(vaultWeightManager);
         vaultWeightManager = IVaultWeightManager(vaultManager);
         emit NewVaultWeightManager(currentManager, vaultManager);

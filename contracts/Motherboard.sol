@@ -58,7 +58,9 @@ contract Motherboard is IMotherBoard, Governable {
 
     constructor(Addresses memory addresses) {
         gydToken = IGYDToken(addresses.gydToken);
-        exchangerRegistry = ILPTokenExchangerRegistry(addresses.exchangerRegistry);
+        exchangerRegistry = ILPTokenExchangerRegistry(
+            addresses.exchangerRegistry
+        );
         pamm = IPAMM(addresses.pamm);
         reserve = IReserve(addresses.reserve);
         gyroConfig = IGyroConfig(addresses.gyroConfig);
@@ -72,14 +74,12 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function mint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
-        external
-        override
-        returns (uint256 mintedGYDAmount)
-    {
-        DataTypes.MonetaryAmount[] memory vaultAmounts = new DataTypes.MonetaryAmount[](
-            assets.length
-        );
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount
+    ) external override returns (uint256 mintedGYDAmount) {
+        DataTypes.MonetaryAmount[]
+            memory vaultAmounts = new DataTypes.MonetaryAmount[](assets.length);
 
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.MintAsset calldata asset = assets[i];
@@ -87,7 +87,11 @@ contract Motherboard is IMotherBoard, Governable {
             IGyroVault vault = IGyroVault(asset.destinationVault);
             address lpTokenAddress = vault.lpToken();
 
-            IERC20(asset.inputToken).safeTransferFrom(msg.sender, address(this), asset.inputAmount);
+            IERC20(asset.inputToken).safeTransferFrom(
+                msg.sender,
+                address(this),
+                asset.inputAmount
+            );
 
             uint256 lpTokenAmount;
             uint256 vaultTokenAmount;
@@ -95,12 +99,19 @@ contract Motherboard is IMotherBoard, Governable {
             if (asset.inputToken == lpTokenAddress) {
                 lpTokenAmount = asset.inputAmount;
             } else {
-                ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
+                ILPTokenExchanger exchanger = exchangerRegistry
+                    .getTokenExchanger(lpTokenAddress);
                 lpTokenAmount = exchanger.deposit(
-                    DataTypes.MonetaryAmount(asset.inputToken, asset.inputAmount)
+                    DataTypes.MonetaryAmount(
+                        asset.inputToken,
+                        asset.inputAmount
+                    )
                 );
             }
-            vaultTokenAmount = vault.depositFor(address(reserve), lpTokenAmount);
+            vaultTokenAmount = vault.depositFor(
+                address(reserve),
+                lpTokenAmount
+            );
 
             vaultAmounts[i] = DataTypes.MonetaryAmount({
                 tokenAddress: asset.destinationVault,
@@ -109,7 +120,10 @@ contract Motherboard is IMotherBoard, Governable {
         }
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        uint256 gyroToMint = pamm.calculateAndRecordGYDToMint(vaultAmounts, mintFeeFraction);
+        uint256 gyroToMint = pamm.calculateAndRecordGYDToMint(
+            vaultAmounts,
+            mintFeeFraction
+        );
 
         uint256 feeToPay = gyroToMint.mulUp(mintFeeFraction);
 
@@ -126,14 +140,12 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function redeem(uint256 redeemAmount, DataTypes.RedeemAsset[] calldata assets)
-        external
-        override
-        returns (uint256 redeemedGYDAmount)
-    {
-        DataTypes.MonetaryAmount[] memory vaultAmounts = new DataTypes.MonetaryAmount[](
-            assets.length
-        );
+    function redeem(
+        uint256 redeemAmount,
+        DataTypes.RedeemAsset[] calldata assets
+    ) external override returns (uint256 redeemedGYDAmount) {
+        DataTypes.MonetaryAmount[]
+            memory vaultAmounts = new DataTypes.MonetaryAmount[](assets.length);
 
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.RedeemAsset memory asset = assets[i];
@@ -149,14 +161,12 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
-        external
-        override
-        returns (uint256 mintedGYDAmount, string memory err)
-    {
-        DataTypes.MonetaryAmount[] memory vaultAmounts = new DataTypes.MonetaryAmount[](
-            assets.length
-        );
+    function dryMint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount
+    ) external override returns (uint256 mintedGYDAmount, string memory err) {
+        DataTypes.MonetaryAmount[]
+            memory vaultAmounts = new DataTypes.MonetaryAmount[](assets.length);
 
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.MintAsset memory asset = assets[i];
@@ -170,16 +180,23 @@ contract Motherboard is IMotherBoard, Governable {
             if (asset.inputToken == lpTokenAddress) {
                 lpTokenAmount = asset.inputAmount;
             } else {
-                ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
+                ILPTokenExchanger exchanger = exchangerRegistry
+                    .getTokenExchanger(lpTokenAddress);
                 (lpTokenAmount, err) = exchanger.dryDeposit(
-                    DataTypes.MonetaryAmount(asset.inputToken, asset.inputAmount)
+                    DataTypes.MonetaryAmount(
+                        asset.inputToken,
+                        asset.inputAmount
+                    )
                 );
                 if (bytes(err).length > 0) {
                     return (0, err);
                 }
             }
 
-            (vaultTokenAmount, err) = vault.dryDepositFor(address(reserve), lpTokenAmount);
+            (vaultTokenAmount, err) = vault.dryDepositFor(
+                address(reserve),
+                lpTokenAmount
+            );
             if (bytes(err).length > 0) {
                 return (0, err);
             }
@@ -191,7 +208,10 @@ contract Motherboard is IMotherBoard, Governable {
         }
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        mintedGYDAmount = pamm.calculateGYDToMint(vaultAmounts, mintFeeFraction);
+        mintedGYDAmount = pamm.calculateGYDToMint(
+            vaultAmounts,
+            mintFeeFraction
+        );
 
         uint256 feeToPay = mintedGYDAmount.mulUp(mintFeeFraction);
 
