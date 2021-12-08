@@ -16,7 +16,7 @@ contract BalancerSafetyChecks is Ownable {
 
     address private balancerVaultAddress;
 
-    mapping(address => bool) _isStablecoin;
+    mapping(address => bool) isStablecoin;
     mapping(address => DataTypes.TokenProperties) _tokenAddressToProperties;
     mapping(address => DataTypes.PoolProperties) _poolIdtoProperties;
 
@@ -48,50 +48,54 @@ contract BalancerSafetyChecks is Ownable {
         return _stablecoinHealthy;
     }
 
-    function poolHealth(uint256[] memory _allUnderlyingPrices, bytes32 _poolId)
-        internal
-        view
-        returns (bool)
-    {
-        bool _poolHealthy = true;
+    function poolOperatingNormally(
+        uint256[] memory allUnderlyingPrices,
+        bytes32 poolId
+    ) internal view returns (bool) {
+        bool operatingNormally = true;
 
         IVault balVault = IVault(balancerVaultAddress);
 
         (IERC20[] memory tokens, uint256[] memory balances, ) = balVault
-            .getPoolTokens(_poolId);
+            .getPoolTokens(poolId);
 
         //Need to make sure that correspondence between all underlying prices and tokens is maintained
 
         // Go through the underlying tokens within the pool
         for (uint256 i = 0; i < tokens.length; i++) {
             address tokenAddress = address(tokens[i]);
-            if (_isStablecoin[tokenAddress]) {
-                uint256 _stablecoinPrice = _allUnderlyingPrices[
+            if (isStablecoin[tokenAddress]) {
+                uint256 stablecoinPrice = allUnderlyingPrices[
                     _tokenAddressToProperties[tokenAddress].tokenIndex
                 ];
 
-                if (!checkStablecoinHealth(_stablecoinPrice, tokenAddress)) {
-                    _poolHealthy = false;
+                if (!checkStablecoinHealth(stablecoinPrice, tokenAddress)) {
+                    operatingNormally = false;
                     break;
                 }
             }
         }
 
-        return _poolHealthy;
+        return operatingNormally;
     }
 
-    function checkAllPoolsHealthy(
-        bytes32[] memory _poolIds,
-        uint256[] memory _allUnderlyingPrices
-    ) internal view returns (bool, bool[] memory) {
-        bool[] memory _inputPoolHealth = new bool[](_poolIds.length);
-        bool _allPoolsHealthy = true;
+    function checkAllPoolsOperatingNormally(
+        bytes32[] memory poolIds,
+        uint256[] memory allUnderlyingPrices
+    ) external view returns (bool, bool[] memory) {
+        bool[] memory PoolsOperatingNormally = new bool[](poolIds.length);
+        bool allPoolsOperatingNormally = true;
 
-        for (uint256 i = 0; i < _poolIds.length; i++) {
-            _inputPoolHealth[i] = poolHealth(_allUnderlyingPrices, _poolIds[i]);
-            _allPoolsHealthy = _allPoolsHealthy && _inputPoolHealth[i];
+        for (uint256 i = 0; i < poolIds.length; i++) {
+            PoolsOperatingNormally[i] = poolOperatingNormally(
+                allUnderlyingPrices,
+                poolIds[i]
+            );
+            allPoolsOperatingNormally =
+                allPoolsOperatingNormally &&
+                PoolsOperatingNormally[i];
         }
 
-        return (_allPoolsHealthy, _inputPoolHealth);
+        return (allPoolsOperatingNormally, PoolsOperatingNormally);
     }
 }
