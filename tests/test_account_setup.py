@@ -1,59 +1,31 @@
 import brownie
 import pytest
 
-
-def test_transfer_adjusts_sender_balance_dai(accounts, dai):
-    balance = dai.balanceOf(accounts[0])
-    dai.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
-
-    assert dai.balanceOf(accounts[0]) == balance - 10 ** 18
+# NOTE: needed to avoid instantiating the fitures from within fn_isolation
+# because features are dynamically loaded within the parameterized tests
+pytestmark = pytest.mark.usefixtures("usdc", "usdt", "dai")
 
 
-def test_transfer_adjusts_receiver_balance_dai(accounts, dai):
-    balance = dai.balanceOf(accounts[1])
-    dai.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
+@pytest.mark.parametrize("token_name", ["dai", "usdc", "usdt"])
+def test_transfer_adjusts_sender_balance(accounts, token_name, request):
+    token = request.getfixturevalue(token_name)
+    balance = token.balanceOf(accounts[0])
+    token.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
 
-    assert dai.balanceOf(accounts[1]) == balance + 10 ** 18
+    assert token.balanceOf(accounts[0]) == balance - 10 ** 18
 
 
-def test_transfer_fails_from_insufficient_balance_dai(accounts, dai):
+@pytest.mark.parametrize("token_name", ["dai", "usdc", "usdt"])
+def test_transfer_adjusts_receiver_balance(accounts, token_name, request):
+    token = request.getfixturevalue(token_name)
+    balance = token.balanceOf(accounts[1])
+    token.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
+
+    assert token.balanceOf(accounts[1]) == balance + 10 ** 18
+
+
+@pytest.mark.parametrize("token_name", ["dai", "usdc", "usdt"])
+def test_transfer_fails_from_insufficient_balance(accounts, token_name, request):
+    token = request.getfixturevalue(token_name)
     with brownie.reverts("ERC20: transfer amount exceeds balance"):
-        dai.transfer(accounts[2], 10 ** 18, {"from": accounts[1]})
-
-
-def test_transfer_adjusts_sender_balance_usdt(accounts, usdt):
-    balance = usdt.balanceOf(accounts[0])
-    usdt.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
-
-    assert usdt.balanceOf(accounts[0]) == balance - 10 ** 18
-
-
-def test_transfer_adjusts_receiver_balance_usdt(accounts, usdt):
-    balance = usdt.balanceOf(accounts[1])
-    usdt.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
-
-    assert usdt.balanceOf(accounts[1]) == balance + 10 ** 18
-
-
-def test_transfer_fails_from_insufficient_balance_usdt(accounts, usdt):
-    with brownie.reverts("ERC20: transfer amount exceeds balance"):
-        usdt.transfer(accounts[2], 10 ** 18, {"from": accounts[1]})
-
-
-def test_transfer_adjusts_sender_balance_usdc(accounts, usdc):
-    balance = usdc.balanceOf(accounts[0])
-    usdc.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
-
-    assert usdc.balanceOf(accounts[0]) == balance - 10 ** 18
-
-
-def test_transfer_adjusts_receiver_balance_usdc(accounts, usdc):
-    balance = usdc.balanceOf(accounts[1])
-    usdc.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
-
-    assert usdc.balanceOf(accounts[1]) == balance + 10 ** 18
-
-
-def test_transfer_fails_from_insufficient_balance_usdc(accounts, usdc):
-    with brownie.reverts("ERC20: transfer amount exceeds balance"):
-        usdc.transfer(accounts[2], 10 ** 18, {"from": accounts[1]})
+        token.transfer(accounts[2], 10 ** 18, {"from": accounts[1]})
