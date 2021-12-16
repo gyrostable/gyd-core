@@ -19,29 +19,41 @@ contract ReserveSafetyManager is Ownable, Governable {
 
     IBalancerSafetyChecks balancerSafetyChecker;
 
-    constructor(
-        uint256 initialMaxAllowedVaultDeviation,
-        address balancerSafetyChecksAddress
-    ) {
+    constructor(uint256 initialMaxAllowedVaultDeviation, address balancerSafetyChecksAddress) {
         maxAllowedVaultDeviation = initialMaxAllowedVaultDeviation;
-        balancerSafetyChecker = IBalancerSafetyChecks(
-            balancerSafetyChecksAddress
-        );
+        balancerSafetyChecker = IBalancerSafetyChecks(balancerSafetyChecksAddress);
     }
 
     function getVaultMaxDeviation() external view returns (uint256) {
         return maxAllowedVaultDeviation;
     }
 
-    function setVaultMaxDeviation(uint256 newMaxAllowedVaultDeviation)
-        external
-        governanceOnly
-    {
+    function setVaultMaxDeviation(uint256 newMaxAllowedVaultDeviation) external governanceOnly {
         maxAllowedVaultDeviation = newMaxAllowedVaultDeviation;
     }
 
     function allPoolsInVaultHealthy() internal returns (bool) {
         //Loop through all pools in one vault and return a bool if all healthy
+    }
+
+    function isVaultSafeToMint(DataTypes.VaultInfo memory vault) internal view returns (bool) {
+        bool weightWithinEpsilon = vault.idealWeight.absSub(vault.requestedWeight) <=
+            maxAllowedVaultDeviation;
+        bool weightImproving = vault.idealWeight.absSub(vault.requestedWeight) <
+            vault.idealWeight.absSub(vault.currentWeight);
+        return weightWithinEpsilon || weightImproving;
+    }
+
+    function areAllVaultsSafeToMint(DataTypes.VaultInfo[] memory vaults)
+        internal
+        view
+        returns (bool result, bool[] memory vaultsSafety)
+    {
+        vaultsSafety = new bool[](vaults.length);
+        for (uint256 i = 0; i < vaults.length; i++) {
+            vaultsSafety[i] = isVaultSafeToMint(vaults[i]);
+            result = result && vaultsSafety[i];
+        }
     }
 
     function checkVaultsWithinEpsilon(DataTypes.VaultInfo[] memory vaults)
@@ -55,10 +67,7 @@ contract ReserveSafetyManager is Ownable, Governable {
         for (uint256 i = 0; i < vaults.length; i++) {
             DataTypes.VaultInfo memory vault = vaults[i];
             vaultsWithinEpsilon[i] = true;
-            if (
-                vault.idealWeight.absSub(vault.currentWeight) >
-                maxAllowedVaultDeviation
-            ) {
+            if (vault.idealWeight.absSub(vault.currentWeight) > maxAllowedVaultDeviation) {
                 allVaultsWithinEpsilon = false;
                 vaultsWithinEpsilon[i] = false;
             }
@@ -88,9 +97,9 @@ contract ReserveSafetyManager is Ownable, Governable {
 
             if (!vaults[i].withinEpsilon) {
                 // check if the requested weight is closer to the ideal weight than the current weight
-                uint256 distanceRequestedToIdeal = vaults[i]
-                    .requestedWeight
-                    .absSub(vaults[i].idealWeight);
+                uint256 distanceRequestedToIdeal = vaults[i].requestedWeight.absSub(
+                    vaults[i].idealWeight
+                );
                 uint256 distanceCurrentToIdeal = vaults[i].currentWeight.absSub(
                     vaults[i].idealWeight
                 );
@@ -107,9 +116,11 @@ contract ReserveSafetyManager is Ownable, Governable {
         }
     }
 
-    function anyUnhealthyVaultWouldMoveTowardsIdeal(
-        DataTypes.VaultInfo[] memory vaults
-    ) internal pure returns (bool) {
+    function anyUnhealthyVaultWouldMoveTowardsIdeal(DataTypes.VaultInfo[] memory vaults)
+        internal
+        pure
+        returns (bool)
+    {
         bool allUnhealthyVaultsWouldMoveTowardsIdeal = true;
         for (uint256 i; i < vaults.length; i++) {
             if (!vaults[i].operatingNormally) {
@@ -136,15 +147,11 @@ contract ReserveSafetyManager is Ownable, Governable {
         (
             bool allBalancerPoolsOperatingNormally,
             bool[] memory balancerPoolsOperatingNormally
-        ) = balancerSafetyChecker.checkAllPoolsOperatingNormally(
-                poolIds,
-                allUnderlyingPrices
-            );
+        ) = balancerSafetyChecker.checkAllPoolsOperatingNormally(poolIds, allUnderlyingPrices);
 
-        (
-            bool allVaultsWithinEpsilon,
-            bool[] memory vaultsWithinEpsilon
-        ) = checkVaultsWithinEpsilon(vaults);
+        (bool allVaultsWithinEpsilon, bool[] memory vaultsWithinEpsilon) = checkVaultsWithinEpsilon(
+            vaults
+        );
 
         // if check 1 succeeds and all pools healthy, then proceed with minting
         if (allBalancerPoolsOperatingNormally) {
@@ -165,15 +172,15 @@ contract ReserveSafetyManager is Ownable, Governable {
         return mintingSafe;
     }
 
-    function safeToRedeem(
-        address[] memory _BPTokensOut,
-        DataTypes.VaultInfo[] memory vaults
-    ) internal view returns (bool) {
+    function safeToRedeem(address[] memory _BPTokensOut, DataTypes.VaultInfo[] memory vaults)
+        internal
+        view
+        returns (bool)
+    {
         bool redeemingSafe = false;
-        (
-            bool allVaultsWithinEpsilon,
-            bool[] memory vaultsWithinEpsilon
-        ) = checkVaultsWithinEpsilon(vaults);
+        (bool allVaultsWithinEpsilon, bool[] memory vaultsWithinEpsilon) = checkVaultsWithinEpsilon(
+            vaults
+        );
 
         if (allVaultsWithinEpsilon) {
             redeemingSafe = true;
@@ -185,9 +192,9 @@ contract ReserveSafetyManager is Ownable, Governable {
         for (uint256 i; i < vaults.length; i++) {
             if (!vaults[i].withinEpsilon) {
                 // check if _hypotheticalWeights[i] is closer to _idealWeights[i] than _currentWeights[i]
-                uint256 distanceRequestedToIdeal = vaults[i]
-                    .requestedWeight
-                    .absSub(vaults[i].idealWeight);
+                uint256 distanceRequestedToIdeal = vaults[i].requestedWeight.absSub(
+                    vaults[i].idealWeight
+                );
                 uint256 distanceCurrentToIdeal = vaults[i].currentWeight.absSub(
                     vaults[i].idealWeight
                 );

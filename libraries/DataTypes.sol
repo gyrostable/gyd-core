@@ -48,6 +48,7 @@ library DataTypes {
         address oracleAddress;
         string tokenSymbol;
         uint16 tokenIndex;
+        bool isStablecoin;
     }
 
     struct PoolProperties {

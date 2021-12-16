@@ -7,95 +7,74 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "../interfaces/balancer/IVault.sol";
 import "../libraries/DataTypes.sol";
+import "../libraries/FixedPoint.sol";
 
 /**
     @title Contract containing the safety checks performed on Balancer pools
 //  */
 contract BalancerSafetyChecks is Ownable {
     using SafeERC20 for ERC20;
+    using FixedPoint for uint256;
+
+    /// @notice a stablecoin should be equal 1 USD
+    uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
+
+    /// @dev this should be scaled by 10^18, i.e. 1e16 == 1%
+    uint256 public stablecoinMaxDeviation = 1e16;
 
     address private balancerVaultAddress;
 
-    mapping(address => bool) isStablecoin;
-    mapping(address => DataTypes.TokenProperties) _tokenAddressToProperties;
-    mapping(address => DataTypes.PoolProperties) _poolIdtoProperties;
+    mapping(address => DataTypes.TokenProperties) _tokenProperties;
 
     constructor(address _balancerVaultAddress) {
         balancerVaultAddress = _balancerVaultAddress;
     }
 
-    function checkStablecoinHealth(
-        uint256 stablecoinPrice,
-        address stablecoinAddress
-    ) internal view returns (bool) {
-        // TODO: revisit
-        //Price
-        bool _stablecoinHealthy = true;
-
-        uint256 decimals = ERC20(stablecoinAddress).decimals();
-
-        uint256 maxDeviation = 5 * 10**(decimals - 2);
-        uint256 idealPrice = 10**decimals;
-
-        if (stablecoinPrice >= idealPrice + maxDeviation) {
-            _stablecoinHealthy = false;
-        } else if (stablecoinPrice <= idealPrice - maxDeviation) {
-            _stablecoinHealthy = false;
-        }
-
-        //Volume (to do)
-
-        return _stablecoinHealthy;
+    /// @dev stablecoinPrice must be scaled to 10^18
+    function isStablecoinHealthy(uint256 stablecoinPrice) internal view returns (bool) {
+        return stablecoinPrice.absSub(STABLECOIN_IDEAL_PRICE) <= stablecoinMaxDeviation;
     }
 
-    function poolOperatingNormally(
-        uint256[] memory allUnderlyingPrices,
-        bytes32 poolId
-    ) internal view returns (bool) {
-        bool operatingNormally = true;
-
+    function isPoolOperatingNormally(uint256[] memory allUnderlyingPrices, bytes32 poolId)
+        internal
+        view
+        returns (bool)
+    {
         IVault balVault = IVault(balancerVaultAddress);
 
-        (IERC20[] memory tokens, uint256[] memory balances, ) = balVault
-            .getPoolTokens(poolId);
+        (IERC20[] memory tokens, , ) = balVault.getPoolTokens(poolId);
 
         //Need to make sure that correspondence between all underlying prices and tokens is maintained
 
         // Go through the underlying tokens within the pool
         for (uint256 i = 0; i < tokens.length; i++) {
             address tokenAddress = address(tokens[i]);
-            if (isStablecoin[tokenAddress]) {
+            if (_tokenProperties[tokenAddress].isStablecoin) {
                 uint256 stablecoinPrice = allUnderlyingPrices[
-                    _tokenAddressToProperties[tokenAddress].tokenIndex
+                    _tokenProperties[tokenAddress].tokenIndex
                 ];
 
-                if (!checkStablecoinHealth(stablecoinPrice, tokenAddress)) {
-                    operatingNormally = false;
-                    break;
+                if (!isStablecoinHealthy(stablecoinPrice)) {
+                    return false;
                 }
             }
         }
 
-        return operatingNormally;
+        return true;
     }
 
     function checkAllPoolsOperatingNormally(
         bytes32[] memory poolIds,
         uint256[] memory allUnderlyingPrices
     ) external view returns (bool, bool[] memory) {
-        bool[] memory PoolsOperatingNormally = new bool[](poolIds.length);
+        bool[] memory poolsOperatingNormally = new bool[](poolIds.length);
         bool allPoolsOperatingNormally = true;
 
         for (uint256 i = 0; i < poolIds.length; i++) {
-            PoolsOperatingNormally[i] = poolOperatingNormally(
-                allUnderlyingPrices,
-                poolIds[i]
-            );
-            allPoolsOperatingNormally =
-                allPoolsOperatingNormally &&
-                PoolsOperatingNormally[i];
+            poolsOperatingNormally[i] = isPoolOperatingNormally(allUnderlyingPrices, poolIds[i]);
+            allPoolsOperatingNormally = allPoolsOperatingNormally && poolsOperatingNormally[i];
         }
 
-        return (allPoolsOperatingNormally, PoolsOperatingNormally);
+        return (allPoolsOperatingNormally, poolsOperatingNormally);
     }
 }
