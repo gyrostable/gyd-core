@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/utils/SafeERC20.sol";
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IMotherBoard.sol";
-import "../interfaces/IVaultRouter.sol";
-import "../interfaces/IVault.sol";
+import "../interfaces/IGyroVault.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
 import "../interfaces/ILPTokenExchanger.sol";
 import "../interfaces/IPAMM.sol";
@@ -15,6 +14,7 @@ import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeBank.sol";
 
 import "../libraries/DataTypes.sol";
+import "../libraries/ConfigKeys.sol";
 import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 
@@ -29,11 +29,17 @@ contract Motherboard is IMotherBoard, Governable {
 
     // NOTE: dryMint and dryRedeem should be calling the safety check functions to ensure that the Reserve will remain stable.
 
-    /// @inheritdoc IMotherBoard
-    IGYDToken public override gydToken;
+    struct Addresses {
+        address gydToken;
+        address exchangerRegistry;
+        address pamm;
+        address gyroConfig;
+        address feeBank;
+        address reserve;
+    }
 
     /// @inheritdoc IMotherBoard
-    IVaultRouter public override vaultRouter;
+    IGYDToken public override gydToken;
 
     /// @inheritdoc IMotherBoard
     IPAMM public override pamm;
@@ -50,21 +56,16 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     IFeeBank public override feeBank;
 
-    constructor(
-        address gydTokenAddress,
-        address exchangerRegistryAddress,
-        address reserveAddress,
-        address gyroConfigAddress
-    ) {
-        gydToken = IGYDToken(gydTokenAddress);
-        exchangerRegistry = ILPTokenExchangerRegistry(exchangerRegistryAddress);
-        reserve = IReserve(reserveAddress);
-        gyroConfig = IGyroConfig(gyroConfigAddress);
-    }
-
-    /// @inheritdoc IMotherBoard
-    function setVaultRouter(address vaultRouterAddress) external override governanceOnly {
-        vaultRouter = IVaultRouter(vaultRouterAddress);
+    constructor(Addresses memory addresses) {
+        gydToken = IGYDToken(addresses.gydToken);
+        exchangerRegistry = ILPTokenExchangerRegistry(
+            addresses.exchangerRegistry
+        );
+        pamm = IPAMM(addresses.pamm);
+        reserve = IReserve(addresses.reserve);
+        gyroConfig = IGyroConfig(addresses.gyroConfig);
+        feeBank = IFeeBank(addresses.feeBank);
+        gydToken.safeApprove(addresses.feeBank, type(uint256).max);
     }
 
     /// @inheritdoc IMotherBoard
@@ -73,44 +74,54 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function mint(DataTypes.MonetaryAmount[] memory inputTokens, uint256 minMintedAmount)
-        external
-        override
-        returns (uint256 mintedGYDAmount)
-    {
-        DataTypes.TokenToVaultMapping[] memory tokenToVaultMappings = vaultRouter
-            .computeInputRoutes(inputTokens);
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount
+    ) external override returns (uint256 mintedGYDAmount) {
+        DataTypes.MonetaryAmount[]
+            memory vaultAmounts = new DataTypes.MonetaryAmount[](assets.length);
 
-        require(tokenToVaultMappings.length == inputTokens.length);
+        for (uint256 i = 0; i < assets.length; i++) {
+            DataTypes.MintAsset calldata asset = assets[i];
 
-        DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts = new DataTypes.MonetaryAmount[](
-            tokenToVaultMappings.length
-        );
-
-        for (uint256 i = 0; i < tokenToVaultMappings.length; i++) {
-            DataTypes.TokenToVaultMapping memory tokenToVaultMapping = tokenToVaultMappings[i];
-
-            IVault vault = IVault(tokenToVaultMapping.vault);
-
+            IGyroVault vault = IGyroVault(asset.destinationVault);
             address lpTokenAddress = vault.lpToken();
 
-            ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
-
-            uint256 lpTokenAmount = exchanger.deposit(
-                DataTypes.MonetaryAmount(inputTokens[i].tokenAddress, inputTokens[i].amount)
+            IERC20(asset.inputToken).safeTransferFrom(
+                msg.sender,
+                address(this),
+                asset.inputAmount
             );
 
-            uint256 vaultTokenAmount = vault.depositFor(lpTokenAmount, address(reserve));
+            uint256 lpTokenAmount;
+            uint256 vaultTokenAmount;
 
-            vaultMonetaryAmounts[i] = DataTypes.MonetaryAmount({
-                tokenAddress: tokenToVaultMapping.vault,
+            if (asset.inputToken == lpTokenAddress) {
+                lpTokenAmount = asset.inputAmount;
+            } else {
+                ILPTokenExchanger exchanger = exchangerRegistry
+                    .getTokenExchanger(lpTokenAddress);
+                lpTokenAmount = exchanger.deposit(
+                    DataTypes.MonetaryAmount(
+                        asset.inputToken,
+                        asset.inputAmount
+                    )
+                );
+            }
+            vaultTokenAmount = vault.depositFor(
+                address(reserve),
+                lpTokenAmount
+            );
+
+            vaultAmounts[i] = DataTypes.MonetaryAmount({
+                tokenAddress: asset.destinationVault,
                 amount: vaultTokenAmount
             });
         }
 
-        uint256 mintFeeFraction = gyroConfig.getMintFee();
+        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
         uint256 gyroToMint = pamm.calculateAndRecordGYDToMint(
-            vaultMonetaryAmounts,
+            vaultAmounts,
             mintFeeFraction
         );
 
@@ -118,9 +129,9 @@ contract Motherboard is IMotherBoard, Governable {
 
         uint256 remainingGyro = gyroToMint - feeToPay;
 
-        require(remainingGyro >= minMintedAmount, Errors.NOT_ENOUGH_GYRO_MINTED);
+        require(remainingGyro >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
+
         gydToken.mint(gyroToMint);
-        gydToken.safeApprove(address(feeBank), feeToPay);
         feeBank.depositFees(address(gydToken), feeToPay);
 
         gydToken.safeTransfer(msg.sender, remainingGyro);
@@ -130,23 +141,92 @@ contract Motherboard is IMotherBoard, Governable {
 
     /// @inheritdoc IMotherBoard
     function redeem(
-        DataTypes.MonetaryAmount[] memory outputMonetaryAmounts,
-        uint256 maxRedeemedAmount
+        uint256 redeemAmount,
+        DataTypes.RedeemAsset[] calldata assets
     ) external override returns (uint256 redeemedGYDAmount) {
+        DataTypes.MonetaryAmount[]
+            memory vaultAmounts = new DataTypes.MonetaryAmount[](assets.length);
+
+        for (uint256 i = 0; i < assets.length; i++) {
+            DataTypes.RedeemAsset memory asset = assets[i];
+
+            IGyroVault vault = IGyroVault(asset.originVault);
+            address lpTokenAddress = vault.lpToken();
+
+            uint256 outputTokenAmount;
+            // uint256 lpTokenAmount = vault.withdraw(asset.vaultTokenAmount);
+        }
+
         return 0;
     }
 
     /// @inheritdoc IMotherBoard
     function dryMint(
-        DataTypes.MonetaryAmount[] memory inputMonetaryAmounts,
-        uint256 minMintedAmount
-    ) external override returns (uint256 error, uint256 mintedGYDAmount) {}
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount
+    ) external override returns (uint256 mintedGYDAmount, string memory err) {
+        DataTypes.MonetaryAmount[]
+            memory vaultAmounts = new DataTypes.MonetaryAmount[](assets.length);
+
+        for (uint256 i = 0; i < assets.length; i++) {
+            DataTypes.MintAsset memory asset = assets[i];
+
+            IGyroVault vault = IGyroVault(asset.destinationVault);
+            address lpTokenAddress = vault.lpToken();
+
+            uint256 lpTokenAmount;
+            uint256 vaultTokenAmount;
+
+            if (asset.inputToken == lpTokenAddress) {
+                lpTokenAmount = asset.inputAmount;
+            } else {
+                ILPTokenExchanger exchanger = exchangerRegistry
+                    .getTokenExchanger(lpTokenAddress);
+                (lpTokenAmount, err) = exchanger.dryDeposit(
+                    DataTypes.MonetaryAmount(
+                        asset.inputToken,
+                        asset.inputAmount
+                    )
+                );
+                if (bytes(err).length > 0) {
+                    return (0, err);
+                }
+            }
+
+            (vaultTokenAmount, err) = vault.dryDepositFor(
+                address(reserve),
+                lpTokenAmount
+            );
+            if (bytes(err).length > 0) {
+                return (0, err);
+            }
+
+            vaultAmounts[i] = DataTypes.MonetaryAmount({
+                tokenAddress: asset.destinationVault,
+                amount: vaultTokenAmount
+            });
+        }
+
+        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
+        mintedGYDAmount = pamm.calculateGYDToMint(
+            vaultAmounts,
+            mintFeeFraction
+        );
+
+        uint256 feeToPay = mintedGYDAmount.mulUp(mintFeeFraction);
+
+        uint256 remainingGyro = mintedGYDAmount - feeToPay;
+
+        if (remainingGyro < minReceivedAmount) {
+            err = Errors.TOO_MUCH_SLIPPAGE;
+        }
+    }
 
     /// @inheritdoc IMotherBoard
     function dryRedeem(
-        DataTypes.MonetaryAmount[] memory outputMonetaryAmounts,
+        DataTypes.MonetaryAmount[] calldata outputMonetaryAmounts,
         uint256 maxRedeemedAmount
-    ) external override returns (uint256 error, uint256 redeemedGYDAmount) {
-        return (0, 0);
+    ) external override returns (uint256 redeemedGYDAmount, string memory err) {
+        return (0, "");
     }
 }

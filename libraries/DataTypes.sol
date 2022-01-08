@@ -16,4 +16,45 @@ library DataTypes {
         address inputToken;
         address vault;
     }
+
+    /// @notice Asset used to mint
+    struct MintAsset {
+        address inputToken;
+        uint256 inputAmount;
+        address destinationVault;
+    }
+
+    /// @notice Asset to redeem
+    struct RedeemAsset {
+        address outputToken;
+        uint256 minOutputAmount;
+        uint256 valueRatio;
+        address originVault;
+    }
+
+    /// @notice Vault with metadata
+    struct VaultInfo {
+        address vault;
+        uint256 price;
+        uint256 reserveBalance;
+        uint256 idealWeight;
+        uint256 currentWeight;
+        uint256 requestedWeight;
+        bool operatingNormally;
+        bool withinEpsilon;
+    }
+
+    struct TokenProperties {
+        address oracleAddress;
+        string tokenSymbol;
+        uint16 tokenIndex;
+        bool isStablecoin;
+    }
+
+    struct PoolProperties {
+        bytes32 poolId;
+        address poolAddress;
+        uint256 initialPoolWeight;
+        uint256 initialPoolPrice;
+    }
 }

@@ -14,12 +14,12 @@
 
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "../balancer/interfaces/IVault.sol";
-import "../balancer/interfaces/IBasePool.sol";
-import "../balancer/interfaces/IPoolSwapStructs.sol";
-import "../balancer/interfaces/IMinimalSwapInfoPool.sol";
+import "../../../interfaces/balancer/IVault.sol";
+import "../../../interfaces/balancer/IBasePool.sol";
+import "../../../interfaces/balancer/IPoolSwapStructs.sol";
+import "../../../interfaces/balancer/IMinimalSwapInfoPool.sol";
 
 contract MockVault is IPoolSwapStructs {
     struct Pool {

@@ -19,6 +19,13 @@ interface ILPTokenExchanger {
         external
         returns (uint256 lpTokenAmount);
 
+    /// @notice Dry version of `deposit`
+    /// @param tokenToDeposit the underlying token and amount to deposit
+    /// @return lpTokenAmount the received LP tokens as `lpTokenAmount`
+    function dryDeposit(DataTypes.MonetaryAmount memory tokenToDeposit)
+        external
+        returns (uint256 lpTokenAmount, string memory err);
+
     /// @notice Withdraws token from the liquidity pool
     /// and sends back an underlyingMonetaryAmount
     /// @param tokenToWithdraw the underlying token and amount to withdraw

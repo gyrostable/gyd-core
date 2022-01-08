@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/utils/SafeERC20.sol";
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../../libraries/DataTypes.sol";
 import "../../interfaces/IBalancerPoolRegistry.sol";
@@ -13,8 +13,8 @@ import "../../libraries/FixedPoint.sol";
 
 import "../auth/Governable.sol";
 
-import "../testing/balancer/interfaces/IVault.sol";
-import "../testing/balancer/interfaces/IAsset.sol";
+import "../../interfaces/balancer/IVault.sol";
+import "../../interfaces/balancer/IAsset.sol";
 
 interface BalancerHelperFactory {
     function queryJoin(
@@ -51,10 +51,9 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         poolRegistry = IBalancerPoolRegistry(_balancerPoolRegistryAddress);
     }
 
-    function getChosenBalancerPool(DataTypes.MonetaryAmount memory underlyingMonetaryAmount)
-        internal
-        returns (bytes32 poolId)
-    {
+    function getChosenBalancerPool(
+        DataTypes.MonetaryAmount memory underlyingMonetaryAmount
+    ) internal returns (bytes32 poolId) {
         bytes32[] memory balancerPoolRegistry = poolRegistry.getPoolIds(
             underlyingMonetaryAmount.tokenAddress
         );
@@ -68,12 +67,16 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         override
         returns (uint256)
     {
-        bool tokenTransferred = IERC20(underlyingMonetaryAmount.tokenAddress).transferFrom(
-            msg.sender,
-            address(this),
-            underlyingMonetaryAmount.amount
+        bool tokenTransferred = IERC20(underlyingMonetaryAmount.tokenAddress)
+            .transferFrom(
+                msg.sender,
+                address(this),
+                underlyingMonetaryAmount.amount
+            );
+        require(
+            tokenTransferred,
+            "failed to transfer tokens from user to token exchanger"
         );
-        require(tokenTransferred, "failed to transfer tokens from user to token exchanger");
 
         bytes32 poolId = getChosenBalancerPool(underlyingMonetaryAmount);
 
@@ -90,12 +93,15 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
             fromInternalBalance: false
         });
 
-        (uint256 expectedBptOut, uint256[] memory expectedAmountsIn) = balancerHelper.queryJoin(
-            poolId,
-            address(this),
-            msg.sender,
-            request
-        );
+        (
+            uint256 expectedBptOut,
+            uint256[] memory expectedAmountsIn
+        ) = balancerHelper.queryJoin(
+                poolId,
+                address(this),
+                msg.sender,
+                request
+            );
 
         balancerV2Vault.joinPool(poolId, address(this), msg.sender, request);
 
@@ -122,14 +128,22 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
             toInternalBalance: false
         });
 
-        (uint256 expectedBptIn, uint256[] memory expectedAmountsOut) = balancerHelper.queryExit(
+        (
+            uint256 expectedBptIn,
+            uint256[] memory expectedAmountsOut
+        ) = balancerHelper.queryExit(
+                poolId,
+                address(this),
+                msg.sender,
+                request
+            );
+
+        balancerV2Vault.exitPool(
             poolId,
             address(this),
-            msg.sender,
+            payable(msg.sender),
             request
         );
-
-        balancerV2Vault.exitPool(poolId, address(this), payable(msg.sender), request);
 
         return expectedBptIn;
     }

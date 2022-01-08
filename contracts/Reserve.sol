@@ -3,7 +3,7 @@ pragma solidity ^0.8.4;
 
 import "../interfaces/IReserve.sol";
 
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * Reserve contains the logic for the Gyroscope Reserve

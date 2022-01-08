@@ -14,10 +14,10 @@
 
 pragma solidity ^0.8.4;
 
-import "OpenZeppelin/openzeppelin-contracts@4.3.2/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "./interfaces/IAsset.sol";
-import "./interfaces/IWETH.sol";
+import "../../../interfaces/balancer/IAsset.sol";
+import "../../../interfaces/balancer/IWETH.sol";
 
 abstract contract AssetHelpers {
     // solhint-disable-next-line var-name-mixedcase

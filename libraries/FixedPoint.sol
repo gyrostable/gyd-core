@@ -26,6 +26,10 @@ library FixedPoint {
     // Minimum base for the power function when the exponent is 'free' (larger than ONE).
     uint256 internal constant MIN_POW_BASE_FREE_EXPONENT = 0.7e18;
 
+    function absSub(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a >= b ? a - b : b - a;
+    }
+
     function mulDown(uint256 a, uint256 b) internal pure returns (uint256) {
         uint256 product = a * b;
 
@@ -46,6 +50,14 @@ library FixedPoint {
 
             return ((product - 1) / ONE) + 1;
         }
+    }
+
+    function squareUp(uint256 a) internal pure returns (uint256) {
+        return mulUp(a, a);
+    }
+
+    function squareDown(uint256 a) internal pure returns (uint256) {
+        return mulDown(a, a);
     }
 
     function divDown(uint256 a, uint256 b) internal pure returns (uint256) {
@@ -114,5 +126,19 @@ library FixedPoint {
      */
     function complement(uint256 x) internal pure returns (uint256) {
         return (x < ONE) ? (ONE - x) : 0;
+    }
+
+    /**
+     * @dev returns the minimum between x and y
+     */
+    function min(uint256 x, uint256 y) internal pure returns (uint256) {
+        return x < y ? x : y;
+    }
+
+    /**
+     * @dev returns the maximum between x and y
+     */
+    function max(uint256 x, uint256 y) internal pure returns (uint256) {
+        return x > y ? x : y;
     }
 }
