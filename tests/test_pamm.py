@@ -1,17 +1,78 @@
+import math
+from decimal import Decimal as D
 from typing import Tuple
-import pytest
 
+import pytest
+from brownie.exceptions import VirtualMachineError
+from brownie.test import given
+from hypothesis import strategies as st
+from hypothesis.control import assume
+
+import tests.support.pamm as pypamm
 from tests.support.constants import (
-    UNSCALED_ALPHA_MIN_REL,
+    ALPHA_MIN_REL,
+    THETA_FLOOR,
     UNSCALED_THETA_FLOOR,
     UNSCALED_XU_MAX_REL,
     XU_MAX_REL,
-    ALPHA_MIN_REL,
-    THETA_FLOOR,
 )
+from tests.support.dfuzzy import isclose, prec_input, prec_sanity_check
 from tests.support.quantized_decimal import QuantizedDecimal as QD
-from tests.support.utils import scale, truncate
-import tests.support.pamm as pypamm
+from tests.support.utils import scale
+
+
+def st_scaled_decimals(
+    min_val,
+    max_val=None,
+    exclusive=False,
+    min_exclusive=False,
+    max_exclusive=False,
+    **kwargs
+):
+    if isinstance(min_val, QD):
+        min_val = min_val.raw
+    if isinstance(max_val, QD):
+        max_val = max_val.raw
+
+    strategy = st.integers(int(min_val), int(max_val), **kwargs)
+    if exclusive:
+        min_exclusive = True
+        max_exclusive = True
+
+    if min_val is not None and min_exclusive:
+        strategy = strategy.filter(lambda x: x > min_val)
+    if max_val and max_exclusive:
+        strategy = strategy.filter(lambda x: x < max_val)
+    return strategy
+
+
+@st.composite
+def st_params(draw):
+    alpha_bar = draw(st_scaled_decimals(scale("0.01"), scale(1)))
+    xu_bar = draw(st_scaled_decimals(scale("0.01"), scale(1), max_exclusive=True))
+    theta_bar_min = int((1 - math.sqrt(2 * alpha_bar / 10 ** 18)) * 10 ** 18)
+    theta_bar = draw(
+        st_scaled_decimals(
+            max(theta_bar_min, scale("0.01")), scale(1), max_exclusive=True
+        )
+    )
+    return (alpha_bar, xu_bar, theta_bar)
+
+
+@st.composite
+def st_baya(draw, theta_floor):
+    # NOTE adding some generous offsets to avoid numerical errors.
+    # Unclear if these actually point to a problem.
+    ya = draw(st_scaled_decimals(scale("0.01"), scale(5), min_exclusive=True))
+    # We only test the interesting, open bit here
+    assume(ya * theta_floor / 10 ** 18 + 10 ** 9 < ya - 10 ** 9)
+    ba = draw(
+        st_scaled_decimals(
+            ya * theta_floor / 10 ** 18 + 10 ** 9, ya - 10 ** 9, exclusive=True
+        )
+    )
+    return ba, ya
+
 
 # State:
 # uint256 redemptionLevel; // x
@@ -194,3 +255,54 @@ def test_compute_reserve_value(pamm, args, alpha_min):
 def test_compute_reserve_value_gas(pamm, args, alpha_min):
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
     pamm.computeReserveValueWithGas(scale_args(args))
+
+
+@given(st.data())
+def test_path_independence(admin, TestingPAMMV1, data: st.DataObject):
+    params = data.draw(st_params(), "params")
+    ba, ya = data.draw(st_baya(params[2]), "ba, ya")
+    x1 = data.draw(st_scaled_decimals(scale("0.001"), ya - scale("0.001")), "x1")
+    x2 = data.draw(st_scaled_decimals(scale("0.001"), ya - x1), "x2")
+    run_path_independence_test(admin, TestingPAMMV1, x1, x2, ba, ya, params)
+
+
+def run_path_independence_test(
+    admin, PAMM, x1: int, x2: int, ba: int, ya: int, params: Tuple[int, int, int]
+):
+    assert x1 + x2 <= ya
+
+    pamm = admin.deploy(PAMM, params)
+    pamm.setState((D(0), ba, ya))
+
+    pamm_2step = admin.deploy(PAMM, params)
+    pamm_2step.setState((D(0), ba, ya))
+
+    # NOTE: the current input generation is slightly problematic as it generates
+    # inputs that are not valid and result in integer overflows/underflow
+    # we ignore these for now to at least be able to test the path independence
+    # on valid inputs
+    try:
+        redeem_tx = pamm.redeem(x1 + x2)
+        redeem1_tx = pamm_2step.redeem(x1)
+        redeem2_tx = pamm_2step.redeem(x2)
+    except VirtualMachineError as ex:
+        if ex.revert_msg != "Integer overflow":  # type: ignore
+            raise ex
+        # print(ex)
+        return
+    # print("RUNNING PATH INDEPENDENCE TEST")
+
+    (x, b, y) = pamm.systemState()
+    (x2, b2, y2) = pamm_2step.systemState()
+
+    # First two are trivial / sanity checks
+    assert x == x2
+    assert y == y2
+
+    # These two are the actual meat (and they're also kinda equivalent):
+    # values are scaled to 10^18 so we allow for some absolute error of 10^-8
+    # as there might be some small differences because of root computations etc
+    assert int(b) == pytest.approx(b2, abs=10 ** 10)
+    assert int(redeem_tx.return_value) == pytest.approx(
+        redeem1_tx.return_value + redeem2_tx.return_value, abs=10 ** 10
+    )

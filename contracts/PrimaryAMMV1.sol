@@ -436,7 +436,8 @@ contract PrimaryAMMV1 {
             ya,
             params
         );
-        return nextReserveValue - state.reserveValue;
+        // we are redeeming so the next reserve value must be smaller than the current one
+        return state.reserveValue - nextReserveValue;
     }
 
     function computeRedeemAmount(uint256 amount) external view returns (uint256) {
