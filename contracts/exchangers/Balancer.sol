@@ -51,9 +51,11 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         poolRegistry = IBalancerPoolRegistry(_balancerPoolRegistryAddress);
     }
 
-    function getChosenBalancerPool(
-        DataTypes.MonetaryAmount memory underlyingMonetaryAmount
-    ) internal returns (bytes32 poolId) {
+    function getChosenBalancerPool(DataTypes.MonetaryAmount memory underlyingMonetaryAmount)
+        internal
+        view
+        returns (bytes32 poolId)
+    {
         bytes32[] memory balancerPoolRegistry = poolRegistry.getPoolIds(
             underlyingMonetaryAmount.tokenAddress
         );
@@ -67,16 +69,12 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         override
         returns (uint256)
     {
-        bool tokenTransferred = IERC20(underlyingMonetaryAmount.tokenAddress)
-            .transferFrom(
-                msg.sender,
-                address(this),
-                underlyingMonetaryAmount.amount
-            );
-        require(
-            tokenTransferred,
-            "failed to transfer tokens from user to token exchanger"
+        bool tokenTransferred = IERC20(underlyingMonetaryAmount.tokenAddress).transferFrom(
+            msg.sender,
+            address(this),
+            underlyingMonetaryAmount.amount
         );
+        require(tokenTransferred, "failed to transfer tokens from user to token exchanger");
 
         bytes32 poolId = getChosenBalancerPool(underlyingMonetaryAmount);
 
@@ -93,15 +91,12 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
             fromInternalBalance: false
         });
 
-        (
-            uint256 expectedBptOut,
-            uint256[] memory expectedAmountsIn
-        ) = balancerHelper.queryJoin(
-                poolId,
-                address(this),
-                msg.sender,
-                request
-            );
+        (uint256 expectedBptOut, ) = balancerHelper.queryJoin(
+            poolId,
+            address(this),
+            msg.sender,
+            request
+        );
 
         balancerV2Vault.joinPool(poolId, address(this), msg.sender, request);
 
@@ -128,22 +123,14 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
             toInternalBalance: false
         });
 
-        (
-            uint256 expectedBptIn,
-            uint256[] memory expectedAmountsOut
-        ) = balancerHelper.queryExit(
-                poolId,
-                address(this),
-                msg.sender,
-                request
-            );
-
-        balancerV2Vault.exitPool(
+        (uint256 expectedBptIn, ) = balancerHelper.queryExit(
             poolId,
             address(this),
-            payable(msg.sender),
+            msg.sender,
             request
         );
+
+        balancerV2Vault.exitPool(poolId, address(this), payable(msg.sender), request);
 
         return expectedBptIn;
     }

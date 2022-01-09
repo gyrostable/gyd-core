@@ -1,0 +1,27 @@
+{
+  "name": "@gyroscope/protocol",
+  "license": "UNLICENSED",
+  "version": "0.1.0",
+  "main": "typechain/index.ts",
+  "devDependencies": {
+    "@typechain/ethers-v5": "^2.0.0",
+    "ethers": "^5.4.0",
+    "hardhat": "^2.6.1",
+    "prettier": "^2.4.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.18",
+    "ts-node": "^9.0.0",
+    "typechain": "^3.0.0",
+    "typescript": "^4.0.5"
+  },
+  "scripts": {
+    "typechain": "npx typechain --target ethers-v5 'build/{contracts,interfaces}/*.json' --outDir typechain",
+    "prettier": "prettier --write 'contracts/**/*.sol'",
+    "lint": "prettier --list-different 'contracts/**/*.sol'"
+  },
+  "files": [
+    "build/deployments/map.json",
+    "typechain/*",
+    "build/contracts/*",
+    "build/interfaces/*"
+  ]
+}

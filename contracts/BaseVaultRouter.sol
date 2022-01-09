@@ -23,9 +23,7 @@ abstract contract BaseVaultRouter is IGyroVaultRouter {
     /// @inheritdoc IGyroVaultRouter
     function addVault(address vaultAddress) external override {
         vaults.push(vaultAddress);
-        address[] memory supportedTokens = getTokensSupportedByVault(
-            vaultAddress
-        );
+        address[] memory supportedTokens = getTokensSupportedByVault(vaultAddress);
         for (uint256 i = 0; i < supportedTokens.length; i++) {
             vaultsIncludingToken[supportedTokens[i]].push(vaultAddress);
         }
@@ -41,21 +39,14 @@ abstract contract BaseVaultRouter is IGyroVaultRouter {
             }
         }
 
-        address[] memory supportedTokens = getTokensSupportedByVault(
-            vaultAddress
-        );
+        address[] memory supportedTokens = getTokensSupportedByVault(vaultAddress);
         for (uint256 i = 0; i < supportedTokens.length; i++) {
             address token = supportedTokens[i];
-            address[]
-                storage currentVaultsSupportingToken = vaultsIncludingToken[
-                    token
-                ];
+            address[] storage currentVaultsSupportingToken = vaultsIncludingToken[token];
             uint256 vaultsCount = currentVaultsSupportingToken.length;
             for (uint256 j = 0; j < vaultsCount; j++) {
                 if (currentVaultsSupportingToken[j] == vaultAddress) {
-                    currentVaultsSupportingToken[
-                        j
-                    ] = currentVaultsSupportingToken[vaultsCount - 1];
+                    currentVaultsSupportingToken[j] = currentVaultsSupportingToken[vaultsCount - 1];
                     currentVaultsSupportingToken.pop();
                     break;
                 }
@@ -69,19 +60,12 @@ abstract contract BaseVaultRouter is IGyroVaultRouter {
         returns (address[] memory)
     {
         address lpToken = IGyroVault(vaultAddress).lpToken();
-        ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(
-            lpToken
-        );
+        ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpToken);
         return exchanger.getSupportedTokens();
     }
 
     /// @inheritdoc IGyroVaultRouter
-    function supportedVaults()
-        external
-        view
-        override
-        returns (address[] memory)
-    {
+    function supportedVaults() external view override returns (address[] memory) {
         return vaults;
     }
 }

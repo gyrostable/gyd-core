@@ -9,17 +9,9 @@ contract LPTokenExchangerRegistry is ILPTokenExchangerRegistry, Governable {
     mapping(address => address) internal tokenExchangers;
 
     /// @inheritdoc ILPTokenExchangerRegistry
-    function getTokenExchanger(address lpToken)
-        external
-        view
-        override
-        returns (ILPTokenExchanger)
-    {
+    function getTokenExchanger(address lpToken) external view override returns (ILPTokenExchanger) {
         address tokenExchangerAddress = tokenExchangers[lpToken];
-        require(
-            tokenExchangerAddress != address(0),
-            Errors.EXCHANGER_NOT_FOUND
-        );
+        require(tokenExchangerAddress != address(0), Errors.EXCHANGER_NOT_FOUND);
         return ILPTokenExchanger(tokenExchangerAddress);
     }
 
@@ -33,11 +25,7 @@ contract LPTokenExchangerRegistry is ILPTokenExchangerRegistry, Governable {
     }
 
     /// @inheritdoc ILPTokenExchangerRegistry
-    function deregisterTokenExchanger(address lpToken)
-        external
-        override
-        governanceOnly
-    {
+    function deregisterTokenExchanger(address lpToken) external override governanceOnly {
         delete tokenExchangers[lpToken];
     }
 }

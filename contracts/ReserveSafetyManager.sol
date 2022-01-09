@@ -111,9 +111,7 @@ contract ReserveSafetyManager is Ownable, Governable {
             }
         }
 
-        if (!anyCheckFail) {
-            return true;
-        }
+        return !anyCheckFail;
     }
 
     function anyUnhealthyVaultWouldMoveTowardsIdeal(DataTypes.VaultInfo[] memory vaults)
@@ -131,27 +129,21 @@ contract ReserveSafetyManager is Ownable, Governable {
             }
         }
 
-        if (allUnhealthyVaultsWouldMoveTowardsIdeal) {
-            return true;
-        }
+        return allUnhealthyVaultsWouldMoveTowardsIdeal;
     }
 
     function safeToMint(
         DataTypes.VaultInfo[] memory vaults,
-        DataTypes.MintAsset[] memory mintRequests,
+        DataTypes.MintAsset[] memory,
         bytes32[] memory poolIds,
         uint256[] memory allUnderlyingPrices
     ) internal view returns (bool mintingSafe) {
         mintingSafe = false;
 
-        (
-            bool allBalancerPoolsOperatingNormally,
-            bool[] memory balancerPoolsOperatingNormally
-        ) = balancerSafetyChecker.checkAllPoolsOperatingNormally(poolIds, allUnderlyingPrices);
+        (bool allBalancerPoolsOperatingNormally, ) = balancerSafetyChecker
+            .checkAllPoolsOperatingNormally(poolIds, allUnderlyingPrices);
 
-        (bool allVaultsWithinEpsilon, bool[] memory vaultsWithinEpsilon) = checkVaultsWithinEpsilon(
-            vaults
-        );
+        (bool allVaultsWithinEpsilon, ) = checkVaultsWithinEpsilon(vaults);
 
         // if check 1 succeeds and all pools healthy, then proceed with minting
         if (allBalancerPoolsOperatingNormally) {
@@ -172,19 +164,15 @@ contract ReserveSafetyManager is Ownable, Governable {
         return mintingSafe;
     }
 
-    function safeToRedeem(address[] memory _BPTokensOut, DataTypes.VaultInfo[] memory vaults)
+    function safeToRedeem(address[] memory, DataTypes.VaultInfo[] memory vaults)
         internal
         view
         returns (bool)
     {
-        bool redeemingSafe = false;
-        (bool allVaultsWithinEpsilon, bool[] memory vaultsWithinEpsilon) = checkVaultsWithinEpsilon(
-            vaults
-        );
+        (bool allVaultsWithinEpsilon, ) = checkVaultsWithinEpsilon(vaults);
 
         if (allVaultsWithinEpsilon) {
-            redeemingSafe = true;
-            return redeemingSafe;
+            return true;
         }
 
         // check if weights that are beyond epsilon boundary are closer to ideal than current weights
@@ -206,10 +194,6 @@ contract ReserveSafetyManager is Ownable, Governable {
             }
         }
 
-        if (!checksPass) {
-            redeemingSafe = true;
-        }
-
-        return redeemingSafe;
+        return !checksPass;
     }
 }

@@ -46,6 +46,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         return computeAnchoredReserveValue(state, params, derived);
     }
 
+    // NOTE: needs to not be pure to be able to get transaction information from the frontend
     function computeReserveValueWithGas(State calldata anchoredState) external returns (uint256) {
         return computeReserveValue(anchoredState);
     }

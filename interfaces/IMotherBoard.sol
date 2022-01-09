@@ -30,10 +30,7 @@ interface IMotherBoard {
 
     /// @notice Returns the address of the exchanger registry
     /// @return the exchanger registry address
-    function exchangerRegistry()
-        external
-        view
-        returns (ILPTokenExchangerRegistry);
+    function exchangerRegistry() external view returns (ILPTokenExchangerRegistry);
 
     /// @notice Set the address of the primary AMM (P-AMM) to be used when minting and redeeming GYD tokens
     /// @param pamAddress the address of the P-AMM to use
@@ -50,10 +47,9 @@ interface IMotherBoard {
     /// @param assets the assets and associated amounts used to mint GYD
     /// @param minReceivedAmount the minimum amount of GYD to be minted
     /// @return mintedGYDAmount GYD token minted amount
-    function mint(
-        DataTypes.MintAsset[] calldata assets,
-        uint256 minReceivedAmount
-    ) external returns (uint256 mintedGYDAmount);
+    function mint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
+        external
+        returns (uint256 mintedGYDAmount);
 
     /// @notice Main redemption function to be called by a withdrawer
     /// This redeems using at most `maxRedeemedAmount` of GYD and returns the
@@ -61,10 +57,9 @@ interface IMotherBoard {
     /// @param redeemAmount the maximum amount of GYD to redeem
     /// @param assets the output tokens and associated amounts to return against GYD
     /// @return redeemedGYDAmount the amount of redeemed GYD tokens
-    function redeem(
-        uint256 redeemAmount,
-        DataTypes.RedeemAsset[] calldata assets
-    ) external returns (uint256 redeemedGYDAmount);
+    function redeem(uint256 redeemAmount, DataTypes.RedeemAsset[] calldata assets)
+        external
+        returns (uint256 redeemedGYDAmount);
 
     /// @notice Simulates a mint to know whether it would succeed and how much would be minted
     /// The parameters are the same as the `mint` function
@@ -72,10 +67,10 @@ interface IMotherBoard {
     /// @param minReceivedAmount the minimum amount of GYD to be minted
     /// @return mintedGYDAmount the amount that would be minted, or 0 if it an error would occur
     /// @return err a non-empty error message in case an error would happen when minting
-    function dryMint(
-        DataTypes.MintAsset[] calldata assets,
-        uint256 minReceivedAmount
-    ) external returns (uint256 mintedGYDAmount, string memory err);
+    function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
+        external
+        view
+        returns (uint256 mintedGYDAmount, string memory err);
 
     /// @notice Simulates a redemption execution and returns the amount of GYD
     /// redeems or an error code if the redeem would fail
@@ -86,5 +81,5 @@ interface IMotherBoard {
     function dryRedeem(
         DataTypes.MonetaryAmount[] calldata outputMonetaryAmounts,
         uint256 maxRedeemedAmount
-    ) external returns (uint256 redeemedGYDAmount, string memory err);
+    ) external view returns (uint256 redeemedGYDAmount, string memory err);
 }

@@ -25,11 +25,11 @@ import "../../../interfaces/balancer/IVault.sol";
  */
 contract MockBalancerHelpers {
     function queryJoin(
-        bytes32 poolId,
-        address sender,
-        address recipient,
+        bytes32, //poolId,
+        address, // sender,
+        address, // recipient,
         IVault.JoinPoolRequest memory request
-    ) external returns (uint256 bptOut, uint256[] memory amountsIn) {
+    ) external pure returns (uint256 bptOut, uint256[] memory amountsIn) {
         bptOut = uint256(100e18);
         amountsIn = request.maxAmountsIn;
 
@@ -37,11 +37,11 @@ contract MockBalancerHelpers {
     }
 
     function queryExit(
-        bytes32 poolId,
-        address sender,
-        address recipient,
+        bytes32, // poolId,
+        address, // sender,
+        address, // recipient,
         IVault.ExitPoolRequest memory request
-    ) external returns (uint256 bptIn, uint256[] memory amountsOut) {
+    ) external pure returns (uint256 bptIn, uint256[] memory amountsOut) {
         bptIn = uint256(100e18);
         amountsOut = request.minAmountsOut;
 
