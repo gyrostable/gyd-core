@@ -12,6 +12,7 @@ contract PrimaryAMMV1 {
 
     uint256 constant ONE = 1e18;
     uint256 constant TWO = 2e18;
+    uint256 constant ANCHOR = ONE;
 
     enum Region {
         CASE_i,
@@ -30,22 +31,25 @@ contract PrimaryAMMV1 {
     }
 
     struct Params {
-        uint64 decaySlopeLowerBound; // α∊ [0,1]
-        uint64 stableRedeemThresholdUpperBound; // x̄_U ∊ [0,1]
-        uint64 targetReserveRatioFloor; // ϑ ∊ [0,1]
+        uint64 alphaBar; // ᾱ ∊ [0,1]
+        uint64 xuBar; // x̄_U ∊ [0,1]
+        uint64 thetaBar; // θ̄ ∊ [0,1]
     }
 
     struct DerivedParams {
-        uint256 reserveValueThresholdFirstRegion; // b_a^{I/II}
-        uint256 reserveValueThresholdSecondRegion; // b_a^{II/III}
-        uint256 lowerRedemptionThreshold; // x_L^{I/II}
-        uint256 reserveHighLowThreshold; // ba^{h/l}
-        uint256 lastRegionHighLowThreshold; // ba^{H/L}
-        uint256 upperBoundRedemptionThreshold; // x_U^{h/l}
-        uint256 slopeThreshold; // α^{H/L}
+        uint256 baThresholdRegionI; // b_a^{I/II}
+        uint256 baThresholdRegionII; // b_a^{II/III}
+        uint256 xlThresholdAtThresholdI; // x_L^{I/II}
+        uint256 xlThresholdAtThresholdII; // x_L^{II/III}
+        uint256 baThresholdIIHL; // ba^{h/l}
+        uint256 baThresholdIIIHL; // ba^{H/L}
+        uint256 xuThresholdIIHL; // x_U^{h/l}
+        uint256 xlThresholdIIHL; // x_L^{h/l}
+        uint256 alphaThresholdIIIHL; // α^{H/L}
+        uint256 xlThresholdIIIHL; // x_L^{H/L}
     }
 
-    /// @notice parmaters of the primary AMM
+    /// @notice parameters of the primary AMM
     Params public systemParams;
 
     /// @notice current state of the primary AMM
@@ -58,23 +62,28 @@ contract PrimaryAMMV1 {
 
     /// Helpers to compute various parameters
 
-    function computeSlope(
+    /// @dev Proposition 3 (section 3) of the paper
+    function computeAlphaHat(
         uint256 ba,
         uint256 ya,
-        uint256 targetReserveRatio,
-        uint256 slopeLowerBound
+        uint256 thetaBar,
+        uint256 alphaBar
     ) internal pure returns (uint256) {
         uint256 ra = ba.divDown(ya);
-        uint256 slope;
-        if (ra >= (ONE + targetReserveRatio) / 2) {
-            slope = (TWO * (ONE - ra)) / ya;
+        uint256 alphaMin = alphaBar.divDown(ya);
+        uint256 alphaHat;
+        if (ra >= (ONE + thetaBar) / 2) {
+            alphaHat = TWO.mulDown(ONE - ra).divDown(ya);
         } else {
-            slope = (ONE - targetReserveRatio)**2 / (ba - targetReserveRatio.mulDown(ya)) / 2;
+            uint256 numerator = (ONE - thetaBar)**2;
+            uint256 denominator = ba - thetaBar.mulDown(ya);
+            alphaHat = numerator / (denominator * 2);
         }
-        return slope.max(slopeLowerBound);
+        return alphaHat.max(alphaMin);
     }
 
-    function computeFixedReserve(
+    /// @dev Proposition 1 (section 3) of the paper
+    function computeReserveFixedParams(
         uint256 x,
         uint256 ba,
         uint256 ya,
@@ -93,65 +102,56 @@ contract PrimaryAMMV1 {
         return rl.mulDown(ya - x);
     }
 
-    function computeLowerRedemptionThreshold(
+    /// @dev Proposition 2 (section 3) of the paper
+    function computeXl(
         uint256 ba,
         uint256 ya,
         uint256 alpha,
         uint256 xu
     ) internal pure returns (uint256) {
-        if (ba.divDown(ya) >= ONE) {
+        if (ba >= ya) {
             return ya;
         }
-        return ya - ((ya - xu).squareUp() - ((TWO * (ya - ba)) / alpha)).sqrt();
+        uint256 left = (ya - xu).squareUp();
+        uint256 right = (TWO * (ya - ba)) / alpha;
+        uint256 rh = left > right ? (left - right).sqrt() : 0;
+        return ya - rh;
     }
 
-    function computeUpperRedemptionThreshold(
+    /// @dev Proposition 4 (section 3) of the paper
+    function computeXuHat(
         uint256 ba,
         uint256 ya,
         uint256 alpha,
-        uint256 stableRedeemThresholdUpperBound,
-        uint256 targetUtilizationCeiling
+        uint256 xuBar,
+        uint256 theta
     ) internal pure returns (uint256) {
         uint256 delta = ya - ba;
+        uint256 xuMax = xuBar.mulDown(ya);
         uint256 xu;
-        if (alpha.mulDown(delta) <= targetUtilizationCeiling**2 / TWO) {
+        if (alpha.mulDown(delta) <= theta**2 / TWO) {
             uint256 rh = ((TWO * delta) / alpha);
-            xu = ya.squareDown() < rh ? 0 : ya - rh.sqrt();
+            xu = rh > ya.squareUp() ? 0 : ya - rh.sqrt();
         } else {
-            xu =
-                ya -
-                delta.divDown(targetUtilizationCeiling) -
-                targetUtilizationCeiling.divDown(2 * alpha);
+            xu = ya - delta.divDown(theta) - theta.divDown(2 * alpha);
         }
 
-        uint256 xuMax = stableRedeemThresholdUpperBound.mulUp(ya);
         return xu.min(xuMax);
     }
 
-    function computeRelativeReserve(
-        uint256 xu,
-        uint256 ya,
-        Params memory params
-    ) internal pure returns (uint256) {
-        uint256 alpha = uint256(params.decaySlopeLowerBound).divDown(ya);
-        return computeRelativeReserve(xu, ya, params, alpha);
+    /// @dev Lemma 4 (seection 7) of the paper
+    function computeBa(uint256 xu, Params memory params) internal pure returns (uint256) {
+        require(ONE >= xu, "ya must be greater than xu");
+        uint256 alpha = params.alphaBar;
+
+        uint256 yz = ANCHOR - xu;
+        if (ONE - alpha.mulDown(yz) >= params.thetaBar)
+            return ANCHOR - (alpha * yz.squareDown()) / TWO;
+        uint256 theta = ONE - params.thetaBar;
+        return ANCHOR - theta.mulDown(yz) + theta**2 / (2 * alpha);
     }
 
-    function computeRelativeReserve(
-        uint256 xu,
-        uint256 ya,
-        Params memory params,
-        uint256 alpha
-    ) internal pure returns (uint256) {
-        require(ya >= xu, "ya must be greater than xu");
-
-        uint256 yz = ya - xu;
-        if (ONE - alpha.mulDown(yz) >= params.targetReserveRatioFloor)
-            return ya - (alpha * yz.squareDown()) / TWO;
-        uint256 targetUsage = ONE - params.targetReserveRatioFloor;
-        return ya - targetUsage.mulDown(yz) + targetUsage**2 / (2 * params.decaySlopeLowerBound);
-    }
-
+    /// @dev Algorithm 1 (section 7) of the paper
     function createDerivedParams(Params memory params)
         internal
         pure
@@ -159,41 +159,48 @@ contract PrimaryAMMV1 {
     {
         DerivedParams memory derived;
 
-        derived.reserveValueThresholdFirstRegion = computeRelativeReserve(
-            params.stableRedeemThresholdUpperBound,
+        derived.baThresholdRegionI = computeBa(params.xuBar, params);
+        derived.baThresholdRegionII = computeBa(0, params);
+
+        derived.xlThresholdAtThresholdI = computeXl(
+            derived.baThresholdRegionI,
             ONE,
-            params
+            params.alphaBar,
+            params.xuBar
         );
-        derived.reserveValueThresholdSecondRegion = computeRelativeReserve(0, ONE, params);
-
-        derived.lowerRedemptionThreshold = computeLowerRedemptionThreshold(
-            derived.reserveValueThresholdFirstRegion,
+        derived.xlThresholdAtThresholdII = computeXl(
+            derived.baThresholdRegionII,
             ONE,
-            params.decaySlopeLowerBound,
-            params.stableRedeemThresholdUpperBound
-        );
-
-        uint256 targetUtilizationCeiling = ONE - params.targetReserveRatioFloor;
-        derived.reserveHighLowThreshold =
-            ONE -
-            (targetUtilizationCeiling**2) /
-            (2 * params.decaySlopeLowerBound);
-
-        derived.upperBoundRedemptionThreshold = computeUpperRedemptionThreshold(
-            derived.reserveHighLowThreshold,
-            ONE,
-            params.decaySlopeLowerBound,
-            params.stableRedeemThresholdUpperBound,
-            targetUtilizationCeiling
+            params.alphaBar,
+            0
         );
 
-        derived.lastRegionHighLowThreshold = (ONE + params.targetReserveRatioFloor) / 2;
-        derived.slopeThreshold = computeSlope(
-            derived.lastRegionHighLowThreshold,
+        uint256 theta = ONE - params.thetaBar;
+        derived.baThresholdIIHL = ONE - (theta**2) / (2 * params.alphaBar);
+
+        derived.xuThresholdIIHL = computeXuHat(
+            derived.baThresholdIIHL,
             ONE,
-            params.targetReserveRatioFloor,
-            params.decaySlopeLowerBound
+            params.alphaBar,
+            params.xuBar,
+            theta
         );
+        derived.xlThresholdIIHL = computeXl(
+            derived.baThresholdIIHL,
+            ONE,
+            params.alphaBar,
+            derived.xuThresholdIIHL
+        );
+
+        derived.baThresholdIIIHL = (ONE + params.thetaBar) / 2;
+        derived.alphaThresholdIIIHL = computeAlphaHat(
+            derived.baThresholdIIIHL,
+            ONE,
+            params.thetaBar,
+            params.alphaBar
+        );
+
+        derived.xlThresholdIIIHL = computeXl(derived.baThresholdIIIHL, ONE, params.alphaBar, 0);
 
         return derived;
     }
@@ -204,126 +211,114 @@ contract PrimaryAMMV1 {
         uint256 ya,
         Params memory params
     ) internal pure returns (uint256) {
-        uint256 alpha = computeSlope(
-            ba,
-            ya,
-            params.targetReserveRatioFloor,
-            params.decaySlopeLowerBound
-        );
-        uint256 xu = computeUpperRedemptionThreshold(
-            ba,
-            ya,
-            alpha,
-            params.stableRedeemThresholdUpperBound,
-            ONE - params.targetReserveRatioFloor
-        );
-        uint256 xl = computeLowerRedemptionThreshold(ba, ya, alpha, xu);
-        return computeFixedReserve(x, ba, ya, alpha, xu, xl);
+        uint256 alpha = computeAlphaHat(ba, ya, params.thetaBar, params.alphaBar);
+        uint256 xu = computeXuHat(ba, ya, alpha, params.xuBar, ONE - params.thetaBar);
+        uint256 xl = computeXl(ba, ya, alpha, xu);
+        return computeReserveFixedParams(x, ba, ya, alpha, xu, xl);
     }
 
     function isInFirstRegion(
-        State memory scaledState,
+        State memory anchoredState,
         Params memory params,
         DerivedParams memory derived
     ) internal pure returns (bool) {
         return
-            scaledState.reserveValue >=
-            computeFixedReserve(
-                scaledState.redemptionLevel,
-                derived.reserveValueThresholdFirstRegion,
+            anchoredState.reserveValue >=
+            computeReserveFixedParams(
+                anchoredState.redemptionLevel,
+                derived.baThresholdRegionI,
                 ONE,
-                params.decaySlopeLowerBound,
-                params.stableRedeemThresholdUpperBound,
-                derived.lowerRedemptionThreshold
+                params.alphaBar,
+                params.xuBar,
+                derived.xlThresholdAtThresholdI
             );
     }
 
     function isInSecondRegion(
-        State memory scaledState,
-        uint256 decaySlopeLowerBound,
+        State memory anchoredState,
+        uint256 alphaBar,
         DerivedParams memory derived
     ) internal pure returns (bool) {
         return
-            scaledState.reserveValue >=
-            computeFixedReserve(
-                scaledState.redemptionLevel,
-                derived.reserveValueThresholdSecondRegion,
+            anchoredState.reserveValue >=
+            computeReserveFixedParams(
+                anchoredState.redemptionLevel,
+                derived.baThresholdRegionII,
                 ONE,
-                decaySlopeLowerBound,
+                alphaBar,
                 0,
-                ONE
+                derived.xlThresholdAtThresholdII
             );
     }
 
-    function isInSecondSubcase(
-        State memory scaledState,
-        uint256 decaySlopeLowerBound,
+    function isInSecondRegionHigh(
+        State memory anchoredState,
+        uint256 alphaBar,
         DerivedParams memory derived
     ) internal pure returns (bool) {
         return
-            scaledState.reserveValue >=
-            computeFixedReserve(
-                scaledState.redemptionLevel,
-                derived.reserveHighLowThreshold,
+            anchoredState.reserveValue >=
+            computeReserveFixedParams(
+                anchoredState.redemptionLevel,
+                derived.baThresholdIIHL,
                 ONE,
-                decaySlopeLowerBound,
-                derived.upperBoundRedemptionThreshold,
-                ONE
+                alphaBar,
+                derived.xuThresholdIIHL,
+                derived.xlThresholdIIHL
             );
     }
 
-    function isInHighSubcase(State memory scaledState, DerivedParams memory derived)
+    function isInThirdRegionHigh(State memory anchoredState, DerivedParams memory derived)
         internal
         pure
         returns (bool)
     {
         return
-            scaledState.reserveValue >=
-            computeFixedReserve(
-                scaledState.redemptionLevel,
-                derived.lastRegionHighLowThreshold,
+            anchoredState.reserveValue >=
+            computeReserveFixedParams(
+                anchoredState.redemptionLevel,
+                derived.baThresholdIIIHL,
                 ONE,
-                derived.slopeThreshold,
+                derived.alphaThresholdIIIHL,
                 0,
-                ONE
+                derived.xlThresholdIIHL
             );
     }
 
-    function computeNextReserveValueRegion(
-        State memory scaledState,
+    function computeReserveValueRegion(
+        State memory anchoredState,
         Params memory params,
         DerivedParams memory derived
     ) internal pure returns (Region) {
-        if (isInFirstRegion(scaledState, params, derived)) {
+        if (isInFirstRegion(anchoredState, params, derived)) {
             // case I
-            if (scaledState.redemptionLevel <= params.stableRedeemThresholdUpperBound)
-                return Region.CASE_i;
-            if (scaledState.redemptionLevel <= derived.lowerRedemptionThreshold)
+            if (anchoredState.redemptionLevel <= params.xuBar) return Region.CASE_i;
+            if (anchoredState.redemptionLevel <= derived.xlThresholdAtThresholdI)
                 return Region.CASE_I_ii;
             return Region.CASE_I_iii;
         }
 
-        if (isInSecondRegion(scaledState, params.decaySlopeLowerBound, derived)) {
+        if (isInSecondRegion(anchoredState, params.alphaBar, derived)) {
             // case II
-            if (isInSecondSubcase(scaledState, params.decaySlopeLowerBound, derived)) {
-                // case h
+            if (isInSecondRegionHigh(anchoredState, params.alphaBar, derived)) {
+                // case II_h
                 if (
-                    scaledState.totalGyroSupply - scaledState.reserveValue <=
-                    (scaledState.totalGyroSupply.squareDown() * params.decaySlopeLowerBound) / TWO
+                    anchoredState.totalGyroSupply - anchoredState.reserveValue <=
+                    (anchoredState.totalGyroSupply.squareDown() * params.alphaBar) / TWO
                 ) return Region.CASE_i;
                 return Region.CASE_II_H;
             }
 
-            uint256 thetha = ONE - params.targetReserveRatioFloor;
+            uint256 theta = ONE - params.thetaBar;
             if (
-                scaledState.reserveValue -
-                    uint256(params.targetReserveRatioFloor).mulDown(scaledState.totalGyroSupply) >=
-                thetha**2 / (2 * params.decaySlopeLowerBound)
+                anchoredState.reserveValue -
+                    uint256(params.thetaBar).mulDown(anchoredState.totalGyroSupply) >=
+                theta**2 / (2 * params.alphaBar)
             ) return Region.CASE_i;
             return Region.CASE_II_L;
         }
 
-        if (isInHighSubcase(scaledState, derived)) {
+        if (isInThirdRegionHigh(anchoredState, derived)) {
             return Region.CASE_III_H;
         }
 
@@ -332,74 +327,76 @@ contract PrimaryAMMV1 {
 
     struct NextReserveValueVars {
         uint256 ya;
-        uint256 reserveRatio;
+        uint256 r;
         Region region;
-        uint256 usedRatio;
-        uint256 thetha;
+        uint256 u;
+        uint256 theta;
     }
 
-    function computeNextReserveValue(
-        State memory scaledState,
+    function computeAnchoredReserveValue(
+        State memory anchoredState,
         Params memory params,
         DerivedParams memory derived
     ) internal pure returns (uint256) {
         NextReserveValueVars memory vars;
-        vars.ya = ONE;
-        vars.reserveRatio = scaledState.reserveValue.divDown(scaledState.totalGyroSupply);
-        Region region = computeNextReserveValueRegion(scaledState, params, derived);
 
-        vars.usedRatio = ONE - vars.reserveRatio;
-        vars.thetha = ONE - params.targetReserveRatioFloor;
+        Region region = computeReserveValueRegion(anchoredState, params, derived);
+
+        vars.ya = ONE;
+        vars.r = anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply);
+        vars.u = ONE - vars.r;
+        vars.theta = ONE - params.thetaBar;
 
         if (region == Region.CASE_i) {
-            return scaledState.reserveValue + scaledState.redemptionLevel;
+            return anchoredState.reserveValue + anchoredState.redemptionLevel;
         }
 
         if (region == Region.CASE_I_ii) {
-            uint256 xDiff = scaledState.redemptionLevel - params.stableRedeemThresholdUpperBound;
-            return (scaledState.reserveValue +
-                scaledState.redemptionLevel -
-                (params.decaySlopeLowerBound * xDiff.squareDown()) /
+            uint256 xDiff = anchoredState.redemptionLevel - params.xuBar;
+            return (anchoredState.reserveValue +
+                anchoredState.redemptionLevel -
+                (params.alphaBar * xDiff.squareDown()) /
                 TWO);
         }
 
         if (region == Region.CASE_I_iii)
             return
                 vars.ya -
-                (vars.ya - params.stableRedeemThresholdUpperBound).mulDown(vars.usedRatio) +
-                (vars.usedRatio**2 / (2 * params.decaySlopeLowerBound));
+                (vars.ya - params.xuBar).mulDown(vars.u) +
+                (vars.u**2 / (2 * params.alphaBar));
 
         if (region == Region.CASE_II_H) {
-            uint256 delta = (params.decaySlopeLowerBound *
-                (vars.usedRatio.divDown(params.decaySlopeLowerBound) +
-                    (scaledState.totalGyroSupply / 2)).squareDown()) / TWO;
+            uint256 delta = (params.alphaBar *
+                (vars.u.divDown(params.alphaBar) + (anchoredState.totalGyroSupply / 2))
+                    .squareDown()) / TWO;
             return vars.ya - delta;
         }
 
         if (region == Region.CASE_II_L) {
-            uint256 p = vars.thetha.mulDown(
-                vars.thetha.divDown(2 * params.decaySlopeLowerBound) + scaledState.totalGyroSupply
+            uint256 p = vars.theta.mulDown(
+                vars.theta.divDown(2 * params.alphaBar) + anchoredState.totalGyroSupply
             );
             uint256 d = 2 *
-                (vars.thetha**2 / params.decaySlopeLowerBound).mulDown(
-                    scaledState.reserveValue -
-                        scaledState.totalGyroSupply.mulDown(params.targetReserveRatioFloor)
+                (vars.theta**2 / params.alphaBar).mulDown(
+                    anchoredState.reserveValue -
+                        anchoredState.totalGyroSupply.mulDown(params.thetaBar)
                 );
             return vars.ya + d.sqrt() - p;
         }
 
         if (region == Region.CASE_III_H) {
-            uint256 delta = (scaledState.totalGyroSupply - scaledState.reserveValue).divDown(
-                (vars.ya - scaledState.redemptionLevel.squareDown())
+            uint256 delta = (anchoredState.totalGyroSupply - anchoredState.reserveValue).divDown(
+                (ONE - anchoredState.redemptionLevel.squareDown())
             );
             return vars.ya - delta;
         }
 
         if (region == Region.CASE_III_L) {
-            uint256 p = (scaledState.totalGyroSupply - scaledState.reserveValue + vars.thetha) / 2;
-            uint256 q = (scaledState.totalGyroSupply - scaledState.reserveValue).mulDown(
-                vars.thetha
-            ) + vars.thetha.squareDown().mulDown(scaledState.redemptionLevel.squareDown()) / 4;
+            uint256 p = (anchoredState.totalGyroSupply - anchoredState.reserveValue + vars.theta) /
+                2;
+            uint256 q = (anchoredState.totalGyroSupply - anchoredState.reserveValue).mulDown(
+                vars.theta
+            ) + vars.theta.squareDown().mulDown(anchoredState.redemptionLevel.squareDown()) / 4;
             uint256 delta = p - (p.squareDown() - q).sqrt();
             return vars.ya - delta;
         }
@@ -419,19 +416,19 @@ contract PrimaryAMMV1 {
             return amount;
         }
 
-        if (nav <= params.targetReserveRatioFloor) {
+        if (nav <= params.thetaBar) {
             return nav.mulDown(amount);
         }
 
-        State memory scaledState;
+        State memory anchoredState;
         uint256 ya = state.totalGyroSupply + state.redemptionLevel;
 
-        scaledState.redemptionLevel = state.redemptionLevel.divDown(ya);
-        scaledState.reserveValue = state.reserveValue.divDown(ya);
-        scaledState.totalGyroSupply = state.totalGyroSupply.divDown(ya);
+        anchoredState.redemptionLevel = state.redemptionLevel.divDown(ya);
+        anchoredState.reserveValue = state.reserveValue.divDown(ya);
+        anchoredState.totalGyroSupply = state.totalGyroSupply.divDown(ya);
 
-        uint256 normalizedReserveValue = computeNextReserveValue(scaledState, params, derived);
-        uint256 reserveValue = normalizedReserveValue.mulDown(ya);
+        uint256 anchoredReserveValue = computeAnchoredReserveValue(anchoredState, params, derived);
+        uint256 reserveValue = anchoredReserveValue.mulDown(ya);
 
         uint256 nextReserveValue = computeReserve(
             state.redemptionLevel + amount,

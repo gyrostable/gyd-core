@@ -17,11 +17,6 @@ MotherboardArgs = namedtuple(
 )
 
 
-@pytest.fixture(autouse=True)
-def isolation(fn_isolation):
-    pass
-
-
 @pytest.fixture(scope="module")
 def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry):
     return admin.deploy(LPTokenExchangerRegistry)
@@ -43,6 +38,11 @@ def reserve(admin, Reserve):
 
 
 @pytest.fixture(scope="module")
+def mock_vault_router(admin, MockVaultRouter):
+    return admin.deploy(MockVaultRouter)
+
+
+@pytest.fixture(scope="module")
 def mock_lp_token_exchanger(admin, MockLPTokenExchanger):
     return admin.deploy(MockLPTokenExchanger)
 
@@ -54,6 +54,7 @@ def bal_exchanger(admin, BalancerExchanger):
 
 @pytest.fixture(scope="module")
 def bal_pool_registry(admin, BalancerPoolRegistry):
+    print("bal pool registry")
     return admin.deploy(BalancerPoolRegistry)
 
 
@@ -64,17 +65,26 @@ def gyro_config(admin, GyroConfig):
 
 @pytest.fixture(scope="module")
 def dai(Token):
-    yield Token.deploy("Dai Token", "DAI", 18, 1e20, {"from": accounts[0]})
+    token = Token.deploy("Dai Token", "DAI", 18, 1e20, {"from": accounts[0]})
+    for i in range(1, 10):
+        token.transfer(accounts[i], 100, {"from": accounts[0]})
+    yield token
 
 
 @pytest.fixture(scope="module")
 def usdc(Token):
-    yield Token.deploy("USDC Token", "USDC", 6, 1e20, {"from": accounts[0]})
+    token = Token.deploy("USDC Token", "USDC", 6, 1e20, {"from": accounts[0]})
+    for i in range(1, 10):
+        token.transfer(accounts[i], 100, {"from": accounts[0]})
+    yield token
 
 
 @pytest.fixture(scope="module")
 def usdt(Token):
-    yield Token.deploy("Tether", "USDT", 6, 1e20, {"from": accounts[0]})
+    token = Token.deploy("Tether", "USDT", 6, 1e20, {"from": accounts[0]})
+    for i in range(1, 10):
+        token.transfer(accounts[i], 100, {"from": accounts[0]})
+    yield token
 
 
 @pytest.fixture(scope="module")
@@ -110,24 +120,6 @@ def motherboard(
 
 
 @pytest.fixture(scope="module")
-def distribute_dai(dai):
-    for i in range(1, 10):
-        dai.transfer(accounts[i], 100, {"from": accounts[0]})
-
-
-@pytest.fixture(scope="module")
-def distribute_usdt(usdt):
-    for i in range(1, 10):
-        usdt.transfer(accounts[i], 100, {"from": accounts[0]})
-
-
-@pytest.fixture(scope="module")
-def distribute_usdc(usdc):
-    for i in range(1, 10):
-        usdc.transfer(accounts[i], 100, {"from": accounts[0]})
-
-
-@pytest.fixture
 def pamm(TestingPAMMV1):
     return TestingPAMMV1.deploy(
         (constants.ALPHA_MIN_REL, constants.XU_MAX_REL, constants.THETA_FLOOR),

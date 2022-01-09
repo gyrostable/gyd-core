@@ -1,10 +1,16 @@
 from decimal import Decimal
 from typing import Literal, Union, overload
 
+from tests.support.quantized_decimal import QuantizedDecimal
+
 DEFAULT_DECIMALS = 18
 
 
-def scale(value: Union[str, int], decimals: int = DEFAULT_DECIMALS):
+def scale(
+    value: Union[str, int, Decimal, QuantizedDecimal], decimals: int = DEFAULT_DECIMALS
+):
+    if isinstance(value, QuantizedDecimal):
+        value = value.raw
     multiplier = 10 ** decimals
     return (Decimal(value) * multiplier).quantize(multiplier)
 

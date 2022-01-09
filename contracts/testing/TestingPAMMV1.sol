@@ -9,45 +9,45 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
 
     constructor(Params memory params) PrimaryAMMV1(params) {}
 
-    function computeRegion(State calldata scaledState) external view returns (Region) {
+    function computeRegion(State calldata anchoredState) external view returns (Region) {
         DerivedParams memory derived = createDerivedParams(systemParams);
 
         uint256 b = computeReserve(
-            scaledState.redemptionLevel,
-            scaledState.reserveValue,
-            scaledState.totalGyroSupply,
+            anchoredState.redemptionLevel,
+            anchoredState.reserveValue,
+            anchoredState.totalGyroSupply,
             systemParams
         );
-        uint256 y = scaledState.totalGyroSupply - scaledState.redemptionLevel;
+        uint256 y = anchoredState.totalGyroSupply - anchoredState.redemptionLevel;
         State memory state = State({
-            redemptionLevel: scaledState.redemptionLevel,
+            redemptionLevel: anchoredState.redemptionLevel,
             reserveValue: b,
             totalGyroSupply: y
         });
 
-        return computeNextReserveValueRegion(state, systemParams, derived);
+        return computeReserveValueRegion(state, systemParams, derived);
     }
 
-    function computeReserveValue(State calldata scaledState) public view returns (uint256) {
+    function computeReserveValue(State calldata anchoredState) public view returns (uint256) {
         Params memory params = systemParams;
         DerivedParams memory derived = createDerivedParams(systemParams);
         uint256 b = computeReserve(
-            scaledState.redemptionLevel,
-            scaledState.reserveValue,
-            scaledState.totalGyroSupply,
+            anchoredState.redemptionLevel,
+            anchoredState.reserveValue,
+            anchoredState.totalGyroSupply,
             systemParams
         );
-        uint256 y = scaledState.totalGyroSupply - scaledState.redemptionLevel;
+        uint256 y = anchoredState.totalGyroSupply - anchoredState.redemptionLevel;
         State memory state = State({
-            redemptionLevel: scaledState.redemptionLevel,
+            redemptionLevel: anchoredState.redemptionLevel,
             reserveValue: b,
             totalGyroSupply: y
         });
-        return computeNextReserveValue(state, params, derived);
+        return computeAnchoredReserveValue(state, params, derived);
     }
 
-    function computeReserveValueWithGas(State calldata scaledState) external returns (uint256) {
-        return computeReserveValue(scaledState);
+    function computeReserveValueWithGas(State calldata anchoredState) external returns (uint256) {
+        return computeReserveValue(anchoredState);
     }
 
     function testComputeFixedReserve(
@@ -58,7 +58,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 xu,
         uint256 xl
     ) external pure returns (uint256) {
-        return computeFixedReserve(x, ba, ya, alpha, xu, xl);
+        return computeReserveFixedParams(x, ba, ya, alpha, xu, xl);
     }
 
     function testComputeReserve(
@@ -76,7 +76,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 thetaFloor,
         uint256 alphaMin
     ) external pure returns (uint256) {
-        return computeSlope(ba, ya, thetaFloor, alphaMin);
+        return computeAlphaHat(ba, ya, thetaFloor, alphaMin);
     }
 
     function testComputeUpperRedemptionThreshold(
@@ -87,13 +87,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 targetUtilizationCeiling
     ) external pure returns (uint256) {
         return
-            computeUpperRedemptionThreshold(
-                ba,
-                ya,
-                alpha,
-                stableRedeemThresholdUpperBound,
-                targetUtilizationCeiling
-            );
+            computeXuHat(ba, ya, alpha, stableRedeemThresholdUpperBound, targetUtilizationCeiling);
     }
 
     function computeDerivedParams() external view returns (DerivedParams memory) {
@@ -109,6 +103,6 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
     }
 
     function setDecaySlopeLowerBound(uint64 alpha) external {
-        systemParams.decaySlopeLowerBound = alpha;
+        systemParams.alphaBar = alpha;
     }
 }
