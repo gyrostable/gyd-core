@@ -4,9 +4,10 @@ pragma solidity ^0.8.4;
 
 import "../libraries/LogExpMath.sol";
 import "../libraries/FixedPoint.sol";
+import "../interfaces/IPAMM.sol";
 
 /// @notice Implements the primary AMM pricing mechanism
-contract PrimaryAMMV1 {
+contract PrimaryAMMV1 is IPAMM {
     using LogExpMath for uint256;
     using FixedPoint for uint256;
 
@@ -440,21 +441,36 @@ contract PrimaryAMMV1 {
         return state.reserveValue - nextReserveValue;
     }
 
-    function computeRedeemAmount(uint256 amount) external view returns (uint256) {
-        if (amount == 0) return 0;
-        Params memory params = systemParams;
-        DerivedParams memory derived = createDerivedParams(params);
-        return computeRedeemAmount(systemState, params, derived, amount);
+    /// @notice Returns the USD value to mint given an ammount of Gyro dollars
+    function computeMintAmount(uint256 usdAmount) external pure returns (uint256) {
+        return usdAmount;
     }
 
-    function redeem(uint256 amount) external returns (uint256) {
-        if (amount == 0) return 0;
+    /// @notice Records and returns the USD value to mint given an ammount of Gyro dollars
+    function mint(uint256 usdAmount) external returns (uint256) {
+        State storage state = systemState;
+        state.totalGyroSupply += usdAmount;
+        state.reserveValue += usdAmount;
+        return usdAmount;
+    }
+
+    /// @notice Computes the USD value to redeem given an ammount of Gyro dollars
+    function computeRedeemAmount(uint256 gydAmount) external view returns (uint256) {
+        if (gydAmount == 0) return 0;
+        Params memory params = systemParams;
+        DerivedParams memory derived = createDerivedParams(params);
+        return computeRedeemAmount(systemState, params, derived, gydAmount);
+    }
+
+    /// @notice Computes and records the USD value to redeem given an ammount of Gyro dollars
+    function redeem(uint256 gydAmount) external returns (uint256) {
+        if (gydAmount == 0) return 0;
         State storage state = systemState;
         Params memory params = systemParams;
         DerivedParams memory derived = createDerivedParams(params);
-        uint256 redeemAmount = computeRedeemAmount(state, params, derived, amount);
-        state.redemptionLevel += amount;
-        state.totalGyroSupply -= amount;
+        uint256 redeemAmount = computeRedeemAmount(state, params, derived, gydAmount);
+        state.redemptionLevel += gydAmount;
+        state.totalGyroSupply -= gydAmount;
         state.reserveValue -= redeemAmount;
         return redeemAmount;
     }

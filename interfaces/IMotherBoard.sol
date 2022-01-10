@@ -8,6 +8,7 @@ import "./IReserve.sol";
 import "./IPAMM.sol";
 import "./IGyroVaultRouter.sol";
 import "./IFeeBank.sol";
+import "./IPriceOracle.sol";
 
 /// @title IMotherBoard is the central contract connecting the different pieces
 /// of the Gyro protocol
@@ -27,6 +28,10 @@ interface IMotherBoard {
     /// @notice Returns the address for the fee bank
     /// @return the address of the fee bank
     function feeBank() external view returns (IFeeBank);
+
+    /// @notice Returns the address for the price oracle
+    /// @return the address of the price oracle
+    function priceOracle() external view returns (IPriceOracle);
 
     /// @notice Returns the address of the exchanger registry
     /// @return the exchanger registry address

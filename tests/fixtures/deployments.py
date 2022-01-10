@@ -13,6 +13,7 @@ MotherboardArgs = namedtuple(
         "gyroConfig",
         "feeBank",
         "reserve",
+        "priceOracle",
     ],
 )
 
@@ -98,6 +99,11 @@ def mock_pamm(admin, MockPAMM):
 
 
 @pytest.fixture(scope="module")
+def price_oracle(admin, MockPriceOracle):
+    return admin.deploy(MockPriceOracle)
+
+
+@pytest.fixture(scope="module")
 def motherboard(
     admin,
     Motherboard,
@@ -107,6 +113,7 @@ def motherboard(
     lp_token_exchanger_registry,
     mock_pamm,
     reserve,
+    price_oracle,
 ):
     args = MotherboardArgs(
         gydToken=gyd_token,
@@ -115,6 +122,7 @@ def motherboard(
         gyroConfig=gyro_config,
         feeBank=fee_bank,
         reserve=reserve,
+        priceOracle=price_oracle,
     )
     return admin.deploy(Motherboard, args)
 

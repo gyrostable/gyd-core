@@ -12,6 +12,7 @@ import "../interfaces/IPAMM.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeBank.sol";
+import "../interfaces/IPriceOracle.sol";
 
 import "../libraries/DataTypes.sol";
 import "../libraries/ConfigKeys.sol";
@@ -36,6 +37,7 @@ contract Motherboard is IMotherBoard, Governable {
         address gyroConfig;
         address feeBank;
         address reserve;
+        address priceOracle;
     }
 
     /// @inheritdoc IMotherBoard
@@ -56,6 +58,9 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     IFeeBank public override feeBank;
 
+    /// @inheritdoc IMotherBoard
+    IPriceOracle public override priceOracle;
+
     constructor(Addresses memory addresses) {
         gydToken = IGYDToken(addresses.gydToken);
         exchangerRegistry = ILPTokenExchangerRegistry(addresses.exchangerRegistry);
@@ -63,6 +68,7 @@ contract Motherboard is IMotherBoard, Governable {
         reserve = IReserve(addresses.reserve);
         gyroConfig = IGyroConfig(addresses.gyroConfig);
         feeBank = IFeeBank(addresses.feeBank);
+        priceOracle = IPriceOracle(addresses.priceOracle);
         gydToken.safeApprove(addresses.feeBank, type(uint256).max);
     }
 
@@ -109,7 +115,8 @@ contract Motherboard is IMotherBoard, Governable {
         }
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        uint256 gyroToMint = pamm.calculateAndRecordGYDToMint(vaultAmounts, mintFeeFraction);
+        uint256 usdValue = priceOracle.getUSDValue(vaultAmounts);
+        uint256 gyroToMint = pamm.mint(usdValue);
 
         uint256 feeToPay = gyroToMint.mulUp(mintFeeFraction);
 
@@ -192,7 +199,8 @@ contract Motherboard is IMotherBoard, Governable {
         }
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        mintedGYDAmount = pamm.calculateGYDToMint(vaultAmounts, mintFeeFraction);
+        uint256 usdValue = priceOracle.getUSDValue(vaultAmounts);
+        mintedGYDAmount = pamm.computeMintAmount(usdValue);
 
         uint256 feeToPay = mintedGYDAmount.mulUp(mintFeeFraction);
 

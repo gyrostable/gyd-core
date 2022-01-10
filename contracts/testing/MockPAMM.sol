@@ -6,42 +6,22 @@ import "../../interfaces/IPAMM.sol";
 
 contract MockPAMM is IPAMM {
     /// @inheritdoc IPAMM
-    function calculateGYDToMint(DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts, uint256)
-        external
-        pure
-        override
-        returns (uint256 gydAmount)
-    {
-        return _sumAmounts(vaultMonetaryAmounts);
+    function computeMintAmount(uint256 amount) external pure override returns (uint256) {
+        return amount;
     }
 
     /// @inheritdoc IPAMM
-    function calculateAndRecordGYDToMint(
-        DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts,
-        uint256
-    ) external pure override returns (uint256 gydAmount) {
-        return _sumAmounts(vaultMonetaryAmounts);
+    function mint(uint256 amount) external pure override returns (uint256) {
+        return amount;
     }
 
     /// @inheritdoc IPAMM
-    function calculateGYDToBurn(DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts, uint256)
-        external
-        pure
-        override
-        returns (uint256 gydAmount)
-    {
-        return _sumAmounts(vaultMonetaryAmounts);
+    function computeRedeemAmount(uint256 amount) external pure override returns (uint256) {
+        return amount;
     }
 
-    function _sumAmounts(DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts)
-        internal
-        pure
-        returns (uint256)
-    {
-        uint256 total = 0;
-        for (uint256 i = 0; i < vaultMonetaryAmounts.length; i++) {
-            total += vaultMonetaryAmounts[i].amount;
-        }
-        return total;
+    /// @inheritdoc IPAMM
+    function redeem(uint256 amount) external pure override returns (uint256) {
+        return amount;
     }
 }
