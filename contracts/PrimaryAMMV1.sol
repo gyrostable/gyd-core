@@ -1,13 +1,14 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-// SPDX-License-Identifier: MIT
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "../libraries/LogExpMath.sol";
 import "../libraries/FixedPoint.sol";
 import "../interfaces/IPAMM.sol";
 
 /// @notice Implements the primary AMM pricing mechanism
-contract PrimaryAMMV1 is IPAMM {
+contract PrimaryAMMV1 is IPAMM, Ownable {
     using LogExpMath for uint256;
     using FixedPoint for uint256;
 
@@ -447,7 +448,7 @@ contract PrimaryAMMV1 is IPAMM {
     }
 
     /// @notice Records and returns the USD value to mint given an ammount of Gyro dollars
-    function mint(uint256 usdAmount) external returns (uint256) {
+    function mint(uint256 usdAmount) external onlyOwner returns (uint256) {
         State storage state = systemState;
         state.totalGyroSupply += usdAmount;
         state.reserveValue += usdAmount;
@@ -463,7 +464,7 @@ contract PrimaryAMMV1 is IPAMM {
     }
 
     /// @notice Computes and records the USD value to redeem given an ammount of Gyro dollars
-    function redeem(uint256 gydAmount) external returns (uint256) {
+    function redeem(uint256 gydAmount) external onlyOwner returns (uint256) {
         if (gydAmount == 0) return 0;
         State storage state = systemState;
         Params memory params = systemParams;
