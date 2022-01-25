@@ -83,7 +83,7 @@ function _revert(uint256 errorCode) pure {
     }
 }
 
-library Errors {
+library BalancerErrors {
     // Math
     uint256 internal constant ADD_OVERFLOW = 0;
     uint256 internal constant SUB_OVERFLOW = 1;

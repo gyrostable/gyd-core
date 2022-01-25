@@ -4,35 +4,17 @@ pragma solidity ^0.8.4;
 import "../../interfaces/IPriceOracle.sol";
 
 contract MockPriceOracle is IPriceOracle {
-    /// @inheritdoc IPriceOracle
-    function getUSDValue(DataTypes.MonetaryAmount memory monetaryAmount)
-        external
-        pure
-        override
-        returns (uint256)
-    {
-        return monetaryAmount.amount;
-    }
+    mapping(address => uint256) internal prices;
 
     /// @inheritdoc IPriceOracle
-    function getUSDValue(DataTypes.MonetaryAmount[] memory monetaryAmounts)
-        external
-        pure
-        override
-        returns (uint256)
-    {
-        return _sumAmounts(monetaryAmounts);
+    /// @dev this is a dummy function that tries to read from the state
+    /// and otherwise simply returns 1
+    function getPriceUSD(address baseAsset) external view returns (uint256) {
+        uint256 cachedPrice = prices[baseAsset];
+        return cachedPrice == 0 ? 1e18 : cachedPrice;
     }
 
-    function _sumAmounts(DataTypes.MonetaryAmount[] memory vaultMonetaryAmounts)
-        internal
-        pure
-        returns (uint256)
-    {
-        uint256 total = 0;
-        for (uint256 i = 0; i < vaultMonetaryAmounts.length; i++) {
-            total += vaultMonetaryAmounts[i].amount;
-        }
-        return total;
+    function setPrice(address baseAsset, uint256 price) external {
+        prices[baseAsset] = price;
     }
 }
