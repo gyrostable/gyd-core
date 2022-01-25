@@ -16,20 +16,23 @@ jobs:
         run: yarn
       - name: Lint Contracts
         run: yarn run lint
+
   unit_test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
-      - name: Use Python 3.9.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9.7
-      - name: Install Requirements
-        run: pip3 install install -r requirements.txt
-      - name: Install ganache-cli
-        run: yarn global add ganache-cli
-      - name: Compile contracts
-        run: brownie compile
+      - uses: ./.github/actions/setup
       - name: Run Unit Tests
-        run: brownie test --coverage
+        run: brownie test --coverage -m 'not mainnetFork'
+
+  integration_test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      WEB3_INFURA_PROJECT_ID: ${{ secrets.WEB3_INFURA_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+      - name: Run Integration Tests
+        run: brownie test -m mainnetFork --network mainnet-fork

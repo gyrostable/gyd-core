@@ -20,4 +20,9 @@ library Errors {
 
     string public constant NOT_AUTHORIZED = "30";
     string public constant INVALID_ARGUMENT = "31";
+
+    // Oracle related errors
+    string public constant ASSET_NOT_SUPPORTED = "40";
+    string public constant STALE_PRICE = "41";
+    string public constant NEGATIVE_PRICE = "42";
 }
