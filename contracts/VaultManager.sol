@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "../libraries/FixedPoint.sol";
 import "../interfaces/IVaultManager.sol";
+import "../interfaces/IPriceOracle.sol";
 import "../interfaces/IVaultRegistry.sol";
 import "./auth/Governable.sol";
 
@@ -14,8 +15,8 @@ contract VaultManager is IVaultManager, Governable {
     IVaultRegistry public immutable vaultRegistry;
     address public reserveAddress;
 
-    IVaultWeightManager vaultWeightManager;
-    IVaultPriceOracle vaultPriceOracle;
+    IVaultWeightManager internal vaultWeightManager;
+    IPriceOracle internal priceOracle;
 
     constructor(address _vaultRegistry, address _reserve) {
         vaultRegistry = IVaultRegistry(_vaultRegistry);
@@ -42,9 +43,11 @@ contract VaultManager is IVaultManager, Governable {
             weights = vaultWeightManager.getVaultWeights(vaultAddresses);
         }
 
-        uint256[] memory prices;
+        uint256[] memory prices = new uint256[](vaultAddresses.length);
         if (includePrice) {
-            prices = vaultPriceOracle.getVaultTokenPrices(vaultAddresses);
+            for (uint256 i = 0; i < vaultAddresses.length; i++) {
+                prices[i] = priceOracle.getPriceUSD(vaultAddresses[i]);
+            }
         }
 
         uint256 length = vaultAddresses.length;
@@ -87,15 +90,15 @@ contract VaultManager is IVaultManager, Governable {
     }
 
     /// @inheritdoc IVaultManager
-    function getVaultPriceOracle() external view override returns (IVaultPriceOracle) {
-        return vaultPriceOracle;
+    function getPriceOracle() external view override returns (IPriceOracle) {
+        return priceOracle;
     }
 
     /// @inheritdoc IVaultManager
-    function setVaultPriceOracle(address priceOracle) external override governanceOnly {
-        address currentOracle = address(vaultPriceOracle);
-        vaultPriceOracle = IVaultPriceOracle(priceOracle);
-        emit NewVaultPriceOracle(currentOracle, priceOracle);
+    function setPriceOracle(address _priceOracle) external override governanceOnly {
+        address currentOracle = address(priceOracle);
+        priceOracle = IPriceOracle(_priceOracle);
+        emit NewPriceOracle(currentOracle, _priceOracle);
     }
 
     /// @inheritdoc IVaultManager

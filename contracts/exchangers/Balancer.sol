@@ -8,7 +8,6 @@ import "../../libraries/DataTypes.sol";
 import "../../interfaces/IBalancerPoolRegistry.sol";
 import "../../interfaces/ILPTokenExchanger.sol";
 
-import "../../libraries/Errors.sol";
 import "../../libraries/FixedPoint.sol";
 
 import "../auth/Governable.sol";

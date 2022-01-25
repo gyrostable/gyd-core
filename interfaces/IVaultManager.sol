@@ -2,12 +2,12 @@
 pragma solidity ^0.8.4;
 
 import "../interfaces/IVaultWeightManager.sol";
-import "../interfaces/IVaultPriceOracle.sol";
+import "../interfaces/IPriceOracle.sol";
 import "../libraries/DataTypes.sol";
 
 interface IVaultManager {
     event NewVaultWeightManager(address indexed oldManager, address indexed newManager);
-    event NewVaultPriceOracle(address indexed oldOracle, address indexed newOracle);
+    event NewPriceOracle(address indexed oldOracle, address indexed newOracle);
 
     /// @notice Returns a list of vaults without including any metadata
     function listVaults() external view returns (DataTypes.VaultInfo[] memory);
@@ -26,8 +26,8 @@ interface IVaultManager {
     function setVaultWeightManager(address vaultManager) external;
 
     /// @notice Returns the current vault price oracle
-    function getVaultPriceOracle() external view returns (IVaultPriceOracle);
+    function getPriceOracle() external view returns (IPriceOracle);
 
     /// @notice Set the vault price oracle
-    function setVaultPriceOracle(address priceOracle) external;
+    function setPriceOracle(address priceOracle) external;
 }
