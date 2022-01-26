@@ -14,7 +14,7 @@ contract ChainlinkPriceOracle is IPriceOracle, Governable {
 
     event FeedUpdated(address indexed asset, address indexed previousFeed, address indexed newFeed);
 
-    uint256 public constant STALE_PRICE_DELAY = 86400;
+    uint256 public constant MAX_LAG = 86400;
 
     mapping(address => address) public feeds;
 
@@ -25,7 +25,7 @@ contract ChainlinkPriceOracle is IPriceOracle, Governable {
 
         (, int256 answer, , uint256 updatedAt, ) = AggregatorV2V3Interface(feed).latestRoundData();
 
-        require(block.timestamp <= updatedAt + STALE_PRICE_DELAY, Errors.STALE_PRICE);
+        require(block.timestamp <= updatedAt + MAX_LAG, Errors.STALE_PRICE);
         require(answer >= 0, Errors.NEGATIVE_PRICE);
 
         uint256 price = uint256(answer);
