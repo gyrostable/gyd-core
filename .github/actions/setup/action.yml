@@ -1,0 +1,18 @@
+name: "Setup environment"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Use Python 3.9.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9.7
+    - name: Install Requirements
+      run: pip3 install install -r requirements.txt
+      shell: bash
+    - name: Install ganache
+      run: yarn global add ganache
+      shell: bash
+    - name: Compile contracts
+      run: brownie compile
+      shell: bash

@@ -16,3 +16,11 @@ compiler:
 dependencies:
   - OpenZeppelin/openzeppelin-contracts@4.3.2
   - balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable
+
+networks:
+  development:
+    cmd_settings:
+      evm_version: istanbul
+  mainnet-fork:
+    cmd_settings:
+      evm_version: london
