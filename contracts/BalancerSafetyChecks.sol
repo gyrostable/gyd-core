@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "../interfaces/balancer/IVault.sol";
+import "../interfaces/balancer/IBasePool.sol";
 import "../libraries/DataTypes.sol";
 import "../libraries/FixedPoint.sol";
 
@@ -30,12 +31,32 @@ contract BalancerSafetyChecks is Ownable {
         balancerVaultAddress = _balancerVaultAddress;
     }
 
+    function isPoolPaused(bytes32 poolId) internal view returns (bool) {
+        IVault balVault = IVault(balancerVaultAddress);
+        (address poolAddress, ) = balVault.getPool(poolId);
+        // IBasePool pool = IBasePool(poolAddress); what is the correct interface?
+        pool.getP
+        //to implement. NB if pool paused users can still withdraw, make this behaviour reflected in the minting and redeeming safety checks.
+    }
+
+    function areSwapsEnabledForPool(bytes32 poolId) internal view returns (bool) {
+        //to implement. This is only for Liquidity boostrapping and managed pools
+    }
+
+    function arePoolAssetWeightsCloseToDesired(bytes32 poolId) internal view returns (bool) {
+        //to implement
+    }
+
+    function doesPoolHaveLiveness(bytes32 poolId) internal view returns (bool) {
+        //to implement
+    }
+
     /// @dev stablecoinPrice must be scaled to 10^18
     function isStablecoinHealthy(uint256 stablecoinPrice) internal view returns (bool) {
         return stablecoinPrice.absSub(STABLECOIN_IDEAL_PRICE) <= stablecoinMaxDeviation;
     }
 
-    function isPoolOperatingNormally(uint256[] memory allUnderlyingPrices, bytes32 poolId)
+    function arePoolStablecoinsHealthy(uint256[] memory allUnderlyingPrices, bytes32 poolId)
         internal
         view
         returns (bool)
@@ -44,9 +65,6 @@ contract BalancerSafetyChecks is Ownable {
 
         (IERC20[] memory tokens, , ) = balVault.getPoolTokens(poolId);
 
-        //Need to make sure that correspondence between all underlying prices and tokens is maintained
-
-        // Go through the underlying tokens within the pool
         for (uint256 i = 0; i < tokens.length; i++) {
             address tokenAddress = address(tokens[i]);
             if (_tokenProperties[tokenAddress].isStablecoin) {
@@ -63,18 +81,18 @@ contract BalancerSafetyChecks is Ownable {
         return true;
     }
 
-    function checkAllPoolsOperatingNormally(
-        bytes32[] memory poolIds,
-        uint256[] memory allUnderlyingPrices
-    ) external view returns (bool, bool[] memory) {
-        bool[] memory poolsOperatingNormally = new bool[](poolIds.length);
-        bool allPoolsOperatingNormally = true;
+    // function areAllPoolsHealthy(
+    //     bytes32[] memory poolIds,
+    //     uint256[] memory allUnderlyingPrices
+    // ) external view returns (bool, bool[] memory) {
+    //     bool[] memory poolHealth = new bool[](poolIds.length);
+    //     bool allPoolsHealthy = true;
 
-        for (uint256 i = 0; i < poolIds.length; i++) {
-            poolsOperatingNormally[i] = isPoolOperatingNormally(allUnderlyingPrices, poolIds[i]);
-            allPoolsOperatingNormally = allPoolsOperatingNormally && poolsOperatingNormally[i];
-        }
+    //     for (uint256 i = 0; i < poolIds.length; i++) {
+    //         poolHealth[i] = isPoolOperatingNormally(allUnderlyingPrices, poolIds[i]);
+    //         allPoolsHealthy = allPoolsHealthy && poolHealth[i];
+    //     }
 
-        return (allPoolsOperatingNormally, poolsOperatingNormally);
-    }
+    //     return (allPoolsHealthy, poolHealth);
+    // }
 }

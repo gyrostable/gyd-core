@@ -132,6 +132,10 @@ contract ReserveSafetyManager is Ownable, Governable {
         return allUnhealthyVaultsWouldMoveTowardsIdeal;
     }
 
+    function isVaultPaused(DataTypes.VaultInfo vault) internal pure returns (bool) {
+        //To implement
+    }
+
     function safeToMint(
         DataTypes.VaultInfo[] memory vaults,
         DataTypes.MintAsset[] memory,
