@@ -1,4 +1,5 @@
 from decimal import Decimal
+
 from tests.support.quantized_decimal import QuantizedDecimal
 from tests.support.utils import scale
 
@@ -13,3 +14,8 @@ ALPHA_MIN_REL: Decimal = scale(RAW_ALPHA_MIN_REL, 18)  # Relative to ya. Scale b
 UNSCALED_THETA_FLOOR = QuantizedDecimal(RAW_THETA_FLOOR)
 UNSCALED_XU_MAX_REL = QuantizedDecimal(RAW_XU_MAX_REL)
 UNSCALED_ALPHA_MIN_REL = QuantizedDecimal(RAW_ALPHA_MIN_REL)
+
+COINBASE_SIGNING_ADDRESS = "0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC"
+
+WBTC_ADDRESS = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F"

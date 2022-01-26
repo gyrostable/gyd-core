@@ -25,4 +25,5 @@ library Errors {
     string public constant ASSET_NOT_SUPPORTED = "40";
     string public constant STALE_PRICE = "41";
     string public constant NEGATIVE_PRICE = "42";
+    string public constant INVALID_MESSAGE = "43";
 }

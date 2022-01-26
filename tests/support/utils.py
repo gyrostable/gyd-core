@@ -8,7 +8,7 @@ DEFAULT_DECIMALS = 18
 
 def scale(
     value: Union[str, int, Decimal, QuantizedDecimal], decimals: int = DEFAULT_DECIMALS
-):
+) -> Decimal:
     if isinstance(value, QuantizedDecimal):
         value = value.raw
     multiplier = 10 ** decimals

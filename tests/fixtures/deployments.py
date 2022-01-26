@@ -109,6 +109,27 @@ def asset_pricer(admin, AssetPricer, mock_price_oracle):
 
 
 @pytest.fixture(scope="module")
+def asset_registry(admin, AssetRegistry):
+    return admin.deploy(AssetRegistry)
+
+
+@pytest.fixture(scope="module")
+def coinbase_price_oracle(admin, TestingTrustedSignerPriceOracle, asset_registry):
+    return admin.deploy(
+        TestingTrustedSignerPriceOracle,
+        asset_registry,
+        constants.COINBASE_SIGNING_ADDRESS,
+    )
+
+
+@pytest.fixture(scope="module")
+def local_signer_price_oracle(
+    admin, TestingTrustedSignerPriceOracle, asset_registry, price_signer
+):
+    return admin.deploy(TestingTrustedSignerPriceOracle, asset_registry, price_signer)
+
+
+@pytest.fixture(scope="module")
 def motherboard(
     admin,
     Motherboard,
