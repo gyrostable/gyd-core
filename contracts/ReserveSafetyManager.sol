@@ -132,7 +132,7 @@ contract ReserveSafetyManager is Ownable, Governable {
         return allUnhealthyVaultsWouldMoveTowardsIdeal;
     }
 
-    function isVaultPaused(DataTypes.VaultInfo vault) internal pure returns (bool) {
+    function isVaultPaused(DataTypes.VaultInfo memory vault) internal pure returns (bool) {
         //To implement
     }
 

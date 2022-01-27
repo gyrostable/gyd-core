@@ -42,16 +42,16 @@ contract BalancerSafetyChecks is Ownable {
         return paused;
     }
 
-    function arePoolAssetWeightsCloseToDesired(bytes32 poolId) internal view returns (bool) {
-        IVault balVault = IVault(balancerVaultAddress);
-        (IERC20[] memory tokens, uint256[] memory balances, uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
-        //Finish implementation
+    // function arePoolAssetWeightsCloseToDesired(bytes32 poolId) internal view returns (bool) {
+    //     IVault balVault = IVault(balancerVaultAddress);
+    //     (IERC20[] memory tokens, uint256[] memory balances, uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
+    //     //Finish implementation
         
-        (address poolAddress, ) = balVault.getPool(poolId);
-        IBalancerPool pool = IBalancerPool(poolAddress);
-        uint256[] memory normlizedWeights = pool.getNormalizedWeights(); 
+    //     (address poolAddress, ) = balVault.getPool(poolId);
+    //     IBalancerPool pool = IBalancerPool(poolAddress);
+    //     uint256[] memory normlizedWeights = pool.getNormalizedWeights(); 
 
-    }
+    // }
 
     function doesPoolHaveLiveness(bytes32 poolId) internal view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
