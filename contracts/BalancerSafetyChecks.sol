@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "../interfaces/balancer/IVault.sol";
-import "../interfaces/balancer/IBasePool.sol";
+import "../interfaces/IBalancerPool.sol";
 import "../libraries/DataTypes.sol";
 import "../libraries/FixedPoint.sol";
 
@@ -24,31 +24,41 @@ contract BalancerSafetyChecks is Ownable {
     uint256 public stablecoinMaxDeviation = 1e16;
 
     address private balancerVaultAddress;
+    uint256 private maxActivityLag;
+
 
     mapping(address => DataTypes.TokenProperties) _tokenProperties;
 
-    constructor(address _balancerVaultAddress) {
+    constructor(address _balancerVaultAddress, uint256 _maxActivityLag) {
         balancerVaultAddress = _balancerVaultAddress;
+        maxActivityLag = _maxActivityLag;
     }
 
     function isPoolPaused(bytes32 poolId) internal view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (address poolAddress, ) = balVault.getPool(poolId);
-        // IBasePool pool = IBasePool(poolAddress); what is the correct interface?
-        pool.getP
-        //to implement. NB if pool paused users can still withdraw, make this behaviour reflected in the minting and redeeming safety checks.
-    }
-
-    function areSwapsEnabledForPool(bytes32 poolId) internal view returns (bool) {
-        //to implement. This is only for Liquidity boostrapping and managed pools
+        IBalancerPool pool = IBalancerPool(poolAddress);
+        (bool paused, , ) = pool.getPausedState();
+        return paused;
     }
 
     function arePoolAssetWeightsCloseToDesired(bytes32 poolId) internal view returns (bool) {
-        //to implement
+        IVault balVault = IVault(balancerVaultAddress);
+        (IERC20[] memory tokens, uint256[] memory balances, uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
+        //Finish implementation
+        
+        (address poolAddress, ) = balVault.getPool(poolId);
+        IBalancerPool pool = IBalancerPool(poolAddress);
+        uint256[] memory normlizedWeights = pool.getNormalizedWeights(); 
+
     }
 
     function doesPoolHaveLiveness(bytes32 poolId) internal view returns (bool) {
-        //to implement
+        IVault balVault = IVault(balancerVaultAddress);
+        (IERC20[] memory tokens, uint256[] memory balances, uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
+        bool lastChangeRecent = lastChangeBlock.absSub(block.number) <=
+            maxActivityLag;        
+        return lastChangeRecent;        
     }
 
     /// @dev stablecoinPrice must be scaled to 10^18
