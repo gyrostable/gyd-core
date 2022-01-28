@@ -29,3 +29,10 @@ def admin(accounts):
 @pytest.fixture(scope="session")
 def gov(accounts):
     return accounts[5]
+
+
+@pytest.fixture(scope="session")
+def price_signer(accounts):
+    return accounts.add(
+        "0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c3773"
+    )
