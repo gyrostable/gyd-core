@@ -32,4 +32,11 @@ library Errors {
     string public constant STALE_PRICE = "41";
     string public constant NEGATIVE_PRICE = "42";
     string public constant INVALID_MESSAGE = "43";
+
+    //Safety check related errors
+    string public constant POOL_HAS_ZERO_USD_VALUE = "51";
+    string public constant POOL_DOES_NOT_HAVE_LIVENESS = "52";
+    string public constant POOL_IS_PAUSED = "53";
+    string public constant ASSETS_NOT_CLOSE_TO_POOL_WEIGHTS = "54";
+
 }
