@@ -17,6 +17,10 @@ library Errors {
     string public constant INVALID_EXPONENT = "23";
     string public constant OUT_OF_BOUNDS = "24";
     string public constant ZERO_DIVISION = "25";
+    string public constant ADD_OVERFLOW = "26";
+    string public constant SUB_OVERFLOW = "27";
+    string public constant MUL_OVERFLOW = "28";
+    string public constant DIV_INTERNAL = "29";
 
     string public constant NOT_AUTHORIZED = "30";
     string public constant INVALID_ARGUMENT = "31";
