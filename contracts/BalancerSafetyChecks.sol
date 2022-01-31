@@ -31,7 +31,14 @@ contract BalancerSafetyChecks is Ownable {
     uint256 private stablecoinMaxDeviation;
     uint256 private poolWeightMaxDeviation;
 
-    constructor(address _balancerVaultAddress, address _assetRegistryAddress, address _priceOracleAddress, address _assetPricerAddress, uint256 _maxActivityLag, uint256 _stablecoinMaxDeviation, uint256 _poolWeightMaxDeviation) {
+    constructor(address _balancerVaultAddress, 
+                address _assetRegistryAddress, 
+                address _priceOracleAddress, 
+                address _assetPricerAddress, 
+                uint256 _maxActivityLag, 
+                uint256 _stablecoinMaxDeviation, 
+                uint256 _poolWeightMaxDeviation) {
+                    
         balancerVaultAddress = _balancerVaultAddress;
         assetRegistryAddress = _assetRegistryAddress;
         assetPricerAddress = _assetPricerAddress;
@@ -41,15 +48,16 @@ contract BalancerSafetyChecks is Ownable {
         poolWeightMaxDeviation = _poolWeightMaxDeviation; /// @dev this should be scaled by 10^18, i.e. 1e16 == 1%
     }
 
-    function isPoolPaused(bytes32 poolId) internal view returns (bool) {
+    function isPoolPaused(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (address poolAddress, ) = balVault.getPool(poolId);
+        require(poolAddress != address(0), "No Pool id registered");
         IBalancerPool balancerPool = IBalancerPool(poolAddress);
         (bool paused, , ) = balancerPool.getPausedState();
         return paused;
     }
 
-    function arePoolAssetWeightsCloseToStated(bytes32 poolId) internal view returns (bool) {
+    function arePoolAssetWeightsCloseToStated(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         IAssetPricer assetPricer = IAssetPricer(assetPricerAddress);
         (address poolAddress, ) = balVault.getPool(poolId);
@@ -92,7 +100,7 @@ contract BalancerSafetyChecks is Ownable {
 
     }
 
-    function doesPoolHaveLiveness(bytes32 poolId) internal view returns (bool) {
+    function doesPoolHaveLiveness(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (, , uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
         bool lastChangeRecent = lastChangeBlock.absSub(block.number) <=
@@ -106,7 +114,7 @@ contract BalancerSafetyChecks is Ownable {
     }
 
     function areAllPoolStablecoinsCloseToPeg(bytes32 poolId)
-        internal
+        public
         view
         returns (bool)
     {
@@ -136,7 +144,7 @@ contract BalancerSafetyChecks is Ownable {
         return true;
     }
 
-    function arePoolsSafe(bytes32[] memory poolIds) external view returns (bool) {
+    function arePoolsSafe(bytes32[] memory poolIds) public view returns (bool) {
         for (uint256 i = 0; i < poolIds.length; i++) {
             bool poolLiveness = doesPoolHaveLiveness(poolIds[i]);
             require (poolLiveness, Errors.POOL_DOES_NOT_HAVE_LIVENESS);

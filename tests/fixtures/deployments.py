@@ -1,4 +1,5 @@
 from collections import namedtuple
+from unittest.mock import Mock
 
 import pytest
 from brownie import accounts
@@ -50,6 +51,16 @@ def mock_vault_router(admin, MockVaultRouter):
 
 
 @pytest.fixture(scope="module")
+def mock_balancer_pool(admin, MockBalancerPool):
+    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID)
+
+
+@pytest.fixture(scope="module")
+def mock_balancer_vault(admin, MockBalVault):
+    return admin.deploy(MockBalVault)
+
+
+@pytest.fixture(scope="module")
 def mock_lp_token_exchanger(admin, MockLPTokenExchanger):
     return admin.deploy(MockLPTokenExchanger)
 
@@ -61,7 +72,6 @@ def bal_exchanger(admin, BalancerExchanger):
 
 @pytest.fixture(scope="module")
 def bal_pool_registry(admin, BalancerPoolRegistry):
-    print("bal pool registry")
     return admin.deploy(BalancerPoolRegistry)
 
 
@@ -214,3 +224,31 @@ def pamm(TestingPAMMV1):
         (constants.ALPHA_MIN_REL, constants.XU_MAX_REL, constants.THETA_FLOOR),
         {"from": accounts[0]},
     )
+
+
+@pytest.fixture(scope="module")
+def balancer_safety_checks(
+    admin,
+    BalancerSafetyChecks,
+    asset_registry,
+    mock_price_oracle,
+    asset_pricer,
+    mock_balancer_vault,
+):
+    return admin.deploy(
+        BalancerSafetyChecks,
+        mock_balancer_vault,
+        asset_registry,
+        mock_price_oracle,
+        asset_pricer,
+        constants.MAX_BALANCER_ACTIVITY_LAG,
+        constants.STABLECOIN_MAX_DEVIATION,
+        constants.MAX_POOL_WEIGHT_DEVIATION,
+    )
+
+
+@pytest.fixture(scope="module")
+def set_data_for_mock_bal_vault(mock_balancer_vault, mock_balancer_pool):
+    mock_balancer_vault.setCash(100000000000000000000000000)
+    mock_balancer_vault.setPoolTokens()
+    mock_balancer_vault.storePoolAddress(mock_balancer_pool)
