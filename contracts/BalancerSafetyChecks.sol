@@ -7,9 +7,11 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "../interfaces/balancer/IVault.sol";
 import "../interfaces/IBalancerPool.sol";
+import "../interfaces/IAssetRegistry.sol";
 import "../libraries/DataTypes.sol";
 import "../libraries/FixedPoint.sol";
 import "../interfaces/IAssetPricer.sol";
+import "../interfaces/IPriceOracle.sol";
 
 /**
     @title Contract containing the safety checks performed on Balancer pools
@@ -22,16 +24,18 @@ contract BalancerSafetyChecks is Ownable {
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
 
     address private balancerVaultAddress;
+    address private assetRegistryAddress;
     address private assetPricerAddress;
+    address private priceOracleAddress;
     uint256 private maxActivityLag;
     uint256 private stablecoinMaxDeviation;
     uint256 private poolWeightMaxDeviation;
 
-
-    mapping(address => DataTypes.TokenProperties) _tokenProperties;
-
-    constructor(address _balancerVaultAddress, uint256 _maxActivityLag, uint256 _stablecoinMaxDeviation, uint256 _poolWeightMaxDeviation) {
+    constructor(address _balancerVaultAddress, address _assetRegistryAddress, address _priceOracleAddress, address _assetPricerAddress, uint256 _maxActivityLag, uint256 _stablecoinMaxDeviation, uint256 _poolWeightMaxDeviation) {
         balancerVaultAddress = _balancerVaultAddress;
+        assetRegistryAddress = _assetRegistryAddress;
+        assetPricerAddress = _assetPricerAddress;
+        priceOracleAddress = _priceOracleAddress;
         maxActivityLag = _maxActivityLag;
         stablecoinMaxDeviation = _stablecoinMaxDeviation; /// @dev this should be scaled by 10^18, i.e. 1e16 == 1%
         poolWeightMaxDeviation = _poolWeightMaxDeviation; /// @dev this should be scaled by 10^18, i.e. 1e16 == 1%
@@ -53,27 +57,27 @@ contract BalancerSafetyChecks is Ownable {
 
 
         (IERC20[] memory tokens, uint256[] memory balances, uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
-        require (tokens.length == balances.length);
+        require (tokens.length == balances.length, Errors.DIFFERENT_NUMBER_OF_TOKENS_TO_BALANCES);
 
-        DataTypes.MonetaryAmount[] memory MonetaryAmounts = new DataTypes.MonetaryAmount[](tokens.length);
+        DataTypes.MonetaryAmount[] memory monetaryAmounts = new DataTypes.MonetaryAmount[](tokens.length);
         for (uint256 i = 0; i < tokens.length; i++) {
-            MonetaryAmounts[i] = DataTypes.MonetaryAmount({tokenAddress: address(tokens[i]), amount: balances[i]});
+            monetaryAmounts[i] = DataTypes.MonetaryAmount({tokenAddress: address(tokens[i]), amount: balances[i]});
         }
 
-        uint256[] memory weights = new uint256[](MonetaryAmounts.length);
-        uint256[] memory assetPrices = new uint256[](MonetaryAmounts.length);
+        uint256[] memory weights = new uint256[](monetaryAmounts.length);
+        uint256[] memory assetPrices = new uint256[](monetaryAmounts.length);
 
         uint256 totalPoolUSDValue = 0;
-        for (uint256 i = 0; i < MonetaryAmounts.length; i ++) {
-            uint256 usdValue = assetPricer.getUSDValue(MonetaryAmounts[i]);
+        for (uint256 i = 0; i < monetaryAmounts.length; i ++) {
+            uint256 usdValue = assetPricer.getUSDValue(monetaryAmounts[i]);
             assetPrices[i] = usdValue;
             totalPoolUSDValue = totalPoolUSDValue + usdValue;
         }
         require (totalPoolUSDValue > 0, Errors.POOL_HAS_ZERO_USD_VALUE);
     
 
-        for (uint256 i=0; i < MonetaryAmounts.length; i++) {
-            weights[i] = MonetaryAmounts[i].amount.mulDown(assetPrices[i]).divDown(totalPoolUSDValue);
+        for (uint256 i=0; i < monetaryAmounts.length; i++) {
+            weights[i] = monetaryAmounts[i].amount.mulDown(assetPrices[i]).divDown(totalPoolUSDValue);
         }
         
         uint256[] memory normalizedWeights = balancerPool.getNormalizedWeights();
@@ -90,7 +94,7 @@ contract BalancerSafetyChecks is Ownable {
 
     function doesPoolHaveLiveness(bytes32 poolId) internal view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
-        (IERC20[] memory tokens, uint256[] memory balances, uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
+        (, , uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
         bool lastChangeRecent = lastChangeBlock.absSub(block.number) <=
             maxActivityLag;        
         return lastChangeRecent;        
@@ -107,25 +111,28 @@ contract BalancerSafetyChecks is Ownable {
         returns (bool)
     {
         IVault balVault = IVault(balancerVaultAddress);
+        IPriceOracle priceOracle = IPriceOracle(priceOracleAddress);
+        IAssetRegistry assetRegistry = IAssetRegistry(assetRegistryAddress);
 
         (IERC20[] memory tokens, , ) = balVault.getPoolTokens(poolId);
 
         for (uint256 i = 0; i < tokens.length; i++) {
 
-            // if (token is stablecoin) {
-            //     check that stablecoincoin is close to peg. If not, return false. 
-            // }
-            if (_tokenProperties[tokenAddress].isStablecoin) {
-                uint256 stablecoinPrice = allUnderlyingPrices[
-                    _tokenProperties[tokenAddress].tokenIndex
-                ];
+            address tokenAddress = address(tokens[i]);
 
-                if (!isStablecoinCloseToPeg(stablecoinPrice)) {
+            bool isAssetStable = assetRegistry.isAssetStable(tokenAddress);
+
+            if (isAssetStable) {
+                uint256 stablecoinPrice = priceOracle.getPriceUSD(tokenAddress);
+                bool isCloseToPeg = isStablecoinCloseToPeg(stablecoinPrice);
+
+                if (!isCloseToPeg) {
                     return false;
                 }
             }
-        }
 
+        }
+        
         return true;
     }
 

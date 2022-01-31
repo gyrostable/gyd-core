@@ -38,5 +38,7 @@ library Errors {
     string public constant POOL_DOES_NOT_HAVE_LIVENESS = "52";
     string public constant POOL_IS_PAUSED = "53";
     string public constant ASSETS_NOT_CLOSE_TO_POOL_WEIGHTS = "54";
+    string public constant STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG = "55";
+    string public constant DIFFERENT_NUMBER_OF_TOKENS_TO_BALANCES = "56";
 
 }
