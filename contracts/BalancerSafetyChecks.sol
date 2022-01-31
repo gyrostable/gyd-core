@@ -101,33 +101,33 @@ contract BalancerSafetyChecks is Ownable {
         return stablecoinPrice.absSub(STABLECOIN_IDEAL_PRICE) <= stablecoinMaxDeviation;
     }
 
-    // function areAllPoolStablecoinsCloseToPeg(bytes32 poolId)
-    //     internal
-    //     view
-    //     returns (bool)
-    // {
-    //     IVault balVault = IVault(balancerVaultAddress);
+    function areAllPoolStablecoinsCloseToPeg(bytes32 poolId)
+        internal
+        view
+        returns (bool)
+    {
+        IVault balVault = IVault(balancerVaultAddress);
 
-    //     (IERC20[] memory tokens, , ) = balVault.getPoolTokens(poolId);
+        (IERC20[] memory tokens, , ) = balVault.getPoolTokens(poolId);
 
-    //     for (uint256 i = 0; i < tokens.length; i++) {
+        for (uint256 i = 0; i < tokens.length; i++) {
 
-    //         // if (token is stablecoin) {
-    //         //     check that stablecoincoin is close to peg. If not, return false. 
-    //         // }
-    //         if (_tokenProperties[tokenAddress].isStablecoin) {
-    //             uint256 stablecoinPrice = allUnderlyingPrices[
-    //                 _tokenProperties[tokenAddress].tokenIndex
-    //             ];
+            // if (token is stablecoin) {
+            //     check that stablecoincoin is close to peg. If not, return false. 
+            // }
+            if (_tokenProperties[tokenAddress].isStablecoin) {
+                uint256 stablecoinPrice = allUnderlyingPrices[
+                    _tokenProperties[tokenAddress].tokenIndex
+                ];
 
-    //             if (!isStablecoinCloseToPeg(stablecoinPrice)) {
-    //                 return false;
-    //             }
-    //         }
-    //     }
+                if (!isStablecoinCloseToPeg(stablecoinPrice)) {
+                    return false;
+                }
+            }
+        }
 
-    //     return true;
-    // }
+        return true;
+    }
 
     function arePoolsSafe(bytes32[] memory poolIds) external view returns (bool) {
         for (uint256 i = 0; i < poolIds.length; i++) {
@@ -140,8 +140,8 @@ contract BalancerSafetyChecks is Ownable {
             bool assetsNearWeights = arePoolAssetWeightsCloseToStated(poolIds[i]);
             require (assetsNearWeights, Errors.ASSETS_NOT_CLOSE_TO_POOL_WEIGHTS);
 
-            // bool stablecoinsInPoolCloseToPeg = areAllPoolStablecoinsCloseToPeg(poolIds[i]);
-            // require (stablecoinsInPoolCloseToPeg, Errors.STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG);
+            bool stablecoinsInPoolCloseToPeg = areAllPoolStablecoinsCloseToPeg(poolIds[i]);
+            require (stablecoinsInPoolCloseToPeg, Errors.STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG);
 
         }
 
