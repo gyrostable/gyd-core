@@ -1,10 +1,8 @@
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
+from tests.fixtures.mainnet_contracts import TokenAddresses, UniswapPools
 from tests.support import error_codes
-from tests.support.constants import USDC_ADDRESS, WETH_ADDRESS
 from tests.support.utils import scale
-
-USDC_ETH_POOL_ADDRESS = "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8"
 
 
 def test_set_oracle_seconds_ago(uniswap_v3_twap_oracle):
@@ -15,63 +13,74 @@ def test_set_oracle_seconds_ago(uniswap_v3_twap_oracle):
 
 @pytest.mark.mainnetFork
 def test_register_pool(uniswap_v3_twap_oracle):
-    tx = uniswap_v3_twap_oracle.registerPool(USDC_ETH_POOL_ADDRESS)
+    tx = uniswap_v3_twap_oracle.registerPool(UniswapPools.USDC_ETH)
     assert len(tx.events["PoolRegistered"]) == 1
-    assert tx.events["PoolRegistered"]["assetA"] == USDC_ADDRESS
-    assert tx.events["PoolRegistered"]["assetB"] == WETH_ADDRESS
-    assert tx.events["PoolRegistered"]["pool"] == USDC_ETH_POOL_ADDRESS
+    assert tx.events["PoolRegistered"]["assetA"] == TokenAddresses.USDC
+    assert tx.events["PoolRegistered"]["assetB"] == TokenAddresses.WETH
+    assert tx.events["PoolRegistered"]["pool"] == UniswapPools.USDC_ETH
     assert (
-        uniswap_v3_twap_oracle.getPool(USDC_ADDRESS, WETH_ADDRESS)
-        == USDC_ETH_POOL_ADDRESS
+        uniswap_v3_twap_oracle.getPool(TokenAddresses.USDC, TokenAddresses.WETH)
+        == UniswapPools.USDC_ETH
     )
-    assert uniswap_v3_twap_oracle.getPools() == [USDC_ETH_POOL_ADDRESS]
+    assert uniswap_v3_twap_oracle.getPools() == [UniswapPools.USDC_ETH]
 
 
 @pytest.mark.mainnetFork
 def test_register_pool_twice(uniswap_v3_twap_oracle):
-    uniswap_v3_twap_oracle.registerPool(USDC_ETH_POOL_ADDRESS)
+    uniswap_v3_twap_oracle.registerPool(UniswapPools.USDC_ETH)
     with reverts(error_codes.INVALID_ARGUMENT):
-        uniswap_v3_twap_oracle.registerPool(USDC_ETH_POOL_ADDRESS)
+        uniswap_v3_twap_oracle.registerPool(UniswapPools.USDC_ETH)
 
 
 @pytest.mark.mainnetFork
 def test_deregister_pool(uniswap_v3_twap_oracle):
-    uniswap_v3_twap_oracle.registerPool(USDC_ETH_POOL_ADDRESS)
-    assert uniswap_v3_twap_oracle.getPools() == [USDC_ETH_POOL_ADDRESS]
-    tx = uniswap_v3_twap_oracle.deregisterPool(USDC_ETH_POOL_ADDRESS)
+    uniswap_v3_twap_oracle.registerPool(UniswapPools.USDC_ETH)
+    assert uniswap_v3_twap_oracle.getPools() == [UniswapPools.USDC_ETH]
+    tx = uniswap_v3_twap_oracle.deregisterPool(UniswapPools.USDC_ETH)
     assert len(tx.events["PoolDeregistered"]) == 1
-    assert tx.events["PoolDeregistered"]["assetA"] == USDC_ADDRESS
-    assert tx.events["PoolDeregistered"]["assetB"] == WETH_ADDRESS
-    assert tx.events["PoolDeregistered"]["pool"] == USDC_ETH_POOL_ADDRESS
+    assert tx.events["PoolDeregistered"]["assetA"] == TokenAddresses.USDC
+    assert tx.events["PoolDeregistered"]["assetB"] == TokenAddresses.WETH
+    assert tx.events["PoolDeregistered"]["pool"] == UniswapPools.USDC_ETH
     assert len(uniswap_v3_twap_oracle.getPools()) == 0
 
 
 @pytest.mark.mainnetFork
 def test_deregister_unregistered_pool(uniswap_v3_twap_oracle):
     with reverts(error_codes.INVALID_ARGUMENT):
-        uniswap_v3_twap_oracle.deregisterPool(USDC_ETH_POOL_ADDRESS)
+        uniswap_v3_twap_oracle.deregisterPool(UniswapPools.USDC_ETH)
 
 
 @pytest.mark.mainnetFork
+@pytest.mark.usefixtures("add_common_uniswap_pools")
 def test_get_relative_price(uniswap_v3_twap_oracle):
-    uniswap_v3_twap_oracle.registerPool(USDC_ETH_POOL_ADDRESS)
+    eth_usdc_price = uniswap_v3_twap_oracle.getRelativePrice(
+        TokenAddresses.WETH, TokenAddresses.USDC
+    )
+    assert scale(1_000) <= eth_usdc_price <= scale(10_000)
 
-    eth_usd_price = uniswap_v3_twap_oracle.getRelativePrice(WETH_ADDRESS, USDC_ADDRESS)
-    assert eth_usd_price >= scale(1_000)
-    assert eth_usd_price <= scale(10_000)  # hopefully this tests by the end of the year
+    usdc_eth_price = uniswap_v3_twap_oracle.getRelativePrice(
+        TokenAddresses.USDC, TokenAddresses.WETH
+    )
+    assert usdc_eth_price == scale(1, 36) / eth_usdc_price
 
-    usd_eth_price = uniswap_v3_twap_oracle.getRelativePrice(USDC_ADDRESS, WETH_ADDRESS)
-    assert usd_eth_price == scale(1, 36) / eth_usd_price
+    wbtc_usdc_price = uniswap_v3_twap_oracle.getRelativePrice(
+        TokenAddresses.WBTC, TokenAddresses.USDC
+    )
+    usdc_wbtc_price = uniswap_v3_twap_oracle.getRelativePrice(
+        TokenAddresses.USDC, TokenAddresses.WBTC
+    )
+    assert scale(20_000) <= wbtc_usdc_price <= scale(100_000)
+    assert usdc_wbtc_price == scale(1, 36) / wbtc_usdc_price
 
 
 @pytest.mark.mainnetFork
 def test_get_relative_price_with_seconds(uniswap_v3_twap_oracle):
-    uniswap_v3_twap_oracle.registerPool(USDC_ETH_POOL_ADDRESS)
+    uniswap_v3_twap_oracle.registerPool(UniswapPools.USDC_ETH)
     usd_eth_price_two_hours = uniswap_v3_twap_oracle.getRelativePrice(
-        USDC_ADDRESS, WETH_ADDRESS
+        TokenAddresses.USDC, TokenAddresses.WETH
     )
     usd_eth_price_one_hour = uniswap_v3_twap_oracle.getRelativePrice(
-        USDC_ADDRESS, WETH_ADDRESS, 3600
+        TokenAddresses.USDC, TokenAddresses.WETH, 3600
     )
     assert usd_eth_price_two_hours != usd_eth_price_one_hour
     # price change should be moderate

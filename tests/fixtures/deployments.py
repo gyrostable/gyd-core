@@ -2,7 +2,13 @@ from collections import namedtuple
 
 import pytest
 from brownie import accounts
+from tests.fixtures.mainnet_contracts import (
+    ChainlinkFeeds,
+    TokenAddresses,
+    UniswapPools,
+)
 from tests.support import constants
+from tests.support.utils import scale
 
 MotherboardArgs = namedtuple(
     "MotherboardArgs",
@@ -99,13 +105,13 @@ def mock_pamm(admin, MockPAMM):
 
 
 @pytest.fixture(scope="module")
-def mock_usd_price_oracle(admin, MockUSDPriceOracle):
-    return admin.deploy(MockUSDPriceOracle)
+def mock_price_oracle(admin, MockPriceOracle):
+    return admin.deploy(MockPriceOracle)
 
 
 @pytest.fixture(scope="module")
-def asset_pricer(admin, AssetPricer, mock_usd_price_oracle):
-    return admin.deploy(AssetPricer, mock_usd_price_oracle)
+def asset_pricer(admin, AssetPricer, mock_price_oracle):
+    return admin.deploy(AssetPricer, mock_price_oracle)
 
 
 @pytest.fixture(scope="module")
@@ -134,6 +140,50 @@ def uniswap_v3_twap_oracle(admin, UniswapV3TwapOracle):
     return admin.deploy(UniswapV3TwapOracle)
 
 
+@pytest.fixture
+def add_common_uniswap_pools(admin, uniswap_v3_twap_oracle):
+    pools = [UniswapPools.ETH_CRV, UniswapPools.USDC_ETH, UniswapPools.WBTC_USDC]
+    for pool in pools:
+        uniswap_v3_twap_oracle.registerPool(pool, {"from": admin})
+
+
+@pytest.fixture(scope="module")
+def chainlink_price_oracle(ChainlinkPriceOracle, admin):
+    return admin.deploy(ChainlinkPriceOracle)
+
+
+@pytest.fixture
+def set_common_chainlink_feeds(admin, chainlink_price_oracle):
+    feeds = [
+        (TokenAddresses.ETH, ChainlinkFeeds.ETH_USD_FEED),
+        (TokenAddresses.WETH, ChainlinkFeeds.ETH_USD_FEED),
+        (TokenAddresses.DAI, ChainlinkFeeds.DAI_USD_FEED),
+        (TokenAddresses.WBTC, ChainlinkFeeds.WBTC_USD_FEED),
+        (TokenAddresses.CRV, ChainlinkFeeds.CRV_USD_FEED),
+        (TokenAddresses.USDC, ChainlinkFeeds.USDC_USD_FEED),
+    ]
+    for asset, feed in feeds:
+        chainlink_price_oracle.setFeed(asset, feed, {"from": admin})
+
+
+@pytest.fixture(scope="module")
+def local_checked_price_oracle(admin, mock_price_oracle, CheckedPriceOracle):
+    return admin.deploy(CheckedPriceOracle, mock_price_oracle, mock_price_oracle)
+
+
+@pytest.fixture(scope="module")
+def mainnet_checked_price_oracle(
+    admin, chainlink_price_oracle, uniswap_v3_twap_oracle, CheckedPriceOracle
+):
+
+    mainnet_checked_price_oracle = admin.deploy(
+        CheckedPriceOracle, chainlink_price_oracle, uniswap_v3_twap_oracle
+    )
+    # set the relative max epsilon slightly larger to avoid tests randomly failing
+    mainnet_checked_price_oracle.setRelativeMaxEpsilon(scale("0.03"))
+    return mainnet_checked_price_oracle
+
+
 @pytest.fixture(scope="module")
 def motherboard(
     admin,
@@ -144,7 +194,7 @@ def motherboard(
     lp_token_exchanger_registry,
     mock_pamm,
     reserve,
-    mock_usd_price_oracle,
+    mock_price_oracle,
 ):
     args = MotherboardArgs(
         gydToken=gyd_token,
@@ -153,7 +203,7 @@ def motherboard(
         gyroConfig=gyro_config,
         feeBank=fee_bank,
         reserve=reserve,
-        priceOracle=mock_usd_price_oracle,
+        priceOracle=mock_price_oracle,
     )
     return admin.deploy(Motherboard, args)
 

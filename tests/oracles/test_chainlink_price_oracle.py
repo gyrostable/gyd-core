@@ -7,22 +7,6 @@ from tests.support import error_codes
 from tests.support.utils import scale
 
 
-@pytest.fixture(scope="module")
-def chainlink_price_oracle(ChainlinkPriceOracle, admin):
-    return admin.deploy(ChainlinkPriceOracle)
-
-
-@pytest.fixture(scope="module")
-def set_common_feeds(admin, chainlink_price_oracle):
-    feeds = [
-        (TokenAddresses.ETH, ChainlinkFeeds.ETH_USD_FEED),
-        (TokenAddresses.DAI, ChainlinkFeeds.DAI_USD_FEED),
-        (TokenAddresses.WBTC, ChainlinkFeeds.WBTC_USD_FEED),
-    ]
-    for asset, feed in feeds:
-        chainlink_price_oracle.setFeed(asset, feed, {"from": admin})
-
-
 def test_set_feed(admin, chainlink_price_oracle):
     assert chainlink_price_oracle.feeds(TokenAddresses.ETH) == brownie.ZERO_ADDRESS
     chainlink_price_oracle.setFeed(
@@ -73,7 +57,7 @@ def test_get_price_higher_scale(admin, chainlink_price_oracle, MockChainlinkFeed
 
 
 @pytest.mark.mainnetFork
-@pytest.mark.usefixtures("set_common_feeds")
+@pytest.mark.usefixtures("set_common_chainlink_feeds")
 def test_mainnet_feeds(chainlink_price_oracle):
     eth_price = chainlink_price_oracle.getPriceUSD(TokenAddresses.ETH)
     assert scale(1000) <= eth_price <= scale(5000)
