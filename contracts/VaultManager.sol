@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "../libraries/FixedPoint.sol";
 import "../interfaces/IVaultManager.sol";
-import "../interfaces/IPriceOracle.sol";
+import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../interfaces/IVaultRegistry.sol";
 import "./auth/Governable.sol";
 
@@ -16,7 +16,7 @@ contract VaultManager is IVaultManager, Governable {
     address public reserveAddress;
 
     IVaultWeightManager internal vaultWeightManager;
-    IPriceOracle internal priceOracle;
+    IUSDPriceOracle internal priceOracle;
 
     constructor(address _vaultRegistry, address _reserve) {
         vaultRegistry = IVaultRegistry(_vaultRegistry);
@@ -90,14 +90,14 @@ contract VaultManager is IVaultManager, Governable {
     }
 
     /// @inheritdoc IVaultManager
-    function getPriceOracle() external view override returns (IPriceOracle) {
+    function getPriceOracle() external view override returns (IUSDPriceOracle) {
         return priceOracle;
     }
 
     /// @inheritdoc IVaultManager
     function setPriceOracle(address _priceOracle) external override governanceOnly {
         address currentOracle = address(priceOracle);
-        priceOracle = IPriceOracle(_priceOracle);
+        priceOracle = IUSDPriceOracle(_priceOracle);
         emit NewPriceOracle(currentOracle, _priceOracle);
     }
 

@@ -3,13 +3,13 @@ pragma solidity ^0.8.4;
 
 import "../auth/Governable.sol";
 
-import "../../interfaces/IPriceOracle.sol";
+import "../../interfaces/oracles/IUSDPriceOracle.sol";
 import "../../interfaces/vendor/ChainlinkAggregator.sol";
 
 import "../../libraries/Errors.sol";
 import "../../libraries/DecimalScale.sol";
 
-contract ChainlinkPriceOracle is IPriceOracle, Governable {
+contract ChainlinkPriceOracle is IUSDPriceOracle, Governable {
     using DecimalScale for uint256;
 
     event FeedUpdated(address indexed asset, address indexed previousFeed, address indexed newFeed);
@@ -18,7 +18,7 @@ contract ChainlinkPriceOracle is IPriceOracle, Governable {
 
     mapping(address => address) public feeds;
 
-    /// @inheritdoc IPriceOracle
+    /// @inheritdoc IUSDPriceOracle
     function getPriceUSD(address asset) external view override returns (uint256) {
         address feed = feeds[asset];
         require(feed != address(0), Errors.ASSET_NOT_SUPPORTED);

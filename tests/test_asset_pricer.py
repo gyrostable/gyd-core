@@ -11,9 +11,9 @@ pytestmark = pytest.mark.usefixtures("set_price_oracle_prices")
 
 
 @pytest.fixture(scope="module")
-def set_price_oracle_prices(mock_price_oracle):
-    mock_price_oracle.setPrice(ASSET_1_ADDRESS, scale("1.5"))
-    mock_price_oracle.setPrice(ASSET_2_ADDRESS, scale("2.5"))
+def set_price_oracle_prices(mock_usd_price_oracle):
+    mock_usd_price_oracle.setPrice(ASSET_1_ADDRESS, scale("1.5"))
+    mock_usd_price_oracle.setPrice(ASSET_2_ADDRESS, scale("2.5"))
 
 
 def test_get_usd_value(asset_pricer):

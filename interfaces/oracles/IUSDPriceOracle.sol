@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "../libraries/DataTypes.sol";
-
-interface IPriceOracle {
+interface IUSDPriceOracle {
     /// @notice Quotes the USD price of `baseAsset`
     /// The quoted price is always scaled with 18 decimals regardless of the
     /// source used for the oracle.

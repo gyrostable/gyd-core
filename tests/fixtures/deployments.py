@@ -99,13 +99,13 @@ def mock_pamm(admin, MockPAMM):
 
 
 @pytest.fixture(scope="module")
-def mock_price_oracle(admin, MockPriceOracle):
-    return admin.deploy(MockPriceOracle)
+def mock_usd_price_oracle(admin, MockUSDPriceOracle):
+    return admin.deploy(MockUSDPriceOracle)
 
 
 @pytest.fixture(scope="module")
-def asset_pricer(admin, AssetPricer, mock_price_oracle):
-    return admin.deploy(AssetPricer, mock_price_oracle)
+def asset_pricer(admin, AssetPricer, mock_usd_price_oracle):
+    return admin.deploy(AssetPricer, mock_usd_price_oracle)
 
 
 @pytest.fixture(scope="module")
@@ -130,6 +130,11 @@ def local_signer_price_oracle(
 
 
 @pytest.fixture(scope="module")
+def uniswap_v3_twap_oracle(admin, UniswapV3TwapOracle):
+    return admin.deploy(UniswapV3TwapOracle)
+
+
+@pytest.fixture(scope="module")
 def motherboard(
     admin,
     Motherboard,
@@ -139,7 +144,7 @@ def motherboard(
     lp_token_exchanger_registry,
     mock_pamm,
     reserve,
-    mock_price_oracle,
+    mock_usd_price_oracle,
 ):
     args = MotherboardArgs(
         gydToken=gyd_token,
@@ -148,7 +153,7 @@ def motherboard(
         gyroConfig=gyro_config,
         feeBank=fee_bank,
         reserve=reserve,
-        priceOracle=mock_price_oracle,
+        priceOracle=mock_usd_price_oracle,
     )
     return admin.deploy(Motherboard, args)
 

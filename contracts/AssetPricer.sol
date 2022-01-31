@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "../interfaces/IPriceOracle.sol";
+import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../interfaces/IAssetPricer.sol";
 
 import "../libraries/FixedPoint.sol";
@@ -9,10 +9,10 @@ import "../libraries/FixedPoint.sol";
 contract AssetPricer is IAssetPricer {
     using FixedPoint for uint256;
 
-    IPriceOracle public priceOracle;
+    IUSDPriceOracle public priceOracle;
 
     constructor(address _priceOracle) {
-        priceOracle = IPriceOracle(_priceOracle);
+        priceOracle = IUSDPriceOracle(_priceOracle);
     }
 
     /// @inheritdoc IAssetPricer
