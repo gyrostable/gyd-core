@@ -22,36 +22,38 @@ import "../../../interfaces/balancer/IPoolSwapStructs.sol";
 import "../../../interfaces/balancer/IMinimalSwapInfoPool.sol";
 
 contract MockBalVault is IPoolSwapStructs {
+
     struct Pool {
         IERC20[] tokens;
-        mapping(IERC20 => uint256) balances;
+        uint256[] balances;
     }
 
-    mapping(bytes32 => Pool) private pools;
+    mapping(bytes32 => Pool) private vaultPools;
     
     uint256 public lastChangeBlock;
     uint256 public cash;
-
     address public mockBalancerPoolAddress;
 
     function setPoolTokens(bytes32 poolId, IERC20[] memory tokens, uint256[] memory balances) external {
         Pool memory newPool = Pool(tokens, balances); 
-        pools[poolId] = newPool;
+        vaultPools[poolId] = newPool;
     }
 
     function getPoolTokens(bytes32 poolId)
         external
         view
-        returns (IERC20[] memory tokens, uint256[] memory balances, uint256 lastChangeBlock)
+        returns (IERC20[] memory, uint256[] memory, uint256)
     {
-        Pool storage pool = pools[poolId];
-        tokens = new IERC20[](pool.tokens.length);
-        balances = new uint256[](pool.tokens.length);
+        Pool storage pool = vaultPools[poolId];
+        IERC20[] memory tokens = new IERC20[](pool.tokens.length);
+        uint256[] memory balances = new uint256[](pool.tokens.length);
 
         for (uint256 i = 0; i < pool.tokens.length; i++) {
             tokens[i] = pool.tokens[i];
-            balances[i] = pool.balances[tokens[i]];
+            balances[i] = pool.balances[i];
         }
+
+        return (tokens, balances, lastChangeBlock);
     }
 
     function registerPool(IVault.PoolSpecialization) external view returns (bytes32) {
@@ -63,7 +65,7 @@ contract MockBalVault is IPoolSwapStructs {
         IERC20[] memory tokens,
         address[] memory
     ) external {
-        Pool storage pool = pools[poolId];
+        Pool storage pool = vaultPools[poolId];
         for (uint256 i = 0; i < tokens.length; i++) {
             pool.tokens.push(tokens[i]);
         }
