@@ -7,6 +7,8 @@ contract MockBalancerPool {
     uint256 public pauseWindowEndTime;
     uint256 public bufferPeriodEndTime;
 
+    uint256[] public normalizedWeights;
+
 
     constructor(
         bytes32 _poolId     
@@ -28,6 +30,14 @@ contract MockBalancerPool {
         pausedState = _pausedState;
         pauseWindowEndTime = _pauseWindowEndTime;
         bufferPeriodEndTime = _bufferPeriodEndTime;
+    }
+
+    function setNormalizedWeights(uint256[] memory _normalizedWeights) external {
+        normalizedWeights = _normalizedWeights;
+    }
+
+    function getNormalizedWeights() external view returns (uint256[] memory) {
+        return normalizedWeights;
     }
 
 }
