@@ -53,17 +53,17 @@ balance_strategy = st.integers(min_value=0, max_value=1_000_000_000)
 #         # assert sum(list(weights)) == int(1e18)
 
 
-def test_are_pool_weights_close_to_expected_imbalanced(
-    balancer_safety_checks, dai, usdc, mock_balancer_pool
-):
-    tokens = [dai, usdc]
-    balances = [3e20, 2e20]
-    monetary_amounts = balancer_safety_checks.makeMonetaryAmounts(tokens, balances)
-    weights = balancer_safety_checks.getActualWeights(monetary_amounts)
-    mock_balancer_pool.setNormalizedWeights([5e17, 5e17])
-    expectedWeights = mock_balancer_pool.getNormalizedWeights()
+# def test_are_pool_weights_close_to_expected_imbalanced(
+#     balancer_safety_checks, dai, usdc, mock_balancer_pool
+# ):
+#     tokens = [dai, usdc]
+#     balances = [3e20, 2e20]
+#     monetary_amounts = balancer_safety_checks.makeMonetaryAmounts(tokens, balances)
+#     weights = balancer_safety_checks.getActualWeights(monetary_amounts)
+#     mock_balancer_pool.setNormalizedWeights([5e17, 5e17])
+#     expectedWeights = mock_balancer_pool.getNormalizedWeights()
 
-    assert balancer_safety_checks.arePoolAssetWeightsCloseToExpected(POOL_ID) == False
+#     assert balancer_safety_checks.arePoolAssetWeightsCloseToExpected(POOL_ID) == False
 
 
 # def test_are_pool_weights_close_to_expected_exact(
