@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "../../interfaces/IPriceOracle.sol";
+import "../../interfaces/oracles/IUSDPriceOracle.sol";
 
-contract MockPriceOracle is IPriceOracle {
+contract MockUSDPriceOracle is IUSDPriceOracle {
     mapping(address => uint256) internal prices;
 
-    /// @inheritdoc IPriceOracle
+    /// @inheritdoc IUSDPriceOracle
     /// @dev this is a dummy function that tries to read from the state
     /// and otherwise simply returns 1
     function getPriceUSD(address baseAsset) external view returns (uint256) {

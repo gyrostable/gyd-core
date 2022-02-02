@@ -3,9 +3,9 @@ pragma solidity ^0.8.4;
 
 import "../../libraries/Errors.sol";
 import "../../interfaces/IAssetRegistry.sol";
-import "../../interfaces/IPriceOracle.sol";
+import "../../interfaces/oracles/IUSDPriceOracle.sol";
 
-contract TrustedSignerPriceOracle is IPriceOracle {
+contract TrustedSignerPriceOracle is IUSDPriceOracle {
     /// @notice prices posted should be scaled using `PRICE_DECIMALS` decimals
     uint8 public constant PRICE_DECIMALS = 6;
 
@@ -42,7 +42,7 @@ contract TrustedSignerPriceOracle is IPriceOracle {
         trustedPriceSigner = _priceSigner;
     }
 
-    /// @inheritdoc IPriceOracle
+    /// @inheritdoc IUSDPriceOracle
     function getPriceUSD(address baseAsset) external view returns (uint256) {
         PriceData memory signedPrice = prices[baseAsset];
         require(signedPrice.timestamp > 0, Errors.ASSET_NOT_SUPPORTED);

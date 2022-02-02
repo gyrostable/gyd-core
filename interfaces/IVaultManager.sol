@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "../interfaces/IVaultWeightManager.sol";
-import "../interfaces/IPriceOracle.sol";
+import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../libraries/DataTypes.sol";
 
 interface IVaultManager {
@@ -26,7 +26,7 @@ interface IVaultManager {
     function setVaultWeightManager(address vaultManager) external;
 
     /// @notice Returns the current vault price oracle
-    function getPriceOracle() external view returns (IPriceOracle);
+    function getPriceOracle() external view returns (IUSDPriceOracle);
 
     /// @notice Set the vault price oracle
     function setPriceOracle(address priceOracle) external;
