@@ -248,7 +248,9 @@ def balancer_safety_checks(
 
 
 @pytest.fixture(scope="module")
-def set_data_for_mock_bal_vault(mock_balancer_vault, mock_balancer_pool):
+def set_data_for_mock_bal_vault(mock_balancer_vault, mock_balancer_pool, dai, usdc):
     mock_balancer_vault.setCash(100000000000000000000000000)
-    mock_balancer_vault.setPoolTokens()
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [dai, usdc], [2e20, 2e20]
+    )
     mock_balancer_vault.storePoolAddress(mock_balancer_pool)

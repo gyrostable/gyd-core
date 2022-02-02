@@ -1,4 +1,5 @@
 from decimal import Decimal as D
+from multiprocessing import pool
 
 import pytest
 from brownie.network.state import Chain
