@@ -48,6 +48,10 @@ contract BalancerSafetyChecks is Ownable {
         poolWeightMaxDeviation = _poolWeightMaxDeviation; /// @dev this should be scaled by 10^18, i.e. 1e16 == 1%
     }
 
+    function getPoolWeightMaxDeviation() public view returns (uint256) {
+        return poolWeightMaxDeviation;
+    }
+
     function isPoolPaused(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (address poolAddress, ) = balVault.getPool(poolId);
@@ -99,7 +103,7 @@ contract BalancerSafetyChecks is Ownable {
 
     }
 
-    function arePoolAssetWeightsCloseToExpected(bytes32 poolId) public returns (bool) {
+    function arePoolAssetWeightsCloseToExpected(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (address poolAddress, ) = balVault.getPool(poolId);
         IBalancerPool balancerPool = IBalancerPool(poolAddress);
@@ -109,9 +113,11 @@ contract BalancerSafetyChecks is Ownable {
 
         DataTypes.MonetaryAmount[] memory monetaryAmounts = makeMonetaryAmounts(tokens, balances);
 
-        uint256[] memory weights = getActualWeights(monetaryAmounts);
-        
+        uint256[] memory weights = getActualWeights(monetaryAmounts);        
         uint256[] memory expectedWeights = balancerPool.getNormalizedWeights();
+
+        //TO-DO: Fix this as not reverting when normalized weights
+        require (expectedWeights.length == tokens.length, Errors.POOL_DOES_NOT_HAVE_NORMALIZED_WEIGHTS_SET);
 
         for (uint256 i = 0; i < weights.length; i++) {
             if (weights[i].absSub(expectedWeights[i]) > poolWeightMaxDeviation) {
