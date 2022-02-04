@@ -5,10 +5,10 @@ from tests.support import error_codes
 from tests.support.utils import scale
 
 
-def test_set_oracle_seconds_ago(uniswap_v3_twap_oracle):
-    assert uniswap_v3_twap_oracle.oracleSecondsAgo() == 10_800
+def test_set_time_window_length_seconds(uniswap_v3_twap_oracle):
+    assert uniswap_v3_twap_oracle.timeWindowLengthSeconds() == 10_800
     uniswap_v3_twap_oracle.setTimeWindowLengthSeconds(3600)
-    assert uniswap_v3_twap_oracle.oracleSecondsAgo() == 3600
+    assert uniswap_v3_twap_oracle.timeWindowLengthSeconds() == 3600
 
 
 @pytest.mark.mainnetFork
