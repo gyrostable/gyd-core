@@ -11,7 +11,7 @@ import "../interfaces/IAssetRegistry.sol";
 import "../libraries/DataTypes.sol";
 import "../libraries/FixedPoint.sol";
 import "../interfaces/IAssetPricer.sol";
-import "../interfaces/IPriceOracle.sol";
+import "../interfaces/oracles/IUSDPriceOracle.sol";
 
 /**
     @title Contract containing the safety checks performed on Balancer pools
@@ -152,7 +152,7 @@ contract BalancerSafetyChecks is Ownable {
 
     function areAllPoolStablecoinsCloseToPeg(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
-        IPriceOracle priceOracle = IPriceOracle(priceOracleAddress);
+        IUSDPriceOracle priceOracle = IUSDPriceOracle(priceOracleAddress);
         IAssetRegistry assetRegistry = IAssetRegistry(assetRegistryAddress);
 
         (IERC20[] memory tokens, , ) = balVault.getPoolTokens(poolId);
