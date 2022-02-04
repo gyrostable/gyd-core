@@ -31,14 +31,15 @@ contract BalancerSafetyChecks is Ownable {
     uint256 private stablecoinMaxDeviation;
     uint256 private poolWeightMaxDeviation;
 
-    constructor(address _balancerVaultAddress, 
-                address _assetRegistryAddress, 
-                address _priceOracleAddress, 
-                address _assetPricerAddress, 
-                uint256 _maxActivityLag, 
-                uint256 _stablecoinMaxDeviation, 
-                uint256 _poolWeightMaxDeviation) {
-                    
+    constructor(
+        address _balancerVaultAddress,
+        address _assetRegistryAddress,
+        address _priceOracleAddress,
+        address _assetPricerAddress,
+        uint256 _maxActivityLag,
+        uint256 _stablecoinMaxDeviation,
+        uint256 _poolWeightMaxDeviation
+    ) {
         balancerVaultAddress = _balancerVaultAddress;
         assetRegistryAddress = _assetRegistryAddress;
         assetPricerAddress = _assetPricerAddress;
@@ -55,30 +56,41 @@ contract BalancerSafetyChecks is Ownable {
     function isPoolPaused(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (address poolAddress, ) = balVault.getPool(poolId);
-        require(poolAddress != address(0), "No Pool id registered");
+        require(poolAddress != address(0), Errors.NO_POOL_ID_REGISTERED);
         IBalancerPool balancerPool = IBalancerPool(poolAddress);
         (bool paused, , ) = balancerPool.getPausedState();
         return paused;
     }
 
-
-    function makeMonetaryAmounts(IERC20[] memory _tokens, uint256[] memory _balances) public view returns (DataTypes.MonetaryAmount[] memory) {
-        require (_tokens.length == _balances.length, Errors.TOKEN_AND_AMOUNTS_LENGTH_DIFFER);
-        DataTypes.MonetaryAmount[] memory monetaryAmounts = new DataTypes.MonetaryAmount[](_tokens.length);
+    function makeMonetaryAmounts(IERC20[] memory _tokens, uint256[] memory _balances)
+        internal
+        view
+        returns (DataTypes.MonetaryAmount[] memory)
+    {
+        require(_tokens.length == _balances.length, Errors.TOKEN_AND_AMOUNTS_LENGTH_DIFFER);
+        DataTypes.MonetaryAmount[] memory monetaryAmounts = new DataTypes.MonetaryAmount[](
+            _tokens.length
+        );
         for (uint256 i = 0; i < _tokens.length; i++) {
-            monetaryAmounts[i] = DataTypes.MonetaryAmount({tokenAddress: address(_tokens[i]), amount: _balances[i]});
+            monetaryAmounts[i] = DataTypes.MonetaryAmount({
+                tokenAddress: address(_tokens[i]),
+                amount: _balances[i]
+            });
         }
         return monetaryAmounts;
     }
 
-    function getActualWeights(DataTypes.MonetaryAmount[] memory monetaryAmounts) public view returns (uint256[] memory) {
+    function getActualWeights(DataTypes.MonetaryAmount[] memory monetaryAmounts)
+        public
+        view
+        returns (uint256[] memory)
+    {
         uint256 totalPoolUSDValue = 0;
         uint256[] memory usdValues = new uint256[](monetaryAmounts.length);
-        uint256[] memory weights = new uint256[](monetaryAmounts.length);
 
         IAssetPricer assetPricer = IAssetPricer(assetPricerAddress);
-    
-        for (uint256 i = 0; i < monetaryAmounts.length; i ++) {
+
+        for (uint256 i = 0; i < monetaryAmounts.length; i++) {
             uint256 usdValue = assetPricer.getUSDValue(monetaryAmounts[i]);
             usdValues[i] = usdValue;
             totalPoolUSDValue = totalPoolUSDValue + usdValue;
@@ -86,21 +98,16 @@ contract BalancerSafetyChecks is Ownable {
 
         if (totalPoolUSDValue == 0) {
             uint256[] memory nilWeights = new uint256[](monetaryAmounts.length);
-            for (uint256 i = 0; i < monetaryAmounts.length; i ++) {
-                nilWeights[i] = uint256(0);      
-            }
             return nilWeights;
         }
 
+        uint256[] memory weights = new uint256[](monetaryAmounts.length);
 
-        require (totalPoolUSDValue > 0, Errors.POOL_HAS_ZERO_USD_VALUE);
-
-        for (uint256 i=0; i < monetaryAmounts.length; i++) {
+        for (uint256 i = 0; i < monetaryAmounts.length; i++) {
             weights[i] = usdValues[i].divDown(totalPoolUSDValue);
         }
 
         return weights;
-
     }
 
     function arePoolAssetWeightsCloseToExpected(bytes32 poolId) public view returns (bool) {
@@ -109,15 +116,18 @@ contract BalancerSafetyChecks is Ownable {
         IBalancerPool balancerPool = IBalancerPool(poolAddress);
 
         (IERC20[] memory tokens, uint256[] memory balances, ) = balVault.getPoolTokens(poolId);
-        require (tokens.length == balances.length, Errors.DIFFERENT_NUMBER_OF_TOKENS_TO_BALANCES);
+        require(tokens.length == balances.length, Errors.DIFFERENT_NUMBER_OF_TOKENS_TO_BALANCES);
 
         DataTypes.MonetaryAmount[] memory monetaryAmounts = makeMonetaryAmounts(tokens, balances);
 
-        uint256[] memory weights = getActualWeights(monetaryAmounts);        
+        uint256[] memory weights = getActualWeights(monetaryAmounts);
         uint256[] memory expectedWeights = balancerPool.getNormalizedWeights();
 
         //TO-DO: Fix this as not reverting when normalized weights
-        require (expectedWeights.length == tokens.length, Errors.POOL_DOES_NOT_HAVE_NORMALIZED_WEIGHTS_SET);
+        require(
+            expectedWeights.length == tokens.length,
+            Errors.POOL_DOES_NOT_HAVE_NORMALIZED_WEIGHTS_SET
+        );
 
         for (uint256 i = 0; i < weights.length; i++) {
             if (weights[i].absSub(expectedWeights[i]) > poolWeightMaxDeviation) {
@@ -126,15 +136,13 @@ contract BalancerSafetyChecks is Ownable {
         }
 
         return true;
-
     }
 
     function doesPoolHaveLiveness(bytes32 poolId) internal view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (, , uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
-        bool lastChangeRecent = lastChangeBlock.absSub(block.number) <=
-            maxActivityLag;        
-        return lastChangeRecent;        
+        bool lastChangeRecent = block.number - lastChangeBlock <= maxActivityLag;
+        return lastChangeRecent;
     }
 
     /// @dev stablecoinPrice must be scaled to 10^18
@@ -142,11 +150,7 @@ contract BalancerSafetyChecks is Ownable {
         return stablecoinPrice.absSub(STABLECOIN_IDEAL_PRICE) <= stablecoinMaxDeviation;
     }
 
-    function areAllPoolStablecoinsCloseToPeg(bytes32 poolId)
-        public
-        view
-        returns (bool)
-    {
+    function areAllPoolStablecoinsCloseToPeg(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         IPriceOracle priceOracle = IPriceOracle(priceOracleAddress);
         IAssetRegistry assetRegistry = IAssetRegistry(assetRegistryAddress);
@@ -154,41 +158,37 @@ contract BalancerSafetyChecks is Ownable {
         (IERC20[] memory tokens, , ) = balVault.getPoolTokens(poolId);
 
         for (uint256 i = 0; i < tokens.length; i++) {
-
             address tokenAddress = address(tokens[i]);
 
-            bool isAssetStable = assetRegistry.isAssetStable(tokenAddress);
+            if (!assetRegistry.isAssetStable(tokenAddress)) {
+                continue;
+            }
 
-            if (isAssetStable) {
-                uint256 stablecoinPrice = priceOracle.getPriceUSD(tokenAddress);
-                bool isCloseToPeg = isStablecoinCloseToPeg(stablecoinPrice);
+            uint256 stablecoinPrice = priceOracle.getPriceUSD(tokenAddress);
+            bool isCloseToPeg = isStablecoinCloseToPeg(stablecoinPrice);
 
-                if (!isCloseToPeg) {
-                    return false;
-                }
+            if (!isCloseToPeg) {
+                return false;
             }
 
         }
-        
+
         return true;
     }
 
-    function arePoolsSafe(bytes32[] memory poolIds) public returns (bool) {
+    function ensurePoolsSafe(bytes32[] memory poolIds) public {
         for (uint256 i = 0; i < poolIds.length; i++) {
             bool poolLiveness = doesPoolHaveLiveness(poolIds[i]);
-            require (poolLiveness, Errors.POOL_DOES_NOT_HAVE_LIVENESS);
+            require(poolLiveness, Errors.POOL_DOES_NOT_HAVE_LIVENESS);
 
             bool poolPaused = isPoolPaused(poolIds[i]);
-            require (!poolPaused, Errors.POOL_IS_PAUSED);
+            require(!poolPaused, Errors.POOL_IS_PAUSED);
 
             bool assetsNearWeights = arePoolAssetWeightsCloseToExpected(poolIds[i]);
-            require (assetsNearWeights, Errors.ASSETS_NOT_CLOSE_TO_POOL_WEIGHTS);
+            require(assetsNearWeights, Errors.ASSETS_NOT_CLOSE_TO_POOL_WEIGHTS);
 
             bool stablecoinsInPoolCloseToPeg = areAllPoolStablecoinsCloseToPeg(poolIds[i]);
-            require (stablecoinsInPoolCloseToPeg, Errors.STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG);
-
+            require(stablecoinsInPoolCloseToPeg, Errors.STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG);
         }
-
-        return true;
     }
 }
