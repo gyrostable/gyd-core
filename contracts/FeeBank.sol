@@ -12,7 +12,7 @@ contract FeeBank is IFeeBank, Governable {
 
     /// @inheritdoc IFeeBank
     function depositFees(address underlying, uint256 amount) external override {
-        IERC20(underlying).transferFrom(msg.sender, address(this), amount);
+        IERC20(underlying).safeTransferFrom(msg.sender, address(this), amount);
     }
 
     /// @inheritdoc IFeeBank
@@ -21,6 +21,6 @@ contract FeeBank is IFeeBank, Governable {
         address beneficiary,
         uint256 amount
     ) external override governanceOnly {
-        IERC20(underlying).transfer(beneficiary, amount);
+        IERC20(underlying).safeTransfer(beneficiary, amount);
     }
 }
