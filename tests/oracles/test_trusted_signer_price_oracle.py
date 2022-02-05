@@ -8,8 +8,9 @@ from brownie import ETH_ADDRESS
 from brownie.test.managers.runner import RevertContextManager as reverts
 from eth_abi.abi import encode_abi
 from eth_account.messages import encode_defunct
+from tests.fixtures.mainnet_contracts import TokenAddresses
 from tests.support import error_codes
-from tests.support.constants import COINBASE_SIGNING_ADDRESS, DAI_ADDRESS, WBTC_ADDRESS
+from tests.support.constants import COINBASE_SIGNING_ADDRESS
 from tests.support.utils import scale
 
 SAMPLE_MESSAGE = "0x00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000061f1824800000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000008ebdae68f0000000000000000000000000000000000000000000000000000000000000006707269636573000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034254430000000000000000000000000000000000000000000000000000000000"
@@ -20,9 +21,9 @@ PRICE_DECIMALS = 6
 
 @pytest.fixture(scope="module")
 def add_assets_to_registry(asset_registry, admin):
-    asset_registry.setAssetAddress("ETH", ETH_ADDRESS, {"from": admin})
-    asset_registry.setAssetAddress("BTC", WBTC_ADDRESS, {"from": admin})
-    asset_registry.setAssetAddress("DAI", DAI_ADDRESS, {"from": admin})
+    asset_registry.setAssetAddress("ETH", TokenAddresses.ETH, {"from": admin})
+    asset_registry.setAssetAddress("BTC", TokenAddresses.WBTC, {"from": admin})
+    asset_registry.setAssetAddress("DAI", TokenAddresses.DAI, {"from": admin})
 
 
 def sign_message(message, signer):

@@ -76,11 +76,17 @@ contract UniswapV3TwapOracle is IRelativePriceOracle, Governable {
     ) public view returns (uint256) {
         address pool = getPool(baseAsset, quoteAsset);
         (int24 tick, ) = OracleLibrary.consult(pool, windowLengthSeconds);
+
+        uint8 baseDecimals = IERC20Metadata(baseAsset).decimals();
+        uint8 quoteDecimals = IERC20Metadata(quoteAsset).decimals();
+
         if (baseAsset < quoteAsset) {
-            uint128 baseAmount = uint128(10**IERC20Metadata(baseAsset).decimals());
+            uint8 decimals = baseDecimals + 18 - quoteDecimals;
+            uint128 baseAmount = uint128(10**decimals);
             return OracleLibrary.getQuoteAtTick(tick, baseAmount, baseAsset, quoteAsset);
         } else {
-            uint128 baseAmount = uint128(10**IERC20Metadata(quoteAsset).decimals());
+            uint8 decimals = quoteDecimals + 18 - baseDecimals;
+            uint128 baseAmount = uint128(10**decimals);
             return
                 FixedPoint.ONE.divDown(
                     OracleLibrary.getQuoteAtTick(tick, baseAmount, quoteAsset, baseAsset)
