@@ -80,7 +80,7 @@ contract BalancerSafetyChecks is Ownable {
         return monetaryAmounts;
     }
 
-    function getActualWeights(DataTypes.MonetaryAmount[] memory monetaryAmounts)
+    function computeActualWeights(DataTypes.MonetaryAmount[] memory monetaryAmounts)
         public
         view
         returns (uint256[] memory)
@@ -120,10 +120,10 @@ contract BalancerSafetyChecks is Ownable {
 
         DataTypes.MonetaryAmount[] memory monetaryAmounts = makeMonetaryAmounts(tokens, balances);
 
-        uint256[] memory weights = getActualWeights(monetaryAmounts);
+        uint256[] memory weights = computeActualWeights(monetaryAmounts);
+
         uint256[] memory expectedWeights = balancerPool.getNormalizedWeights();
 
-        //TO-DO: Fix this as not reverting when normalized weights
         require(
             expectedWeights.length == tokens.length,
             Errors.POOL_DOES_NOT_HAVE_NORMALIZED_WEIGHTS_SET
@@ -170,7 +170,6 @@ contract BalancerSafetyChecks is Ownable {
             if (!isCloseToPeg) {
                 return false;
             }
-
         }
 
         return true;

@@ -231,7 +231,7 @@ def balancer_safety_checks(
     admin,
     BalancerSafetyChecks,
     asset_registry,
-    mock_price_oracle,
+    mock_usd_price_oracle,
     asset_pricer,
     mock_balancer_vault,
 ):
@@ -239,7 +239,7 @@ def balancer_safety_checks(
         BalancerSafetyChecks,
         mock_balancer_vault,
         asset_registry,
-        mock_price_oracle,
+        mock_usd_price_oracle,
         asset_pricer,
         constants.MAX_BALANCER_ACTIVITY_LAG,
         constants.STABLECOIN_MAX_DEVIATION,
