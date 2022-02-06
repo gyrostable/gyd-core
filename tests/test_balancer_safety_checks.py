@@ -5,11 +5,16 @@ import hypothesis.strategies as st
 import pytest
 from brownie.network.state import Chain
 from brownie.test import given
+from brownie.test.managers.runner import RevertContextManager as reverts
 from numpy import exp
+
+from tests.support import error_codes
 
 chain = Chain()
 
 POOL_ID = "0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080"
+
+POOL_ID_2 = "0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000088"
 
 pytestmark = pytest.mark.usefixtures("set_data_for_mock_bal_vault")
 
@@ -73,3 +78,111 @@ def test_are_pool_weights_close_to_expected_exact(
     mock_balancer_pool.setNormalizedWeights([5e17, 5e17])
 
     assert balancer_safety_checks.arePoolAssetWeightsCloseToExpected(POOL_ID) == True
+
+# @pytest.mark.skip()
+def test_are_all_pool_stablecoins_close_to_peg(balancer_safety_checks, mock_balancer_vault, dai, usdc, mock_usd_price_oracle, asset_registry, admin):
+    tokens = [dai, usdc]
+    balances = [3e20, 2e20]
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.addStableAsset(dai)
+    mock_balancer_vault.setPoolTokens(POOL_ID, tokens, balances)
+    response = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
+    assert response == True
+
+    mock_usd_price_oracle.setPrice(dai, 0.9e18)
+    off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
+    assert off_peg == False
+
+    mock_usd_price_oracle.setPrice(dai, 1.1e18)
+    off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
+    assert off_peg == False
+
+    mock_usd_price_oracle.setPrice(dai, 0.98e18)
+    off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
+    assert off_peg == False
+
+    mock_usd_price_oracle.setPrice(dai, 1.02e18)
+    off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
+    assert off_peg == False
+
+    mock_usd_price_oracle.setPrice(dai, 0.99e18)
+    off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
+    assert off_peg == True
+
+    mock_usd_price_oracle.setPrice(dai, 1.01e18)
+    off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
+    assert off_peg == True
+
+
+# @pytest.mark.skip()
+def test_ensure_pools_safe(balancer_safety_checks, mock_balancer_pool, dai, usdc, mock_balancer_vault, asset_registry, mock_usd_price_oracle):
+    tokens = [dai, usdc]
+    balances = [2e20, 2e20]
+
+    mock_balancer_vault.setPoolTokens(POOL_ID, tokens, balances)
+
+    mock_balancer_pool.setNormalizedWeights([5e17, 5e17])
+    mock_balancer_pool.setPausedState(True, 2, 4)
+   
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.addStableAsset(dai)
+    
+    with reverts(error_codes.POOL_IS_PAUSED):
+        balancer_safety_checks.ensurePoolsSafe([POOL_ID])
+
+    mock_balancer_pool.setPausedState(False, 2, 4)
+    new_balances = [2e20, 3e20]
+    mock_balancer_vault.setPoolTokens(POOL_ID, tokens, new_balances)
+
+    with reverts(error_codes.ASSETS_NOT_CLOSE_TO_POOL_WEIGHTS):
+        balancer_safety_checks.ensurePoolsSafe([POOL_ID])
+
+    mock_balancer_vault.setPoolTokens(POOL_ID, tokens, balances)
+
+    mock_usd_price_oracle.setPrice(dai, 0.9e18)
+
+    with reverts(error_codes.STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG):
+        balancer_safety_checks.ensurePoolsSafe([POOL_ID])
+
+# @pytest.mark.skip()
+def test_ensure_pools_safe_two_pools(balancer_safety_checks, mock_balancer_pool, mock_balancer_pool_two, dai, usdc, usdt, mock_balancer_vault, asset_registry, mock_usd_price_oracle):
+    tokens_pool_one = [dai, usdc]
+    balances_pool_one = [2e20, 2e20]
+
+    tokens_pool_two = [usdt, usdc]
+    balances_pool_two = [2e20, 2e20]
+
+    mock_balancer_vault.setPoolTokens(POOL_ID, tokens_pool_one, balances_pool_one)
+    mock_balancer_vault.setPoolTokens(POOL_ID_2, tokens_pool_two, balances_pool_two)
+
+    mock_balancer_pool.setNormalizedWeights([5e17, 5e17])
+    mock_balancer_pool.setPausedState(False, 2, 4)
+    
+    mock_balancer_pool_two.setNormalizedWeights([5e17, 5e17])
+    mock_balancer_pool_two.setPausedState(True, 2, 4)
+
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.setAssetAddress("USDC", usdc)
+    asset_registry.setAssetAddress("USDT", usdt)
+
+    asset_registry.addStableAsset(dai)
+    asset_registry.addStableAsset(usdc)
+    asset_registry.addStableAsset(usdt)
+
+    with reverts(error_codes.POOL_IS_PAUSED):
+        balancer_safety_checks.ensurePoolsSafe([POOL_ID, POOL_ID_2])
+
+    mock_balancer_pool_two.setPausedState(False, 2, 4)
+    balances = [2e20, 3e20]
+    mock_balancer_vault.setPoolTokens(POOL_ID_2, tokens_pool_two, balances)
+
+    with reverts(error_codes.ASSETS_NOT_CLOSE_TO_POOL_WEIGHTS):
+        balancer_safety_checks.ensurePoolsSafe([POOL_ID, POOL_ID_2])
+
+    mock_balancer_vault.setPoolTokens(POOL_ID_2, tokens_pool_two, balances_pool_two)
+
+    mock_usd_price_oracle.setPrice(usdt, 0.9e18)
+
+    with reverts(error_codes.STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG):
+        balancer_safety_checks.ensurePoolsSafe([POOL_ID, POOL_ID_2])
+

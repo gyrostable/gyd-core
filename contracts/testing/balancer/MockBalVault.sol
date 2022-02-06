@@ -22,27 +22,35 @@ import "../../../interfaces/balancer/IPoolSwapStructs.sol";
 import "../../../interfaces/balancer/IMinimalSwapInfoPool.sol";
 
 contract MockBalVault is IPoolSwapStructs {
-
     struct Pool {
         IERC20[] tokens;
         uint256[] balances;
+        address poolAddress;
     }
 
     mapping(bytes32 => Pool) private vaultPools;
-    
+
     uint256 public lastChangeBlock;
     uint256 public cash;
-    address public mockBalancerPoolAddress;
 
-    function setPoolTokens(bytes32 poolId, IERC20[] memory tokens, uint256[] memory balances) external {
-        Pool memory newPool = Pool(tokens, balances); 
+    function setPoolTokens(
+        bytes32 poolId,
+        IERC20[] memory tokens,
+        uint256[] memory balances
+    ) external {
+        address poolAddress = vaultPools[poolId].poolAddress;
+        Pool memory newPool = Pool(tokens, balances, poolAddress);
         vaultPools[poolId] = newPool;
     }
 
     function getPoolTokens(bytes32 poolId)
         external
         view
-        returns (IERC20[] memory, uint256[] memory, uint256)
+        returns (
+            IERC20[] memory,
+            uint256[] memory,
+            uint256
+        )
     {
         Pool storage pool = vaultPools[poolId];
         IERC20[] memory tokens = new IERC20[](pool.tokens.length);
@@ -79,17 +87,25 @@ contract MockBalVault is IPoolSwapStructs {
         cash = _newCash;
     }
 
-    function getPoolTokenInfo(bytes32 poolId, address token) external view returns (uint256, uint256, uint256, address){
+    function getPoolTokenInfo(bytes32 poolId, address token)
+        external
+        view
+        returns (
+            uint256,
+            uint256,
+            uint256,
+            address
+        )
+    {
         address assetManager = 0x0000000000000000000000000000000000000000;
         return (cash, 0, lastChangeBlock, assetManager);
     }
 
-    function storePoolAddress(address _mockBalancerPoolAddress) external {
-        mockBalancerPoolAddress = _mockBalancerPoolAddress;
+    function storePoolAddress(bytes32 poolId, address _mockBalancerPoolAddress) external {
+        vaultPools[poolId].poolAddress = _mockBalancerPoolAddress;
     }
 
     function getPool(bytes32 poolId) external view returns (address, IVault.PoolSpecialization) {
-        return (mockBalancerPoolAddress, IVault.PoolSpecialization.GENERAL);
+        return (vaultPools[poolId].poolAddress, IVault.PoolSpecialization.GENERAL);
     }
-
 }

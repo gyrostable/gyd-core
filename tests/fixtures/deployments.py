@@ -54,6 +54,9 @@ def mock_vault_router(admin, MockVaultRouter):
 def mock_balancer_pool(admin, MockBalancerPool):
     return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID)
 
+@pytest.fixture(scope="module")
+def mock_balancer_pool_two(admin, MockBalancerPool):
+    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID_2)
 
 @pytest.fixture(scope="module")
 def mock_balancer_vault(admin, MockBalVault):
@@ -248,9 +251,10 @@ def balancer_safety_checks(
 
 
 @pytest.fixture(scope="module")
-def set_data_for_mock_bal_vault(mock_balancer_vault, mock_balancer_pool, dai, usdc):
+def set_data_for_mock_bal_vault(mock_balancer_vault, mock_balancer_pool, mock_balancer_pool_two, dai, usdc):
     mock_balancer_vault.setCash(100000000000000000000000000)
     mock_balancer_vault.setPoolTokens(
         constants.BALANCER_POOL_ID, [dai, usdc], [2e20, 2e20]
     )
-    mock_balancer_vault.storePoolAddress(mock_balancer_pool)
+    mock_balancer_vault.storePoolAddress(constants.BALANCER_POOL_ID, mock_balancer_pool)
+    mock_balancer_vault.storePoolAddress(constants.BALANCER_POOL_ID_2, mock_balancer_pool_two)
