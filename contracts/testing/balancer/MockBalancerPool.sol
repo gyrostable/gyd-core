@@ -9,10 +9,7 @@ contract MockBalancerPool {
 
     uint256[] public normalizedWeights;
 
-
-    constructor(
-        bytes32 _poolId     
-    ) {
+    constructor(bytes32 _poolId) {
         poolId = _poolId;
     }
 
@@ -20,13 +17,23 @@ contract MockBalancerPool {
         return poolId;
     }
 
-    function getPausedState() external view returns (bool, uint256, uint256) {
-        return  (pausedState, pauseWindowEndTime, bufferPeriodEndTime);
+    function getPausedState()
+        external
+        view
+        returns (
+            bool,
+            uint256,
+            uint256
+        )
+    {
+        return (pausedState, pauseWindowEndTime, bufferPeriodEndTime);
     }
 
-    function setPausedState(bool _pausedState,
-                            uint256 _pauseWindowEndTime,
-                            uint256 _bufferPeriodEndTime) external {
+    function setPausedState(
+        bool _pausedState,
+        uint256 _pauseWindowEndTime,
+        uint256 _bufferPeriodEndTime
+    ) external {
         pausedState = _pausedState;
         pauseWindowEndTime = _pauseWindowEndTime;
         bufferPeriodEndTime = _bufferPeriodEndTime;
@@ -39,5 +46,4 @@ contract MockBalancerPool {
     function getNormalizedWeights() external view returns (uint256[] memory) {
         return normalizedWeights;
     }
-
 }
