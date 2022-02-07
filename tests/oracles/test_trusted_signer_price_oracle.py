@@ -1,16 +1,13 @@
 import time
 from decimal import Decimal
-from typing import Optional
 
 import pytest
-import web3
 from brownie import ETH_ADDRESS
 from brownie.test.managers.runner import RevertContextManager as reverts
-from eth_abi.abi import encode_abi
-from eth_account.messages import encode_defunct
 from tests.fixtures.mainnet_contracts import TokenAddresses
 from tests.support import error_codes
 from tests.support.constants import COINBASE_SIGNING_ADDRESS
+from tests.support.price_signing import make_message, sign_message
 from tests.support.utils import scale
 
 SAMPLE_MESSAGE = "0x00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000061f1824800000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000008ebdae68f0000000000000000000000000000000000000000000000000000000000000006707269636573000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034254430000000000000000000000000000000000000000000000000000000000"
@@ -24,28 +21,6 @@ def add_assets_to_registry(asset_registry, admin):
     asset_registry.setAssetAddress("ETH", TokenAddresses.ETH, {"from": admin})
     asset_registry.setAssetAddress("BTC", TokenAddresses.WBTC, {"from": admin})
     asset_registry.setAssetAddress("DAI", TokenAddresses.DAI, {"from": admin})
-
-
-def sign_message(message, signer):
-    hashed_message = web3.Web3().keccak(hexstr=message)
-    message_to_sign = encode_defunct(hexstr=hashed_message.hex())
-    signed_message = web3.Web3().eth.account.sign_message(
-        message_to_sign, private_key=signer.private_key
-    )
-    sig = signed_message.signature
-    encoded_signature = encode_abi(
-        ["bytes32", "bytes32", "uint8"], [sig[:32], sig[32:64], sig[-1]]
-    )
-    return "0x" + encoded_signature.hex()
-
-
-def make_message(key: str, price: int, timestamp: Optional[int] = None):
-    if timestamp is None:
-        timestamp = int(time.time())
-    encoded = encode_abi(
-        ["string", "uint256", "string", "uint256"], ["prices", timestamp, key, price]
-    )
-    return "0x" + encoded.hex()
 
 
 def test_verify_message(coinbase_price_oracle):

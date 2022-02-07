@@ -25,4 +25,6 @@ def main():
 
     gas_stats = comput_gas_stats(tx)
 
-    print(gas_stats["LogExpMath.sqrt"].format_with_values(args))
+    print(
+        gas_stats["LogExpMath.sqrt"].format_with_values(args, minmax=True, unscale=True)
+    )

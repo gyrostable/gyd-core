@@ -7,7 +7,7 @@ from typing import Dict, List, Tuple
 from brownie.network.transaction import _step_compare
 
 
-def _format_tuple(info, meta, unscale=True):
+def _format_tuple(info, meta, unscale):
     if unscale:
         meta = round(meta / 10 ** 18, 3)
     return f"{info} ({meta})"
@@ -92,9 +92,12 @@ class CallStats:
         max_gas_index = internal_gases.index(max_gas)
         return ((min_gas, values[min_gas_index]), (max_gas, values[max_gas_index]))
 
-    def format_with_values(self, values, unscale=True) -> str:
-        min_gas, max_gas = self.min_max_with_values(values)
-        return self._format(_format_tuple(*min_gas), _format_tuple(*max_gas, unscale))
+    def format_with_values(self, values, unscale=False, minmax=False) -> str:
+        args = []
+        if minmax:
+            min_gas, max_gas = self.min_max_with_values(values)
+            args = [_format_tuple(*min_gas, unscale), _format_tuple(*max_gas, unscale)]
+        return self._format(*args)
 
 
 def comput_gas_stats(tx) -> Dict[str, CallStats]:
