@@ -139,21 +139,19 @@ contract ReserveSafetyManager is Ownable, Governable {
     function safeToMint(
         DataTypes.VaultInfo[] memory vaults,
         DataTypes.MintAsset[] memory,
-        bytes32[] memory poolIds,
-        uint256[] memory allUnderlyingPrices
-    ) internal view returns (bool mintingSafe) {
+        bytes32[] memory poolIds
+    ) internal returns (bool mintingSafe) {
         mintingSafe = false;
 
-        (bool allBalancerPoolsOperatingNormally, ) = balancerSafetyChecker
-            .checkAllPoolsOperatingNormally(poolIds, allUnderlyingPrices);
+        balancerSafetyChecker.ensurePoolsSafe(poolIds);
 
         (bool allVaultsWithinEpsilon, ) = checkVaultsWithinEpsilon(vaults);
 
         // if check 1 succeeds and all pools healthy, then proceed with minting
-        if (allBalancerPoolsOperatingNormally) {
-            if (allVaultsWithinEpsilon) {
-                mintingSafe = true;
-            }
+        // if (allBalancerPoolsOperatingNormally) {
+        if (allVaultsWithinEpsilon) {
+            mintingSafe = true;
+            // }
         } else {
             //Check that unhealthy pools have input weight below ideal weight. If true, mintingSafe
             if (allVaultsWithinEpsilon) {

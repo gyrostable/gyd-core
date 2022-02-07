@@ -12,6 +12,7 @@ import "../libraries/DataTypes.sol";
 import "../libraries/FixedPoint.sol";
 import "../interfaces/IAssetPricer.sol";
 import "../interfaces/oracles/IUSDPriceOracle.sol";
+import "../interfaces/IBalancerSafetyChecks.sol";
 
 /**
     @title Contract containing the safety checks performed on Balancer pools
@@ -49,10 +50,7 @@ contract BalancerSafetyChecks is Ownable {
         poolWeightMaxDeviation = _poolWeightMaxDeviation; /// @dev this should be scaled by 10^18, i.e. 1e16 == 1%
     }
 
-    function getPoolWeightMaxDeviation() public view returns (uint256) {
-        return poolWeightMaxDeviation;
-    }
-
+    // / @inheritdoc IBalancerSafetyChecks
     function isPoolPaused(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (address poolAddress, ) = balVault.getPool(poolId);
@@ -81,7 +79,7 @@ contract BalancerSafetyChecks is Ownable {
     }
 
     function computeActualWeights(DataTypes.MonetaryAmount[] memory monetaryAmounts)
-        public
+        internal
         view
         returns (uint256[] memory)
     {
@@ -110,6 +108,7 @@ contract BalancerSafetyChecks is Ownable {
         return weights;
     }
 
+    // / @inheritdoc IBalancerSafetyChecks
     function arePoolAssetWeightsCloseToExpected(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (address poolAddress, ) = balVault.getPool(poolId);
@@ -130,7 +129,7 @@ contract BalancerSafetyChecks is Ownable {
         );
 
         for (uint256 i = 0; i < weights.length; i++) {
-            if (weights[i].absSub(expectedWeights[i]) > poolWeightMaxDeviation) {
+            if (weights[i].absSub(expectedWeights[i]) >= poolWeightMaxDeviation) {
                 return false;
             }
         }
@@ -138,7 +137,8 @@ contract BalancerSafetyChecks is Ownable {
         return true;
     }
 
-    function doesPoolHaveLiveness(bytes32 poolId) internal view returns (bool) {
+    // / @inheritdoc IBalancerSafetyChecks
+    function doesPoolHaveLiveness(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         (, , uint256 lastChangeBlock) = balVault.getPoolTokens(poolId);
         bool lastChangeRecent = block.number - lastChangeBlock <= maxActivityLag;
@@ -150,6 +150,7 @@ contract BalancerSafetyChecks is Ownable {
         return stablecoinPrice.absSub(STABLECOIN_IDEAL_PRICE) <= stablecoinMaxDeviation;
     }
 
+    // / @inheritdoc IBalancerSafetyChecks
     function areAllPoolStablecoinsCloseToPeg(bytes32 poolId) public view returns (bool) {
         IVault balVault = IVault(balancerVaultAddress);
         IUSDPriceOracle priceOracle = IUSDPriceOracle(priceOracleAddress);
@@ -175,6 +176,7 @@ contract BalancerSafetyChecks is Ownable {
         return true;
     }
 
+    // / @inheritdoc IBalancerSafetyChecks
     function ensurePoolsSafe(bytes32[] memory poolIds) public {
         for (uint256 i = 0; i < poolIds.length; i++) {
             bool poolLiveness = doesPoolHaveLiveness(poolIds[i]);
