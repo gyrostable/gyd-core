@@ -234,14 +234,14 @@ def pamm(TestingPAMMV1):
 @pytest.fixture(scope="module")
 def balancer_safety_checks(
     admin,
-    BalancerSafetyChecks,
+    TestingBalancerSafetyChecks,
     asset_registry,
     mock_price_oracle,
     asset_pricer,
     mock_balancer_vault,
 ):
     return admin.deploy(
-        BalancerSafetyChecks,
+        TestingBalancerSafetyChecks,
         mock_balancer_vault,
         asset_registry,
         mock_price_oracle,

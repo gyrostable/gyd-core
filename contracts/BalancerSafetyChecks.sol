@@ -60,9 +60,9 @@ contract BalancerSafetyChecks is Ownable {
         return paused;
     }
 
-    function makeMonetaryAmounts(IERC20[] memory _tokens, uint256[] memory _balances)
+    function _makeMonetaryAmounts(IERC20[] memory _tokens, uint256[] memory _balances)
         internal
-        view
+        pure
         returns (DataTypes.MonetaryAmount[] memory)
     {
         require(_tokens.length == _balances.length, Errors.TOKEN_AND_AMOUNTS_LENGTH_DIFFER);
@@ -78,7 +78,7 @@ contract BalancerSafetyChecks is Ownable {
         return monetaryAmounts;
     }
 
-    function computeActualWeights(DataTypes.MonetaryAmount[] memory monetaryAmounts)
+    function _computeActualWeights(DataTypes.MonetaryAmount[] memory monetaryAmounts)
         internal
         view
         returns (uint256[] memory)
@@ -117,9 +117,9 @@ contract BalancerSafetyChecks is Ownable {
         (IERC20[] memory tokens, uint256[] memory balances, ) = balVault.getPoolTokens(poolId);
         require(tokens.length == balances.length, Errors.DIFFERENT_NUMBER_OF_TOKENS_TO_BALANCES);
 
-        DataTypes.MonetaryAmount[] memory monetaryAmounts = makeMonetaryAmounts(tokens, balances);
+        DataTypes.MonetaryAmount[] memory monetaryAmounts = _makeMonetaryAmounts(tokens, balances);
 
-        uint256[] memory weights = computeActualWeights(monetaryAmounts);
+        uint256[] memory weights = _computeActualWeights(monetaryAmounts);
 
         uint256[] memory expectedWeights = balancerPool.getNormalizedWeights();
 
