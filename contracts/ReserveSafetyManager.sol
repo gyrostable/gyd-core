@@ -17,9 +17,11 @@ contract ReserveSafetyChecks is Ownable, Governable {
     using FixedPoint for uint256;
 
     uint256 private maxAllowedVaultDeviation;
+    address public balancerSafetyChecks;
 
-    constructor(uint256 _maxAllowedVaultDeviation) {
+    constructor(uint256 _maxAllowedVaultDeviation, address _balancerSafetyChecks) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
+        balancerSafetyChecks = _balancerSafetyChecks;
     }
 
     function getVaultMaxDeviation() external view returns (uint256) {
@@ -64,7 +66,16 @@ contract ReserveSafetyChecks is Ownable, Governable {
         return true;
     }
 
-    function safeOperation(DataTypes.VaultInfo[] memory vaults) public returns (bool) {
+    function safeToMint(DataTypes.VaultInfo[] memory vaults, bytes32[] memory poolIds)
+        public
+        returns (bool)
+    {
+        IBalancerSafetyChecks balancerSafetyChecksModule = IBalancerSafetyChecks(
+            balancerSafetyChecks
+        );
+
+        balancerSafetyChecksModule.ensurePoolsSafe(poolIds);
+
         if (wouldVaultsRemainBalanced(vaults)) {
             return true;
         } else if (wouldVaultsBeRebalancing(vaults)) {
