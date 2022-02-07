@@ -80,7 +80,7 @@ def test_are_pool_weights_close_to_expected_exact(
     assert balancer_safety_checks.arePoolAssetWeightsCloseToExpected(POOL_ID) == True
 
 # @pytest.mark.skip()
-def test_are_all_pool_stablecoins_close_to_peg(balancer_safety_checks, mock_balancer_vault, dai, usdc, mock_usd_price_oracle, asset_registry, admin):
+def test_are_all_pool_stablecoins_close_to_peg(balancer_safety_checks, mock_balancer_vault, dai, usdc, mock_price_oracle, asset_registry, admin):
     tokens = [dai, usdc]
     balances = [3e20, 2e20]
     asset_registry.setAssetAddress("DAI", dai)
@@ -89,33 +89,33 @@ def test_are_all_pool_stablecoins_close_to_peg(balancer_safety_checks, mock_bala
     response = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
     assert response == True
 
-    mock_usd_price_oracle.setPrice(dai, 0.9e18)
+    mock_price_oracle.setPrice(dai, 0.9e18)
     off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
     assert off_peg == False
 
-    mock_usd_price_oracle.setPrice(dai, 1.1e18)
+    mock_price_oracle.setPrice(dai, 1.1e18)
     off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
     assert off_peg == False
 
-    mock_usd_price_oracle.setPrice(dai, 0.98e18)
+    mock_price_oracle.setPrice(dai, 0.98e18)
     off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
     assert off_peg == False
 
-    mock_usd_price_oracle.setPrice(dai, 1.02e18)
+    mock_price_oracle.setPrice(dai, 1.02e18)
     off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
     assert off_peg == False
 
-    mock_usd_price_oracle.setPrice(dai, 0.99e18)
+    mock_price_oracle.setPrice(dai, 0.99e18)
     off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
     assert off_peg == True
 
-    mock_usd_price_oracle.setPrice(dai, 1.01e18)
+    mock_price_oracle.setPrice(dai, 1.01e18)
     off_peg = balancer_safety_checks.areAllPoolStablecoinsCloseToPeg(POOL_ID)
     assert off_peg == True
 
 
 # @pytest.mark.skip()
-def test_ensure_pools_safe(balancer_safety_checks, mock_balancer_pool, dai, usdc, mock_balancer_vault, asset_registry, mock_usd_price_oracle):
+def test_ensure_pools_safe(balancer_safety_checks, mock_balancer_pool, dai, usdc, mock_balancer_vault, asset_registry, mock_price_oracle):
     tokens = [dai, usdc]
     balances = [2e20, 2e20]
 
@@ -139,13 +139,13 @@ def test_ensure_pools_safe(balancer_safety_checks, mock_balancer_pool, dai, usdc
 
     mock_balancer_vault.setPoolTokens(POOL_ID, tokens, balances)
 
-    mock_usd_price_oracle.setPrice(dai, 0.9e18)
+    mock_price_oracle.setPrice(dai, 0.9e18)
 
     with reverts(error_codes.STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG):
         balancer_safety_checks.ensurePoolsSafe([POOL_ID])
 
 # @pytest.mark.skip()
-def test_ensure_pools_safe_two_pools(balancer_safety_checks, mock_balancer_pool, mock_balancer_pool_two, dai, usdc, usdt, mock_balancer_vault, asset_registry, mock_usd_price_oracle):
+def test_ensure_pools_safe_two_pools(balancer_safety_checks, mock_balancer_pool, mock_balancer_pool_two, dai, usdc, usdt, mock_balancer_vault, asset_registry, mock_price_oracle):
     tokens_pool_one = [dai, usdc]
     balances_pool_one = [2e20, 2e20]
 
@@ -181,7 +181,7 @@ def test_ensure_pools_safe_two_pools(balancer_safety_checks, mock_balancer_pool,
 
     mock_balancer_vault.setPoolTokens(POOL_ID_2, tokens_pool_two, balances_pool_two)
 
-    mock_usd_price_oracle.setPrice(usdt, 0.9e18)
+    mock_price_oracle.setPrice(usdt, 0.9e18)
 
     with reverts(error_codes.STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG):
         balancer_safety_checks.ensurePoolsSafe([POOL_ID, POOL_ID_2])

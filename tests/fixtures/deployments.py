@@ -3,11 +3,8 @@ from unittest.mock import Mock
 
 import pytest
 from brownie import accounts
-from tests.fixtures.mainnet_contracts import (
-    ChainlinkFeeds,
-    TokenAddresses,
-    UniswapPools,
-)
+from tests.fixtures.mainnet_contracts import (ChainlinkFeeds, TokenAddresses,
+                                              UniswapPools)
 from tests.support import constants
 from tests.support.utils import scale
 
@@ -234,7 +231,7 @@ def balancer_safety_checks(
     admin,
     BalancerSafetyChecks,
     asset_registry,
-    mock_usd_price_oracle,
+    mock_price_oracle,
     asset_pricer,
     mock_balancer_vault,
 ):
@@ -242,7 +239,7 @@ def balancer_safety_checks(
         BalancerSafetyChecks,
         mock_balancer_vault,
         asset_registry,
-        mock_usd_price_oracle,
+        mock_price_oracle,
         asset_pricer,
         constants.MAX_BALANCER_ACTIVITY_LAG,
         constants.STABLECOIN_MAX_DEVIATION,
