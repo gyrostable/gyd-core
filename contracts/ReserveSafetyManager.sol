@@ -66,7 +66,7 @@ contract ReserveSafetyChecks is Ownable, Governable {
         return true;
     }
 
-    function safeToMint(DataTypes.VaultInfo[] memory vaults, bytes32[] memory poolIds)
+    function safeToMintOrRedeem(DataTypes.VaultInfo[] memory vaults, bytes32[] memory poolIds)
         public
         returns (bool)
     {
