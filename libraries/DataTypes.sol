@@ -42,6 +42,7 @@ library DataTypes {
         uint256 requestedWeight;
         bool operatingNormally;
         bool withinEpsilon;
+        bool isPaused;
     }
 
     struct TokenProperties {

@@ -33,7 +33,7 @@ library Errors {
     string public constant NEGATIVE_PRICE = "42";
     string public constant INVALID_MESSAGE = "43";
 
-    //Safety check related errors
+    //Balancer safety check related errors
     string public constant POOL_HAS_ZERO_USD_VALUE = "51";
     string public constant POOL_DOES_NOT_HAVE_LIVENESS = "52";
     string public constant POOL_IS_PAUSED = "53";
@@ -43,4 +43,5 @@ library Errors {
     string public constant POOL_DOES_NOT_HAVE_NORMALIZED_WEIGHTS_SET = "57";
     string public constant NO_POOL_ID_REGISTERED = "58";
 
+    //Vault safety check related errors
 }

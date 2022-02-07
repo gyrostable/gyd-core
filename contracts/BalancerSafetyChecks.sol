@@ -13,11 +13,12 @@ import "../libraries/FixedPoint.sol";
 import "../interfaces/IAssetPricer.sol";
 import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../interfaces/IBalancerSafetyChecks.sol";
+import "./auth/Governable.sol";
 
 /**
     @title Contract containing the safety checks performed on Balancer pools
 //  */
-contract BalancerSafetyChecks is Ownable {
+contract BalancerSafetyChecks is Ownable, Governable {
     using SafeERC20 for ERC20;
     using FixedPoint for uint256;
 
@@ -48,6 +49,62 @@ contract BalancerSafetyChecks is Ownable {
         maxActivityLag = _maxActivityLag;
         stablecoinMaxDeviation = _stablecoinMaxDeviation; /// @dev this should be scaled by 10^18, i.e. 1e16 == 1%
         poolWeightMaxDeviation = _poolWeightMaxDeviation; /// @dev this should be scaled by 10^18, i.e. 1e16 == 1%
+    }
+
+    function getBalancerVaultAddress() external view returns (address) {
+        return balancerVaultAddress;
+    }
+
+    function setBalancerVaultAddress(address _balancerVaultAddress) external governanceOnly {
+        balancerVaultAddress = _balancerVaultAddress;
+    }
+
+    function getAssetRegistryAddress() external view returns (address) {
+        return assetRegistryAddress;
+    }
+
+    function setAssetRegistryAddress(address _assetRegistryAddress) external governanceOnly {
+        assetRegistryAddress = _assetRegistryAddress;
+    }
+
+    function getPriceOracleAddress() external view returns (address) {
+        return priceOracleAddress;
+    }
+
+    function setPriceOracleAddress(address _priceOracleAddress) external governanceOnly {
+        priceOracleAddress = _priceOracleAddress;
+    }
+
+    function getAssetPricerAddress() external view returns (address) {
+        return assetPricerAddress;
+    }
+
+    function setAssetPricerAddress(address _assetPricerAddress) external governanceOnly {
+        assetPricerAddress = _assetPricerAddress;
+    }
+
+    function getMaxActivityLag() external view returns (uint256) {
+        return maxActivityLag;
+    }
+
+    function setMaxActivityLag(uint256 _maxActivityLag) external governanceOnly {
+        maxActivityLag = _maxActivityLag;
+    }
+
+    function getStablecoinMaxDeviation() external view returns (uint256) {
+        return stablecoinMaxDeviation;
+    }
+
+    function setStablecoinMaxDeviation(uint256 _stablecoinMaxDeviation) external governanceOnly {
+        stablecoinMaxDeviation = _stablecoinMaxDeviation;
+    }
+
+    function getPoolWeightMaxDeviation() external view returns (uint256) {
+        return poolWeightMaxDeviation;
+    }
+
+    function setPoolWeightMaxDeviation(uint256 _poolWeightMaxDeviation) external governanceOnly {
+        poolWeightMaxDeviation = _poolWeightMaxDeviation;
     }
 
     // / @inheritdoc IBalancerSafetyChecks

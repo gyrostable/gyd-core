@@ -69,7 +69,8 @@ contract VaultManager is IVaultManager, Governable {
                 currentWeight: 0,
                 requestedWeight: 0,
                 operatingNormally: false,
-                withinEpsilon: false
+                withinEpsilon: false,
+                isPaused: false
             });
         }
 
