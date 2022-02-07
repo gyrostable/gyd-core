@@ -13,7 +13,7 @@ import "../interfaces/IBalancerSafetyChecks.sol";
 import "../interfaces/balancer/IVault.sol";
 import "../libraries/Errors.sol";
 
-contract ReserveSafetyChecks is Ownable, Governable {
+contract ReserveSafetyManager is Ownable, Governable {
     using FixedPoint for uint256;
 
     uint256 private maxAllowedVaultDeviation;
@@ -36,7 +36,7 @@ contract ReserveSafetyChecks is Ownable, Governable {
         return vault.isPaused;
     }
 
-    function wouldVaultsRemainBalanced(DataTypes.VaultInfo[] memory vaults)
+    function _wouldVaultsRemainBalanced(DataTypes.VaultInfo[] memory vaults)
         internal
         view
         returns (bool)
@@ -51,7 +51,7 @@ contract ReserveSafetyChecks is Ownable, Governable {
         return true;
     }
 
-    function wouldVaultsBeRebalancing(DataTypes.VaultInfo[] memory vaults)
+    function _wouldVaultsBeRebalancing(DataTypes.VaultInfo[] memory vaults)
         internal
         view
         returns (bool)
@@ -76,9 +76,9 @@ contract ReserveSafetyChecks is Ownable, Governable {
 
         balancerSafetyChecksModule.ensurePoolsSafe(poolIds);
 
-        if (wouldVaultsRemainBalanced(vaults)) {
+        if (_wouldVaultsRemainBalanced(vaults)) {
             return true;
-        } else if (wouldVaultsBeRebalancing(vaults)) {
+        } else if (_wouldVaultsBeRebalancing(vaults)) {
             return true;
         } else {
             return false;

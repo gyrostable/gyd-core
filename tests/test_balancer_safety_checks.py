@@ -7,6 +7,7 @@ from brownie.test import given
 from brownie.test.managers.runner import RevertContextManager as reverts
 
 from tests.support import error_codes
+from tests.support.utils import scale
 
 chain = Chain()
 
@@ -16,7 +17,7 @@ POOL_ID_2 = "0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000088"
 
 pytestmark = pytest.mark.usefixtures("set_data_for_mock_bal_vault")
 
-balance_strategy = st.integers(min_value=0, max_value=1_000_000_000)
+balance_strategy = st.integers(min_value=scale(0), max_value=scale(1_000_000_000))
 
 
 @pytest.fixture(scope="module", autouse=True)
