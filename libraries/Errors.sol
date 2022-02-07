@@ -24,6 +24,8 @@ library Errors {
 
     string public constant NOT_AUTHORIZED = "30";
     string public constant INVALID_ARGUMENT = "31";
+    string public constant KEY_NOT_FOUND = "32";
+    string public constant KEY_FROZEN = "33";
 
     // Oracle related errors
     string public constant ASSET_NOT_SUPPORTED = "40";
