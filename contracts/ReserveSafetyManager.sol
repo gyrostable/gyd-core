@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.10;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
@@ -13,7 +12,7 @@ import "../interfaces/IAssetRegistry.sol";
 import "../interfaces/balancer/IVault.sol";
 import "../libraries/Errors.sol";
 
-contract ReserveSafetyManager is Ownable, Governable {
+contract ReserveSafetyManager is Governable {
     using FixedPoint for uint256;
 
     uint256 private maxAllowedVaultDeviation;
@@ -24,12 +23,6 @@ contract ReserveSafetyManager is Ownable, Governable {
 
     /// @notice a stablecoin should be equal 1 USD
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
-
-    // TO-DO: Move this to the IVaultRegistry
-    struct VaultMetadata {
-        uint256 initialVaultPrice;
-        uint256 initialVaultWeight;
-    }
 
     constructor(uint256 _maxAllowedVaultDeviation) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
