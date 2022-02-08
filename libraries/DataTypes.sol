@@ -36,13 +36,16 @@ library DataTypes {
     struct VaultInfo {
         address vault;
         uint256 price;
+        uint256 initialPrice;
+        uint256 initialWeight;
         uint256 reserveBalance;
         uint256 idealWeight;
         uint256 currentWeight;
         uint256 requestedWeight;
-        bool operatingNormally;
+        bool allStablecoinsNearPeg;
         bool withinEpsilon;
         bool isPaused;
+        bytes32 underlyingPoolId;
     }
 
     struct TokenProperties {
