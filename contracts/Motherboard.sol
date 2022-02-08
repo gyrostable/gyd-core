@@ -13,6 +13,7 @@ import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeBank.sol";
 import "../interfaces/IAssetPricer.sol";
+import "../interfaces/oracles/IUSDPriceOracle.sol";
 
 import "../libraries/DataTypes.sol";
 import "../libraries/ConfigKeys.sol";
@@ -30,30 +31,17 @@ contract Motherboard is IMotherBoard, Governable {
 
     // NOTE: dryMint and dryRedeem should be calling the safety check functions to ensure that the Reserve will remain stable.
 
-    struct Addresses {
-        address gydToken;
-        address exchangerRegistry;
-        address pamm;
-        address gyroConfig;
-        address feeBank;
-        address reserve;
-        address assetPricer;
-    }
+    /// @inheritdoc IMotherBoard
+    IGYDToken public immutable override gydToken;
 
     /// @inheritdoc IMotherBoard
-    IGYDToken public override gydToken;
+    IReserve public immutable override reserve;
 
     /// @inheritdoc IMotherBoard
-    IPAMM public override pamm;
+    IGyroConfig public immutable override gyroConfig;
 
     /// @inheritdoc IMotherBoard
     ILPTokenExchangerRegistry public override exchangerRegistry;
-
-    /// @inheritdoc IMotherBoard
-    IReserve public override reserve;
-
-    /// @inheritdoc IMotherBoard
-    IGyroConfig public override gyroConfig;
 
     /// @inheritdoc IMotherBoard
     IFeeBank public override feeBank;
@@ -61,20 +49,17 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     IAssetPricer public override assetPricer;
 
-    constructor(Addresses memory addresses) {
-        gydToken = IGYDToken(addresses.gydToken);
-        exchangerRegistry = ILPTokenExchangerRegistry(addresses.exchangerRegistry);
-        pamm = IPAMM(addresses.pamm);
-        reserve = IReserve(addresses.reserve);
-        gyroConfig = IGyroConfig(addresses.gyroConfig);
-        feeBank = IFeeBank(addresses.feeBank);
-        assetPricer = IAssetPricer(addresses.assetPricer);
-        gydToken.safeApprove(addresses.feeBank, type(uint256).max);
-    }
-
-    /// @inheritdoc IMotherBoard
-    function setPAMM(address pamAddress) external override governanceOnly {
-        pamm = IPAMM(pamAddress);
+    constructor(IGyroConfig _gyroConfig) {
+        gyroConfig = _gyroConfig;
+        gydToken = IGYDToken(_gyroConfig.getAddress(ConfigKeys.GYD_TOKEN_ADDRESS));
+        exchangerRegistry = ILPTokenExchangerRegistry(
+            _gyroConfig.getAddress(ConfigKeys.EXCHANGER_REGISTRY_ADDRESS)
+        );
+        reserve = IReserve(_gyroConfig.getAddress(ConfigKeys.RESERVE_ADDRESS));
+        assetPricer = IAssetPricer(_gyroConfig.getAddress(ConfigKeys.ASSET_PRICER_ADDRESS));
+        address feeBankAddress = _gyroConfig.getAddress(ConfigKeys.FEE_BANK_ADDRESS);
+        feeBank = IFeeBank(feeBankAddress);
+        gydToken.safeApprove(feeBankAddress, type(uint256).max);
     }
 
     /// @inheritdoc IMotherBoard
@@ -91,22 +76,27 @@ contract Motherboard is IMotherBoard, Governable {
             DataTypes.MintAsset calldata asset = assets[i];
 
             IGyroVault vault = IGyroVault(asset.destinationVault);
-            address lpTokenAddress = vault.lpToken();
 
             IERC20(asset.inputToken).safeTransferFrom(msg.sender, address(this), asset.inputAmount);
 
-            uint256 lpTokenAmount;
             uint256 vaultTokenAmount;
-
-            if (asset.inputToken == lpTokenAddress) {
-                lpTokenAmount = asset.inputAmount;
+            if (asset.inputToken == address(vault)) {
+                vaultTokenAmount = asset.inputAmount;
             } else {
-                ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
-                lpTokenAmount = exchanger.deposit(
-                    DataTypes.MonetaryAmount(asset.inputToken, asset.inputAmount)
-                );
+                uint256 lpTokenAmount;
+                address lpTokenAddress = vault.lpToken();
+                if (asset.inputToken == lpTokenAddress) {
+                    lpTokenAmount = asset.inputAmount;
+                } else {
+                    ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(
+                        lpTokenAddress
+                    );
+                    lpTokenAmount = exchanger.deposit(
+                        DataTypes.MonetaryAmount(asset.inputToken, asset.inputAmount)
+                    );
+                }
+                vaultTokenAmount = vault.depositFor(address(reserve), lpTokenAmount);
             }
-            vaultTokenAmount = vault.depositFor(address(reserve), lpTokenAmount);
 
             vaultAmounts[i] = DataTypes.MonetaryAmount({
                 tokenAddress: asset.destinationVault,
@@ -116,7 +106,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
         uint256 usdValue = assetPricer.getBasketUSDValue(vaultAmounts);
-        uint256 gyroToMint = pamm.mint(usdValue);
+        uint256 gyroToMint = pamm().mint(usdValue);
 
         uint256 feeToPay = gyroToMint.mulUp(mintFeeFraction);
 
@@ -133,26 +123,66 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function redeem(uint256, DataTypes.RedeemAsset[] calldata assets)
+    function redeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
         external
-        pure
         override
-        returns (uint256 redeemedGYDAmount)
+        returns (uint256[] memory outputAmounts)
     {
-        // NOTE: remove pure when implementing
+        gydToken.burnFor(gydToRedeem, msg.sender);
 
-        // DataTypes.MonetaryAmount[] memory vaultAmounts = new DataTypes.MonetaryAmount[](
-        //     assets.length
-        // );
+        outputAmounts = new uint256[](assets.length);
 
+        uint256 usdValueToRedeem = pamm().redeem(gydToRedeem);
+
+        IUSDPriceOracle priceOracle = IUSDPriceOracle(
+            gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS)
+        );
+
+        uint256 totalValueRatio = 0;
         for (uint256 i = 0; i < assets.length; i++) {
-            // DataTypes.RedeemAsset memory asset = assets[i];
-            // IGyroVault vault = IGyroVault(asset.originVault);
-            // address lpTokenAddress = vault.lpToken();
-            // uint256 lpTokenAmount = vault.withdraw(asset.vaultTokenAmount);
+            DataTypes.RedeemAsset memory asset = assets[i];
+            totalValueRatio += asset.valueRatio;
+            IGyroVault vault = IGyroVault(asset.originVault);
+            uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(asset.valueRatio);
+            uint256 vaultTokenPrice = priceOracle.getPriceUSD(address(vault));
+
+            uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultTokenPrice);
+
+            // withdraw the amount of vault tokens from the reserve
+            reserve.withdrawToken(address(vault), vaultTokenAmount);
+
+            uint256 outputAmount;
+
+            // nothing to do if the user wants the vault token
+            if (asset.outputToken == address(vault)) {
+                outputAmount = vaultTokenAmount;
+            } else {
+                // convert the vault token into its underlying LP token
+                uint256 lpTokenAmount = vault.withdraw(vaultTokenAmount);
+
+                address lpTokenAddress = vault.lpToken();
+                // nothing more to do if the user wants the underlying LP token
+                if (asset.outputToken == lpTokenAddress) {
+                    outputAmount = lpTokenAmount;
+                } else {
+                    // otherwise, convert the LP token into the desired output token
+                    ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(
+                        lpTokenAddress
+                    );
+                    outputAmount = exchanger.withdraw(
+                        DataTypes.MonetaryAmount(asset.outputToken, lpTokenAmount)
+                    );
+                }
+            }
+
+            // ensure we received enough tokens and transfer them to the user
+            require(outputAmount >= asset.minOutputAmount, Errors.TOO_MUCH_SLIPPAGE);
+            outputAmounts[i] = outputAmount;
+
+            IERC20(asset.outputToken).safeTransfer(msg.sender, outputAmount);
         }
 
-        return 0;
+        require(totalValueRatio == FixedPoint.ONE, Errors.INVALID_ARGUMENT);
     }
 
     /// @inheritdoc IMotherBoard
@@ -200,7 +230,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
         uint256 usdValue = assetPricer.getBasketUSDValue(vaultAmounts);
-        mintedGYDAmount = pamm.computeMintAmount(usdValue);
+        mintedGYDAmount = pamm().computeMintAmount(usdValue);
 
         uint256 feeToPay = mintedGYDAmount.mulUp(mintFeeFraction);
 
@@ -212,12 +242,65 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     /// @inheritdoc IMotherBoard
-    function dryRedeem(DataTypes.MonetaryAmount[] memory, uint256)
+    function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] memory assets)
         external
-        pure
+        view
         override
-        returns (uint256 redeemedGYDAmount, string memory err)
+        returns (uint256[] memory outputAmounts, string memory err)
     {
-        return (0, "");
+        outputAmounts = new uint256[](assets.length);
+
+        uint256 usdValueToRedeem = pamm().computeRedeemAmount(gydToRedeem);
+
+        IUSDPriceOracle priceOracle = IUSDPriceOracle(
+            gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS)
+        );
+
+        // for (uint256 i = 0; i < assets.length; i++) {
+        //     DataTypes.RedeemAsset memory asset = assets[i];
+        //     IGyroVault vault = IGyroVault(asset.originVault);
+        //     uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(asset.valueRatio);
+        //     uint256 vaultTokenPrice = priceOracle.getPriceUSD(address(vault));
+
+        //     uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultTokenPrice);
+
+        //     // withdraw the amount of vault tokens from the reserve
+        //     reserve.withdrawToken(address(vault), vaultTokenAmount);
+
+        //     uint256 outputAmount;
+
+        //     // nothing to do if the user wants the vault token
+        //     if (asset.outputToken == address(vault)) {
+        //         outputAmount = vaultTokenAmount;
+        //     } else {
+        //         // convert the vault token into its underlying LP token
+        //         uint256 lpTokenAmount = vault.withdraw(vaultTokenAmount);
+
+        //         address lpTokenAddress = vault.lpToken();
+        //         // nothing more to do if the user wants the underlying LP token
+        //         if (asset.outputToken == lpTokenAddress) {
+        //             outputAmount = lpTokenAmount;
+        //         } else {
+        //             // otherwise, convert the LP token into the desired output token
+        //             ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(
+        //                 lpTokenAddress
+        //             );
+        //             lpTokenAmount = exchanger.withdraw(
+        //                 DataTypes.MonetaryAmount(asset.outputToken, outputAmount)
+        //             );
+        //         }
+        //     }
+
+        //     // ensure we received enough tokens and transfer them to the user
+        //     require(outputAmount >= asset.minOutputAmount, Errors.TOO_MUCH_SLIPPAGE);
+        //     outputAmounts[i] = outputAmount;
+
+        //     IERC20(asset.outputToken).safeTransfer(msg.sender, outputAmount);
+        // }
+    }
+
+    /// @inheritdoc IMotherBoard
+    function pamm() public view override returns (IPAMM) {
+        return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
     }
 }

@@ -16,9 +16,7 @@ interface IGyroVault is IERC20 {
     /// and sends back the received vault tokens
     /// @param lpTokenAmount the amount of LP token to deposit
     /// @return vaultTokenAmount the amount of vault token sent back
-    function deposit(uint256 lpTokenAmount)
-        external
-        returns (uint256 vaultTokenAmount);
+    function deposit(uint256 lpTokenAmount) external returns (uint256 vaultTokenAmount);
 
     /// @notice Simlar to `deposit(uint256 lpTokenAmount)` but credits the tokens
     /// to `beneficiary` instead of `msg.sender`
@@ -42,9 +40,7 @@ interface IGyroVault is IERC20 {
     /// and burns the vault tokens
     /// @param vaultTokenAmount the amount of vault token to withdraw
     /// @return lpTokenAmount the amount of LP token sent back
-    function withdraw(uint256 vaultTokenAmount)
-        external
-        returns (uint256 lpTokenAmount);
+    function withdraw(uint256 vaultTokenAmount) external returns (uint256 lpTokenAmount);
 
     /// @notice Dry-run version of `withdraw`
     function dryWithdraw(uint256 vaultTokenAmount)

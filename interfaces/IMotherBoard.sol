@@ -37,10 +37,6 @@ interface IMotherBoard {
     /// @return the exchanger registry address
     function exchangerRegistry() external view returns (ILPTokenExchangerRegistry);
 
-    /// @notice Set the address of the primary AMM (P-AMM) to be used when minting and redeeming GYD tokens
-    /// @param pamAddress the address of the P-AMM to use
-    function setPAMM(address pamAddress) external;
-
     /// @notice Returns the address of the global configuration
     /// @return the global configuration address
     function gyroConfig() external view returns (IGyroConfig);
@@ -59,12 +55,12 @@ interface IMotherBoard {
     /// @notice Main redemption function to be called by a withdrawer
     /// This redeems using at most `maxRedeemedAmount` of GYD and returns the
     /// exact outputs as specified by `tokens` and `amounts`
-    /// @param redeemAmount the maximum amount of GYD to redeem
+    /// @param gydToRedeem the maximum amount of GYD to redeem
     /// @param assets the output tokens and associated amounts to return against GYD
-    /// @return redeemedGYDAmount the amount of redeemed GYD tokens
-    function redeem(uint256 redeemAmount, DataTypes.RedeemAsset[] calldata assets)
+    /// @return outputAmounts the amounts receivd against the redeemed GYD
+    function redeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
         external
-        returns (uint256 redeemedGYDAmount);
+        returns (uint256[] memory outputAmounts);
 
     /// @notice Simulates a mint to know whether it would succeed and how much would be minted
     /// The parameters are the same as the `mint` function
@@ -77,14 +73,14 @@ interface IMotherBoard {
         view
         returns (uint256 mintedGYDAmount, string memory err);
 
-    /// @notice Simulates a redemption execution and returns the amount of GYD
-    /// redeems or an error code if the redeem would fail
-    /// @param outputMonetaryAmounts the output tokens and associated amounts to return against GYD
-    /// @param maxRedeemedAmount the maximum amount of GYD to redeem
-    /// @return redeemedGYDAmount the amount of redeemed GYD tokens
+    /// @notice Dry version of the `redeem` function
+    /// exact outputs as specified by `tokens` and `amounts`
+    /// @param gydToRedeem the maximum amount of GYD to redeem
+    /// @param assets the output tokens and associated amounts to return against GYD
+    /// @return outputAmounts the amounts receivd against the redeemed GYD
     /// @return err a non-empty error message in case an error would happen when redeeming
-    function dryRedeem(
-        DataTypes.MonetaryAmount[] calldata outputMonetaryAmounts,
-        uint256 maxRedeemedAmount
-    ) external view returns (uint256 redeemedGYDAmount, string memory err);
+    function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] memory assets)
+        external
+        view
+        returns (uint256[] memory outputAmounts, string memory err);
 }

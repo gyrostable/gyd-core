@@ -20,4 +20,10 @@ interface IGYDToken is IERC20 {
 
     /// @notice Mints `amount` of GYD token on behalf of `account`
     function mintFor(uint256 amount, address account) external;
+
+    /// @notice Burns `amount` of GYD token
+    function burn(uint256 amount) external;
+
+    /// @notice Burns `amount` of GYD token on behalf of `account`
+    function burnFor(uint256 amount, address account) external;
 }
