@@ -19,6 +19,12 @@ contract ReserveSafetyManager is Ownable, Governable {
     uint256 private maxAllowedVaultDeviation;
     address public balancerSafetyChecks;
 
+    // TO-DO: Move this to the IVaultRegistry
+    struct VaultMetadata {
+        uint256 initialVaultPrice;
+        uint256 initialVaultWeight;
+    }
+
     constructor(uint256 _maxAllowedVaultDeviation, address _balancerSafetyChecks) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         balancerSafetyChecks = _balancerSafetyChecks;
