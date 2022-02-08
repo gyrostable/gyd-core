@@ -32,20 +32,25 @@ library DataTypes {
         address originVault;
     }
 
+    /// @notice Persisted metadata about the vault
+    struct PersistedVaultMetadata {
+        uint256 initialPrice;
+        uint256 initialWeight;
+    }
+
     /// @notice Vault with metadata
     struct VaultInfo {
         address vault;
         uint256 price;
-        uint256 initialPrice;
-        uint256 initialWeight;
+        PersistedVaultMetadata persistedMetadata;
         uint256 reserveBalance;
-        uint256 idealWeight;
         uint256 currentWeight;
-        uint256 requestedWeight;
-        bool allStablecoinsNearPeg;
-        bool withinEpsilon;
-        bool isPaused;
-        bytes32 underlyingPoolId;
+
+        // uint256 requestedWeight;
+        // bool allStablecoinsNearPeg;
+        // bool withinEpsilon;
+        // bool isPaused;
+        // bytes32 underlyingPoolId;
     }
 
     struct TokenProperties {
