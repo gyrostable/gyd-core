@@ -22,7 +22,7 @@ library GyroLPSharePricing {
         uint256[] memory weights,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
-    ) public pure returns (uint256 bptPrice) {
+    ) internal pure returns (uint256 bptPrice) {
         /**********************************************************************************************
         //                        L   n               w_i                               //
         //            bptPrice = ---  Π   (p_i / w_i)^                                  //
@@ -44,7 +44,7 @@ library GyroLPSharePricing {
         uint256 weight,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
-    ) public pure returns (uint256 bptPrice) {
+    ) internal pure returns (uint256 bptPrice) {
         /**********************************************************************************************
         //                        L     n             w                                 //
         //            bptPrice = ---  ( Π   p_i / w )^                                  //
@@ -70,7 +70,7 @@ library GyroLPSharePricing {
         uint256 sqrtBeta,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
-    ) public pure returns (uint256 bptPrice) {
+    ) internal pure returns (uint256 bptPrice) {
         /**********************************************************************************************
         //                 L                 1/2               1/2              1/2     //
         //     bptPrice = ---  ( 2 (p_x p_y)^     - p_x / beta^     - p_y alpha^    )   //
@@ -94,7 +94,7 @@ library GyroLPSharePricing {
         uint256 cbrtAlpha,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
-    ) public pure returns (uint256 bptPrice) {
+    ) internal pure returns (uint256 bptPrice) {
         /**********************************************************************************************
         //                 L                     1/3                            1/3     //
         //     bptPrice = ---  ( 3 (p_x p_y p_z)^     - (p_x + p_y + p_z) alpha^    )   //
@@ -122,7 +122,7 @@ library GyroLPSharePricing {
         CEMMDerivedParams memory derivedParams,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
-    ) public pure returns (uint256 bptPrice) {
+    ) internal pure returns (uint256 bptPrice) {
         /**********************************************************************************************
         //                L   / / e_x A^{-1} tau(beta) \     -1     / p_x \  \   / p_x \             //
         //   bptPrice =  --- | |                        | - A^  tau|  ---- |  | |       |            //

@@ -9,6 +9,11 @@ pytest_plugins = [
 ]
 
 
+@pytest.fixture(scope="module")
+def admin(accounts):
+    return accounts[0]
+
+
 @pytest.fixture(autouse=True)
 def isolation_setup(fn_isolation):
     pass
@@ -25,3 +30,8 @@ def set_gas_price(is_forked):
         priority_fee("2 gwei")
     else:
         gas_price("2 gwei")
+
+
+@pytest.fixture(scope="module")
+def gyro_lp_price_testing(admin, TestingLPSharePricing):
+    return admin.deploy(TestingLPSharePricing)
