@@ -7,8 +7,20 @@ interface IGyroConfig {
     event ConfigChanged(bytes32 key, uint256 previousValue, uint256 newValue);
     event ConfigChanged(bytes32 key, address previousValue, address newValue);
 
+    /// @notice Event emitted when a configuration is unset
+    event ConfigUnset(bytes32 key);
+
+    /// @notice Event emitted when a configuration is frozen
+    event ConfigFrozen(bytes32 key);
+
     /// @notice Returns a set of known configuration keys
     function listKeys() external view returns (bytes32[] memory);
+
+    /// @notice Returns true if the configuration has the given key
+    function hasKey(bytes32 key) external view returns (bool);
+
+    /// @notice Returns the metadata associated with a particular config key
+    function getConfigMeta(bytes32 key) external view returns (uint8, bool);
 
     /// @notice Returns a uint256 value from the config
     function getUint(bytes32 key) external view returns (uint256);
@@ -22,4 +34,10 @@ interface IGyroConfig {
 
     /// @notice Set an address config
     function setAddress(bytes32 key, address newValue) external;
+
+    /// @notice Unset a key in the config
+    function unset(bytes32 key) external;
+
+    /// @notice Freezes a key, making it impossible to update or unset
+    function freeze(bytes32 key) external;
 }
