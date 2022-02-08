@@ -41,22 +41,29 @@ class CoinbaseWalletAuth(AuthBase):
         return request
 
 
-auth = CoinbaseWalletAuth(API_KEY, API_SECRET)
+def fetch_prices():
+    auth = CoinbaseWalletAuth(API_KEY, API_SECRET)
 
-r = requests.get(BASE_URL + "/oracle", auth=auth)
-result = r.json()
-print(json.dumps(result))
+    r = requests.get(BASE_URL + "/oracle", auth=auth)
+    result = r.json()
 
-message = result["messages"][0]
-signature = result["signatures"][0]
+    message = result["messages"][0]
+    signature = result["signatures"][0]
 
-w3 = web3.Web3()
-signed_hash = w3.solidityKeccak(
-    ["string", "bytes32"],
-    ["\x19Ethereum Signed Message:\n32", w3.keccak(hexstr=message)],
-)
-r, s, v = eth_abi.decode_abi(
-    ["bytes32", "bytes32", "uint8"], bytes.fromhex(signature[2:])
-)
-signing_address = w3.eth.account.recoverHash(signed_hash, vrs=(v, r, s))
-print(f"signed using: {signing_address}", file=sys.stderr)
+    w3 = web3.Web3()
+    signed_hash = w3.solidityKeccak(
+        ["string", "bytes32"],
+        ["\x19Ethereum Signed Message:\n32", w3.keccak(hexstr=message)],
+    )
+    r, s, v = eth_abi.decode_abi(
+        ["bytes32", "bytes32", "uint8"], bytes.fromhex(signature[2:])
+    )
+    signing_address = w3.eth.account.recoverHash(signed_hash, vrs=(v, r, s))
+    print(f"signed using: {signing_address}", file=sys.stderr)
+    return result, signing_address
+
+
+if __name__ == "__main__":
+    prices, signing_address = fetch_prices()
+    print(json.dumps(prices))
+    print(f"signed using: {signing_address}", file=sys.stderr)

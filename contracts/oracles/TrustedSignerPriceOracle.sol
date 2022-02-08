@@ -59,13 +59,17 @@ contract TrustedSignerPriceOracle is IUSDPriceOracle {
     function postPrices(SignedPrice[] calldata signedPrices) external {
         for (uint256 i = 0; i < signedPrices.length; i++) {
             SignedPrice calldata signedPrice = signedPrices[i];
-            postPrice(signedPrice.message, signedPrice.signature);
+            _postPrice(signedPrice.message, signedPrice.signature);
         }
     }
 
     /// @notice Upates the price with a message containing the price information and its signature
     /// The message should have the following ABI-encoded format: (string kind, uint256 timestamp, string key, uint256 price)
-    function postPrice(bytes memory message, bytes memory signature) public {
+    function postPrice(bytes memory message, bytes memory signature) external {
+        _postPrice(message, signature);
+    }
+
+    function _postPrice(bytes memory message, bytes memory signature) internal {
         address signingAddress = verifyMessage(message, signature);
         require(signingAddress == trustedPriceSigner, Errors.INVALID_MESSAGE);
 
