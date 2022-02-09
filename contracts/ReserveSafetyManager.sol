@@ -83,19 +83,33 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         uint256[] memory resultingAmounts;
         uint256[] memory prices;
         uint256 valueinUSDDeltas;
+        uint256 currentUSDValue;
 
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
             currentAmounts[i] = vaultsWithAmount[i].vaultInfo.reserveBalance;
             deltaAmounts[i] = vaultsWithAmount[i].amount;
-            resultingAmounts[i] = currentAmounts[i] + deltaAmounts[i];
+
+            if (vaultsWithAmount[i].mint) {
+                resultingAmounts[i] = currentAmounts[i] + deltaAmounts[i];
+            } else {
+                resultingAmounts[i] = currentAmounts[i] - deltaAmounts[i];
+            }
+
             prices[i] = vaultsWithAmount[i].vaultInfo.price;
         }
 
-        (metaData.currentWeights, ) = calculateWeightsAndTotal(currentAmounts, prices);
+        (metaData.currentWeights, currentUSDValue) = calculateWeightsAndTotal(
+            currentAmounts,
+            prices
+        );
 
         (metaData.deltaWeights, valueinUSDDeltas) = calculateWeightsAndTotal(deltaAmounts, prices);
 
         (metaData.resultingWeights, ) = calculateWeightsAndTotal(resultingAmounts, prices);
+
+        if (currentUSDValue == 0) {
+            metaData.currentWeights = metaData.idealWeights;
+        }
 
         if (metaData.valueinUSDDeltas == 0) {
             metaData.deltaWeights = metaData.idealWeights;
@@ -267,15 +281,15 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             }
 
             if (!vaultsWithinEpsilon[i]) {
-                // check if weightsOfDelta[i] is closer to _idealWeights[i] than _currentWeights[i]
-                uint256 distanceDeltaToIdeal = metaData.deltaWeights[i].absSub(
+                // check if resultingWeights[i] is closer to _idealWeights[i] than _currentWeights[i]
+                uint256 distanceResultingToIdeal = metaData.resultingWeights[i].absSub(
                     metaData.idealWeights[i]
                 );
                 uint256 distanceCurrentToIdeal = metaData.currentWeights[i].absSub(
                     metaData.idealWeights[i]
                 );
 
-                if (distanceDeltaToIdeal >= distanceCurrentToIdeal) {
+                if (distanceResultingToIdeal >= distanceCurrentToIdeal) {
                     return false;
                 }
             }
@@ -355,14 +369,14 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
                 continue;
             }
 
-            uint256 distanceDeltaToIdeal = metaData.deltaWeights[i].absSub(
+            uint256 distanceResultingToIdeal = metaData.resultingWeights[i].absSub(
                 metaData.idealWeights[i]
             );
             uint256 distanceCurrentToIdeal = metaData.currentWeights[i].absSub(
                 metaData.idealWeights[i]
             );
 
-            if (distanceDeltaToIdeal >= distanceCurrentToIdeal) {
+            if (distanceResultingToIdeal >= distanceCurrentToIdeal) {
                 return Errors.NOT_SAFE_TO_REDEEM;
             }
         }

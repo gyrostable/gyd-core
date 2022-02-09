@@ -7,6 +7,7 @@ interface ISafetyCheck {
     struct VaultWithAmount {
         DataTypes.VaultInfo vaultInfo;
         uint256 amount;
+        bool mint;
     }
 
     // /// @notice Checks whether a mint operation is safe
