@@ -45,12 +45,6 @@ library DataTypes {
         PersistedVaultMetadata persistedMetadata;
         uint256 reserveBalance;
         uint256 currentWeight;
-
-        // uint256 requestedWeight;
-        // bool allStablecoinsNearPeg;
-        // bool withinEpsilon;
-        // bool isPaused;
-        // bytes32 underlyingPoolId;
     }
 
     struct TokenProperties {

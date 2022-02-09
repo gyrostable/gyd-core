@@ -42,6 +42,7 @@ library Errors {
     string public constant DIFFERENT_NUMBER_OF_TOKENS_TO_BALANCES = "56";
     string public constant POOL_DOES_NOT_HAVE_NORMALIZED_WEIGHTS_SET = "57";
     string public constant NO_POOL_ID_REGISTERED = "58";
+    string public constant AMOUNT_AND_PRICE_LENGTH_DIFFER = "59";
 
     //Vault safety check related errors
 }

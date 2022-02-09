@@ -11,81 +11,111 @@ import "../interfaces/IVaultManager.sol";
 import "../interfaces/IAssetRegistry.sol";
 import "../interfaces/balancer/IVault.sol";
 import "../libraries/Errors.sol";
+import "../interfaces/ISafetyCheck.sol";
 
-contract ReserveSafetyManager is Governable {
+contract ReserveSafetyManager is ISafetyCheck, Governable {
     using FixedPoint for uint256;
 
-    uint256 private maxAllowedVaultDeviation;
+    uint256 private epsilon;
     uint256 private stablecoinMaxDeviation;
     address private balancerVaultAddress;
     address private priceOracleAddress;
     address private assetRegistryAddress;
 
-    /// @notice a stablecoin should be equal 1 USD
+    struct VaultLocal {
+        uint256 idealWeight;
+        uint256 preDeltaWeight;
+        uint256 postDeltaWeight;
+        bool allStablecoinsCloseToPeg;
+        bool withinEpsilon;
+        bytes32 underlyingPoolId;
+    }
+
+    /// @notice a stablecoin should be equal to 1 USD
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
 
     constructor(uint256 _maxAllowedVaultDeviation) {
-        maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
+        epsilon = _maxAllowedVaultDeviation;
     }
 
     function getVaultMaxDeviation() external view returns (uint256) {
-        return maxAllowedVaultDeviation;
+        return epsilon;
     }
 
     function setVaultMaxDeviation(uint256 _maxAllowedVaultDeviation) external governanceOnly {
-        maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
+        epsilon = _maxAllowedVaultDeviation;
     }
 
-    function _wouldVaultsRemainBalanced(DataTypes.VaultInfo[] memory vaults)
-        internal
-        view
-        returns (bool)
-    {
-        for (uint256 i = 0; i < vaults.length; i++) {
-            bool balanced = vaults[i].idealWeight.absSub(vaults[i].requestedWeight) <=
-                maxAllowedVaultDeviation;
-            if (!balanced) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    function _wouldVaultsBeRebalancing(DataTypes.VaultInfo[] memory vaults)
-        internal
-        view
-        returns (bool)
-    {
-        for (uint256 i = 0; i < vaults.length; i++) {
-            bool rebalancing = vaults[i].idealWeight.absSub(vaults[i].requestedWeight) <
-                vaults[i].idealWeight.absSub(vaults[i].currentWeight);
-            if (!rebalancing) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    function updateVaultsLatestIdealWeights(DataTypes.VaultInfo[] memory vaults)
+    function calculateWeightsAndTotal(uint256[] memory amounts, uint256[] memory prices)
         internal
         pure
-        returns (DataTypes.VaultInfo[] memory)
+        returns (uint256[] memory, uint256)
     {
-        uint256[] memory weightedReturns = new uint256[](vaults.length);
+        require(amounts.length == prices.length, Errors.AMOUNT_AND_PRICE_LENGTH_DIFFER);
+        uint256[] memory weights = new uint256[](prices.length);
+        uint256 total = 0;
+
+        for (uint256 i = 0; i < amounts.length; i++) {
+            uint256 amountInUSD = amounts[i].mulDown(prices[i]);
+            total = total + amountInUSD;
+        }
+
+        if (total == 0) {
+            return (weights, total);
+        }
+
+        for (uint256 i = 0; i < amounts.length; i++) {
+            weights[i] = amounts[i].mulDown(prices[i]).divDown(total);
+        }
+
+        return (weights, total);
+    }
+
+    function calculateImpliedPoolWeights(VaultWithAmount[] memory vaultsWithAmount)
+        internal
+        view
+        returns (uint256[] memory)
+    {
+        // order of prices must be same as order of poolProperties
+        uint256[] memory impliedIdealWeights = new uint256[](vaultsWithAmount.length);
+        uint256[] memory weightedReturns = new uint256[](vaultsWithAmount.length);
 
         uint256 returnsSum;
-        for (uint256 i = 0; i < vaults.length; i++) {
-            weightedReturns[i] = (vaults[i].price).divDown(vaults[i].initialPrice).mulDown(
-                vaults[i].initialWeight
-            );
+
+        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
+            weightedReturns[i] = (vaultsWithAmount[i].vaultInfo.price)
+                .divDown(vaultsWithAmount[i].vaultInfo.persistedMetadata.initialPrice)
+                .mulDown(vaultsWithAmount[i].vaultInfo.persistedMetadata.initialWeight);
             returnsSum = returnsSum + weightedReturns[i];
         }
 
-        for (uint256 i = 0; i < vaults.length; i++) {
-            vaults[i].idealWeight = weightedReturns[i].divDown(returnsSum);
+        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
+            impliedIdealWeights[i] = weightedReturns[i].divDown(returnsSum);
         }
 
-        return vaults;
+        return impliedIdealWeights;
+    }
+
+    function checkVaultsWithinEpsilon(VaultLocal[] memory vaultsLocal)
+        internal
+        view
+        returns (bool, bool[] memory vaultsWithinEpsilon)
+    {
+        bool allVaultsWithinEpsilon = true;
+
+        for (uint256 i = 0; i < vaultsLocal.length; i++) {
+            bool withinEpsilon = (vaultsLocal[i].idealWeight).absSub(
+                vaultsLocal[i].postDeltaWeight
+            ) <= epsilon;
+
+            vaultsWithinEpsilon[i] = withinEpsilon;
+
+            if (!withinEpsilon) {
+                allVaultsWithinEpsilon = false;
+            }
+        }
+
+        return (allVaultsWithinEpsilon, vaultsWithinEpsilon);
     }
 
     /// @dev stablecoinPrice must be scaled to 10^18
@@ -118,171 +148,203 @@ contract ReserveSafetyManager is Governable {
         return true;
     }
 
-    function vaultStablecoinStatus(DataTypes.VaultInfo[] memory vaults)
+    function vaultStablecoinStatus(VaultLocal[] memory vaultsLocal)
         internal
         view
-        returns (bool, DataTypes.VaultInfo[] memory)
+        returns (bool, VaultLocal[] memory)
     {
         bool allStablecoinsCloseToPeg = true;
-        for (uint256 i = 0; i < vaults.length; i++) {
-            vaults[i].allStablecoinsNearPeg = areAllPoolStablecoinsCloseToPeg(
-                vaults[i].underlyingPoolId
+        for (uint256 i = 0; i < vaultsLocal.length; i++) {
+            vaultsLocal[i].allStablecoinsCloseToPeg = areAllPoolStablecoinsCloseToPeg(
+                vaultsLocal[i].underlyingPoolId
             );
             allStablecoinsCloseToPeg = false;
         }
-        return (allStablecoinsCloseToPeg, vaults);
+        return (allStablecoinsCloseToPeg, vaultsLocal);
     }
 
-    function _inputWeightsLessThanIdealWeights(DataTypes.VaultInfo[] memory vaults)
-        internal
-        view
-        returns (bool)
-    {
-        for (uint256 i; i < vaults.length; i++) {
-            if (vaults[i].allStablecoinsNearPeg) {
+    function checkUnhealthyMovesToIdeal(
+        VaultLocal[] memory vaultsLocal,
+        uint256[] memory deltaWeights,
+        uint256[] memory idealWeights
+    ) internal pure returns (bool) {
+        for (uint256 i; i < vaultsLocal.length; i++) {
+            if (vaultsLocal[i].allStablecoinsCloseToPeg) {
                 continue;
             }
 
-            if (vaults[i].requestedWeight > vaults[i].idealWeight) {
+            if (deltaWeights[i] > idealWeights[i]) {
                 return false;
             }
         }
+
         return true;
     }
 
-    function safeToMintOutsideEpsilon(DataTypes.VaultInfo[] memory vaults)
-        internal
-        pure
-        returns (bool _anyCheckFail)
-    {
+    function safeToMintOutsideEpsilon(
+        VaultWithAmount[] memory vaultsWithAmount,
+        VaultLocal[] memory vaultsLocal,
+        uint256[] memory deltaWeights,
+        uint256[] memory idealWeights,
+        uint256[] memory currentWeights,
+        bool[] memory vaultsWithinEpsilon
+    ) internal pure returns (bool) {
         //Check that amount above epsilon is decreasing
         //Check that unhealthy pools have input weight below ideal weight
         //If both true, then mint
         //note: should always be able to mint at the ideal weights!
-        _anyCheckFail = false;
-        for (uint256 i; i < vaults.length; i++) {
-            if (!(vaults[i].allStablecoinsNearPeg)) {
-                if (_inputBPTWeights[i] > _idealWeights[i]) {
-                    _anyCheckFail = true;
-                    break;
+        for (uint256 i; i < vaultsWithAmount.length; i++) {
+            if (!(vaultsLocal[i].allStablecoinsCloseToPeg)) {
+                if (deltaWeights[i] > idealWeights[i]) {
+                    return false;
                 }
             }
 
-            if (!_poolsWithinEpsilon[i]) {
-                // check if _hypotheticalWeights[i] is closer to _idealWeights[i] than _currentWeights[i]
-                uint256 _distanceHypotheticalToIdeal = absValueSub(
-                    _hypotheticalWeights[i],
-                    _idealWeights[i]
-                );
-                uint256 _distanceCurrentToIdeal = absValueSub(_currentWeights[i], _idealWeights[i]);
+            if (!vaultsWithinEpsilon[i]) {
+                // check if deltaWeights[i] is closer to _idealWeights[i] than _currentWeights[i]
+                uint256 distanceDeltaToIdeal = deltaWeights[i].absSub(idealWeights[i]);
+                uint256 distanceCurrentToIdeal = currentWeights[i].absSub(idealWeights[i]);
 
-                if (_distanceHypotheticalToIdeal >= _distanceCurrentToIdeal) {
-                    _anyCheckFail = true;
-                    break;
+                if (distanceDeltaToIdeal >= distanceCurrentToIdeal) {
+                    return false;
                 }
             }
         }
 
-        if (!_anyCheckFail) {
-            return true;
-        }
+        return true;
     }
 
-    //Note assumes that everything is up to date, including that the ideal weights have been recalculated with latest prices
-    function gyroscopeKeptSpinning(DataTypes.VaultInfo[] memory vaults) public view returns (bool) {
-        (bool allVaultStablecoinsCloseToPeg, ) = vaultStablecoinStatus(vaults);
+    function vaultFlattener(
+        VaultWithAmount[] memory vaultsWithAmount,
+        VaultLocal[] memory vaultsLocal
+    )
+        internal
+        view
+        returns (
+            uint256[] memory amounts,
+            uint256[] memory prices,
+            uint256[] memory idealWeights,
+            uint256[] memory currentWeights
+        )
+    {
+        for (uint256 i; i < vaultsWithAmount.length; i++) {
+            amounts[i] = vaultsWithAmount[i].amount;
+            prices[i] = vaultsWithAmount[i].vaultInfo.price;
+            idealWeights[i] = vaultsLocal[i].idealWeight;
+            currentWeights[i] = vaultsWithAmount[i].vaultInfo.currentWeight;
+        }
+
+        return (amounts, prices, idealWeights, currentWeights);
+    }
+
+    function gyroscopeKeptSpinningMint(
+        VaultWithAmount[] memory vaultsWithAmount,
+        VaultLocal[] memory vaultsLocal
+    ) public view returns (bool) {
+        (bool allVaultStablecoinsCloseToPeg, ) = vaultStablecoinStatus(vaultsLocal);
+        (bool allVaultsWithinEpsilon, bool[] memory vaultsWithinEpsilon) = checkVaultsWithinEpsilon(
+            vaultsLocal
+        );
         if (allVaultStablecoinsCloseToPeg) {
-            if (_wouldVaultsRemainBalanced(vaults)) {
-                return true;
-            }
-        } else if (_wouldVaultsRemainBalanced(vaults)) {
-            //To-Do: Make sure that if totalportfolio value is zero, the requested weights are the ideal weights.
-            if (_inputWeightsLessThanIdealWeights(vaults)) {
+            if (allVaultsWithinEpsilon) {
                 return true;
             }
         } else {
-            if (_safeOutsideEpsilon(vaults)) {
-                return true;
+            (
+                uint256[] memory inputAmounts,
+                uint256[] memory currentWeights,
+                uint256[] memory prices,
+                uint256[] memory idealWeights
+            ) = vaultFlattener(vaultsWithAmount, vaultsLocal);
+
+            (uint256[] memory deltaWeights, uint256 totalPortfolioValue) = calculateWeightsAndTotal(
+                inputAmounts,
+                prices
+            );
+
+            if (totalPortfolioValue == 0) {
+                deltaWeights = idealWeights;
+            }
+
+            if (allVaultsWithinEpsilon) {
+                if (checkUnhealthyMovesToIdeal(vaultsLocal, deltaWeights, idealWeights)) {
+                    return true;
+                }
+            } else {
+                if (
+                    safeToMintOutsideEpsilon(
+                        vaultsWithAmount,
+                        vaultsLocal,
+                        deltaWeights,
+                        idealWeights,
+                        currentWeights,
+                        vaultsWithinEpsilon
+                    )
+                ) {
+                    return true;
+                }
             }
         }
-
         return false;
     }
 
-    // function mintChecksPassInternal(
-    //     address[] memory _BPTokensIn,
-    //     uint256[] memory _amountsIn,
-    //     uint256 _minGyroMinted
-    // )
-    //     internal
+    function gyroscopeKeptSpinningRedeem(
+        VaultWithAmount[] memory vaultsWithAmount,
+        VaultLocal[] memory vaultsLocal
+    ) public view returns (bool) {
+        (bool allVaultStablecoinsCloseToPeg, ) = vaultStablecoinStatus(vaultsLocal);
+        (bool allVaultsWithinEpsilon, bool[] memory vaultsWithinEpsilon) = checkVaultsWithinEpsilon(
+            vaultsLocal
+        );
+
+        if (allVaultsWithinEpsilon) {
+            return true;
+        }
+
+        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
+            if (vaultsWithinEpsilon[i]) {
+                continue;
+            }
+
+            (
+                uint256[] memory inputAmounts,
+                uint256[] memory currentWeights,
+                uint256[] memory prices,
+                uint256[] memory idealWeights
+            ) = vaultFlattener(vaultsWithAmount, vaultsLocal);
+
+            (uint256[] memory deltaWeights, ) = calculateWeightsAndTotal(inputAmounts, prices);
+
+            uint256 distanceDeltaToIdeal = deltaWeights[i].absSub(idealWeights[i]);
+            uint256 distanceCurrentToIdeal = currentWeights[i].absSub(idealWeights[i]);
+
+            if (distanceDeltaToIdeal >= distanceCurrentToIdeal) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // /// @inheritdoc ISafetyCheck
+    // function checkAndPersistMint(VaultWithAmount[] memory vaultsWithAmount)
+    //     external
+    //     returns (string memory);
+
+    // /// @inheritdoc ISafetyCheck
+    // function isMintSafe(VaultWithAmount[] memory vaultsWithAmount)
+    //     external
     //     view
-    //     returns (
-    //         uint256 errorCode,
-    //         Weights memory weights,
-    //         FlowLogger memory flowLogger
-    //     )
-    // {
-    //     require(
-    //         _BPTokensIn.length == _amountsIn.length,
-    //         "tokensIn and valuesIn should have the same number of elements"
-    //     );
+    //     returns (string memory);
 
-    //     //Filter 1: Require that the tokens are supported and in correct order
-    //     bool _orderCorrect = checkBPTokenOrder(_BPTokensIn);
-    //     require(_orderCorrect, "Input tokens in wrong order or contains invalid tokens");
+    // /// @inheritdoc ISafetyCheck
+    // function isRedeemSafe(VaultWithAmount[] memory vaultsWithAmount)
+    //     external
+    //     view
+    //     returns (string memory);
 
-    //     uint256[] memory _allUnderlyingPrices = getAllTokenPrices();
-
-    //     uint256[] memory _currentBPTPrices = calculateAllPoolPrices(_allUnderlyingPrices);
-
-    //     weights._zeroArray = new uint256[](_BPTokensIn.length);
-    //     for (uint256 i = 0; i < _BPTokensIn.length; i++) {
-    //         weights._zeroArray[i] = 0;
-    //     }
-
-    //     (
-    //         weights._idealWeights,
-    //         weights._currentWeights,
-    //         weights._hypotheticalWeights,
-    //         weights._nav,
-    //         weights._totalPortfolioValue
-    //     ) = calculateAllWeights(_currentBPTPrices, _BPTokensIn, _amountsIn, weights._zeroArray);
-
-    //     bool _safeToMint =
-    //         safeToMint(
-    //             _BPTokensIn,
-    //             weights._hypotheticalWeights,
-    //             weights._idealWeights,
-    //             _allUnderlyingPrices,
-    //             _amountsIn,
-    //             _currentBPTPrices,
-    //             weights._currentWeights
-    //         );
-
-    //     if (!_safeToMint) {
-    //         errorCode |= WOULD_UNBALANCE_GYROSCOPE;
-    //     }
-
-    //     weights._dollarValue = 0;
-
-    //     for (uint256 i = 0; i < _BPTokensIn.length; i++) {
-    //         weights._dollarValue = weights._dollarValue.add(
-    //             _amountsIn[i].scaledMul(_currentBPTPrices[i])
-    //         );
-    //     }
-
-    //     flowLogger = initializeFlowLogger();
-
-    //     weights.gyroAmount = gyroPriceOracle.getAmountToMint(
-    //         weights._dollarValue,
-    //         flowLogger.inflowHistory,
-    //         weights._nav
-    //     );
-
-    //     if (weights.gyroAmount < _minGyroMinted) {
-    //         errorCode |= TOO_MUCH_SLIPPAGE;
-    //     }
-
-    //     return (errorCode, weights, flowLogger);
-    // }
+    // /// @inheritdoc ISafetyCheck
+    // function checkAndPersistRedeem(VaultWithAmount[] memory vaultsWithAmount)
+    //     external
+    //     returns (string memory);
 }
