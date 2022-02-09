@@ -17,6 +17,7 @@ import "../interfaces/oracles/IUSDPriceOracle.sol";
 
 import "../libraries/DataTypes.sol";
 import "../libraries/ConfigKeys.sol";
+import "../libraries/ConfigHelpers.sol";
 import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 
@@ -28,6 +29,7 @@ contract Motherboard is IMotherBoard, Governable {
     using FixedPoint for uint256;
     using SafeERC20 for IERC20;
     using SafeERC20 for IGYDToken;
+    using ConfigHelpers for IGyroConfig;
 
     // NOTE: dryMint and dryRedeem should be calling the safety check functions to ensure that the Reserve will remain stable.
 
@@ -134,9 +136,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem);
 
-        IUSDPriceOracle priceOracle = IUSDPriceOracle(
-            gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS)
-        );
+        IUSDPriceOracle priceOracle = gyroConfig.getRootPriceOracle();
 
         uint256 totalValueRatio = 0;
         for (uint256 i = 0; i < assets.length; i++) {
@@ -302,5 +302,19 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     function pamm() public view override returns (IPAMM) {
         return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
+    }
+
+    function _getVaultInfo(
+        DataTypes.RedeemAsset calldata asset,
+        DataTypes.VaultInfo[] memory vaultInfo
+    ) internal pure returns (DataTypes.VaultInfo memory) {
+        uint256 length = vaultInfo.length;
+        for (uint256 i = 0; i < length; i++) {
+            DataTypes.VaultInfo memory info = vaultInfo[i];
+            if (info.vault == asset.originVault) {
+                return info;
+            }
+        }
+        revert(Errors.INVALID_ARGUMENT);
     }
 }

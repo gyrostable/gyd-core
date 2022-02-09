@@ -4,28 +4,32 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "../libraries/FixedPoint.sol";
+import "../libraries/ConfigHelpers.sol";
+import "../libraries/ConfigKeys.sol";
 import "../interfaces/IVaultManager.sol";
 import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../interfaces/IVaultRegistry.sol";
+import "../interfaces/IGyroConfig.sol";
 import "./auth/Governable.sol";
 
 contract VaultManager is IVaultManager, Governable {
     using FixedPoint for uint256;
+    using ConfigHelpers for IGyroConfig;
 
     IVaultRegistry public immutable vaultRegistry;
-    address public reserveAddress;
+    address public immutable reserveAddress;
 
-    IVaultWeightManager internal vaultWeightManager;
     IUSDPriceOracle internal priceOracle;
 
-    constructor(address _vaultRegistry, address _reserve) {
-        vaultRegistry = IVaultRegistry(_vaultRegistry);
-        reserveAddress = _reserve;
+    constructor(IGyroConfig _gyroConfig) {
+        vaultRegistry = _gyroConfig.getVaultRegistry();
+        reserveAddress = _gyroConfig.getAddress(ConfigKeys.RESERVE_ADDRESS);
+        priceOracle = _gyroConfig.getRootPriceOracle();
     }
 
     /// @inheritdoc IVaultManager
     function listVaults() external view returns (DataTypes.VaultInfo[] memory) {
-        return listVaults(false, false, false);
+        return listVaults(true, true, true);
     }
 
     function listVaults(
@@ -96,17 +100,5 @@ contract VaultManager is IVaultManager, Governable {
         address currentOracle = address(priceOracle);
         priceOracle = IUSDPriceOracle(_priceOracle);
         emit NewPriceOracle(currentOracle, _priceOracle);
-    }
-
-    /// @inheritdoc IVaultManager
-    function getVaultWeightManager() external view override returns (IVaultWeightManager) {
-        return vaultWeightManager;
-    }
-
-    /// @inheritdoc IVaultManager
-    function setVaultWeightManager(address vaultManager) external override governanceOnly {
-        address currentManager = address(vaultWeightManager);
-        vaultWeightManager = IVaultWeightManager(vaultManager);
-        emit NewVaultWeightManager(currentManager, vaultManager);
     }
 }

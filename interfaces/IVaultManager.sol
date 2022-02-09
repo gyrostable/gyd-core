@@ -19,12 +19,6 @@ interface IVaultManager {
         bool includeCurrentWeight
     ) external view returns (DataTypes.VaultInfo[] memory);
 
-    /// @notice Returns the current vault weight manager
-    function getVaultWeightManager() external view returns (IVaultWeightManager);
-
-    /// @notice Set the vault weight manager
-    function setVaultWeightManager(address vaultManager) external;
-
     /// @notice Returns the current vault price oracle
     function getPriceOracle() external view returns (IUSDPriceOracle);
 
