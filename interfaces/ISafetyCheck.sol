@@ -17,19 +17,19 @@ interface ISafetyCheck {
     //     external
     //     returns (string memory);
 
-    // /// @notice Checks whether a mint operation is safe
-    // /// @return empty string if it is safe, otherwise the reason why it is not safe
-    // function isMintSafe(VaultWithAmount[] memory vaultsWithAmount)
-    //     external
-    //     view
-    //     returns (string memory);
+    /// @notice Checks whether a mint operation is safe
+    /// @return empty string if it is safe, otherwise the reason why it is not safe
+    function isMintSafe(VaultWithAmount[] memory vaultsWithAmount)
+        external
+        view
+        returns (string memory);
 
-    // /// @notice Checks whether a redeem operation is safe
-    // /// @return empty string if it is safe, otherwise the reason why it is not safe
-    // function isRedeemSafe(VaultWithAmount[] memory vaultsWithAmount)
-    //     external
-    //     view
-    //     returns (string memory);
+    /// @notice Checks whether a redeem operation is safe
+    /// @return empty string if it is safe, otherwise the reason why it is not safe
+    function isRedeemSafe(VaultWithAmount[] memory vaultsWithAmount)
+        external
+        view
+        returns (string memory);
 
     // /// @notice Checks whether a redeem operation is safe
     // /// This is only called when an actual redeem is performed

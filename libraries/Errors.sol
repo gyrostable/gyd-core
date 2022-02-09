@@ -33,16 +33,9 @@ library Errors {
     string public constant NEGATIVE_PRICE = "42";
     string public constant INVALID_MESSAGE = "43";
 
-    //Balancer safety check related errors
-    string public constant POOL_HAS_ZERO_USD_VALUE = "51";
-    string public constant POOL_DOES_NOT_HAVE_LIVENESS = "52";
-    string public constant POOL_IS_PAUSED = "53";
-    string public constant ASSETS_NOT_CLOSE_TO_POOL_WEIGHTS = "54";
-    string public constant STABLECOIN_IN_POOL_NOT_CLOSE_TO_PEG = "55";
-    string public constant DIFFERENT_NUMBER_OF_TOKENS_TO_BALANCES = "56";
-    string public constant POOL_DOES_NOT_HAVE_NORMALIZED_WEIGHTS_SET = "57";
-    string public constant NO_POOL_ID_REGISTERED = "58";
-    string public constant AMOUNT_AND_PRICE_LENGTH_DIFFER = "59";
-
     //Vault safety check related errors
+    string public constant A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG = "51";
+    string public constant NOT_SAFE_TO_MINT = "52";
+    string public constant NOT_SAFE_TO_REDEEM = "53";
+    string public constant AMOUNT_AND_PRICE_LENGTH_DIFFER = "54";
 }

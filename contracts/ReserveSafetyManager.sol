@@ -284,10 +284,11 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return true;
     }
 
-    function gyroscopeKeptSpinningMint(VaultWithAmount[] memory vaultsWithAmount)
-        public
+    /// @inheritdoc ISafetyCheck
+    function isMintSafe(VaultWithAmount[] memory vaultsWithAmount)
+        external
         view
-        returns (bool)
+        returns (string memory)
     {
         MetaData memory metaData = buildWeightsMetadata(vaultsWithAmount);
 
@@ -302,33 +303,34 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         );
 
         if (anyVaultHasOnlyOffPegStablecoins) {
-            return false;
+            return Errors.A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG;
         }
 
         if (allStablecoinsAllVaultsOnPeg) {
             if (allVaultsWithinEpsilon) {
-                return true;
+                return "";
             }
         } else {
             if (allVaultsWithinEpsilon) {
                 if (checkUnhealthyMovesToIdeal(metaData, vaultStablecoinsOnPeg)) {
-                    return true;
+                    return "";
                 }
             } else {
                 if (
                     safeToMintOutsideEpsilon(metaData, vaultsWithinEpsilon, vaultStablecoinsOnPeg)
                 ) {
-                    return true;
+                    return "";
                 }
             }
         }
-        return false;
+        return Errors.NOT_SAFE_TO_MINT;
     }
 
-    function gyroscopeKeptSpinningRedeem(VaultWithAmount[] memory vaultsWithAmount)
-        public
+    /// @inheritdoc ISafetyCheck
+    function isRedeemSafe(VaultWithAmount[] memory vaultsWithAmount)
+        external
         view
-        returns (bool)
+        returns (string memory)
     {
         MetaData memory metaData = buildWeightsMetadata(vaultsWithAmount);
 
@@ -341,11 +343,11 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         );
 
         if (anyVaultHasOnlyOffPegStablecoins) {
-            return false;
+            return Errors.A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG;
         }
 
         if (allVaultsWithinEpsilon) {
-            return true;
+            return "";
         }
 
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
@@ -361,27 +363,15 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             );
 
             if (distanceDeltaToIdeal >= distanceCurrentToIdeal) {
-                return false;
+                return Errors.NOT_SAFE_TO_REDEEM;
             }
         }
-        return true;
+        return "";
     }
 
     // /// @inheritdoc ISafetyCheck
     // function checkAndPersistMint(VaultWithAmount[] memory vaultsWithAmount)
     //     external
-    //     returns (string memory);
-
-    // /// @inheritdoc ISafetyCheck
-    // function isMintSafe(VaultWithAmount[] memory vaultsWithAmount)
-    //     external
-    //     view
-    //     returns (string memory);
-
-    // /// @inheritdoc ISafetyCheck
-    // function isRedeemSafe(VaultWithAmount[] memory vaultsWithAmount)
-    //     external
-    //     view
     //     returns (string memory);
 
     // /// @inheritdoc ISafetyCheck
