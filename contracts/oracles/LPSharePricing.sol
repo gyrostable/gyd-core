@@ -28,18 +28,19 @@ library GyroLPSharePricing {
         //            bptPrice = ---  Π   (p_i / w_i)^                                  //
         //                        S   i=1                                               //
         **********************************************************************************************/
-        bptPrice = invariantDivSupply;
-        uint256 term = FixedPoint.ONE;
+        uint256 prod = FixedPoint.ONE;
         for (uint256 i = 0; i < weights.length; i++) {
-            term = term.mulDown(
+            prod = prod.mulDown(
                 FixedPoint.powDown(underlyingPrices[i].divDown(weights[i]), weights[i])
             );
-            bptPrice = bptPrice.mulDown(term);
+            bptPrice = invariantDivSupply.mulDown(prod);
         }
     }
 
     /** @dev Calculates value of BPT for constant product invariant with equal weights
-     *  Compared to general CPMM, everything can be grouped into one fractional power to save gas */
+     *  Compared to general CPMM, everything can be grouped into one fractional power to save gas
+     *  Note: loss of precision arises when multiple prices are too low (e.g., < 1e-5). This pricing formula
+     *  should not be relied on precisely in such extremes */
     function priceBptCPMMEqualWeights(
         uint256 weight,
         uint256 invariantDivSupply,
@@ -50,13 +51,12 @@ library GyroLPSharePricing {
         //            bptPrice = ---  ( Π   p_i / w )^                                  //
         //                        S     i=1                                             //
         **********************************************************************************************/
-        bptPrice = invariantDivSupply;
-        uint256 term = FixedPoint.ONE;
+        uint256 prod = FixedPoint.ONE;
         for (uint256 i = 0; i < underlyingPrices.length; i++) {
-            term = term.mulDown(underlyingPrices[i].divDown(weight));
+            prod = prod.mulDown(underlyingPrices[i].divDown(weight));
         }
-        term = FixedPoint.powDown(term, weight);
-        bptPrice = bptPrice.mulDown(term);
+        prod = FixedPoint.powDown(prod, weight);
+        bptPrice = invariantDivSupply.mulDown(prod);
     }
 
     /** @dev Calculates the value of BPT for CPMMv2 pools

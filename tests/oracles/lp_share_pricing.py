@@ -19,7 +19,7 @@ class CEMM_derived_params:
         self.tau_beta = tau_beta
 
 
-def price_bpt_cpmm(
+def price_bpt_CPMM(
     weights: Iterable[D], invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:
     prod = invariant_div_supply
@@ -42,7 +42,7 @@ def price_bpt_CPMMv2(
     sqrt_alpha: D, sqrt_beta: D, invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:
     px, py = (underlying_prices[0], underlying_prices[1])
-    term = 2 * (px * py) ** D("0.5") - px / sqrt_beta - py * sqrt_alpha
+    term = 2 * (px * py) ** D(1 / 2) - px / sqrt_beta - py * sqrt_alpha
     return term * invariant_div_supply
 
 
