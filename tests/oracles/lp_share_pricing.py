@@ -42,8 +42,13 @@ def price_bpt_CPMMv2(
     sqrt_alpha: D, sqrt_beta: D, invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:
     px, py = (underlying_prices[0], underlying_prices[1])
-    term = 2 * (px * py) ** D(1 / 2) - px / sqrt_beta - py * sqrt_alpha
-    return term * invariant_div_supply
+    if px / py <= sqrt_alpha ** 2:
+        return invariant_div_supply * px * (D(1) / sqrt_alpha - D(1) / sqrt_beta)
+    elif px / py >= sqrt_beta ** 2:
+        return invariant_div_supply * py * (sqrt_beta - sqrt_alpha)
+    else:
+        term = 2 * D(px * py) ** D(1 / 2) - px / sqrt_beta - py * sqrt_alpha
+        return term * invariant_div_supply
 
 
 def price_bpt_CPMMv3(

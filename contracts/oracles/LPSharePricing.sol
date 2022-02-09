@@ -72,16 +72,26 @@ library GyroLPSharePricing {
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
         /**********************************************************************************************
+        // When alpha < p_x/p_y < beta:                                                 //
         //                 L                 1/2               1/2              1/2     //
         //     bptPrice = ---  ( 2 (p_x p_y)^     - p_x / beta^     - p_y alpha^    )   //
         //                 S                                                            //
+        // When p_x/p_y < alpha: bptPrice = L/S * p_x (1/sqrt(alpha) - 1/sqrt(beta))    //
+        // When p_x/p_y > beta: bptPrice = L/S * p_y (sqrt(beta) - sqrt(alpha))         //
         **********************************************************************************************/
-        uint256 sqrtPxPy = underlyingPrices[0].mulDown(underlyingPrices[1]);
-        sqrtPxPy = FixedPoint.powDown(sqrtPxPy, ONEHALF);
-        bptPrice = 2 * FixedPoint.ONE.mulDown(sqrtPxPy);
-        bptPrice = bptPrice - underlyingPrices[0].divUp(sqrtBeta);
-        bptPrice = bptPrice - underlyingPrices[1].mulUp(sqrtAlpha);
-        bptPrice = bptPrice.mulDown(invariantDivSupply);
+        (uint256 px, uint256 py) = (underlyingPrices[0], underlyingPrices[1]);
+        uint256 one = FixedPoint.ONE;
+        if (px.divDown(py) <= sqrtAlpha.mulUp(sqrtAlpha)) {
+            bptPrice = invariantDivSupply.mulDown(px).mulDown(
+                one.divDown(sqrtAlpha) - one.divUp(sqrtBeta)
+            );
+        } else if (px.divUp(py) >= sqrtBeta.mulDown(sqrtBeta)) {
+            bptPrice = invariantDivSupply.mulDown(py).mulDown(sqrtBeta - sqrtAlpha);
+        } else {
+            uint256 sqrPxPy = (2 * one).mulDown(FixedPoint.powDown(px.mulDown(py), ONEHALF));
+            bptPrice = sqrPxPy - px.divUp(sqrtBeta) - py.mulUp(sqrtAlpha);
+            bptPrice = invariantDivSupply.mulDown(bptPrice);
+        }
     }
 
     /** @dev Calculates the value of BPT for CPMMv3 pools
