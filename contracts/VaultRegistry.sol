@@ -42,18 +42,19 @@ contract VaultRegistry is IVaultRegistry, Governable {
     }
 
     /// @inheritdoc IVaultRegistry
-    function registerVault(address vault, uint256 initialVaultWeight)
-        external
-        override
-        governanceOnly
-    {
+    function registerVault(
+        address vault,
+        uint256 initialVaultWeight,
+        bytes32 underlyingPoolId
+    ) external override governanceOnly {
         require(!vaultAddresses.contains(vault), Errors.VAULT_ALREADY_EXISTS);
         vaultAddresses.add(vault);
         uint256 price = IUSDPriceOracle(gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS))
             .getPriceUSD(vault);
         vaultsMetadata[vault] = DataTypes.PersistedVaultMetadata({
             initialWeight: initialVaultWeight,
-            initialPrice: price
+            initialPrice: price,
+            underlyingPoolId: underlyingPoolId
         });
         emit VaultRegistered(vault);
     }
