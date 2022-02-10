@@ -6,19 +6,21 @@ import pytest
 from brownie.test import given
 from numpy import exp
 
+from tests.support.utils import scale
+
 POOL_ID = "0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080"
 
 pytestmark = pytest.mark.usefixtures("set_data_for_mock_bal_vault")
 
-balance_strategy = st.integers(min_value=0, max_value=1_000_000_000)
+amount_generator = st.integers(min_value=scale("0.1"), max_value=scale(1_000_000_000))
+price_generator = st.integers(min_value=scale("0.1"), max_value=scale(1_000_000_000))
 
 
-# @pytest.mark.skip()
-# @given(balances=st.tuples(balance_strategy, balance_strategy))
-# def test_make_monetary_amounts(balancer_safety_checks, dai, usdc, balances):
-#     tokens = [dai, usdc]
-#     monetary_amounts = balancer_safety_checks.makeMonetaryAmounts(tokens, balances)
-#     assert monetary_amounts == [[dai, balances[0]], [usdc, balances[1]]]
+@given(amounts_and_prices=st.lists(st.tuples(amount_generator, price_generator)))
+def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices):
+    amounts, prices = amounts_and_prices
+    print(amounts)
+    print(prices)    
 
 # @pytest.mark.skip()
 # @given(balances=st.tuples(balance_strategy, balance_strategy))

@@ -51,7 +51,6 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         pure
         returns (uint256[] memory, uint256)
     {
-        require(amounts.length == prices.length, Errors.AMOUNT_AND_PRICE_LENGTH_DIFFER);
         uint256[] memory weights = new uint256[](prices.length);
         uint256 total = 0;
 
