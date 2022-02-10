@@ -52,3 +52,52 @@ def calculate_implied_pool_weights(vaults_with_amount: List[Tuple]) -> List[D]:
         implied_ideal_weights.append(implied_ideal_weight)
 
     return implied_ideal_weights
+
+
+def build_metadata(vaults_with_amount: List[Tuple])-> List[D]:
+
+    metadata = []
+
+    current_amounts = []
+    delta_amounts = []
+    resulting_amounts = []
+    prices = []  
+
+    for vault in vaults_with_amount:
+        current_amounts.append(D(vault[0][4]))
+
+        delta_amounts.append(D(vault[1]))
+
+        if vault[2]:
+            resulting_amounts.append(D(vault[0][4]) + D(vault[1]))
+        else:
+            resulting_amounts.append(D(vault[0][4]) - D(vault[1]))
+        
+        prices.append(D(vault[0][1]))
+
+    ideal_weights = calculate_implied_pool_weights(vaults_with_amount)
+    metadata.append(ideal_weights)
+
+    current_weights, current_usd_value = calculate_weights_and_total(current_amounts, prices)
+    
+    if current_usd_value == D("0"):
+        metadata.append(ideal_weights)
+    else:
+        metadata.append(current_weights)
+
+    resulting_weights, resultingTotal = calculate_weights_and_total(resulting_amounts, prices)
+    
+    metadata.append(resulting_weights)
+
+    delta_weights, delta_total = calculate_weights_and_total(delta_amounts, prices)
+
+    if delta_total == D("0"):
+        metadata.append(ideal_weights)
+    else:
+        metadata.append(delta_weights)
+
+    metadata.append(prices)
+
+    metadata.append(delta_total)
+
+    return metadata

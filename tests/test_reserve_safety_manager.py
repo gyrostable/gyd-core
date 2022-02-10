@@ -6,8 +6,8 @@ from brownie.test import given
 from numpy import exp
 
 from tests.reserve.reserve_math_implementation import (
-    calculate_implied_pool_weights, calculate_weights_and_total,
-    is_stablecoin_close_to_peg)
+    build_metadata, calculate_implied_pool_weights,
+    calculate_weights_and_total, is_stablecoin_close_to_peg)
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
 
@@ -72,17 +72,24 @@ def test_is_stablecoin_close_to_peg(reserve_safety_manager, stablecoin_price):
 
     assert result_exp == result_sol
 
-@given(bundle = st.lists(st.tuples(price_generator, amount_generator, weight_generator, mint_or_redeem_generator)))
-def test_implied_pool_weights(reserve_safety_manager, bundle):
-    if not bundle:
-        return
-
+def bundle_to_vaults(bundle):
     prices, amounts, weights, mint = [list(v) for v in zip(*bundle)]
 
     vaults_with_amount = []
     for i in range(len(prices)):
         vault = vault_builder(prices[i], amounts[i], weights[i], mint[i])
         vaults_with_amount.append(vault)
+
+    return vaults_with_amount
+
+
+
+@given(bundle = st.lists(st.tuples(price_generator, amount_generator, weight_generator, mint_or_redeem_generator)))
+def test_implied_pool_weights(reserve_safety_manager, bundle):
+    if not bundle:
+        return
+
+    vaults_with_amount = bundle_to_vaults(bundle)
 
     result_exp = calculate_implied_pool_weights(vaults_with_amount)
 
@@ -92,3 +99,17 @@ def test_implied_pool_weights(reserve_safety_manager, bundle):
     print(scale(result_exp))
 
     assert scale(result_exp) == to_decimal(result_sol)
+
+@given(bundle = st.lists(st.tuples(price_generator, amount_generator, weight_generator, mint_or_redeem_generator)))
+def test_build_metadata(reserve_safety_manager, bundle):
+    if not bundle:
+        return
+    vaults_with_amount = bundle_to_vaults(bundle)
+    metadata_exp = build_metadata(vaults_with_amount)
+
+    metadata_sol = reserve_safety_manager.buildMetaData(vaults_with_amount)
+    print(metadata_sol)
+
+
+
+
