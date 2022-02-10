@@ -134,20 +134,31 @@ library GyroLPSharePricing {
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
         /**********************************************************************************************
+        // When alpha < p_x/p_y < beta:                                                              //
         //                L   / / e_x A^{-1} tau(beta) \     -1     / p_x \  \   / p_x \             //
         //   bptPrice =  --- | |                        | - A^  tau|  ---- |  | |       |            //
         //                S   \ \ e_y A^{-1} tau(alpha) /           \ p_y  /  /  \ p_y  /            //
+        // When p_x/p_y < alpha:                                                                     //
+        //      bptPrice = L/S * p_x ( e_x A^{-1} tau(beta) - e_x A^{-1} tau(alpha) )                //
+        // When p_x/p_y > beta:                                                                      //
+        //      bptPrice = L/S * p_y (e_y A^{-1} tau(alpha) - e_y A^{-1} tau(beta) )                 //
         **********************************************************************************************/
-        int256 px = underlyingPrices[0].divDown(underlyingPrices[1]).toInt256();
-        Vector2 memory vec = mulAinv(params, tau(params, px));
-        vec.x = mulAinv(params, derivedParams.tauBeta).x - vec.x;
-        vec.y = mulAinv(params, derivedParams.tauAlpha).y - vec.y;
-
-        Vector2 memory prices;
-        prices.x = underlyingPrices[0].toInt256();
-        prices.y = underlyingPrices[1].toInt256();
-        bptPrice = scalarProdDown(prices, vec).toUint256();
-        bptPrice = bptPrice.mulDown(invariantDivSupply);
+        (int256 px, int256 py) = (underlyingPrices[0].toInt256(), underlyingPrices[1].toInt256());
+        int256 pxIny = px.divDown(py);
+        if (pxIny < params.alpha) {
+            int256 bP = (mulAinv(params, derivedParams.tauBeta).x -
+                mulAinv(params, derivedParams.tauAlpha).x);
+            bptPrice = (bP.mulDown(px)).toUint256().mulDown(invariantDivSupply);
+        } else if (pxIny > params.beta) {
+            int256 bP = (mulAinv(params, derivedParams.tauAlpha).y -
+                mulAinv(params, derivedParams.tauBeta).y);
+            bptPrice = (bP.mulDown(py)).toUint256().mulDown(invariantDivSupply);
+        } else {
+            Vector2 memory vec = mulAinv(params, tau(params, pxIny));
+            vec.x = mulAinv(params, derivedParams.tauBeta).x - vec.x;
+            vec.y = mulAinv(params, derivedParams.tauAlpha).y - vec.y;
+            bptPrice = scalarProdDown(Vector2(px, py), vec).toUint256().mulDown(invariantDivSupply);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 import functools
 from decimal import Decimal
 from math import pi, sin, cos
+from pickle import FALSE
 from typing import Tuple, Iterable
 
 import hypothesis.strategies as st
@@ -9,7 +10,7 @@ from brownie.test import given
 from brownie import reverts
 from hypothesis import assume, settings
 import lp_share_pricing as math_implementation
-from tests.support.utils_pools import scale, to_decimal
+from tests.support.utils_pools import scale, to_decimal, qdecimals
 from tests.support.types import *
 from tests.support.quantized_decimal import QuantizedDecimal as D
 
@@ -208,6 +209,83 @@ def test_price_bpt_cpmmv2(
 
     bpt_price = math_implementation.price_bpt_CPMMv2(
         sqrt_alpha, sqrt_beta, invariant_div_supply, underlying_prices
+    )
+
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+
+
+######################################################################
+### Test the CEMM
+
+# This is consistent with tightest price range of beta - alpha >= MIN_PRICE_SEPARATION
+CEMM_MIN_PRICE_SEPARATION = to_decimal("0.0001")
+
+
+@st.composite
+def gen_params(draw):
+    phi_degrees = draw(st.floats(10, 80))
+    phi = phi_degrees / 360 * 2 * pi
+    s = sin(phi)
+    c = cos(phi)
+    lam = draw(qdecimals("1", "10"))
+    alpha = draw(qdecimals("0.05", "0.995"))
+    beta = draw(qdecimals("1.005", "20.0"))
+    price_peg = draw(qdecimals("0.05", "20.0"))
+    # price_peg = D(1)
+    return CEMMMathParams(price_peg * alpha, price_peg * beta, D(c), D(s), lam)
+
+
+def faulty_params_cemm(params: CEMMMathParams):
+    if (
+        params.beta > params.alpha
+        and params.beta - params.alpha > CEMM_MIN_PRICE_SEPARATION
+    ):
+        return False
+    else:
+        return True
+
+
+def mk_derived_params(params: CEMMMathParams):
+    tau_alpha = math_implementation.tau(params, params.alpha)
+    tau_beta = math_implementation.tau(params, params.beta)
+    return CEMMMathDerivedParams(
+        Vector2(tau_alpha[0], tau_alpha[1]), Vector2(tau_beta[0], tau_beta[1])
+    )
+
+
+@given(
+    params=gen_params(),
+    invariant_div_supply=st.decimals(min_value="0.5", max_value="100000000", places=4),
+    underlying_prices=st.tuples(price_strategy, price_strategy),
+)
+def test_price_bpt_cemm(
+    gyro_lp_price_testing,
+    params: CEMMMathParams,
+    invariant_div_supply,
+    underlying_prices,
+):
+    if faulty_params_cemm(params):
+        return
+
+    derived = mk_derived_params(params)
+
+    bpt_price_sol = gyro_lp_price_testing.priceBptCEMM(
+        scale(params),
+        scale(derived),
+        scale(invariant_div_supply),
+        scale(underlying_prices),
+    )
+
+    mparams = math_implementation.CEMM_params(
+        params.alpha, params.beta, params.c, params.s, params.lam
+    )
+    mderived = math_implementation.CEMM_derived_params(
+        (derived.tauAlpha.x, derived.tauAlpha.y),
+        (derived.tauBeta.x, derived.tauBeta.y),
+    )
+
+    bpt_price = math_implementation.price_bpt_CEMM(
+        mparams, mderived, invariant_div_supply, underlying_prices
     )
 
     assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()

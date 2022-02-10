@@ -66,10 +66,24 @@ def price_bpt_CEMM(
     underlying_prices: Iterable[D],
 ) -> D:
     px, py = (underlying_prices[0], underlying_prices[1])
-    sub_vec = mul_Ainv(params, tau(params, px / py))
-    vecx = mul_Ainv(params, derived_params.tau_beta)[0] - sub_vec[0]
-    vecy = mul_Ainv(params, derived_params.tau_alpha)[0] - sub_vec[1]
-    return scalar_prod((px, py), (vecx, vecy)) * invariant_div_supply
+    px_in_y = px / py
+    if px_in_y < params.alpha:
+        bp = (
+            mul_Ainv(params, derived_params.tau_beta)[0]
+            - mul_Ainv(params, derived_params.tau_alpha)[0]
+        )
+        return bp * px * invariant_div_supply
+    elif px_in_y > params.beta:
+        bp = (
+            mul_Ainv(params, derived_params.tau_alpha)[1]
+            - mul_Ainv(params, derived_params.tau_beta)[1]
+        )
+        return bp * py * invariant_div_supply
+    else:
+        sub_vec = mul_Ainv(params, tau(params, px_in_y))
+        vecx = mul_Ainv(params, derived_params.tau_beta)[0] - sub_vec[0]
+        vecy = mul_Ainv(params, derived_params.tau_alpha)[1] - sub_vec[1]
+        return scalar_prod((px, py), (vecx, vecy)) * invariant_div_supply
 
 
 def scalar_prod(t1: tuple[D, D], t2: tuple[D, D]) -> D:
@@ -98,7 +112,7 @@ def tau(params: CEMM_params, px: D) -> tuple[D, D]:
 
 
 def eta(pxc: D) -> tuple[D, D]:
-    z = (1 + pxc ** 2) ** D("0.5")
+    z = D(1 + pxc ** 2) ** D(1 / 2)
     vecx = pxc / z
-    vecy = 1 / z
+    vecy = D(1) / z
     return (vecx, vecy)
