@@ -84,7 +84,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         pure
         returns (MetaData memory metaData)
     {
-        metaData.idealWeights = _calculateImpliedPoolWeights(vaultsWithAmount);
+        metaData.idealWeights = _calculateIdealWeights(vaultsWithAmount);
 
         uint256[] memory currentAmounts;
         uint256[] memory deltaAmounts;
@@ -94,6 +94,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         uint256 currentUSDValue;
 
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
+            revert("til the end"); // there is a pb with the following line in the tests
             currentAmounts[i] = vaultsWithAmount[i].vaultInfo.reserveBalance;
             deltaAmounts[i] = vaultsWithAmount[i].amount;
 
@@ -128,13 +129,13 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         metaData.valueinUSDDeltas = valueinUSDDeltas;
     }
 
-    function _calculateImpliedPoolWeights(VaultWithAmount[] memory vaultsWithAmount)
+    function _calculateIdealWeights(VaultWithAmount[] memory vaultsWithAmount)
         internal
         pure
         returns (uint256[] memory)
     {
         // order of prices must be same as order of poolProperties
-        uint256[] memory impliedIdealWeights = new uint256[](vaultsWithAmount.length);
+        uint256[] memory idealWeights = new uint256[](vaultsWithAmount.length);
         uint256[] memory weightedReturns = new uint256[](vaultsWithAmount.length);
 
         uint256 returnsSum;
@@ -147,10 +148,10 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         }
 
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
-            impliedIdealWeights[i] = weightedReturns[i].divDown(returnsSum);
+            idealWeights[i] = weightedReturns[i].divDown(returnsSum);
         }
 
-        return impliedIdealWeights;
+        return idealWeights;
     }
 
     function _checkVaultsWithinEpsilon(MetaData memory metaData)
