@@ -5,6 +5,8 @@ import pytest
 from brownie.test import given
 from numpy import exp
 
+from tests.reserve.reserve_math_implementation import \
+    calculate_weights_and_total
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
 
@@ -15,69 +17,23 @@ from tests.support.utils import scale, to_decimal
 amount_generator = st.integers(min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000)))
 price_generator = st.integers(min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000)))
 
-def calculate_weights_and_total(amounts: Iterable[D], prices: Iterable[D]) -> Tuple[Iterable[D], D]:
-    total = 0
-    for i in range(len(amounts)):
-        amount_in_usd = amounts[i] * prices[i]
-        total+= amount_in_usd
-
-    if total == 0:
-        return [], total
-
-    weights = []
-    for i in range(len(amounts)):
-        weight = amounts[i] * prices[i] / total
-        weights.append(weight)
-
-    return weights, total
-
-
 @given(amounts_and_prices=st.lists(st.tuples(amount_generator, price_generator)))
 def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices):
-    amounts, prices = [to_decimal(list(v)) for v in zip(*amounts_and_prices)]
-    print(amounts, prices)
+    if not amounts_and_prices:
+        return
 
+    amounts, prices = [list(v) for v in zip(*amounts_and_prices)]
 
-
-    weights, total = calculate_weights_and_total(amounts, prices)
+    weights_exp, total_exp = calculate_weights_and_total(to_decimal(amounts), to_decimal(prices))
     weights_sol, total_sol = reserve_safety_manager.calculateWeightsAndTotal(amounts, prices)
 
+    approxed_expected_weights = [scale(i).approxed() for i in weights_exp]
+
+    assert to_decimal(weights_sol) == approxed_expected_weights
+    assert total_exp == scale(total_sol).approxed()
 
 
 
 
-# @pytest.mark.skip()
-# @given(balances=st.tuples(balance_strategy, balance_strategy))
-# def test_compute_actual_weights(balancer_safety_checks, dai, usdc, balances):
-#     tokens = [dai, usdc]
-#     monetary_amounts = balancer_safety_checks.makeMonetaryAmounts(tokens, balances)
-#     weights = balancer_safety_checks.computeActualWeights(monetary_amounts)
 
-#     if (balances[0] == 0) and (balances[1] == 0):
-#         assert sum(list(weights)) == 0
-#     else:
-#         # Precision error
-#         return
-#         # assert sum(list(weights)) == int(1e18)
 
-# # @pytest.mark.skip()
-# def test_are_pool_weights_close_to_expected_imbalanced(
-#     balancer_safety_checks, dai, usdc, mock_balancer_pool, mock_balancer_vault
-# ):
-#     tokens = [dai, usdc]
-#     balances = [3e20, 2e20]
-#     mock_balancer_vault.setPoolTokens(POOL_ID, tokens, balances)
-#     mock_balancer_pool.setNormalizedWeights([5e17, 5e17])
-
-#     assert balancer_safety_checks.arePoolAssetWeightsCloseToExpected(POOL_ID) == False
-
-# # @pytest.mark.skip()
-# def test_are_pool_weights_close_to_expected_exact(
-#     balancer_safety_checks, dai, usdc, mock_balancer_pool, mock_balancer_vault
-# ):
-#     tokens = [dai, usdc]
-#     balances = [2e20, 2e20]
-#     mock_balancer_vault.setPoolTokens(POOL_ID, tokens, balances)
-#     mock_balancer_pool.setNormalizedWeights([5e17, 5e17])
-
-#     assert balancer_safety_checks.arePoolAssetWeightsCloseToExpected(POOL_ID) == True
