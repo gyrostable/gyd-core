@@ -38,11 +38,9 @@ def vault_builder(price_generator, amount_generator, weight_generator, mint_or_r
         amount_generator,
         weight_generator,
     )
-    return {
-        "vaultInfo": vault_info,
-        "amount": amount_generator,
-        "mint": mint_or_redeem_generator,
-    }
+    return (
+        vault_info, amount_generator, mint_or_redeem_generator
+    )
 
 
 
@@ -85,4 +83,5 @@ def test_implied_pool_weights(reserve_safety_manager, bundle):
         vault = vault_builder(prices[i], amounts[i], weights[i], mint[i])
         vaults_with_amount.append(vault)
 
-    print(vaults_with_amount)
+    result = reserve_safety_manager.calculateImpliedPoolWeights(vaults_with_amount)
+    print(result)
