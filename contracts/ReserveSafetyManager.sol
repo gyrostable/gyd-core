@@ -46,7 +46,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         epsilon = _maxAllowedVaultDeviation;
     }
 
-    function calculateWeightsAndTotal(uint256[] memory amounts, uint256[] memory prices)
+    function _calculateWeightsAndTotal(uint256[] memory amounts, uint256[] memory prices)
         internal
         pure
         returns (uint256[] memory, uint256)
@@ -71,12 +71,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return (weights, total);
     }
 
-    function buildWeightsMetadata(VaultWithAmount[] memory vaultsWithAmount)
+    function _buildMetaData(VaultWithAmount[] memory vaultsWithAmount)
         internal
         pure
         returns (MetaData memory metaData)
     {
-        metaData.idealWeights = calculateImpliedPoolWeights(vaultsWithAmount);
+        metaData.idealWeights = _calculateImpliedPoolWeights(vaultsWithAmount);
 
         uint256[] memory currentAmounts;
         uint256[] memory deltaAmounts;
@@ -98,14 +98,14 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             prices[i] = vaultsWithAmount[i].vaultInfo.price;
         }
 
-        (metaData.currentWeights, currentUSDValue) = calculateWeightsAndTotal(
+        (metaData.currentWeights, currentUSDValue) = _calculateWeightsAndTotal(
             currentAmounts,
             prices
         );
 
-        (metaData.deltaWeights, valueinUSDDeltas) = calculateWeightsAndTotal(deltaAmounts, prices);
+        (metaData.deltaWeights, valueinUSDDeltas) = _calculateWeightsAndTotal(deltaAmounts, prices);
 
-        (metaData.resultingWeights, ) = calculateWeightsAndTotal(resultingAmounts, prices);
+        (metaData.resultingWeights, ) = _calculateWeightsAndTotal(resultingAmounts, prices);
 
         if (currentUSDValue == 0) {
             metaData.currentWeights = metaData.idealWeights;
@@ -118,7 +118,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         metaData.valueinUSDDeltas = valueinUSDDeltas;
     }
 
-    function calculateImpliedPoolWeights(VaultWithAmount[] memory vaultsWithAmount)
+    function _calculateImpliedPoolWeights(VaultWithAmount[] memory vaultsWithAmount)
         internal
         pure
         returns (uint256[] memory)
@@ -143,7 +143,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return impliedIdealWeights;
     }
 
-    function checkVaultsWithinEpsilon(MetaData memory metaData)
+    function _checkVaultsWithinEpsilon(MetaData memory metaData)
         internal
         view
         returns (bool, bool[] memory)
@@ -166,12 +166,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     }
 
     /// @dev stablecoinPrice must be scaled to 10^18
-    function isStablecoinCloseToPeg(uint256 stablecoinPrice) internal view returns (bool) {
+    function _isStablecoinCloseToPeg(uint256 stablecoinPrice) internal view returns (bool) {
         return stablecoinPrice.absSub(STABLECOIN_IDEAL_PRICE) <= stablecoinMaxDeviation;
     }
 
-    function individualVaultStablecoinInspector(VaultWithAmount memory vaultWithAmount)
-        public
+    function _individualStablecoinInspector(VaultWithAmount memory vaultWithAmount)
+        internal
         view
         returns (bool, bool)
     {
@@ -199,7 +199,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
             uint256 stablecoinPrice = priceOracle.getPriceUSD(tokenAddress);
 
-            if (!isStablecoinCloseToPeg(stablecoinPrice)) {
+            if (!_isStablecoinCloseToPeg(stablecoinPrice)) {
                 allStablecoinsOnPeg = false;
                 numberOfStablecoinsOffPeg = numberOfStablecoinsOffPeg + 1;
                 continue;
@@ -213,7 +213,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return (allStablecoinsOnPeg, allStablecoinsOffPeg);
     }
 
-    function allVaultsStablecoinInspector(VaultWithAmount[] memory vaultsWithAmount)
+    function _allVaultsStablecoinInspector(VaultWithAmount[] memory vaultsWithAmount)
         internal
         view
         returns (
@@ -227,10 +227,9 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         bool[] memory vaultStablecoinsOnPeg = new bool[](vaultsWithAmount.length);
 
         for (uint256 i; i < vaultsWithAmount.length; i++) {
-            (
-                bool allStablecoinsOnPeg,
-                bool allStablecoinsOffPeg
-            ) = individualVaultStablecoinInspector(vaultsWithAmount[i]);
+            (bool allStablecoinsOnPeg, bool allStablecoinsOffPeg) = _individualStablecoinInspector(
+                vaultsWithAmount[i]
+            );
             if (!allStablecoinsOnPeg) {
                 allStablecoinsAllVaultsOnPeg = false;
             }
@@ -247,7 +246,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         );
     }
 
-    function checkUnhealthyMovesToIdeal(
+    function _checkUnhealthyMovesToIdeal(
         MetaData memory metaData,
         bool[] memory vaultStablecoinsOnPeg
     ) internal pure returns (bool) {
@@ -264,7 +263,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return true;
     }
 
-    function safeToMintOutsideEpsilon(
+    function _safeToMintOutsideEpsilon(
         MetaData memory metaData,
         bool[] memory vaultsWithinEpsilon,
         bool[] memory vaultStablecoinsOnPeg
@@ -304,17 +303,18 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         view
         returns (string memory)
     {
-        MetaData memory metaData = buildWeightsMetadata(vaultsWithAmount);
+        MetaData memory metaData = _buildMetaData(vaultsWithAmount);
 
         (
             bool allStablecoinsAllVaultsOnPeg,
             bool anyVaultHasOnlyOffPegStablecoins,
             bool[] memory vaultStablecoinsOnPeg
-        ) = allVaultsStablecoinInspector(vaultsWithAmount);
+        ) = _allVaultsStablecoinInspector(vaultsWithAmount);
 
-        (bool allVaultsWithinEpsilon, bool[] memory vaultsWithinEpsilon) = checkVaultsWithinEpsilon(
-            metaData
-        );
+        (
+            bool allVaultsWithinEpsilon,
+            bool[] memory vaultsWithinEpsilon
+        ) = _checkVaultsWithinEpsilon(metaData);
 
         if (anyVaultHasOnlyOffPegStablecoins) {
             return Errors.A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG;
@@ -326,12 +326,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             }
         } else {
             if (allVaultsWithinEpsilon) {
-                if (checkUnhealthyMovesToIdeal(metaData, vaultStablecoinsOnPeg)) {
+                if (_checkUnhealthyMovesToIdeal(metaData, vaultStablecoinsOnPeg)) {
                     return "";
                 }
             } else {
                 if (
-                    safeToMintOutsideEpsilon(metaData, vaultsWithinEpsilon, vaultStablecoinsOnPeg)
+                    _safeToMintOutsideEpsilon(metaData, vaultsWithinEpsilon, vaultStablecoinsOnPeg)
                 ) {
                     return "";
                 }
@@ -346,13 +346,14 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         view
         returns (string memory)
     {
-        MetaData memory metaData = buildWeightsMetadata(vaultsWithAmount);
+        MetaData memory metaData = _buildMetaData(vaultsWithAmount);
 
-        (bool allVaultsWithinEpsilon, bool[] memory vaultsWithinEpsilon) = checkVaultsWithinEpsilon(
-            metaData
-        );
+        (
+            bool allVaultsWithinEpsilon,
+            bool[] memory vaultsWithinEpsilon
+        ) = _checkVaultsWithinEpsilon(metaData);
 
-        (, bool anyVaultHasOnlyOffPegStablecoins, ) = allVaultsStablecoinInspector(
+        (, bool anyVaultHasOnlyOffPegStablecoins, ) = _allVaultsStablecoinInspector(
             vaultsWithAmount
         );
 
