@@ -32,19 +32,19 @@ def is_stablecoin_close_to_peg(stablecoin_price: D) -> bool:
     return False
 
 
-def calculate_implied_pool_weights(vaults_with_amount: List[dict]):
+def calculate_implied_pool_weights(vaults_with_amount: List[Tuple]) -> List[D]:
     implied_ideal_weights = []
     weighted_returns = []
 
-    returns_sum = 0
+    returns_sum = D("0")
 
     for vault in vaults_with_amount:
         weighted_return = (
-            vault.vault_info.price
-            / vault.vault_info.persisted_metadata_initial_price
-            * vault.vault_info.persisted_metadata_initial_weight
+            D(vault[0][1])
+            / D(vault[0][2][0])
+            * D(vault[0][2][1])
         )
-        returns_sum += weighted_return
+        returns_sum += D(weighted_return)
         weighted_returns.append(weighted_return)
 
     for i in range(len(vaults_with_amount)):

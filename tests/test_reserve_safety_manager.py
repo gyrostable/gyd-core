@@ -6,7 +6,8 @@ from brownie.test import given
 from numpy import exp
 
 from tests.reserve.reserve_math_implementation import (
-    calculate_weights_and_total, is_stablecoin_close_to_peg)
+    calculate_implied_pool_weights, calculate_weights_and_total,
+    is_stablecoin_close_to_peg)
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
 
@@ -83,5 +84,11 @@ def test_implied_pool_weights(reserve_safety_manager, bundle):
         vault = vault_builder(prices[i], amounts[i], weights[i], mint[i])
         vaults_with_amount.append(vault)
 
-    result = reserve_safety_manager.calculateImpliedPoolWeights(vaults_with_amount)
-    print(result)
+    result_exp = calculate_implied_pool_weights(vaults_with_amount)
+
+    result_sol = reserve_safety_manager.calculateImpliedPoolWeights(vaults_with_amount)
+
+    print(to_decimal(result_sol))
+    print(scale(result_exp))
+
+    assert scale(result_exp) == to_decimal(result_sol)
