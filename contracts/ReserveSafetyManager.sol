@@ -111,10 +111,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             prices
         );
 
+        // deltaWeights = weighting of proposed inputs or outputs, not change in weights from resulting to current
         (metaData.deltaWeights, valueinUSDDeltas) = _calculateWeightsAndTotal(deltaAmounts, prices);
 
         (metaData.resultingWeights, ) = _calculateWeightsAndTotal(resultingAmounts, prices);
 
+        // treat 0 inputs/outputs as proportional changes
         if (currentUSDValue == 0) {
             metaData.currentWeights = metaData.idealWeights;
         }
