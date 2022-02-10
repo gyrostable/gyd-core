@@ -12,8 +12,8 @@ from tests.support.utils import scale, to_decimal
 
 # pytestmark = pytest.mark.usefixtures("set_data_for_mock_bal_vault")
 
-amount_generator = st.integers(min_value=scale("0.001"), max_value=scale(1_000_000_000))
-price_generator = st.integers(min_value=scale("0.001"), max_value=scale(1_000_000_000))
+amount_generator = st.integers(min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000)))
+price_generator = st.integers(min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000)))
 
 def calculate_weights_and_total(amounts: Iterable[D], prices: Iterable[D]) -> Tuple[Iterable[D], D]:
     total = 0
@@ -34,19 +34,14 @@ def calculate_weights_and_total(amounts: Iterable[D], prices: Iterable[D]) -> Tu
 
 @given(amounts_and_prices=st.lists(st.tuples(amount_generator, price_generator)))
 def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices):
-    amounts = []
-    prices = []
-    for i in amounts_and_prices:
-        to_decimal(amounts.append(i[0]))
-        to_decimal(prices.append(i[1]))
+    amounts, prices = [to_decimal(list(v)) for v in zip(*amounts_and_prices)]
+    print(amounts, prices)
+
+
 
     weights, total = calculate_weights_and_total(amounts, prices)
-    print(scale(weights))
-    print(scale(total))
-
     weights_sol, total_sol = reserve_safety_manager.calculateWeightsAndTotal(amounts, prices)
 
-    print(to_decimal(weights), to_decimal(total))
 
 
 
