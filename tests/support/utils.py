@@ -1,6 +1,5 @@
 from decimal import Decimal
-from typing import (Iterable, List, Literal, NamedTuple, Optional, Union,
-                    overload)
+from typing import Iterable, List, Literal, NamedTuple, Optional, Union, overload
 
 from tests.support.quantized_decimal import DecimalLike, QuantizedDecimal
 
@@ -39,6 +38,7 @@ def format_to_bytes(message: Union[str, bytes], length: int, output_hex: bool = 
         return "0x" + result.hex()
     return result
 
+
 def scalar_to_decimal(x: DecimalLike):
     assert isinstance(x, (Decimal, int, str, QuantizedDecimal))
     if isinstance(x, QuantizedDecimal):
@@ -60,6 +60,7 @@ def to_decimal(x):
     if isinstance(x, (list, tuple)):
         return [scalar_to_decimal(v) for v in x]
     return scalar_to_decimal(x)
+
 
 @overload
 def scale(x: DecimalLike, decimals=...) -> QuantizedDecimal:
@@ -89,5 +90,6 @@ def scale(x, decimals=18):
         return type(x)(*[scale(v, decimals) for v in x])
     return scale_scalar(x, decimals)
 
+
 def scale_scalar(x: DecimalLike, decimals: int = 18) -> QuantizedDecimal:
-    return (to_decimal(x) * 10**decimals).floor()
+    return (to_decimal(x) * 10 ** decimals).floor()

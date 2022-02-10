@@ -34,8 +34,9 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// @notice a stablecoin should be equal to 1 USD
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
 
-    constructor(uint256 _maxAllowedVaultDeviation) {
+    constructor(uint256 _maxAllowedVaultDeviation, uint256 _stablecoinMaxDeviation) {
         epsilon = _maxAllowedVaultDeviation;
+        stablecoinMaxDeviation = _stablecoinMaxDeviation;
     }
 
     function getVaultMaxDeviation() external view returns (uint256) {
@@ -44,6 +45,14 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
     function setVaultMaxDeviation(uint256 _maxAllowedVaultDeviation) external governanceOnly {
         epsilon = _maxAllowedVaultDeviation;
+    }
+
+    function getStablecoinMaxDeviation() external view returns (uint256) {
+        return stablecoinMaxDeviation;
+    }
+
+    function setStablecoinMaxDeviation(uint256 _stablecoinMaxDeviation) external governanceOnly {
+        stablecoinMaxDeviation = _stablecoinMaxDeviation;
     }
 
     function _calculateWeightsAndTotal(uint256[] memory amounts, uint256[] memory prices)

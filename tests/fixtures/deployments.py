@@ -3,8 +3,11 @@ from unittest.mock import Mock
 
 import pytest
 from brownie import accounts
-from tests.fixtures.mainnet_contracts import (ChainlinkFeeds, TokenAddresses,
-                                              UniswapPools)
+from tests.fixtures.mainnet_contracts import (
+    ChainlinkFeeds,
+    TokenAddresses,
+    UniswapPools,
+)
 from tests.support import constants
 from tests.support.utils import scale
 
@@ -230,8 +233,11 @@ def pamm(TestingPAMMV1):
 
 @pytest.fixture(scope="module")
 def reserve_safety_manager(admin, TestingReserveSafetyManager):
-    return admin.deploy(TestingReserveSafetyManager, constants.MAX_ALLOWED_VAULT_DEVIATION)
-
+    return admin.deploy(
+        TestingReserveSafetyManager,
+        constants.MAX_ALLOWED_VAULT_DEVIATION,
+        constants.STABLECOIN_MAX_DEVIATION,
+    )
 
 
 @pytest.fixture(scope="module")

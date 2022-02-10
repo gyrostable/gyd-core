@@ -4,8 +4,8 @@ pragma solidity ^0.8.10;
 import "../ReserveSafetyManager.sol";
 
 contract TestingReserveSafetyManager is ReserveSafetyManager {
-    constructor(uint256 _maxAllowedVaultDeviation)
-        ReserveSafetyManager(_maxAllowedVaultDeviation)
+    constructor(uint256 _maxAllowedVaultDeviation, uint256 _stablecoinMaxDeviation)
+        ReserveSafetyManager(_maxAllowedVaultDeviation, _stablecoinMaxDeviation)
     {}
 
     function calculateWeightsAndTotal(uint256[] memory amounts, uint256[] memory prices)
