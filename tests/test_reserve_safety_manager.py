@@ -29,7 +29,6 @@ stablecoin_price_generator = st.integers(
 )
 
 
-
 def vault_builder(price_generator, amount_generator, weight_generator, mint_or_redeem_generator):
     persisted_metadata = (price_generator, weight_generator, POOL_ID)
     vault_info = (
@@ -74,7 +73,16 @@ def test_is_stablecoin_close_to_peg(reserve_safety_manager, stablecoin_price):
 
     assert result_exp == result_sol
 
-@given(price_generator = price_generator, amount_generator = amount_generator, weight_generator = weight_generator, mint_or_redeem_generator = mint_or_redeem_generator)
-def test_implied_pool_weights(reserve_safety_manager, price_generator, amount_generator, weight_generator, mint_or_redeem_generator):
-    vault = vault_builder(price_generator, amount_generator, weight_generator, mint_or_redeem_generator)
-    print(vault)
+@given(bundle = st.lists(st.tuples(price_generator, amount_generator, weight_generator, mint_or_redeem_generator)))
+def test_implied_pool_weights(reserve_safety_manager, bundle):
+    if not bundle:
+        return
+
+    prices, amounts, weights, mint = [list(v) for v in zip(*bundle)]
+
+    vaults_with_amount = []
+    for i in range(len(prices)):
+        vault = vault_builder(prices[i], amounts[i], weights[i], mint[i])
+        vaults_with_amount.append(vault)
+
+    print(vaults_with_amount)
