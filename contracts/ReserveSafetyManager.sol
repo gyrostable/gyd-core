@@ -22,12 +22,16 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     address private priceOracleAddress;
     address private assetRegistryAddress;
 
+    struct VaultData {
+        uint256 idealWeight;
+        uint256 currentWeight;
+        uint256 resultingWeight;
+        uint256 deltaWeight;
+        uint256 price;
+    }
+
     struct MetaData {
-        uint256[] idealWeights;
-        uint256[] currentWeights;
-        uint256[] resultingWeights;
-        uint256[] deltaWeights;
-        uint256[] prices;
+        VaultData[] vaultMetadata;
         uint256 valueinUSDDeltas;
     }
 
@@ -84,15 +88,13 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         pure
         returns (MetaData memory metaData)
     {
-        metaData.idealWeights = _calculateIdealWeights(vaultsWithAmount);
+        metaData.vaultMetadata = new VaultData[](vaultsWithAmount.length);
 
+        uint256[] memory idealWeights = _calculateIdealWeights(vaultsWithAmount);
         uint256[] memory currentAmounts = new uint256[](vaultsWithAmount.length);
         uint256[] memory deltaAmounts = new uint256[](vaultsWithAmount.length);
         uint256[] memory resultingAmounts = new uint256[](vaultsWithAmount.length);
         uint256[] memory prices = new uint256[](vaultsWithAmount.length);
-
-        uint256 valueinUSDDeltas;
-        uint256 currentUSDValue;
 
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
             //pb below
@@ -105,28 +107,38 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
                 resultingAmounts[i] = currentAmounts[i] - deltaAmounts[i];
             }
 
-            prices[i] = vaultsWithAmount[i].vaultInfo.price;
+            metaData.vaultMetadata[i].price = vaultsWithAmount[i].vaultInfo.price;
         }
 
-        metaData.prices = prices;
+        // metaData.prices = prices;
 
-        (metaData.currentWeights, currentUSDValue) = _calculateWeightsAndTotal(
+        (uint256[] memory currentWeights, uint256 currentUSDValue) = _calculateWeightsAndTotal(
             currentAmounts,
             prices
         );
 
         // deltaWeights = weighting of proposed inputs or outputs, not change in weights from resulting to current
-        (metaData.deltaWeights, valueinUSDDeltas) = _calculateWeightsAndTotal(deltaAmounts, prices);
+        (uint256[] memory deltaWeights, uint256 valueinUSDDeltas) = _calculateWeightsAndTotal(
+            deltaAmounts,
+            prices
+        );
 
-        (metaData.resultingWeights, ) = _calculateWeightsAndTotal(resultingAmounts, prices);
+        (uint256[] memory resultingWeights, ) = _calculateWeightsAndTotal(resultingAmounts, prices);
 
         // treat 0 inputs/outputs as proportional changes
         if (currentUSDValue == 0) {
-            metaData.currentWeights = metaData.idealWeights;
+            currentWeights = idealWeights;
         }
 
         if (metaData.valueinUSDDeltas == 0) {
-            metaData.deltaWeights = metaData.idealWeights;
+            deltaWeights = idealWeights;
+        }
+
+        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
+            metaData.vaultMetadata[i].idealWeight = idealWeights[i];
+            metaData.vaultMetadata[i].currentWeight = currentWeights[i];
+            metaData.vaultMetadata[i].resultingWeight = resultingWeights[i];
+            metaData.vaultMetadata[i].deltaWeight = deltaWeights[i];
         }
 
         metaData.valueinUSDDeltas = valueinUSDDeltas;
@@ -163,11 +175,11 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         returns (bool, bool[] memory)
     {
         bool allVaultsWithinEpsilon = true;
-        bool[] memory vaultsWithinEpsilon = new bool[](metaData.prices.length);
+        bool[] memory vaultsWithinEpsilon = new bool[](metaData.vaultMetadata.length);
 
-        for (uint256 i = 0; i < metaData.prices.length; i++) {
-            bool withinEpsilon = (metaData.idealWeights[i]).absSub(metaData.resultingWeights[i]) <=
-                epsilon;
+        for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
+            VaultData memory vaultData = metaData.vaultMetadata[i];
+            bool withinEpsilon = vaultData.idealWeight.absSub(vaultData.resultingWeight) <= epsilon;
 
             vaultsWithinEpsilon[i] = withinEpsilon;
 
@@ -264,12 +276,13 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         MetaData memory metaData,
         bool[] memory vaultStablecoinsOnPeg
     ) internal pure returns (bool) {
-        for (uint256 i; i < metaData.prices.length; i++) {
+        for (uint256 i; i < metaData.vaultMetadata.length; i++) {
             if (vaultStablecoinsOnPeg[i]) {
                 continue;
             }
+            VaultData memory vaultData = metaData.vaultMetadata[i];
 
-            if (metaData.deltaWeights[i] > metaData.idealWeights[i]) {
+            if (vaultData.deltaWeight > vaultData.idealWeight) {
                 return false;
             }
         }
@@ -287,19 +300,20 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         //If both true, then mint
         //note: should always be able to mint at the ideal weights!
         for (uint256 i; i < vaultsWithinEpsilon.length; i++) {
+            VaultData memory vaultData = metaData.vaultMetadata[i];
             if (!(vaultStablecoinsOnPeg[i])) {
-                if (metaData.deltaWeights[i] > metaData.idealWeights[i]) {
+                if (vaultData.deltaWeight > vaultData.idealWeight) {
                     return false;
                 }
             }
 
             if (!vaultsWithinEpsilon[i]) {
                 // check if resultingWeights[i] is closer to _idealWeights[i] than _currentWeights[i]
-                uint256 distanceResultingToIdeal = metaData.resultingWeights[i].absSub(
-                    metaData.idealWeights[i]
+                uint256 distanceResultingToIdeal = vaultData.resultingWeight.absSub(
+                    vaultData.idealWeight
                 );
-                uint256 distanceCurrentToIdeal = metaData.currentWeights[i].absSub(
-                    metaData.idealWeights[i]
+                uint256 distanceCurrentToIdeal = vaultData.currentWeight.absSub(
+                    vaultData.idealWeight
                 );
 
                 if (distanceResultingToIdeal >= distanceCurrentToIdeal) {
@@ -383,13 +397,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             if (vaultsWithinEpsilon[i]) {
                 continue;
             }
+            VaultData memory vaultData = metaData.vaultMetadata[i];
 
-            uint256 distanceResultingToIdeal = metaData.resultingWeights[i].absSub(
-                metaData.idealWeights[i]
+            uint256 distanceResultingToIdeal = vaultData.resultingWeight.absSub(
+                vaultData.idealWeight
             );
-            uint256 distanceCurrentToIdeal = metaData.currentWeights[i].absSub(
-                metaData.idealWeights[i]
-            );
+            uint256 distanceCurrentToIdeal = vaultData.currentWeight.absSub(vaultData.idealWeight);
 
             if (distanceResultingToIdeal >= distanceCurrentToIdeal) {
                 return Errors.NOT_SAFE_TO_REDEEM;
