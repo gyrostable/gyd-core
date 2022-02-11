@@ -29,7 +29,7 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         pure
         returns (uint256[] memory)
     {
-        return _calculateImpliedPoolWeights(vaultsWithAmount);
+        return _calculateIdealWeights(vaultsWithAmount);
     }
 
     function checkVaultsWithinEpsilon(MetaData memory metaData)
