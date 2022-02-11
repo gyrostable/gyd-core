@@ -74,8 +74,6 @@ def build_metadata(vaults_with_amount: List[Tuple])-> List[D]:
             resulting_amounts.append(D(vault[0][4]) - D(vault[1]))
         
         prices.append(D(vault[0][1]))
-    print("Prices", prices)
-
 
     ideal_weights = calculate_implied_pool_weights(vaults_with_amount)
     metadata.append(ideal_weights)

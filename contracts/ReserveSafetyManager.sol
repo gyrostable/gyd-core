@@ -97,7 +97,6 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         uint256[] memory prices = new uint256[](vaultsWithAmount.length);
 
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
-            //pb below
             currentAmounts[i] = vaultsWithAmount[i].vaultInfo.reserveBalance;
             deltaAmounts[i] = vaultsWithAmount[i].amount;
 

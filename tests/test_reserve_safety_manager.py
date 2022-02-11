@@ -115,4 +115,3 @@ def test_build_metadata(reserve_safety_manager, bundle):
 
 
 
-
