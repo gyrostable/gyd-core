@@ -86,15 +86,16 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     {
         metaData.idealWeights = _calculateIdealWeights(vaultsWithAmount);
 
-        uint256[] memory currentAmounts;
-        uint256[] memory deltaAmounts;
-        uint256[] memory resultingAmounts;
-        uint256[] memory prices;
+        uint256[] memory currentAmounts = new uint256[](vaultsWithAmount.length);
+        uint256[] memory deltaAmounts = new uint256[](vaultsWithAmount.length);
+        uint256[] memory resultingAmounts = new uint256[](vaultsWithAmount.length);
+        uint256[] memory prices = new uint256[](vaultsWithAmount.length);
+
         uint256 valueinUSDDeltas;
         uint256 currentUSDValue;
 
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
-            revert("til the end"); // there is a pb with the following line in the tests
+            //pb below
             currentAmounts[i] = vaultsWithAmount[i].vaultInfo.reserveBalance;
             deltaAmounts[i] = vaultsWithAmount[i].amount;
 
@@ -310,7 +311,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
     /// @inheritdoc ISafetyCheck
     function isMintSafe(VaultWithAmount[] memory vaultsWithAmount)
-        external
+        public
         view
         returns (string memory)
     {
@@ -353,7 +354,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
     /// @inheritdoc ISafetyCheck
     function isRedeemSafe(VaultWithAmount[] memory vaultsWithAmount)
-        external
+        public
         view
         returns (string memory)
     {
@@ -395,13 +396,21 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return "";
     }
 
-    // /// @inheritdoc ISafetyCheck
-    // function checkAndPersistMint(VaultWithAmount[] memory vaultsWithAmount)
-    //     external
-    //     returns (string memory);
+    /// @inheritdoc ISafetyCheck
+    function checkAndPersistMint(VaultWithAmount[] memory vaultsWithAmount)
+        external
+        view
+        returns (string memory)
+    {
+        return isMintSafe(vaultsWithAmount);
+    }
 
-    // /// @inheritdoc ISafetyCheck
-    // function checkAndPersistRedeem(VaultWithAmount[] memory vaultsWithAmount)
-    //     external
-    //     returns (string memory);
+    /// @inheritdoc ISafetyCheck
+    function checkAndPersistRedeem(VaultWithAmount[] memory vaultsWithAmount)
+        external
+        view
+        returns (string memory)
+    {
+        return isRedeemSafe(vaultsWithAmount);
+    }
 }
