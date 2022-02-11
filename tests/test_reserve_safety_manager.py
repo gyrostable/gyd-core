@@ -107,10 +107,11 @@ def test_build_metadata(reserve_safety_manager, bundle):
     vaults_with_amount = bundle_to_vaults(bundle)
     metadata_exp = build_metadata(vaults_with_amount)
 
-    print(vaults_with_amount)
-
     metadata_sol = reserve_safety_manager.buildMetaData(vaults_with_amount)
-    print(metadata_sol)
+
+    print("SOL", metadata_sol)
+    print("EXP", metadata_exp)
+
 
 
 

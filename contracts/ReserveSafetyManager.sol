@@ -108,6 +108,8 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             prices[i] = vaultsWithAmount[i].vaultInfo.price;
         }
 
+        metaData.prices = prices;
+
         (metaData.currentWeights, currentUSDValue) = _calculateWeightsAndTotal(
             currentAmounts,
             prices
