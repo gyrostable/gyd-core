@@ -277,7 +277,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return true;
     }
 
-    function _safeToMintOutsideEpsilon(MetaData memory metaData) internal pure returns (bool) {
+    function _safeToExecuteOutsideEpsilon(MetaData memory metaData) internal pure returns (bool) {
         //Check that amount above maxallowedVaultDeviation is decreasing
         //Check that unhealthy pools have input weight below ideal weight
         //If both true, then mint
@@ -285,6 +285,8 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
         for (uint256 i; i < metaData.vaultMetadata.length; i++) {
             VaultData memory vaultData = metaData.vaultMetadata[i];
+
+            if ()
 
             if (!vaultData.allStablecoinsOnPeg) {
                 if (vaultData.deltaWeight > vaultData.idealWeight) {
@@ -333,7 +335,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
                 if (_checkAnyOffPegVaultWouldMoveCloserToIdealWeight(metaDataFull)) {
                     return "";
                 }
-            } else if (_safeToMintOutsideEpsilon(metaDataFull)) {
+            } else if (_safeToExecuteOutsideEpsilon(metaDataFull)) {
                 return "";
             }
         }
@@ -349,25 +351,17 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         MetaData memory metaData = _buildMetaData(vaultsWithAmount);
         MetaData memory metaDataFull = _updateMetaDataWithEpsilonStatus(metaData);
 
+        if (!metaDataFull.allVaultsUsingLargeEnoughPrices) {
+            return Errors.TOKEN_PRICES_TOO_SMALL;
+        }
+
         if (metaDataFull.allVaultsWithinEpsilon) {
             return "";
+        } else if (_safeToExecuteOutsideEpsilon(metaDataFull)) {
+            return "";
+        } else {
+            return Errors.NOT_SAFE_TO_REDEEM;
         }
-
-        for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
-            VaultData memory vaultData = metaData.vaultMetadata[i];
-            if (vaultData.vaultWithinEpsilon) {
-                continue;
-            }
-            uint256 distanceResultingToIdeal = vaultData.resultingWeight.absSub(
-                vaultData.idealWeight
-            );
-            uint256 distanceCurrentToIdeal = vaultData.currentWeight.absSub(vaultData.idealWeight);
-
-            if (distanceResultingToIdeal >= distanceCurrentToIdeal) {
-                return Errors.NOT_SAFE_TO_REDEEM;
-            }
-        }
-        return "";
     }
 
     /// @inheritdoc ISafetyCheck
