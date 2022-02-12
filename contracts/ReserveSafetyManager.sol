@@ -41,6 +41,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         bool allVaultsWithinEpsilon;
         bool allStablecoinsAllVaultsOnPeg;
         bool allVaultsUsingLargeEnoughPrices;
+        bool mint;
     }
 
     /// @notice a stablecoin should be equal to 1 USD
@@ -98,32 +99,31 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return (weights, total);
     }
 
-    function _buildMetaData(VaultWithAmount[] memory vaultsWithAmount)
-        internal
-        pure
-        returns (MetaData memory metaData)
-    {
-        metaData.vaultMetadata = new VaultData[](vaultsWithAmount.length);
+    function _buildMetaData(Order memory order) internal pure returns (MetaData memory metaData) {
+        metaData.vaultMetadata = new VaultData[](order.vaultsWithAmount.length);
 
-        uint256[] memory idealWeights = _calculateIdealWeights(vaultsWithAmount);
-        uint256[] memory currentAmounts = new uint256[](vaultsWithAmount.length);
-        uint256[] memory deltaAmounts = new uint256[](vaultsWithAmount.length);
-        uint256[] memory resultingAmounts = new uint256[](vaultsWithAmount.length);
-        uint256[] memory prices = new uint256[](vaultsWithAmount.length);
+        uint256[] memory idealWeights = _calculateIdealWeights(order.vaultsWithAmount);
+        uint256[] memory currentAmounts = new uint256[](order.vaultsWithAmount.length);
+        uint256[] memory deltaAmounts = new uint256[](order.vaultsWithAmount.length);
+        uint256[] memory resultingAmounts = new uint256[](order.vaultsWithAmount.length);
+        uint256[] memory prices = new uint256[](order.vaultsWithAmount.length);
 
-        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
-            currentAmounts[i] = vaultsWithAmount[i].vaultInfo.reserveBalance;
-            deltaAmounts[i] = vaultsWithAmount[i].amount;
+        for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
+            currentAmounts[i] = order.vaultsWithAmount[i].vaultInfo.reserveBalance;
+            deltaAmounts[i] = order.vaultsWithAmount[i].amount;
 
-            if (vaultsWithAmount[i].mint) {
+            if (order.mint) {
+                metaData.mint = true;
                 resultingAmounts[i] = currentAmounts[i] + deltaAmounts[i];
             } else {
+                metaData.mint = false;
                 resultingAmounts[i] = currentAmounts[i] - deltaAmounts[i];
             }
 
-            metaData.vaultMetadata[i].price = vaultsWithAmount[i].vaultInfo.price;
+            metaData.vaultMetadata[i].price = order.vaultsWithAmount[i].vaultInfo.price;
 
-            metaData.vaultMetadata[i].underlyingPoolId = vaultsWithAmount[i]
+            metaData.vaultMetadata[i].underlyingPoolId = order
+                .vaultsWithAmount[i]
                 .vaultInfo
                 .persistedMetadata
                 .underlyingPoolId;
@@ -151,7 +151,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             deltaWeights = idealWeights;
         }
 
-        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
+        for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             metaData.vaultMetadata[i].idealWeight = idealWeights[i];
             metaData.vaultMetadata[i].currentWeight = currentWeights[i];
             metaData.vaultMetadata[i].resultingWeight = resultingWeights[i];
@@ -286,11 +286,11 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         for (uint256 i; i < metaData.vaultMetadata.length; i++) {
             VaultData memory vaultData = metaData.vaultMetadata[i];
 
-            if ()
-
-            if (!vaultData.allStablecoinsOnPeg) {
-                if (vaultData.deltaWeight > vaultData.idealWeight) {
-                    return false;
+            if (metaData.mint) {
+                if (!vaultData.allStablecoinsOnPeg) {
+                    if (vaultData.deltaWeight > vaultData.idealWeight) {
+                        return false;
+                    }
                 }
             }
 
@@ -313,12 +313,8 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isMintSafe(VaultWithAmount[] memory vaultsWithAmount)
-        public
-        view
-        returns (string memory)
-    {
-        MetaData memory metaData = _buildMetaData(vaultsWithAmount);
+    function isMintSafe(Order memory order) public view returns (string memory) {
+        MetaData memory metaData = _buildMetaData(order);
         MetaData memory metaDataWithPriceInfo = _updateMetadataWithPriceSafety(metaData);
         MetaData memory metaDataFull = _updateMetaDataWithEpsilonStatus(metaDataWithPriceInfo);
 
@@ -343,12 +339,8 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isRedeemSafe(VaultWithAmount[] memory vaultsWithAmount)
-        public
-        view
-        returns (string memory)
-    {
-        MetaData memory metaData = _buildMetaData(vaultsWithAmount);
+    function isRedeemSafe(Order memory order) public view returns (string memory) {
+        MetaData memory metaData = _buildMetaData(order);
         MetaData memory metaDataFull = _updateMetaDataWithEpsilonStatus(metaData);
 
         if (!metaDataFull.allVaultsUsingLargeEnoughPrices) {
@@ -365,20 +357,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistMint(VaultWithAmount[] memory vaultsWithAmount)
-        external
-        view
-        returns (string memory)
-    {
-        return isMintSafe(vaultsWithAmount);
+    function checkAndPersistMint(Order memory order) external view returns (string memory) {
+        return isMintSafe(order);
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistRedeem(VaultWithAmount[] memory vaultsWithAmount)
-        external
-        view
-        returns (string memory)
-    {
-        return isRedeemSafe(vaultsWithAmount);
+    function checkAndPersistRedeem(Order memory order) external view returns (string memory) {
+        return isRedeemSafe(order);
     }
 }

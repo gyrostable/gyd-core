@@ -30,12 +30,8 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _calculateWeightsAndTotal(amounts, prices);
     }
 
-    function buildMetaData(VaultWithAmount[] memory vaultsWithAmount)
-        external
-        pure
-        returns (MetaData memory metaData)
-    {
-        return _buildMetaData(vaultsWithAmount);
+    function buildMetaData(Order memory order) external pure returns (MetaData memory metaData) {
+        return _buildMetaData(order);
     }
 
     function calculateIdealWeights(VaultWithAmount[] memory vaultsWithAmount)
@@ -78,7 +74,7 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _checkAnyOffPegVaultWouldMoveCloserToIdealWeight(metaData);
     }
 
-    function safeToMintOutsideEpsilon(MetaData memory metaData) external pure returns (bool) {
-        return _safeToMintOutsideEpsilon(metaData);
+    function safeToExecuteOutsideEpsilon(MetaData memory metaData) external pure returns (bool) {
+        return _safeToExecuteOutsideEpsilon(metaData);
     }
 }
