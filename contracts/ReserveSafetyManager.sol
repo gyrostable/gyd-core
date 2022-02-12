@@ -16,8 +16,9 @@ import "../interfaces/ISafetyCheck.sol";
 contract ReserveSafetyManager is ISafetyCheck, Governable {
     using FixedPoint for uint256;
 
-    uint256 internal maxallowedVaultDeviation;
-    uint256 internal stablecoinMaxDeviation;
+    uint256 public maxallowedVaultDeviation; // Should be in basis points, e.g. 5% would be 500 bps
+    uint256 public stablecoinMaxDeviation;
+    uint256 public minTokenPrice;
 
     IVault internal balancerVault;
     IUSDPriceOracle internal priceOracle;
@@ -42,27 +43,25 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     constructor(
         uint256 _maxAllowedVaultDeviation,
         uint256 _stablecoinMaxDeviation,
+        uint256 _minTokenPrice,
         IVault _balancerVault,
         IUSDPriceOracle _priceOracle,
         IAssetRegistry _assetRegistry
     ) {
         maxallowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
+        minTokenPrice = _minTokenPrice;
         balancerVault = _balancerVault;
         priceOracle = _priceOracle;
         assetRegistry = _assetRegistry;
-    }
-
-    function getVaultMaxDeviation() external view returns (uint256) {
-        return maxallowedVaultDeviation;
     }
 
     function setVaultMaxDeviation(uint256 _maxAllowedVaultDeviation) external governanceOnly {
         maxallowedVaultDeviation = _maxAllowedVaultDeviation;
     }
 
-    function getStablecoinMaxDeviation() external view returns (uint256) {
-        return stablecoinMaxDeviation;
+    function setMinTokenPrice(uint256 _minTokenPrice) external governanceOnly {
+        minTokenPrice = _minTokenPrice;
     }
 
     function setStablecoinMaxDeviation(uint256 _stablecoinMaxDeviation) external governanceOnly {
@@ -188,8 +187,9 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
         for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
             VaultData memory vaultData = metaData.vaultMetadata[i];
+            uint256 scaledEpsilon = (vaultData.idealWeight * maxallowedVaultDeviation) / 10000;
             bool withinEpsilon = vaultData.idealWeight.absSub(vaultData.resultingWeight) <=
-                maxallowedVaultDeviation;
+                scaledEpsilon;
 
             vaultsWithinEpsilon[i] = withinEpsilon;
 
@@ -201,12 +201,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return (allVaultsWithinEpsilon, vaultsWithinEpsilon);
     }
 
-    /// @dev stablecoinPrice must be scaled to 10^18
-    function _isStablecoinCloseToPeg(uint256 stablecoinPrice) internal view returns (bool) {
-        return stablecoinPrice.absSub(STABLECOIN_IDEAL_PRICE) <= stablecoinMaxDeviation;
-    }
-
-    function _individualStablecoinInspector(VaultWithAmount memory vaultWithAmount)
+    function _individualVaultInspector(VaultWithAmount memory vaultWithAmount)
         internal
         view
         returns (bool, bool)
@@ -216,64 +211,66 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         );
 
         bool allStablecoinsOnPeg = true;
-        bool allStablecoinsOffPeg = false;
-
-        uint256 numberOfStablecoinsInPool;
-        uint256 numberOfStablecoinsOffPeg;
+        bool allTokenPricesLargeEnough = true;
+        uint256 numberOfTinyTokenPrices;
         for (uint256 i = 0; i < tokens.length; i++) {
             address tokenAddress = address(tokens[i]);
+            uint256 tokenPrice = priceOracle.getPriceUSD(tokenAddress);
 
-            if (!assetRegistry.isAssetStable(tokenAddress)) {
-                continue;
+            if (assetRegistry.isAssetStable(tokenAddress)) {
+                if (tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) <= stablecoinMaxDeviation) {
+                    allStablecoinsOnPeg = false;
+                }
             }
 
-            numberOfStablecoinsInPool = numberOfStablecoinsInPool + 1;
-
-            uint256 stablecoinPrice = priceOracle.getPriceUSD(tokenAddress);
-
-            if (!_isStablecoinCloseToPeg(stablecoinPrice)) {
-                allStablecoinsOnPeg = false;
-                numberOfStablecoinsOffPeg = numberOfStablecoinsOffPeg + 1;
+            if (tokenPrice < minTokenPrice) {
+                numberOfTinyTokenPrices = numberOfTinyTokenPrices + 1;
             }
         }
 
-        if (numberOfStablecoinsInPool == numberOfStablecoinsOffPeg) {
-            allStablecoinsOffPeg = true;
+        if (numberOfTinyTokenPrices == tokens.length) {
+            allTokenPricesLargeEnough = false;
         }
 
-        return (allStablecoinsOnPeg, allStablecoinsOffPeg);
+        return (allStablecoinsOnPeg, allTokenPricesLargeEnough);
     }
 
-    function _allVaultsStablecoinInspector(VaultWithAmount[] memory vaultsWithAmount)
+    function _allVaultsInspector(VaultWithAmount[] memory vaultsWithAmount)
         internal
         view
         returns (
             bool,
+            bool[] memory,
             bool,
             bool[] memory
         )
     {
         bool allStablecoinsAllVaultsOnPeg = true;
-        bool anyVaultHasOnlyOffPegStablecoins = false;
         bool[] memory vaultStablecoinsOnPeg = new bool[](vaultsWithAmount.length);
 
+        bool allVaultsUsingLargeEnoughPrices = true;
+        bool[] memory vaultUsingLargeEnoughPrices = new bool[](vaultsWithAmount.length);
+
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
-            (bool allStablecoinsOnPeg, bool allStablecoinsOffPeg) = _individualStablecoinInspector(
+            (bool allStablecoinsOnPeg, bool allTokenPricesLargeEnough) = _individualVaultInspector(
                 vaultsWithAmount[i]
             );
             if (!allStablecoinsOnPeg) {
                 allStablecoinsAllVaultsOnPeg = false;
             }
-            if (allStablecoinsOffPeg) {
-                anyVaultHasOnlyOffPegStablecoins = true;
+            if (!allTokenPricesLargeEnough) {
+                allVaultsUsingLargeEnoughPrices = false;
             }
+
             vaultStablecoinsOnPeg[i] = allStablecoinsOnPeg;
+            vaultUsingLargeEnoughPrices[i] = allTokenPricesLargeEnough;
         }
 
         return (
             allStablecoinsAllVaultsOnPeg,
-            anyVaultHasOnlyOffPegStablecoins,
-            vaultStablecoinsOnPeg
+            vaultStablecoinsOnPeg,
+            allVaultsUsingLargeEnoughPrices,
+            vaultUsingLargeEnoughPrices
         );
     }
 
@@ -340,17 +337,18 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
         (
             bool allStablecoinsAllVaultsOnPeg,
-            bool anyVaultHasOnlyOffPegStablecoins,
-            bool[] memory vaultStablecoinsOnPeg
-        ) = _allVaultsStablecoinInspector(vaultsWithAmount);
+            bool[] memory vaultStablecoinsOnPeg,
+            bool allVaultsUsingLargeEnoughPrices,
+
+        ) = _allVaultsInspector(vaultsWithAmount);
 
         (
             bool allVaultsWithinEpsilon,
             bool[] memory vaultsWithinEpsilon
         ) = _checkVaultsWithinEpsilon(metaData);
 
-        if (anyVaultHasOnlyOffPegStablecoins) {
-            return Errors.A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG;
+        if (!allVaultsUsingLargeEnoughPrices) {
+            return Errors.TOKEN_PRICES_TOO_SMALL;
         }
 
         if (allStablecoinsAllVaultsOnPeg) {
@@ -383,14 +381,6 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             bool allVaultsWithinEpsilon,
             bool[] memory vaultsWithinEpsilon
         ) = _checkVaultsWithinEpsilon(metaData);
-
-        (, bool anyVaultHasOnlyOffPegStablecoins, ) = _allVaultsStablecoinInspector(
-            vaultsWithAmount
-        );
-
-        if (anyVaultHasOnlyOffPegStablecoins) {
-            return Errors.A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG;
-        }
 
         if (allVaultsWithinEpsilon) {
             return "";

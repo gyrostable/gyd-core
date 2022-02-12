@@ -38,4 +38,5 @@ library Errors {
     string public constant NOT_SAFE_TO_MINT = "52";
     string public constant NOT_SAFE_TO_REDEEM = "53";
     string public constant AMOUNT_AND_PRICE_LENGTH_DIFFER = "54";
+    string public constant TOKEN_PRICES_TOO_SMALL = "55";
 }

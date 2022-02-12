@@ -4,8 +4,22 @@ pragma solidity ^0.8.10;
 import "../ReserveSafetyManager.sol";
 
 contract TestingReserveSafetyManager is ReserveSafetyManager {
-    constructor(uint256 _maxAllowedVaultDeviation, uint256 _stablecoinMaxDeviation)
-        ReserveSafetyManager(_maxAllowedVaultDeviation, _stablecoinMaxDeviation)
+    constructor(
+        uint256 _maxAllowedVaultDeviation,
+        uint256 _stablecoinMaxDeviation,
+        uint256 _minTokenPrice,
+        IVault _balancerVault,
+        IUSDPriceOracle _priceOracle,
+        IAssetRegistry _assetRegistry
+    )
+        ReserveSafetyManager(
+            _maxAllowedVaultDeviation,
+            _stablecoinMaxDeviation,
+            _minTokenPrice,
+            _balancerVault,
+            _priceOracle,
+            _assetRegistry
+        )
     {}
 
     function calculateWeightsAndTotal(uint256[] memory amounts, uint256[] memory prices)
@@ -40,28 +54,25 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _checkVaultsWithinEpsilon(metaData);
     }
 
-    function isStablecoinCloseToPeg(uint256 stablecoinPrice) external view returns (bool) {
-        return _isStablecoinCloseToPeg(stablecoinPrice);
-    }
-
-    function individualStablecoinInspector(VaultWithAmount memory vaultWithAmount)
+    function individualVaultInspector(VaultWithAmount memory vaultWithAmount)
         external
         view
         returns (bool, bool)
     {
-        return _individualStablecoinInspector(vaultWithAmount);
+        return _individualVaultInspector(vaultWithAmount);
     }
 
-    function allVaultsStablecoinInspector(VaultWithAmount[] memory vaultsWithAmount)
+    function allVaultsInspector(VaultWithAmount[] memory vaultsWithAmount)
         external
         view
         returns (
             bool,
+            bool[] memory,
             bool,
             bool[] memory
         )
     {
-        return _allVaultsStablecoinInspector(vaultsWithAmount);
+        return _allVaultsInspector(vaultsWithAmount);
     }
 
     function checkUnhealthyMovesToIdeal(
