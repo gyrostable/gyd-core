@@ -38,7 +38,7 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _buildMetaData(vaultsWithAmount);
     }
 
-    function calculateImpliedPoolWeights(VaultWithAmount[] memory vaultsWithAmount)
+    function calculateIdealWeights(VaultWithAmount[] memory vaultsWithAmount)
         external
         pure
         returns (uint256[] memory)
@@ -46,47 +46,39 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _calculateIdealWeights(vaultsWithAmount);
     }
 
-    function checkVaultsWithinEpsilon(MetaData memory metaData)
+    function updateMetaDataWithEpsilonStatus(MetaData memory metaData)
         external
         view
-        returns (bool, bool[] memory)
+        returns (MetaData memory)
     {
-        return _checkVaultsWithinEpsilon(metaData);
+        return _updateMetaDataWithEpsilonStatus(metaData);
     }
 
-    function individualVaultInspector(VaultWithAmount memory vaultWithAmount)
+    function updateVaultWithPriceSafety(VaultData memory vaultData)
         external
         view
-        returns (bool, bool)
+        returns (VaultData memory)
     {
-        return _individualVaultInspector(vaultWithAmount);
+        return _updateVaultWithPriceSafety(vaultData);
     }
 
-    function allVaultsInspector(VaultWithAmount[] memory vaultsWithAmount)
+    function updateMetadataWithPriceSafety(MetaData memory metaData)
         external
         view
-        returns (
-            bool,
-            bool[] memory,
-            bool,
-            bool[] memory
-        )
+        returns (MetaData memory)
     {
-        return _allVaultsInspector(vaultsWithAmount);
+        return _updateMetadataWithPriceSafety(metaData);
     }
 
-    function checkUnhealthyMovesToIdeal(
-        MetaData memory metaData,
-        bool[] memory vaultStablecoinsOnPeg
-    ) external pure returns (bool) {
-        return _checkUnhealthyMovesToIdeal(metaData, vaultStablecoinsOnPeg);
+    function checkAnyOffPegVaultWouldMoveCloserToIdealWeight(MetaData memory metaData)
+        external
+        pure
+        returns (bool)
+    {
+        return _checkAnyOffPegVaultWouldMoveCloserToIdealWeight(metaData);
     }
 
-    function safeToMintOutsideEpsilon(
-        MetaData memory metaData,
-        bool[] memory vaultsWithinEpsilon,
-        bool[] memory vaultStablecoinsOnPeg
-    ) external pure returns (bool) {
-        return _safeToMintOutsideEpsilon(metaData, vaultsWithinEpsilon, vaultStablecoinsOnPeg);
+    function safeToMintOutsideEpsilon(MetaData memory metaData) external pure returns (bool) {
+        return _safeToMintOutsideEpsilon(metaData);
     }
 }
