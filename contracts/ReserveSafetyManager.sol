@@ -16,11 +16,12 @@ import "../interfaces/ISafetyCheck.sol";
 contract ReserveSafetyManager is ISafetyCheck, Governable {
     using FixedPoint for uint256;
 
-    uint256 private epsilon;
-    uint256 private stablecoinMaxDeviation;
-    address private balancerVaultAddress;
-    address private priceOracleAddress;
-    address private assetRegistryAddress;
+    uint256 internal maxallowedVaultDeviation;
+    uint256 internal stablecoinMaxDeviation;
+
+    IVault internal balancerVault;
+    IUSDPriceOracle internal priceOracle;
+    IAssetRegistry internal assetRegistry;
 
     struct VaultData {
         uint256 idealWeight;
@@ -38,17 +39,26 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// @notice a stablecoin should be equal to 1 USD
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
 
-    constructor(uint256 _maxAllowedVaultDeviation, uint256 _stablecoinMaxDeviation) {
-        epsilon = _maxAllowedVaultDeviation;
+    constructor(
+        uint256 _maxAllowedVaultDeviation,
+        uint256 _stablecoinMaxDeviation,
+        IVault _balancerVault,
+        IUSDPriceOracle _priceOracle,
+        IAssetRegistry _assetRegistry
+    ) {
+        maxallowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
+        balancerVault = _balancerVault;
+        priceOracle = _priceOracle;
+        assetRegistry = _assetRegistry;
     }
 
     function getVaultMaxDeviation() external view returns (uint256) {
-        return epsilon;
+        return maxallowedVaultDeviation;
     }
 
     function setVaultMaxDeviation(uint256 _maxAllowedVaultDeviation) external governanceOnly {
-        epsilon = _maxAllowedVaultDeviation;
+        maxallowedVaultDeviation = _maxAllowedVaultDeviation;
     }
 
     function getStablecoinMaxDeviation() external view returns (uint256) {
@@ -178,7 +188,8 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
         for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
             VaultData memory vaultData = metaData.vaultMetadata[i];
-            bool withinEpsilon = vaultData.idealWeight.absSub(vaultData.resultingWeight) <= epsilon;
+            bool withinEpsilon = vaultData.idealWeight.absSub(vaultData.resultingWeight) <=
+                maxallowedVaultDeviation;
 
             vaultsWithinEpsilon[i] = withinEpsilon;
 
@@ -200,11 +211,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         view
         returns (bool, bool)
     {
-        IVault balVault = IVault(balancerVaultAddress);
-        IUSDPriceOracle priceOracle = IUSDPriceOracle(priceOracleAddress);
-        IAssetRegistry assetRegistry = IAssetRegistry(assetRegistryAddress);
-
-        (IERC20[] memory tokens, , ) = balVault.getPoolTokens(
+        (IERC20[] memory tokens, , ) = balancerVault.getPoolTokens(
             vaultWithAmount.vaultInfo.persistedMetadata.underlyingPoolId
         );
 
@@ -227,7 +234,6 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             if (!_isStablecoinCloseToPeg(stablecoinPrice)) {
                 allStablecoinsOnPeg = false;
                 numberOfStablecoinsOffPeg = numberOfStablecoinsOffPeg + 1;
-                continue;
             }
         }
 
@@ -251,7 +257,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         bool anyVaultHasOnlyOffPegStablecoins = false;
         bool[] memory vaultStablecoinsOnPeg = new bool[](vaultsWithAmount.length);
 
-        for (uint256 i; i < vaultsWithAmount.length; i++) {
+        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
             (bool allStablecoinsOnPeg, bool allStablecoinsOffPeg) = _individualStablecoinInspector(
                 vaultsWithAmount[i]
             );
@@ -294,7 +300,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         bool[] memory vaultsWithinEpsilon,
         bool[] memory vaultStablecoinsOnPeg
     ) internal pure returns (bool) {
-        //Check that amount above epsilon is decreasing
+        //Check that amount above maxallowedVaultDeviation is decreasing
         //Check that unhealthy pools have input weight below ideal weight
         //If both true, then mint
         //note: should always be able to mint at the ideal weights!
@@ -356,12 +362,10 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
                 if (_checkUnhealthyMovesToIdeal(metaData, vaultStablecoinsOnPeg)) {
                     return "";
                 }
-            } else {
-                if (
-                    _safeToMintOutsideEpsilon(metaData, vaultsWithinEpsilon, vaultStablecoinsOnPeg)
-                ) {
-                    return "";
-                }
+            } else if (
+                _safeToMintOutsideEpsilon(metaData, vaultsWithinEpsilon, vaultStablecoinsOnPeg)
+            ) {
+                return "";
             }
         }
         return Errors.NOT_SAFE_TO_MINT;
