@@ -7,9 +7,12 @@ from brownie.test import given
 from numpy import exp
 
 from tests.reserve.reserve_math_implementation import (
-    calculate_ideal_weights, calculate_weights_and_total,
+    calculate_ideal_weights,
+    calculate_weights_and_total,
     check_any_off_peg_vault_would_move_closer_to_ideal_weight,
-    update_metadata_with_epsilon_status, update_vault_with_price_safety)
+    update_metadata_with_epsilon_status,
+    update_vault_with_price_safety,
+)
 from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
@@ -68,6 +71,7 @@ def vault_metadata_builder(
     )
 
     return vault_meta_data
+
 
 def bundle_to_metadata(bundle):
     (
@@ -169,7 +173,7 @@ def test_calculate_ideal_weights(reserve_safety_manager, bundle):
             boolean_generator,
             boolean_generator,
             boolean_generator,
-            boolean_generator
+            boolean_generator,
         )
     )
 )
@@ -180,10 +184,13 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
         return
     metadata = bundle_to_metadata(bundle_metadata)
 
-    result_sol = reserve_safety_manager.checkAnyOffPegVaultWouldMoveCloserToIdealWeight(metadata)
+    result_sol = reserve_safety_manager.checkAnyOffPegVaultWouldMoveCloserToIdealWeight(
+        metadata
+    )
     result_exp = check_any_off_peg_vault_would_move_closer_to_ideal_weight(metadata)
 
     assert result_sol == result_exp
+
 
 # @given(bundle=st.lists(st.tuples(price_generator, amount_generator, weight_generator)))
 # def test_build_metadata(reserve_safety_manager, bundle):
@@ -196,6 +203,7 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
 
 #     print("SOL", metadata_sol)
 #     print("EXP", metadata_exp)
+
 
 @given(
     bundle_metadata=st.lists(
@@ -211,11 +219,11 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
             boolean_generator,
             boolean_generator,
             boolean_generator,
-            boolean_generator
+            boolean_generator,
         )
     )
 )
-def test_update_metadata_with_epsilon_status(reserve_safety_manager,bundle_metadata):
+def test_update_metadata_with_epsilon_status(reserve_safety_manager, bundle_metadata):
     if not bundle_metadata:
         return
     metadata = bundle_to_metadata(bundle_metadata)
@@ -225,32 +233,37 @@ def test_update_metadata_with_epsilon_status(reserve_safety_manager,bundle_metad
 
     assert result_sol[1] == result_exp[1]
 
+
 @given(
-    bundle_vault_metadata=
-        st.tuples(
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            price_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator
-        )
+    bundle_vault_metadata=st.tuples(
+        weight_generator,
+        weight_generator,
+        weight_generator,
+        weight_generator,
+        price_generator,
+        boolean_generator,
+        boolean_generator,
+        boolean_generator,
+    )
 )
-def test_update_vault_with_price_safety(reserve_safety_manager, bundle_vault_metadata, mock_price_oracle):
+def test_update_vault_with_price_safety(
+    reserve_safety_manager, bundle_vault_metadata, mock_price_oracle
+):
     vault_metadata = vault_metadata_builder(
-            bundle_vault_metadata[0],
-            bundle_vault_metadata[1],
-            bundle_vault_metadata[2],
-            bundle_vault_metadata[3],
-            bundle_vault_metadata[4],
-            bundle_vault_metadata[5],
-            bundle_vault_metadata[6],
-            bundle_vault_metadata[7]
-        )   
-    vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(vault_metadata)
+        bundle_vault_metadata[0],
+        bundle_vault_metadata[1],
+        bundle_vault_metadata[2],
+        bundle_vault_metadata[3],
+        bundle_vault_metadata[4],
+        bundle_vault_metadata[5],
+        bundle_vault_metadata[6],
+        bundle_vault_metadata[7],
+    )
+    vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
+        vault_metadata
+    )
     vault_metadata_exp = update_vault_with_price_safety(vault_metadata)
+
 
 def test_update_metadata_with_price_safety():
     pass

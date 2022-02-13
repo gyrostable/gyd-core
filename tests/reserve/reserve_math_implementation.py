@@ -51,6 +51,7 @@ def check_any_off_peg_vault_would_move_closer_to_ideal_weight(metadata) -> bool:
             return False
     return True
 
+
 def update_metadata_with_epsilon_status(metadata):
     metadata_new = list(metadata)
     metadata_new[1] = True
@@ -69,8 +70,10 @@ def update_metadata_with_epsilon_status(metadata):
 
     return metadata_new
 
+
 def update_vault_with_price_safety(vault_metadata):
     pass
+
 
 # def build_metadata(vaults_with_amount: List[Tuple]) -> List[D]:
 
