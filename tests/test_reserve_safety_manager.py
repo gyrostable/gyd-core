@@ -9,7 +9,7 @@ from numpy import exp
 from tests.reserve.reserve_math_implementation import (
     calculate_ideal_weights, calculate_weights_and_total,
     check_any_off_peg_vault_would_move_closer_to_ideal_weight,
-    update_metadata_with_epsilon_status)
+    update_metadata_with_epsilon_status, update_vault_with_price_safety)
 from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
@@ -68,7 +68,6 @@ def vault_metadata_builder(
     )
 
     return vault_meta_data
-
 
 def bundle_to_metadata(bundle):
     (
@@ -226,10 +225,32 @@ def test_update_metadata_with_epsilon_status(reserve_safety_manager,bundle_metad
 
     assert result_sol[1] == result_exp[1]
 
-
-def test_update_vault_with_price_safety():
-    pass
-
+@given(
+    bundle_vault_metadata=
+        st.tuples(
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            price_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator
+        )
+)
+def test_update_vault_with_price_safety(reserve_safety_manager, bundle_vault_metadata, mock_price_oracle):
+    vault_metadata = vault_metadata_builder(
+            bundle_vault_metadata[0],
+            bundle_vault_metadata[1],
+            bundle_vault_metadata[2],
+            bundle_vault_metadata[3],
+            bundle_vault_metadata[4],
+            bundle_vault_metadata[5],
+            bundle_vault_metadata[6],
+            bundle_vault_metadata[7]
+        )   
+    vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(vault_metadata)
+    vault_metadata_exp = update_vault_with_price_safety(vault_metadata)
 
 def test_update_metadata_with_price_safety():
     pass

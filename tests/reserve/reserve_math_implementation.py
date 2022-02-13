@@ -69,6 +69,8 @@ def update_metadata_with_epsilon_status(metadata):
 
     return metadata_new
 
+def update_vault_with_price_safety(vault_metadata):
+    pass
 
 # def build_metadata(vaults_with_amount: List[Tuple]) -> List[D]:
 
