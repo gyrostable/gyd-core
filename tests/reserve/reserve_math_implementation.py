@@ -51,6 +51,24 @@ def check_any_off_peg_vault_would_move_closer_to_ideal_weight(metadata) -> bool:
             return False
     return True
 
+def update_metadata_with_epsilon_status(metadata):
+    metadata_new = list(metadata)
+    metadata_new[1] = True
+
+    for i in metadata_new[0]:
+        as_list = list(i)
+        scaled_epsilon = D(i[1]) * constants.MAX_ALLOWED_VAULT_DEVIATION / D("10000")
+        if abs(i[1] - i[3]) <= scaled_epsilon:
+            within_epsilon = True
+        else:
+            within_epsilon = False
+
+        as_list[8] = within_epsilon
+
+        i = as_list[8]
+
+    return metadata_new
+
 
 # def build_metadata(vaults_with_amount: List[Tuple]) -> List[D]:
 

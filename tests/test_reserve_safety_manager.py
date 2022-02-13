@@ -8,7 +8,8 @@ from numpy import exp
 
 from tests.reserve.reserve_math_implementation import (
     calculate_ideal_weights, calculate_weights_and_total,
-    check_any_off_peg_vault_would_move_closer_to_ideal_weight)
+    check_any_off_peg_vault_would_move_closer_to_ideal_weight,
+    update_metadata_with_epsilon_status)
 from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
@@ -185,21 +186,45 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
 
     assert result_sol == result_exp
 
-@given(bundle=st.lists(st.tuples(price_generator, amount_generator, weight_generator)))
-def test_build_metadata(reserve_safety_manager, bundle):
-    if not bundle:
+# @given(bundle=st.lists(st.tuples(price_generator, amount_generator, weight_generator)))
+# def test_build_metadata(reserve_safety_manager, bundle):
+#     if not bundle:
+#         return
+#     vaults_with_amount = bundle_to_vaults(bundle)
+#     metadata_exp = build_metadata(vaults_with_amount)
+
+#     metadata_sol = reserve_safety_manager.buildMetaData(vaults_with_amount)
+
+#     print("SOL", metadata_sol)
+#     print("EXP", metadata_exp)
+
+@given(
+    bundle_metadata=st.lists(
+        st.tuples(
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            price_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator
+        )
+    )
+)
+def test_update_metadata_with_epsilon_status(reserve_safety_manager,bundle_metadata):
+    if not bundle_metadata:
         return
-    vaults_with_amount = bundle_to_vaults(bundle)
-    metadata_exp = build_metadata(vaults_with_amount)
+    metadata = bundle_to_metadata(bundle_metadata)
 
-    metadata_sol = reserve_safety_manager.buildMetaData(vaults_with_amount)
+    result_sol = reserve_safety_manager.updateMetaDataWithEpsilonStatus(metadata)
+    result_exp = update_metadata_with_epsilon_status(metadata)
 
-    print("SOL", metadata_sol)
-    print("EXP", metadata_exp)
-
-
-def test_update_metadata_with_epsilon_status():
-    pass
+    assert result_sol[1] == result_exp[1]
 
 
 def test_update_vault_with_price_safety():
