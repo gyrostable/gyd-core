@@ -178,6 +178,7 @@ class QuantizedDecimal:
     def approxed(self, **kwargs):
         return pytest.approx(self.raw, **kwargs)
 
+
 DecimalLike = Union[int, str, decimal.Decimal, QuantizedDecimal]
 
 

@@ -232,11 +232,21 @@ def pamm(TestingPAMMV1):
 
 
 @pytest.fixture(scope="module")
-def reserve_safety_manager(admin, TestingReserveSafetyManager):
+def reserve_safety_manager(
+    admin,
+    TestingReserveSafetyManager,
+    mock_balancer_vault,
+    mock_price_oracle,
+    asset_registry,
+):
     return admin.deploy(
         TestingReserveSafetyManager,
         constants.MAX_ALLOWED_VAULT_DEVIATION,
         constants.STABLECOIN_MAX_DEVIATION,
+        constants.MIN_TOKEN_PRICE,
+        mock_balancer_vault,
+        mock_price_oracle,
+        asset_registry,
     )
 
 

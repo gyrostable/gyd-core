@@ -1,3 +1,4 @@
+from asyncio import constants
 from typing import Iterable, List, Tuple
 
 import hypothesis.strategies as st
@@ -6,8 +7,9 @@ from brownie.test import given
 from numpy import exp
 
 from tests.reserve.reserve_math_implementation import (
-    build_metadata, calculate_implied_pool_weights,
-    calculate_weights_and_total, is_stablecoin_close_to_peg)
+    calculate_ideal_weights, calculate_weights_and_total,
+    check_any_off_peg_vault_would_move_closer_to_ideal_weight)
+from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
 
@@ -23,14 +25,14 @@ price_generator = st.integers(
 )
 weight_generator = st.integers(min_value=int(scale("0.001")), max_value=int(scale(1)))
 
-mint_or_redeem_generator = st.booleans()
+boolean_generator = st.booleans()
 
 stablecoin_price_generator = st.integers(
     min_value=int(scale("0.94")), max_value=int(scale("1.06"))
 )
 
 
-def vault_builder(price_generator, amount_generator, weight_generator, mint_or_redeem_generator):
+def vault_builder(price_generator, amount_generator, weight_generator):
     persisted_metadata = (price_generator, weight_generator, POOL_ID)
     vault_info = (
         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
@@ -39,10 +41,73 @@ def vault_builder(price_generator, amount_generator, weight_generator, mint_or_r
         amount_generator,
         weight_generator,
     )
-    return (
-        vault_info, amount_generator, mint_or_redeem_generator
+    return (vault_info, amount_generator)
+
+
+def vault_metadata_builder(
+    ideal_weight,
+    current_weight,
+    resulting_weight,
+    delta_weight,
+    price,
+    all_stablecoins_on_peg,
+    all_token_prices_large_enough,
+    vault_within_epsilon,
+):
+    vault_meta_data = (
+        constants.BALANCER_POOL_ID,
+        ideal_weight,
+        current_weight,
+        resulting_weight,
+        delta_weight,
+        price,
+        all_stablecoins_on_peg,
+        all_token_prices_large_enough,
+        vault_within_epsilon,
     )
 
+    return vault_meta_data
+
+
+def bundle_to_metadata(bundle):
+    (
+        ideal_weight,
+        current_weight,
+        resulting_weight,
+        delta_weight,
+        price,
+        all_stablecoins_on_peg,
+        all_token_prices_large_enough,
+        vault_within_epsilon,
+        all_vaults_within_epsilon,
+        all_stablecoins_all_vaults_on_peg,
+        all_vaults_using_large_enough_prices,
+        mint,
+    ) = [list(v) for v in zip(*bundle)]
+
+    vaultmetadata = []
+    for i in range(len(ideal_weight)):
+        vault = vault_metadata_builder(
+            ideal_weight[i],
+            current_weight[i],
+            resulting_weight[i],
+            delta_weight[i],
+            price[i],
+            all_stablecoins_on_peg[i],
+            all_token_prices_large_enough[i],
+            vault_within_epsilon[i],
+        )
+        vaultmetadata.append(vault)
+
+    metadata = (
+        vaultmetadata,
+        all_vaults_within_epsilon[0],
+        all_stablecoins_all_vaults_on_peg[0],
+        all_vaults_using_large_enough_prices[0],
+        mint[0],
+    )
+
+    return metadata
 
 
 @given(amounts_and_prices=st.lists(st.tuples(amount_generator, price_generator)))
@@ -65,42 +130,62 @@ def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices)
     assert total_exp == scale(total_sol).approxed()
 
 
-@given(stablecoin_price=stablecoin_price_generator)
-def test_is_stablecoin_close_to_peg(reserve_safety_manager, stablecoin_price):
-    result_exp = is_stablecoin_close_to_peg(to_decimal(stablecoin_price))
-    result_sol = reserve_safety_manager.isStablecoinCloseToPeg(stablecoin_price)
-
-    assert result_exp == result_sol
-
 def bundle_to_vaults(bundle):
-    prices, amounts, weights, mint = [list(v) for v in zip(*bundle)]
+    prices, amounts, weights = [list(v) for v in zip(*bundle)]
 
     vaults_with_amount = []
     for i in range(len(prices)):
-        vault = vault_builder(prices[i], amounts[i], weights[i], mint[i])
+        vault = vault_builder(prices[i], amounts[i], weights[i])
         vaults_with_amount.append(vault)
 
     return vaults_with_amount
 
 
-
-@given(bundle = st.lists(st.tuples(price_generator, amount_generator, weight_generator, mint_or_redeem_generator)))
-def test_implied_pool_weights(reserve_safety_manager, bundle):
+@given(bundle=st.lists(st.tuples(price_generator, amount_generator, weight_generator)))
+def test_calculate_ideal_weights(reserve_safety_manager, bundle):
     if not bundle:
         return
 
     vaults_with_amount = bundle_to_vaults(bundle)
 
-    result_exp = calculate_implied_pool_weights(vaults_with_amount)
+    result_exp = calculate_ideal_weights(vaults_with_amount)
 
-    result_sol = reserve_safety_manager.calculateImpliedPoolWeights(vaults_with_amount)
-
-    print(to_decimal(result_sol))
-    print(scale(result_exp))
+    result_sol = reserve_safety_manager.calculateIdealWeights(vaults_with_amount)
 
     assert scale(result_exp) == to_decimal(result_sol)
 
-@given(bundle = st.lists(st.tuples(price_generator, amount_generator, weight_generator, mint_or_redeem_generator)))
+
+@given(
+    bundle_metadata=st.lists(
+        st.tuples(
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            price_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator
+        )
+    )
+)
+def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
+    reserve_safety_manager, bundle_metadata
+):
+    if not bundle_metadata:
+        return
+    metadata = bundle_to_metadata(bundle_metadata)
+
+    result_sol = reserve_safety_manager.checkAnyOffPegVaultWouldMoveCloserToIdealWeight(metadata)
+    result_exp = check_any_off_peg_vault_would_move_closer_to_ideal_weight(metadata)
+
+    assert result_sol == result_exp
+
+@given(bundle=st.lists(st.tuples(price_generator, amount_generator, weight_generator)))
 def test_build_metadata(reserve_safety_manager, bundle):
     if not bundle:
         return
@@ -113,5 +198,25 @@ def test_build_metadata(reserve_safety_manager, bundle):
     print("EXP", metadata_exp)
 
 
+def test_update_metadata_with_epsilon_status():
+    pass
 
 
+def test_update_vault_with_price_safety():
+    pass
+
+
+def test_update_metadata_with_price_safety():
+    pass
+
+
+def test_safe_to_execute_outside_epsilon():
+    pass
+
+
+def test_is_mint_safe():
+    pass
+
+
+def test_is_redeem_safe():
+    pass

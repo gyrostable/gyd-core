@@ -50,10 +50,10 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _updateMetaDataWithEpsilonStatus(metaData);
     }
 
-    function updateVaultWithPriceSafety(VaultData memory vaultData)
+    function updateVaultWithPriceSafety(VaultMetadata memory vaultData)
         external
         view
-        returns (VaultData memory)
+        returns (VaultMetadata memory)
     {
         return _updateVaultWithPriceSafety(vaultData);
     }
