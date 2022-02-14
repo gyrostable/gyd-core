@@ -75,6 +75,11 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
     }
 
+    /// @notice For given token amounts and token prices, calculates the weight of each token with
+    /// respect to the quote price as well as the total value of the basket in terms of the quote price
+    /// @param amounts an array of token amounts
+    /// @param prices an array of prices
+    /// @return (weights, total) where the weights is an array and the total a uint
     function _calculateWeightsAndTotal(uint256[] memory amounts, uint256[] memory prices)
         internal
         pure
@@ -99,6 +104,10 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return (weights, total);
     }
 
+    /// @notice For a given set of input vaults, calculates the ideal weight the vault should now have,
+    /// given (i) the vault's initial weight and (ii) the evolution of prices since the vault's initialization.
+    /// @param vaultsWithAmount an array of VaultWithAmountStructs
+    /// @return idealWeights an array of the ideal weights
     function _calculateIdealWeights(VaultWithAmount[] memory vaultsWithAmount)
         internal
         pure
@@ -124,11 +133,13 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return idealWeights;
     }
 
-    function _checkAnyOffPegVaultWouldMoveCloserToIdealWeight(MetaData memory metaData)
-        internal
-        pure
-        returns (bool)
-    {
+    /// @notice checks for all vaults whether if a particular vault containts a stablecoin that is off its peg,
+    /// whether the proposed change to the vault weight is equal to or smaller than the ideal weight, i.e., whether
+    /// the operation would be reducing the weight of the vault with the failed asset (as desired).
+    /// @param metaData an metadata struct containing all the vault information. Must be fully updated with the price
+    /// safety and epsilon data.
+    /// @return bool of whether all vaults exhibit this weight decreasing behavior
+    function _vaultWeightWithOffPegFalls(MetaData memory metaData) internal pure returns (bool) {
         for (uint256 i; i < metaData.vaultMetadata.length; i++) {
             VaultMetadata memory vaultData = metaData.vaultMetadata[i];
 
@@ -144,6 +155,9 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return true;
     }
 
+    /// @notice this function takes an order struct and builds the metadata struct, for use in this contract.
+    /// @param order an order struct received by the Reserve Safety Manager contract
+    /// @return metaData object
     function _buildMetaData(Order memory order) internal pure returns (MetaData memory metaData) {
         metaData.vaultMetadata = new VaultMetadata[](order.vaultsWithAmount.length);
 
@@ -204,6 +218,10 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         }
     }
 
+    /// @notice given input metadata, updates it with the information about whether the vault would remain within
+    /// an acceptable band (+/- epsilon) around the ideal weight for the vault.
+    /// @param metaData a metadata struct containing all the vault information.
+    /// @return metaData a metadata struct containing all the vault information, including the epsilon information.
     function _updateMetaDataWithEpsilonStatus(MetaData memory _metaData)
         internal
         view
@@ -226,6 +244,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         }
     }
 
+    /// @notice given input _vaultData, updates it with the information about whether the vault contains assets
+    /// with safe prices. For a stablecoin, safe means the asset is sufficiently close to the peg. For a
+    /// vault consisting of entirely non-stablecoin assets, this means that all of the prices are not 'dust',
+    /// to avoid numerical error.
+    /// @param _vaultData a VaultMetadata struct containing information for a particular vault.
+    /// @return vaultData a VaultMetadata struct containing information about whether the vault is price safe.
     function _updateVaultWithPriceSafety(VaultMetadata memory _vaultData)
         internal
         view
@@ -258,6 +282,10 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         }
     }
 
+    /// @notice given input metadata, updates it with the information about whether all vaults contains assets with
+    /// safe prices as determined by the _updateVaultWithPriceSafety function.
+    /// @param metaData a metadata struct containing all the vault information.
+    /// @return metaData a metadata struct containing all the vault information, including the price safety information.
     function _updateMetadataWithPriceSafety(MetaData memory _metaData)
         internal
         view
@@ -279,6 +307,19 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         }
     }
 
+    /// @notice given input metadata,
+    /// @param metaData a metadata struct containing all the vault information, updated with price safety and the
+    /// status of the vault regarding whether it is within epsilon.
+
+    /// If minting, there are two requirements for this function to return true: (i) that if the stablecoin is off peg,
+    /// then the weight of the delta is equal to or less than the ideal weight (and therefore the amount above epsilon is
+    /// decreasing) and (ii) for any individual vault that is outside of epsilon, that the resulting weight would be
+    /// closer to the ideal weight than the current weight.
+
+    /// If redeeming, then there is a single requirement for this function to return true: that for any vault that is
+    /// outside of epsilon, the resulting weight would be closer to the ideal weight than the current weight.
+    /// @return bool equal to true if for any pool that is outside of epsilon, the weight after the mint/redeem will
+    /// be closer to the ideal weight than the current weight is, i.e., the operation rebalances.
     function _safeToExecuteOutsideEpsilon(MetaData memory metaData) internal pure returns (bool) {
         //Check that amount above maxallowedVaultDeviation is decreasing
         //Check that unhealthy pools have input weight below ideal weight
@@ -297,7 +338,6 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             }
 
             if (!vaultData.vaultWithinEpsilon) {
-                // check if resultingWeights[i] is closer to _idealWeights[i] than _currentWeights[i]
                 uint256 distanceResultingToIdeal = vaultData.resultingWeight.absSub(
                     vaultData.idealWeight
                 );
@@ -330,7 +370,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             }
         } else {
             if (metaDataFull.allVaultsWithinEpsilon) {
-                if (_checkAnyOffPegVaultWouldMoveCloserToIdealWeight(metaDataFull)) {
+                if (_vaultWeightWithOffPegFalls(metaDataFull)) {
                     return "";
                 }
             } else if (_safeToExecuteOutsideEpsilon(metaDataFull)) {

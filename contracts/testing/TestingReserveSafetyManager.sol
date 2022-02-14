@@ -66,12 +66,8 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _updateMetadataWithPriceSafety(metaData);
     }
 
-    function checkAnyOffPegVaultWouldMoveCloserToIdealWeight(MetaData memory metaData)
-        external
-        pure
-        returns (bool)
-    {
-        return _checkAnyOffPegVaultWouldMoveCloserToIdealWeight(metaData);
+    function vaultWeightWithOffPegFalls(MetaData memory metaData) external pure returns (bool) {
+        return _vaultWeightWithOffPegFalls(metaData);
     }
 
     function safeToExecuteOutsideEpsilon(MetaData memory metaData) external pure returns (bool) {

@@ -7,12 +7,9 @@ from brownie.test import given
 from numpy import exp
 
 from tests.reserve.reserve_math_implementation import (
-    calculate_ideal_weights,
-    calculate_weights_and_total,
+    calculate_ideal_weights, calculate_weights_and_total,
     check_any_off_peg_vault_would_move_closer_to_ideal_weight,
-    update_metadata_with_epsilon_status,
-    update_vault_with_price_safety,
-)
+    update_metadata_with_epsilon_status, update_vault_with_price_safety)
 from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
@@ -184,10 +181,10 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
         return
     metadata = bundle_to_metadata(bundle_metadata)
 
-    result_sol = reserve_safety_manager.checkAnyOffPegVaultWouldMoveCloserToIdealWeight(
+    result_sol = reserve_safety_manager.vaultWeightWithOffPegWeightFalls(
         metadata
     )
-    result_exp = check_any_off_peg_vault_would_move_closer_to_ideal_weight(metadata)
+    result_exp = vault_weight_off_peg_falls(metadata)
 
     assert result_sol == result_exp
 

@@ -43,7 +43,7 @@ def calculate_ideal_weights(vaults_with_amount: List[Tuple]) -> List[D]:
     return implied_ideal_weights
 
 
-def check_any_off_peg_vault_would_move_closer_to_ideal_weight(metadata) -> bool:
+def vault_weight_off_peg_falls(metadata) -> bool:
     for i in metadata[0]:
         if i[6]:
             continue
