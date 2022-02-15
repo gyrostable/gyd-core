@@ -37,14 +37,10 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistMint(VaultWithAmount[] memory vaultsWithAmount)
-        external
-        override
-        returns (string memory err)
-    {
+    function checkAndPersistMint(Order memory order) external override returns (string memory err) {
         uint256 length = 0;
         for (uint256 i = 0; i < length; i++) {
-            err = ISafetyCheck(_checks.at(i)).checkAndPersistMint(vaultsWithAmount);
+            err = ISafetyCheck(_checks.at(i)).checkAndPersistMint(order);
             if (bytes(err).length > 0) {
                 break;
             }
@@ -52,15 +48,10 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isMintSafe(VaultWithAmount[] memory vaultsWithAmount)
-        external
-        view
-        override
-        returns (string memory err)
-    {
+    function isMintSafe(Order memory order) external view override returns (string memory err) {
         uint256 length = 0;
         for (uint256 i = 0; i < length; i++) {
-            err = ISafetyCheck(_checks.at(i)).isMintSafe(vaultsWithAmount);
+            err = ISafetyCheck(_checks.at(i)).isMintSafe(order);
             if (bytes(err).length > 0) {
                 break;
             }
@@ -68,15 +59,10 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isRedeemSafe(VaultWithAmount[] memory vaultsWithAmount)
-        external
-        view
-        override
-        returns (string memory err)
-    {
+    function isRedeemSafe(Order memory order) external view override returns (string memory err) {
         uint256 length = 0;
         for (uint256 i = 0; i < length; i++) {
-            err = ISafetyCheck(_checks.at(i)).isRedeemSafe(vaultsWithAmount);
+            err = ISafetyCheck(_checks.at(i)).isRedeemSafe(order);
             if (bytes(err).length > 0) {
                 break;
             }
@@ -84,14 +70,14 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistRedeem(VaultWithAmount[] memory vaultsWithAmount)
+    function checkAndPersistRedeem(Order memory order)
         external
         override
         returns (string memory err)
     {
         uint256 length = 0;
         for (uint256 i = 0; i < length; i++) {
-            err = ISafetyCheck(_checks.at(i)).checkAndPersistRedeem(vaultsWithAmount);
+            err = ISafetyCheck(_checks.at(i)).checkAndPersistRedeem(order);
             if (bytes(err).length > 0) {
                 break;
             }
