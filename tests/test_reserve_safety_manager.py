@@ -374,11 +374,29 @@ def test_update_vault_with_price_safety_tiny_prices(
     prices_large_enough = vault_metadata_sol[7]
     assert prices_large_enough == False
 
-
-
-
-def test_update_metadata_with_price_safety():
-    pass
+@given(
+    bundle_metadata=st.lists(
+        st.tuples(
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            price_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+        )
+    )
+)
+def test_update_metadata_with_price_safety(bundle_metadata):
+    if not bundle_metadata:
+        return
+    metadata = bundle_to_metadata(bundle_metadata)
+    print(metadata)
 
 
 def test_safe_to_execute_outside_epsilon():
