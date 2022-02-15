@@ -2,6 +2,7 @@ from typing import Dict, Iterable, List, Tuple
 
 from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
+from tests.support.utils import scale
 
 STABLECOIN_IDEAL_PRICE = "1e18"
 
@@ -56,19 +57,24 @@ def update_metadata_with_epsilon_status(metadata):
     metadata_new = list(metadata)
     metadata_new[1] = True
 
-    for i in metadata_new[0]:
-        as_list = list(i)
-        scaled_epsilon = D(i[1]) * constants.MAX_ALLOWED_VAULT_DEVIATION / D("10000")
-        if abs(i[1] - i[3]) <= scaled_epsilon:
+    vaults_metadata = []
+    for vault_metadata in metadata_new[0]:
+        vault_metadata_new = list(vault_metadata)
+        scaled_epsilon = (
+            D(vault_metadata[1]) * constants.MAX_ALLOWED_VAULT_DEVIATION / scale("1")
+        )
+        if abs(vault_metadata[1] - vault_metadata[3]) <= scaled_epsilon:
             within_epsilon = True
         else:
             within_epsilon = False
+            metadata_new[1] = False
 
-        as_list[8] = within_epsilon
+        vault_metadata_new[8] = within_epsilon
+        vaults_metadata.append(tuple(vault_metadata_new))
 
-        i = as_list[8]
+    metadata_new[0] = vaults_metadata
 
-    return metadata_new
+    return tuple(metadata_new)
 
 
 def update_vault_with_price_safety(vault_metadata):

@@ -1,15 +1,14 @@
 from asyncio import constants
-from typing import Iterable, List, Tuple
 
 import hypothesis.strategies as st
-import pytest
 from brownie.test import given
-from numpy import exp
 
 from tests.reserve.reserve_math_implementation import (
-    calculate_ideal_weights, calculate_weights_and_total,
-    update_metadata_with_epsilon_status, update_vault_with_price_safety,
-    vault_weight_off_peg_falls)
+    calculate_ideal_weights,
+    calculate_weights_and_total,
+    update_metadata_with_epsilon_status,
+    vault_weight_off_peg_falls,
+)
 from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
@@ -181,9 +180,7 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
         return
     metadata = bundle_to_metadata(bundle_metadata)
 
-    result_sol = reserve_safety_manager.vaultWeightWithOffPegWeightFalls(
-        metadata
-    )
+    result_sol = reserve_safety_manager.vaultWeightWithOffPegFalls(metadata)
     result_exp = vault_weight_off_peg_falls(metadata)
 
     assert result_sol == result_exp
@@ -244,15 +241,24 @@ def test_update_metadata_with_epsilon_status(reserve_safety_manager, bundle_meta
     )
 )
 def test_update_vault_with_price_safety(
-    reserve_safety_manager, bundle_vault_metadata, mock_price_oracle, mock_balancer_vault, dai, usdc, asset_registry, admin
+    reserve_safety_manager,
+    bundle_vault_metadata,
+    mock_price_oracle,
+    mock_balancer_vault,
+    dai,
+    usdc,
+    asset_registry,
+    admin,
 ):
     asset_registry.setAssetAddress("DAI", dai)
-    asset_registry.addStableAsset(dai, {'from': admin})
+    asset_registry.addStableAsset(dai, {"from": admin})
 
     asset_registry.setAssetAddress("USDC", usdc)
-    asset_registry.addStableAsset(usdc, {'from': admin})
+    asset_registry.addStableAsset(usdc, {"from": admin})
 
-    mock_balancer_vault.setPoolTokens(constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")])
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
+    )
 
     vault_metadata = vault_metadata_builder(
         bundle_vault_metadata[0],
@@ -298,6 +304,7 @@ def test_update_vault_with_price_safety(
     status_of_all_stablecoins = vault_metadata_sol[6]
     assert status_of_all_stablecoins == False
 
+
 @given(
     bundle_vault_metadata=st.tuples(
         weight_generator,
@@ -311,12 +318,21 @@ def test_update_vault_with_price_safety(
     )
 )
 def test_update_vault_with_price_safety_tiny_prices(
-    reserve_safety_manager, bundle_vault_metadata, mock_price_oracle, mock_balancer_vault, abc, sdt, asset_registry, admin
+    reserve_safety_manager,
+    bundle_vault_metadata,
+    mock_price_oracle,
+    mock_balancer_vault,
+    abc,
+    sdt,
+    asset_registry,
+    admin,
 ):
     asset_registry.setAssetAddress("ABC", abc)
     asset_registry.setAssetAddress("SDT", sdt)
 
-    mock_balancer_vault.setPoolTokens(constants.BALANCER_POOL_ID, [sdt, abc], [D("2e20"), D("2e20")])
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [sdt, abc], [D("2e20"), D("2e20")]
+    )
 
     vault_metadata = vault_metadata_builder(
         bundle_vault_metadata[0],
@@ -373,6 +389,7 @@ def test_update_vault_with_price_safety_tiny_prices(
 
     prices_large_enough = vault_metadata_sol[7]
     assert prices_large_enough == False
+
 
 @given(
     bundle_metadata=st.lists(

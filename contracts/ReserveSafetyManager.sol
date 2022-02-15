@@ -16,7 +16,7 @@ import "../interfaces/ISafetyCheck.sol";
 contract ReserveSafetyManager is ISafetyCheck, Governable {
     using FixedPoint for uint256;
 
-    uint256 public maxallowedVaultDeviation; // Should be in basis points, e.g. 5% would be 500 bps
+    uint256 public maxAllowedVaultDeviation;
     uint256 public stablecoinMaxDeviation;
     uint256 public minTokenPrice;
 
@@ -55,7 +55,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         IUSDPriceOracle _priceOracle,
         IAssetRegistry _assetRegistry
     ) {
-        maxallowedVaultDeviation = _maxAllowedVaultDeviation;
+        maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;
         balancerVault = _balancerVault;
@@ -64,7 +64,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     }
 
     function setVaultMaxDeviation(uint256 _maxAllowedVaultDeviation) external governanceOnly {
-        maxallowedVaultDeviation = _maxAllowedVaultDeviation;
+        maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
     }
 
     function setMinTokenPrice(uint256 _minTokenPrice) external governanceOnly {
@@ -133,7 +133,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return idealWeights;
     }
 
-    /// @notice checks for all vaults whether if a particular vault containts a stablecoin that is off its peg,
+    /// @notice checks for all vaults whether if a particular vault contains a stablecoin that is off its peg,
     /// whether the proposed change to the vault weight is equal to or smaller than the ideal weight, i.e., whether
     /// the operation would be reducing the weight of the vault with the failed asset (as desired).
     /// @param metaData an metadata struct containing all the vault information. Must be fully updated with the price
@@ -171,11 +171,10 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             currentAmounts[i] = order.vaultsWithAmount[i].vaultInfo.reserveBalance;
             deltaAmounts[i] = order.vaultsWithAmount[i].amount;
 
+            metaData.mint = order.mint;
             if (order.mint) {
-                metaData.mint = true;
                 resultingAmounts[i] = currentAmounts[i] + deltaAmounts[i];
             } else {
-                metaData.mint = false;
                 resultingAmounts[i] = currentAmounts[i] - deltaAmounts[i];
             }
 
@@ -221,18 +220,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// @notice given input metadata, updates it with the information about whether the vault would remain within
     /// an acceptable band (+/- epsilon) around the ideal weight for the vault.
     /// @param metaData a metadata struct containing all the vault information.
-    /// @return metaData a metadata struct containing all the vault information, including the epsilon information.
-    function _updateMetaDataWithEpsilonStatus(MetaData memory _metaData)
-        internal
-        view
-        returns (MetaData memory metaData)
-    {
-        metaData = _metaData;
+    function _updateMetaDataWithEpsilonStatus(MetaData memory metaData) internal view {
         metaData.allVaultsWithinEpsilon = true;
 
         for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
             VaultMetadata memory vaultData = metaData.vaultMetadata[i];
-            uint256 scaledEpsilon = (vaultData.idealWeight * maxallowedVaultDeviation) / 10000;
+            uint256 scaledEpsilon = vaultData.idealWeight.mulUp(maxAllowedVaultDeviation);
             bool withinEpsilon = vaultData.idealWeight.absSub(vaultData.resultingWeight) <=
                 scaledEpsilon;
 
@@ -248,20 +241,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// with safe prices. For a stablecoin, safe means the asset is sufficiently close to the peg. For a
     /// vault consisting of entirely non-stablecoin assets, this means that all of the prices are not 'dust',
     /// to avoid numerical error.
-    /// @param _vaultData a VaultMetadata struct containing information for a particular vault.
-    /// @return vaultData a VaultMetadata struct containing information about whether the vault is price safe.
-    function _updateVaultWithPriceSafety(VaultMetadata memory _vaultData)
-        internal
-        view
-        returns (VaultMetadata memory vaultData)
-    {
-        vaultData = _vaultData;
-
+    /// @param vaultData a VaultMetadata struct containing information for a particular vault.
+    function _updateVaultWithPriceSafety(VaultMetadata memory vaultData) internal view {
         (IERC20[] memory tokens, , ) = balancerVault.getPoolTokens(vaultData.underlyingPoolId);
 
         vaultData.allStablecoinsOnPeg = true;
-        vaultData.allTokenPricesLargeEnough = true;
-        uint256 numberOfTinyTokenPrices;
+        vaultData.allTokenPricesLargeEnough = false;
         for (uint256 i = 0; i < tokens.length; i++) {
             address tokenAddress = address(tokens[i]);
             uint256 tokenPrice = priceOracle.getPriceUSD(tokenAddress);
@@ -270,38 +255,25 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
                 if (tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
                     vaultData.allStablecoinsOnPeg = false;
                 }
+            } else if (tokenPrice >= minTokenPrice) {
+                vaultData.allTokenPricesLargeEnough = true;
             }
-
-            if (tokenPrice < minTokenPrice) {
-                numberOfTinyTokenPrices = numberOfTinyTokenPrices + 1;
-            }
-        }
-
-        if (numberOfTinyTokenPrices == tokens.length) {
-            vaultData.allTokenPricesLargeEnough = false;
         }
     }
 
     /// @notice given input metadata, updates it with the information about whether all vaults contains assets with
     /// safe prices as determined by the _updateVaultWithPriceSafety function.
     /// @param metaData a metadata struct containing all the vault information.
-    /// @return metaData a metadata struct containing all the vault information, including the price safety information.
-    function _updateMetadataWithPriceSafety(MetaData memory _metaData)
-        internal
-        view
-        returns (MetaData memory metaData)
-    {
-        metaData = _metaData;
+    function _updateMetadataWithPriceSafety(MetaData memory metaData) internal view {
         metaData.allStablecoinsAllVaultsOnPeg = true;
         metaData.allVaultsUsingLargeEnoughPrices = true;
         for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
-            VaultMetadata memory newVaultData = _updateVaultWithPriceSafety(
-                metaData.vaultMetadata[i]
-            );
-            if (!newVaultData.allStablecoinsOnPeg) {
+            VaultMetadata memory vaultData = metaData.vaultMetadata[i];
+            _updateVaultWithPriceSafety(vaultData);
+            if (!vaultData.allStablecoinsOnPeg) {
                 metaData.allStablecoinsAllVaultsOnPeg = false;
             }
-            if (!newVaultData.allTokenPricesLargeEnough) {
+            if (!vaultData.allTokenPricesLargeEnough) {
                 metaData.allVaultsUsingLargeEnoughPrices = false;
             }
         }
@@ -321,33 +293,29 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// @return bool equal to true if for any pool that is outside of epsilon, the weight after the mint/redeem will
     /// be closer to the ideal weight than the current weight is, i.e., the operation rebalances.
     function _safeToExecuteOutsideEpsilon(MetaData memory metaData) internal pure returns (bool) {
-        //Check that amount above maxallowedVaultDeviation is decreasing
+        //Check that amount above maxAllowedVaultDeviation is decreasing
         //Check that unhealthy pools have input weight below ideal weight
         //If both true, then mint
         //note: should always be able to mint at the ideal weights!
 
+        if (metaData.mint && !_vaultWeightWithOffPegFalls(metaData)) {
+            return false;
+        }
+
         for (uint256 i; i < metaData.vaultMetadata.length; i++) {
             VaultMetadata memory vaultData = metaData.vaultMetadata[i];
 
-            if (metaData.mint) {
-                if (!vaultData.allStablecoinsOnPeg) {
-                    if (vaultData.deltaWeight > vaultData.idealWeight) {
-                        return false;
-                    }
-                }
+            if (vaultData.vaultWithinEpsilon) {
+                continue;
             }
 
-            if (!vaultData.vaultWithinEpsilon) {
-                uint256 distanceResultingToIdeal = vaultData.resultingWeight.absSub(
-                    vaultData.idealWeight
-                );
-                uint256 distanceCurrentToIdeal = vaultData.currentWeight.absSub(
-                    vaultData.idealWeight
-                );
+            uint256 distanceResultingToIdeal = vaultData.resultingWeight.absSub(
+                vaultData.idealWeight
+            );
+            uint256 distanceCurrentToIdeal = vaultData.currentWeight.absSub(vaultData.idealWeight);
 
-                if (distanceResultingToIdeal >= distanceCurrentToIdeal) {
-                    return false;
-                }
+            if (distanceResultingToIdeal >= distanceCurrentToIdeal) {
+                return false;
             }
         }
 
@@ -357,23 +325,23 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// @inheritdoc ISafetyCheck
     function isMintSafe(Order memory order) public view returns (string memory) {
         MetaData memory metaData = _buildMetaData(order);
-        MetaData memory metaDataWithPriceInfo = _updateMetadataWithPriceSafety(metaData);
-        MetaData memory metaDataFull = _updateMetaDataWithEpsilonStatus(metaDataWithPriceInfo);
+        _updateMetadataWithPriceSafety(metaData);
+        _updateMetaDataWithEpsilonStatus(metaData);
 
-        if (!metaDataFull.allVaultsUsingLargeEnoughPrices) {
+        if (!metaData.allVaultsUsingLargeEnoughPrices) {
             return Errors.TOKEN_PRICES_TOO_SMALL;
         }
 
-        if (metaDataFull.allStablecoinsAllVaultsOnPeg) {
-            if (metaDataFull.allVaultsWithinEpsilon) {
+        if (metaData.allStablecoinsAllVaultsOnPeg) {
+            if (metaData.allVaultsWithinEpsilon) {
                 return "";
             }
         } else {
-            if (metaDataFull.allVaultsWithinEpsilon) {
-                if (_vaultWeightWithOffPegFalls(metaDataFull)) {
+            if (metaData.allVaultsWithinEpsilon) {
+                if (_vaultWeightWithOffPegFalls(metaData)) {
                     return "";
                 }
-            } else if (_safeToExecuteOutsideEpsilon(metaDataFull)) {
+            } else if (_safeToExecuteOutsideEpsilon(metaData)) {
                 return "";
             }
         }
@@ -383,15 +351,16 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// @inheritdoc ISafetyCheck
     function isRedeemSafe(Order memory order) public view returns (string memory) {
         MetaData memory metaData = _buildMetaData(order);
-        MetaData memory metaDataFull = _updateMetaDataWithEpsilonStatus(metaData);
+        _updateMetadataWithPriceSafety(metaData);
+        _updateMetaDataWithEpsilonStatus(metaData);
 
-        if (!metaDataFull.allVaultsUsingLargeEnoughPrices) {
+        if (!metaData.allVaultsUsingLargeEnoughPrices) {
             return Errors.TOKEN_PRICES_TOO_SMALL;
         }
 
-        if (metaDataFull.allVaultsWithinEpsilon) {
+        if (metaData.allVaultsWithinEpsilon) {
             return "";
-        } else if (_safeToExecuteOutsideEpsilon(metaDataFull)) {
+        } else if (_safeToExecuteOutsideEpsilon(metaData)) {
             return "";
         } else {
             return Errors.NOT_SAFE_TO_REDEEM;

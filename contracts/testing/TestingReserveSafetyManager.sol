@@ -47,7 +47,8 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         view
         returns (MetaData memory)
     {
-        return _updateMetaDataWithEpsilonStatus(metaData);
+        _updateMetaDataWithEpsilonStatus(metaData);
+        return metaData;
     }
 
     function updateVaultWithPriceSafety(VaultMetadata memory vaultData)
@@ -55,7 +56,8 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         view
         returns (VaultMetadata memory)
     {
-        return _updateVaultWithPriceSafety(vaultData);
+        _updateVaultWithPriceSafety(vaultData);
+        return vaultData;
     }
 
     function updateMetadataWithPriceSafety(MetaData memory metaData)
@@ -63,7 +65,8 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         view
         returns (MetaData memory)
     {
-        return _updateMetadataWithPriceSafety(metaData);
+        _updateMetadataWithPriceSafety(metaData);
+        return metaData;
     }
 
     function vaultWeightWithOffPegFalls(MetaData memory metaData) external pure returns (bool) {
