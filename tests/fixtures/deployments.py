@@ -3,11 +3,8 @@ from unittest.mock import Mock
 
 import pytest
 from brownie import accounts
-from tests.fixtures.mainnet_contracts import (
-    ChainlinkFeeds,
-    TokenAddresses,
-    UniswapPools,
-)
+from tests.fixtures.mainnet_contracts import (ChainlinkFeeds, TokenAddresses,
+                                              UniswapPools)
 from tests.support import constants
 from tests.support.utils import scale
 
@@ -92,6 +89,19 @@ def dai(Token):
         token.transfer(accounts[i], 100, {"from": accounts[0]})
     yield token
 
+@pytest.fixture(scope="module")
+def sdt(Token):
+    token = Token.deploy("SDT Token", "SDT", 18, 1e20, {"from": accounts[0]})
+    for i in range(1, 10):
+        token.transfer(accounts[i], 100, {"from": accounts[0]})
+    yield token
+
+@pytest.fixture(scope="module")
+def abc(Token):
+    token = Token.deploy("ABC Token", "ABC", 18, 1e20, {"from": accounts[0]})
+    for i in range(1, 10):
+        token.transfer(accounts[i], 100, {"from": accounts[0]})
+    yield token
 
 @pytest.fixture(scope="module")
 def usdc(Token):

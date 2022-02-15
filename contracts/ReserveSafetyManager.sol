@@ -267,7 +267,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             uint256 tokenPrice = priceOracle.getPriceUSD(tokenAddress);
 
             if (assetRegistry.isAssetStable(tokenAddress)) {
-                if (tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) <= stablecoinMaxDeviation) {
+                if (tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
                     vaultData.allStablecoinsOnPeg = false;
                 }
             }
