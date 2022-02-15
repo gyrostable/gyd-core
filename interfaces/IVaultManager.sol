@@ -14,7 +14,7 @@ interface IVaultManager {
 
     /// @notice Returns a list of vaults with requested metadata
     function listVaults(
-        bool includeIdealWeight,
+        bool includeMetadata,
         bool includePrice,
         bool includeCurrentWeight
     ) external view returns (DataTypes.VaultInfo[] memory);

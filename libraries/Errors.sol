@@ -32,4 +32,11 @@ library Errors {
     string public constant STALE_PRICE = "41";
     string public constant NEGATIVE_PRICE = "42";
     string public constant INVALID_MESSAGE = "43";
+
+    //Vault safety check related errors
+    string public constant A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG = "51";
+    string public constant NOT_SAFE_TO_MINT = "52";
+    string public constant NOT_SAFE_TO_REDEEM = "53";
+    string public constant AMOUNT_AND_PRICE_LENGTH_DIFFER = "54";
+    string public constant TOKEN_PRICES_TOO_SMALL = "55";
 }

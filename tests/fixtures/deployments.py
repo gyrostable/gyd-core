@@ -1,12 +1,10 @@
 from collections import namedtuple
+from unittest.mock import Mock
 
 import pytest
 from brownie import accounts
-from tests.fixtures.mainnet_contracts import (
-    ChainlinkFeeds,
-    TokenAddresses,
-    UniswapPools,
-)
+from tests.fixtures.mainnet_contracts import (ChainlinkFeeds, TokenAddresses,
+                                              UniswapPools)
 from tests.support import constants
 from tests.support.utils import scale
 
@@ -50,6 +48,21 @@ def mock_vault_router(admin, MockVaultRouter):
 
 
 @pytest.fixture(scope="module")
+def mock_balancer_pool(admin, MockBalancerPool):
+    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID)
+
+
+@pytest.fixture(scope="module")
+def mock_balancer_pool_two(admin, MockBalancerPool):
+    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID_2)
+
+
+@pytest.fixture(scope="module")
+def mock_balancer_vault(admin, MockBalVault):
+    return admin.deploy(MockBalVault)
+
+
+@pytest.fixture(scope="module")
 def mock_lp_token_exchanger(admin, MockLPTokenExchanger):
     return admin.deploy(MockLPTokenExchanger)
 
@@ -61,7 +74,6 @@ def bal_exchanger(admin, BalancerExchanger):
 
 @pytest.fixture(scope="module")
 def bal_pool_registry(admin, BalancerPoolRegistry):
-    print("bal pool registry")
     return admin.deploy(BalancerPoolRegistry)
 
 
@@ -77,6 +89,19 @@ def dai(Token):
         token.transfer(accounts[i], 100, {"from": accounts[0]})
     yield token
 
+@pytest.fixture(scope="module")
+def sdt(Token):
+    token = Token.deploy("SDT Token", "SDT", 18, 1e20, {"from": accounts[0]})
+    for i in range(1, 10):
+        token.transfer(accounts[i], 100, {"from": accounts[0]})
+    yield token
+
+@pytest.fixture(scope="module")
+def abc(Token):
+    token = Token.deploy("ABC Token", "ABC", 18, 1e20, {"from": accounts[0]})
+    for i in range(1, 10):
+        token.transfer(accounts[i], 100, {"from": accounts[0]})
+    yield token
 
 @pytest.fixture(scope="module")
 def usdc(Token):
@@ -213,4 +238,37 @@ def pamm(TestingPAMMV1):
     return TestingPAMMV1.deploy(
         (constants.ALPHA_MIN_REL, constants.XU_MAX_REL, constants.THETA_FLOOR),
         {"from": accounts[0]},
+    )
+
+
+@pytest.fixture(scope="module")
+def reserve_safety_manager(
+    admin,
+    TestingReserveSafetyManager,
+    mock_balancer_vault,
+    mock_price_oracle,
+    asset_registry,
+):
+    return admin.deploy(
+        TestingReserveSafetyManager,
+        constants.MAX_ALLOWED_VAULT_DEVIATION,
+        constants.STABLECOIN_MAX_DEVIATION,
+        constants.MIN_TOKEN_PRICE,
+        mock_balancer_vault,
+        mock_price_oracle,
+        asset_registry,
+    )
+
+
+@pytest.fixture(scope="module")
+def set_data_for_mock_bal_vault(
+    mock_balancer_vault, mock_balancer_pool, mock_balancer_pool_two, dai, usdc
+):
+    mock_balancer_vault.setCash(100000000000000000000000000)
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [dai, usdc], [2e20, 2e20]
+    )
+    mock_balancer_vault.storePoolAddress(constants.BALANCER_POOL_ID, mock_balancer_pool)
+    mock_balancer_vault.storePoolAddress(
+        constants.BALANCER_POOL_ID_2, mock_balancer_pool_two
     )

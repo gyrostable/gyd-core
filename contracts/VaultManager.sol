@@ -28,20 +28,14 @@ contract VaultManager is IVaultManager, Governable {
         return listVaults(false, false, false);
     }
 
-    /// @inheritdoc IVaultManager
     function listVaults(
-        bool includeIdealWeight,
+        bool includeMetadata,
         bool includePrice,
         bool includeCurrentWeight
     ) public view returns (DataTypes.VaultInfo[] memory) {
         require(!includeCurrentWeight || includePrice, Errors.INVALID_ARGUMENT);
 
         address[] memory vaultAddresses = vaultRegistry.listVaults();
-
-        uint256[] memory weights;
-        if (includeIdealWeight) {
-            weights = vaultWeightManager.getVaultWeights(vaultAddresses);
-        }
 
         uint256[] memory prices = new uint256[](vaultAddresses.length);
         if (includePrice) {
@@ -54,8 +48,12 @@ contract VaultManager is IVaultManager, Governable {
         DataTypes.VaultInfo[] memory result = new DataTypes.VaultInfo[](length);
 
         for (uint256 i = 0; i < length; i++) {
-            uint256 idealWeight = includeIdealWeight ? weights[i] : 0;
             uint256 price = includePrice ? prices[i] : 0;
+
+            DataTypes.PersistedVaultMetadata memory persistedMetadata;
+            if (includeMetadata) {
+                persistedMetadata = vaultRegistry.getVaultMetadata(vaultAddresses[i]);
+            }
 
             uint256 reserveBalance = includeCurrentWeight
                 ? IERC20(vaultAddresses[i]).balanceOf(reserveAddress)
@@ -63,13 +61,10 @@ contract VaultManager is IVaultManager, Governable {
 
             result[i] = DataTypes.VaultInfo({
                 vault: vaultAddresses[i],
-                idealWeight: idealWeight,
+                persistedMetadata: persistedMetadata,
                 reserveBalance: reserveBalance,
                 price: price,
-                currentWeight: 0,
-                requestedWeight: 0,
-                operatingNormally: false,
-                withinEpsilon: false
+                currentWeight: 0
             });
         }
 
@@ -82,7 +77,9 @@ contract VaultManager is IVaultManager, Governable {
                 reserveUSDValue += usdValue;
             }
             for (uint256 i = 0; i < length; i++) {
-                result[i].currentWeight = usdValues[i].divDown(reserveUSDValue);
+                result[i].currentWeight = reserveUSDValue == 0
+                    ? 0
+                    : usdValues[i].divDown(reserveUSDValue);
             }
         }
 
