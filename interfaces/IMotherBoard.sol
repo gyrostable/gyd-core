@@ -25,18 +25,6 @@ interface IMotherBoard {
     /// @return the address of the reserve
     function reserve() external view returns (IReserve);
 
-    /// @notice Returns the address for the fee bank
-    /// @return the address of the fee bank
-    function feeBank() external view returns (IFeeBank);
-
-    /// @notice Returns the address for the asset pricer
-    /// @return the address of the asset pricer
-    function assetPricer() external view returns (IAssetPricer);
-
-    /// @notice Returns the address of the exchanger registry
-    /// @return the exchanger registry address
-    function exchangerRegistry() external view returns (ILPTokenExchangerRegistry);
-
     /// @notice Returns the address of the global configuration
     /// @return the global configuration address
     function gyroConfig() external view returns (IGyroConfig);

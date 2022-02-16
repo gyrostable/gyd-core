@@ -8,6 +8,9 @@ import "../interfaces/ISafetyCheck.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IVaultRegistry.sol";
 import "../interfaces/IVaultManager.sol";
+import "../interfaces/IFeeBank.sol";
+import "../interfaces/ILPTokenExchangerRegistry.sol";
+import "../interfaces/IAssetPricer.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
 library ConfigHelpers {
@@ -25,5 +28,22 @@ library ConfigHelpers {
 
     function getVaultManager(IGyroConfig gyroConfig) internal view returns (IVaultManager) {
         return IVaultManager(gyroConfig.getAddress(ConfigKeys.VAULT_MANAGER_ADDRESS));
+    }
+
+    function getFeeBank(IGyroConfig gyroConfig) internal view returns (IFeeBank) {
+        return IFeeBank(gyroConfig.getAddress(ConfigKeys.FEE_BANK_ADDRESS));
+    }
+
+    function getExchangerRegistry(IGyroConfig gyroConfig)
+        internal
+        view
+        returns (ILPTokenExchangerRegistry)
+    {
+        return
+            ILPTokenExchangerRegistry(gyroConfig.getAddress(ConfigKeys.EXCHANGER_REGISTRY_ADDRESS));
+    }
+
+    function getAssetPricer(IGyroConfig gyroConfig) internal view returns (IAssetPricer) {
+        return IAssetPricer(gyroConfig.getAddress(ConfigKeys.ASSET_PRICER_ADDRESS));
     }
 }
