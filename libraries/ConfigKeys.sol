@@ -16,5 +16,5 @@ library ConfigKeys {
     bytes32 internal constant VAULT_MANAGER_ADDRESS = "VAULT_MANAGER_ADDRESS";
 
     // Fees
-    bytes32 public constant MINT_FEE = "MINT_FEE";
+    bytes32 internal constant MINT_FEE = "MINT_FEE";
 }

@@ -179,7 +179,7 @@ contract Motherboard is IMotherBoard, Governable {
             return (asset.inputAmount, "");
         } else {
             IGyroVault vault = IGyroVault(asset.destinationVault);
-            address lpTokenAddress = vault.lpToken();
+            address lpTokenAddress = vault.underlying();
             uint256 lpTokenAmount;
             if (asset.inputToken == lpTokenAddress) {
                 lpTokenAmount = asset.inputAmount;
@@ -193,7 +193,7 @@ contract Motherboard is IMotherBoard, Governable {
                 }
             }
 
-            return vault.dryDepositFor(address(reserve), lpTokenAmount);
+            return vault.dryDeposit(lpTokenAmount, 0);
         }
     }
 
@@ -229,7 +229,7 @@ contract Motherboard is IMotherBoard, Governable {
         }
 
         uint256 lpTokenAmount;
-        address lpTokenAddress = vault.lpToken();
+        address lpTokenAddress = vault.underlying();
         if (asset.inputToken == lpTokenAddress) {
             lpTokenAmount = asset.inputAmount;
         } else {
@@ -239,7 +239,7 @@ contract Motherboard is IMotherBoard, Governable {
             );
         }
 
-        return vault.deposit(lpTokenAmount);
+        return vault.deposit(lpTokenAmount, 0);
     }
 
     function _getVaultInfo(address vaultAddress, DataTypes.VaultInfo[] memory vaultInfo)
@@ -347,9 +347,9 @@ contract Motherboard is IMotherBoard, Governable {
             return vaultTokenAmount;
         } else {
             // convert the vault token into its underlying LP token
-            uint256 lpTokenAmount = vault.withdraw(vaultTokenAmount);
+            uint256 lpTokenAmount = vault.withdraw(vaultTokenAmount, 0);
 
-            address lpTokenAddress = vault.lpToken();
+            address lpTokenAddress = vault.underlying();
             // nothing more to do if the user wants the underlying LP token
             if (asset.outputToken == lpTokenAddress) {
                 return lpTokenAmount;
@@ -401,12 +401,12 @@ contract Motherboard is IMotherBoard, Governable {
         } else {
             // convert the vault token into its underlying LP token
             uint256 lpTokenAmount;
-            (lpTokenAmount, err) = vault.dryWithdraw(vaultTokenAmount);
+            (lpTokenAmount, err) = vault.dryWithdraw(vaultTokenAmount, 0);
             if (bytes(err).length > 0) {
                 return (0, err);
             }
 
-            address lpTokenAddress = vault.lpToken();
+            address lpTokenAddress = vault.underlying();
             // nothing more to do if the user wants the underlying LP token
             if (asset.outputToken == lpTokenAddress) {
                 return (lpTokenAmount, "");

@@ -9,29 +9,33 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 /// deposited in the vault
 /// A vault can be associated with a strategy to generate yield on the deposited funds
 interface IGyroVault is IERC20 {
-    /// @return The LP token associated with this vault
-    function lpToken() external view returns (address);
+    /// @return The token associated with this vault
+    function underlying() external view returns (address);
 
-    /// @notice Deposits `lpTokenAmount` of LP token supported
+    /// @return The total amount of underlying tokens in the vault
+    function totalUnderlying() external view returns (uint256);
+
+    /// @return The exchange rate between an underlying tokens and the token of this vault
+    function exchangeRate() external view returns (uint256);
+
+    /// @notice Deposits `underlyingAmount` of LP token supported
     /// and sends back the received vault tokens
-    /// @param lpTokenAmount the amount of LP token to deposit
+    /// @param underlyingAmount the amount of underlying to deposit
     /// @return vaultTokenAmount the amount of vault token sent back
-    function deposit(uint256 lpTokenAmount) external returns (uint256 vaultTokenAmount);
-
-    /// @notice Simlar to `deposit(uint256 lpTokenAmount)` but credits the tokens
-    /// to `beneficiary` instead of `msg.sender`
-    function depositFor(address beneficiary, uint256 lpTokenAmount)
+    function deposit(uint256 underlyingAmount, uint256 minVaultTokensOut)
         external
         returns (uint256 vaultTokenAmount);
 
-    /// @notice Dry-run version of deposit
-    function dryDeposit(uint256 lpTokenAmount)
-        external
-        view
-        returns (uint256 vaultTokenAmount, string memory error);
+    /// @notice Simlar to `deposit(uint256 underlyingAmount)` but credits the tokens
+    /// to `beneficiary` instead of `msg.sender`
+    function depositFor(
+        address beneficiary,
+        uint256 underlyingAmount,
+        uint256 minVaultTokensOut
+    ) external returns (uint256 vaultTokenAmount);
 
-    /// @notice Dry-run version of depositFor
-    function dryDepositFor(address beneficiary, uint256 lpTokenAmount)
+    /// @notice Dry-run version of deposit
+    function dryDeposit(uint256 underlyingAmount, uint256 minVaultTokensOut)
         external
         view
         returns (uint256 vaultTokenAmount, string memory error);
@@ -39,14 +43,16 @@ interface IGyroVault is IERC20 {
     /// @notice Withdraws `vaultTokenAmount` of LP token supported
     /// and burns the vault tokens
     /// @param vaultTokenAmount the amount of vault token to withdraw
-    /// @return lpTokenAmount the amount of LP token sent back
-    function withdraw(uint256 vaultTokenAmount) external returns (uint256 lpTokenAmount);
+    /// @return underlyingAmount the amount of LP token sent back
+    function withdraw(uint256 vaultTokenAmount, uint256 minUnderlyingOut)
+        external
+        returns (uint256 underlyingAmount);
 
     /// @notice Dry-run version of `withdraw`
-    function dryWithdraw(uint256 vaultTokenAmount)
+    function dryWithdraw(uint256 vaultTokenAmount, uint256 minUnderlyingOut)
         external
         view
-        returns (uint256 lpTokenAmount, string memory error);
+        returns (uint256 underlyingAmount, string memory error);
 
     /// @return The address of the current strategy used by the vault
     function strategy() external view returns (address);

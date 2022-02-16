@@ -22,11 +22,6 @@ contract Reserve is IReserve, Governable {
         _;
     }
 
-    constructor(address reserveManager) Governable() {
-        _managers.add(reserveManager);
-        emit ManagerAdded(reserveManager);
-    }
-
     /// @inheritdoc IReserve
     function addManager(address manager) external override governanceOnly {
         require(_managers.add(manager), Errors.INVALID_ARGUMENT);
