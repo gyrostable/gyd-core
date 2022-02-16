@@ -9,8 +9,10 @@ import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IVaultRegistry.sol";
 import "../interfaces/IVaultManager.sol";
 import "../interfaces/IFeeBank.sol";
+import "../interfaces/IReserve.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
 import "../interfaces/IAssetPricer.sol";
+import "../interfaces/IGYDToken.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
 library ConfigHelpers {
@@ -32,6 +34,14 @@ library ConfigHelpers {
 
     function getFeeBank(IGyroConfig gyroConfig) internal view returns (IFeeBank) {
         return IFeeBank(gyroConfig.getAddress(ConfigKeys.FEE_BANK_ADDRESS));
+    }
+
+    function getReserve(IGyroConfig gyroConfig) internal view returns (IReserve) {
+        return IReserve(gyroConfig.getAddress(ConfigKeys.RESERVE_ADDRESS));
+    }
+
+    function getGYDToken(IGyroConfig gyroConfig) internal view returns (IGYDToken) {
+        return IGYDToken(gyroConfig.getAddress(ConfigKeys.GYD_TOKEN_ADDRESS));
     }
 
     function getExchangerRegistry(IGyroConfig gyroConfig)
