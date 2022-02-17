@@ -5,16 +5,21 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "../libraries/LogExpMath.sol";
 import "../libraries/FixedPoint.sol";
+import "../libraries/FlowSafety.sol";
 import "../interfaces/IPAMM.sol";
+import "./auth/Governable.sol";
 
 /// @notice Implements the primary AMM pricing mechanism
-contract PrimaryAMMV1 is IPAMM, Ownable {
+contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
     using LogExpMath for uint256;
     using FixedPoint for uint256;
 
     uint256 constant ONE = 1e18;
     uint256 constant TWO = 2e18;
     uint256 constant ANCHOR = ONE;
+
+    /// @notice this event is emitted when the system parameters are updated
+    event SystemParamsUpdated(uint64 alphaBar, uint64 xuBar, uint64 thetaBar, uint64 outflowMemory);
 
     enum Region {
         CASE_i,
@@ -26,16 +31,23 @@ contract PrimaryAMMV1 is IPAMM, Ownable {
         CASE_III_L
     }
 
+    // NB: potential gas optimization by only storing redemptionLevel
+    // NB: if lastSeenBlock is the same as the current block, then can bypass all of the Oracle
+    // infrastructure, saving on gas costs
+    // NB: don't need many decimals for the outflow paramters, can optimize gas by packing these together
     struct State {
         uint256 redemptionLevel; // x
         uint256 reserveValue; // b
         uint256 totalGyroSupply; // y
+        uint256 lastSeenBlock;
     }
 
+    // NB gas optimization, don't need to use uint64
     struct Params {
         uint64 alphaBar; // ᾱ ∊ [0,1]
         uint64 xuBar; // x̄_U ∊ [0,1]
         uint64 thetaBar; // θ̄ ∊ [0,1]
+        uint64 outflowMemory; // this is [0,1]
     }
 
     struct DerivedParams {
@@ -60,6 +72,17 @@ contract PrimaryAMMV1 is IPAMM, Ownable {
     /// @notice Initializes the PAAM with the given system parameters
     constructor(Params memory params) {
         systemParams = params;
+    }
+
+    /// @inheritdoc IPAMM
+    function setSystemParams(
+        uint64 alphaBar,
+        uint64 xuBar,
+        uint64 thetaBar,
+        uint64 outflowMemory
+    ) external governanceOnly {
+        systemParams = Params(alphaBar, xuBar, thetaBar, outflowMemory);
+        emit SystemParamsUpdated(alphaBar, xuBar, thetaBar, outflowMemory);
     }
 
     /// Helpers to compute various parameters
@@ -443,12 +466,12 @@ contract PrimaryAMMV1 is IPAMM, Ownable {
     }
 
     /// @notice Returns the USD value to mint given an ammount of Gyro dollars
-    function computeMintAmount(uint256 usdAmount) external pure returns (uint256) {
+    function computeMintAmount(uint256 usdAmount, uint256) external pure returns (uint256) {
         return usdAmount;
     }
 
     /// @notice Records and returns the USD value to mint given an ammount of Gyro dollars
-    function mint(uint256 usdAmount) external onlyOwner returns (uint256) {
+    function mint(uint256 usdAmount, uint256) external onlyOwner returns (uint256) {
         State storage state = systemState;
         state.totalGyroSupply += usdAmount;
         state.reserveValue += usdAmount;
@@ -456,23 +479,51 @@ contract PrimaryAMMV1 is IPAMM, Ownable {
     }
 
     /// @notice Computes the USD value to redeem given an ammount of Gyro dollars
-    function computeRedeemAmount(uint256 gydAmount) external view returns (uint256) {
+    function computeRedeemAmount(uint256 gydAmount, uint256 reserveUSDValue)
+        external
+        view
+        returns (uint256)
+    {
         if (gydAmount == 0) return 0;
         Params memory params = systemParams;
         DerivedParams memory derived = createDerivedParams(params);
-        return computeRedeemAmount(systemState, params, derived, gydAmount);
+        State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
+        return computeRedeemAmount(currentState, params, derived, gydAmount);
+    }
+
+    function computeStartingRedeemState(uint256 reserveUSDValue, Params memory params)
+        internal
+        view
+        returns (State memory currentState)
+    {
+        currentState = systemState;
+        currentState.reserveValue = reserveUSDValue;
+        uint256 currentBlock = block.number;
+        currentState.redemptionLevel = FlowSafety.updateFlow(
+            currentState.redemptionLevel,
+            currentBlock,
+            currentState.lastSeenBlock,
+            params.outflowMemory
+        );
+        currentState.lastSeenBlock = currentBlock;
     }
 
     /// @notice Computes and records the USD value to redeem given an ammount of Gyro dollars
-    function redeem(uint256 gydAmount) external onlyOwner returns (uint256) {
+    // NB reserveValue does not need to be stored as part of state - could be passed around
+    function redeem(uint256 gydAmount, uint256 reserveUSDValue)
+        external
+        onlyOwner
+        returns (uint256)
+    {
         if (gydAmount == 0) return 0;
-        State storage state = systemState;
         Params memory params = systemParams;
+        State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
         DerivedParams memory derived = createDerivedParams(params);
-        uint256 redeemAmount = computeRedeemAmount(state, params, derived, gydAmount);
-        state.redemptionLevel += gydAmount;
-        state.totalGyroSupply -= gydAmount;
-        state.reserveValue -= redeemAmount;
+        uint256 redeemAmount = computeRedeemAmount(currentState, params, derived, gydAmount);
+        currentState.redemptionLevel += gydAmount;
+        currentState.totalGyroSupply -= gydAmount;
+        currentState.reserveValue -= redeemAmount;
+        systemState = currentState;
         return redeemAmount;
     }
 }

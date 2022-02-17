@@ -60,10 +60,10 @@ contract Motherboard is IMotherBoard, Governable {
         DataTypes.MonetaryAmount[] memory vaultAmounts = _convertMintInputAssetsToVaultTokens(
             assets
         );
-        DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
-
-        //This order object contains an entry for every vault, even if the delta amount is 0
-        DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
+        (DataTypes.VaultInfo[] memory vaultsInfo, uint256 reserveUSDValue) = gyroConfig
+            .getVaultManager()
+            .listVaults();
+        ISafetyCheck.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
 
         gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
 
@@ -72,12 +72,9 @@ contract Motherboard is IMotherBoard, Governable {
             IERC20(vaultAmount.tokenAddress).safeTransfer(address(reserve), vaultAmount.amount);
         }
 
-        DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
-
-        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(
-            orderAfterFees.vaultsWithAmount
-        );
-        uint256 gyroToMint = pamm().mint(usdValue);
+        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
+        uint256 usdValueIn = gyroConfig.getAssetPricer().getBasketUSDValue(vaultAmounts);
+        uint256 gyroToMint = pamm().mint(usdValueIn, reserveUSDValue);
 
         require(gyroToMint >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
 
@@ -94,9 +91,13 @@ contract Motherboard is IMotherBoard, Governable {
         override
         returns (uint256[] memory)
     {
-        gydToken.burnFrom(msg.sender, gydToRedeem);
-        uint256 usdValueToRedeem = pamm().redeem(gydToRedeem);
-        DataTypes.Order memory order = _createRedeemOrder(usdValueToRedeem, assets);
+        gydToken.burnFor(gydToRedeem, msg.sender);
+        (DataTypes.VaultInfo[] memory vaultsInfo, uint256 reserveUSDValue) = gyroConfig
+            .getVaultManager()
+            .listVaults();
+
+        uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveUSDValue);
+        ISafetyCheck.Order memory order = _createRedeemOrder(usdValueToRedeem, assets, vaultsInfo);
         gyroConfig.getRootSafetyCheck().checkAndPersistRedeem(order);
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         return _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
@@ -115,17 +116,15 @@ contract Motherboard is IMotherBoard, Governable {
             return (0, err);
         }
 
-        DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
-        DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
-
+        (DataTypes.VaultInfo[] memory vaultsInfo, uint256 reserveUSDValue) = gyroConfig
+            .getVaultManager()
+            .listVaults();
+        ISafetyCheck.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
-        DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
-
-        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(
-            orderAfterFees.vaultsWithAmount
-        );
-        mintedGYDAmount = pamm().computeMintAmount(usdValue);
+        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
+        uint256 usdValue = gyroConfig.getAssetPricer().getBasketUSDValue(vaultAmounts);
+        mintedGYDAmount = pamm().computeMintAmount(usdValue, reserveUSDValue);
 
         if (mintedGYDAmount < minReceivedAmount) {
             err = Errors.TOO_MUCH_SLIPPAGE;
@@ -140,9 +139,11 @@ contract Motherboard is IMotherBoard, Governable {
         returns (uint256[] memory outputAmounts, string memory err)
     {
         outputAmounts = new uint256[](assets.length);
-
-        uint256 usdValueToRedeem = pamm().computeRedeemAmount(gydToRedeem);
-        DataTypes.Order memory order = _createRedeemOrder(usdValueToRedeem, assets);
+        (DataTypes.VaultInfo[] memory vaultsInfo, uint256 reserveUSDValue) = gyroConfig
+            .getVaultManager()
+            .listVaults();
+        uint256 usdValueToRedeem = pamm().computeRedeemAmount(gydToRedeem, reserveUSDValue);
+        ISafetyCheck.Order memory order = _createRedeemOrder(usdValueToRedeem, assets, vaultsInfo);
         err = gyroConfig.getRootSafetyCheck().isRedeemSafe(order);
         if (bytes(err).length > 0) {
             return (outputAmounts, err);

@@ -10,7 +10,10 @@ interface IVaultManager {
     event NewPriceOracle(address indexed oldOracle, address indexed newOracle);
 
     /// @notice Returns a list of vaults without including any metadata
-    function listVaults() external view returns (DataTypes.VaultInfo[] memory);
+    function listVaults()
+        external
+        view
+        returns (DataTypes.VaultInfo[] memory, uint256 reserveUSDValue);
 
     /// @notice Returns a list of vaults with requested metadata
     function listVaults(
@@ -18,7 +21,7 @@ interface IVaultManager {
         bool includePrice,
         bool includeCurrentWeight,
         bool includeIdealWeight
-    ) external view returns (DataTypes.VaultInfo[] memory);
+    ) external view returns (DataTypes.VaultInfo[] memory, uint256 reserveUSDValue);
 
     /// @notice Returns the current vault price oracle
     function getPriceOracle() external view returns (IUSDPriceOracle);

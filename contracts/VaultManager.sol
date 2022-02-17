@@ -28,7 +28,11 @@ contract VaultManager is IVaultManager, Governable {
     }
 
     /// @inheritdoc IVaultManager
-    function listVaults() external view returns (DataTypes.VaultInfo[] memory) {
+    function listVaults()
+        external
+        view
+        returns (DataTypes.VaultInfo[] memory, uint256 reserveUSDValue)
+    {
         return listVaults(true, true, true, true);
     }
 
@@ -37,7 +41,7 @@ contract VaultManager is IVaultManager, Governable {
         bool includePrice,
         bool includeCurrentWeight,
         bool includeIdealWeight
-    ) public view returns (DataTypes.VaultInfo[] memory) {
+    ) public view returns (DataTypes.VaultInfo[] memory, uint256 reserveUSDValue) {
         require(!includeCurrentWeight || includePrice, Errors.INVALID_ARGUMENT);
 
         address[] memory vaultAddresses = vaultRegistry.listVaults();
@@ -75,7 +79,6 @@ contract VaultManager is IVaultManager, Governable {
         }
 
         if (includeCurrentWeight) {
-            uint256 reserveUSDValue = 0;
             uint256[] memory usdValues = new uint256[](length);
             for (uint256 i = 0; i < length; i++) {
                 uint256 usdValue = vaultsInfo[i].price.mulDown(vaultsInfo[i].reserveBalance);
@@ -103,7 +106,7 @@ contract VaultManager is IVaultManager, Governable {
             }
         }
 
-        return vaultsInfo;
+        return (vaultsInfo, reserveUSDValue);
     }
 
     /// @inheritdoc IVaultManager

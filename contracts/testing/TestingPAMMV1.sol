@@ -22,7 +22,8 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         State memory state = State({
             redemptionLevel: anchoredState.redemptionLevel,
             reserveValue: b,
-            totalGyroSupply: y
+            totalGyroSupply: y,
+            lastSeenBlock: anchoredState.lastSeenBlock
         });
 
         return computeReserveValueRegion(state, systemParams, derived);
@@ -41,7 +42,8 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         State memory state = State({
             redemptionLevel: anchoredState.redemptionLevel,
             reserveValue: b,
-            totalGyroSupply: y
+            totalGyroSupply: y,
+            lastSeenBlock: anchoredState.lastSeenBlock
         });
         return computeAnchoredReserveValue(state, params, derived);
     }
