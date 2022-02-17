@@ -90,7 +90,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
         for (uint256 i = 0; i < amounts.length; i++) {
             uint256 amountInUSD = amounts[i].mulDown(prices[i]);
-            total = total + amountInUSD;
+            total += amountInUSD;
         }
 
         if (total == 0) {
@@ -123,7 +123,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             weightedReturns[i] = (vaultsWithAmount[i].vaultInfo.price)
                 .divDown(vaultsWithAmount[i].vaultInfo.persistedMetadata.initialPrice)
                 .mulDown(vaultsWithAmount[i].vaultInfo.persistedMetadata.initialWeight);
-            returnsSum = returnsSum + weightedReturns[i];
+            returnsSum += weightedReturns[i];
         }
 
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
@@ -162,6 +162,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         metaData.vaultMetadata = new VaultMetadata[](order.vaultsWithAmount.length);
 
         uint256[] memory idealWeights = _calculateIdealWeights(order.vaultsWithAmount);
+
         uint256[] memory currentAmounts = new uint256[](order.vaultsWithAmount.length);
         uint256[] memory deltaAmounts = new uint256[](order.vaultsWithAmount.length);
         uint256[] memory resultingAmounts = new uint256[](order.vaultsWithAmount.length);
@@ -252,6 +253,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             uint256 tokenPrice = priceOracle.getPriceUSD(tokenAddress);
 
             if (assetRegistry.isAssetStable(tokenAddress)) {
+                vaultData.allTokenPricesLargeEnough = true;
                 if (tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
                     vaultData.allStablecoinsOnPeg = false;
                 }

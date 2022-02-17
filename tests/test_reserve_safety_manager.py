@@ -14,8 +14,6 @@ from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
 
-POOL_ID = "0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080"
-
 # pytestmark = pytest.mark.usefixtures("set_data_for_mock_bal_vault")
 
 amount_generator = st.integers(
@@ -34,9 +32,25 @@ stablecoin_price_generator = st.integers(
 
 
 def vault_builder(price_generator, amount_generator, weight_generator):
-    persisted_metadata = (price_generator, weight_generator, POOL_ID)
+    persisted_metadata = (price_generator, weight_generator, constants.BALANCER_POOL_ID)
     vault_info = (
         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+        price_generator,
+        persisted_metadata,
+        amount_generator,
+        weight_generator,
+    )
+    return (vault_info, amount_generator)
+
+
+def vault_builder_two(price_generator, amount_generator, weight_generator):
+    persisted_metadata = (
+        price_generator,
+        weight_generator,
+        constants.BALANCER_POOL_ID_2,
+    )
+    vault_info = (
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C566",
         price_generator,
         persisted_metadata,
         amount_generator,
@@ -580,8 +594,67 @@ def test_safe_to_execute_outside_epsilon(bundle_metadata, reserve_safety_manager
         assert expected == result_sol
 
 
-def test_is_mint_safe():
-    pass
+def test_is_mint_safe(
+    reserve_safety_manager,
+    mock_price_oracle,
+    mock_balancer_vault,
+    admin,
+    dai,
+    usdc,
+    asset_registry,
+):
+
+    vaults_with_amount = []
+
+    persisted_metadata_one = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID)
+
+    vault_info = (
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+        D("1e19"),
+        persisted_metadata_one,
+        D("2e20"),
+        D("5e17"),
+    )
+
+    vault_one = (vault_info, D("1e19"))
+    vaults_with_amount.append(vault_one)
+
+    persisted_metadata_two = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID_2)
+
+    vault_info_two = (
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C566",
+        D("1e19"),
+        persisted_metadata_two,
+        D("2e20"),
+        D("5e17"),
+    )
+
+    vault_two = (vault_info_two, D("1e19"))
+
+    vaults_with_amount.append(vault_two)
+
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.addStableAsset(dai, {"from": admin})
+
+    asset_registry.setAssetAddress("USDC", usdc)
+    asset_registry.addStableAsset(usdc, {"from": admin})
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
+    )
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_2, [usdc, dai], [D("2e20"), D("2e20")]
+    )
+
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+
+    mint_order = [vaults_with_amount, True]
+    redeem_order = [vaults_with_amount, False]
+
+    response = reserve_safety_manager.isMintSafe(mint_order)
+    print(response)
 
 
 def test_is_redeem_safe():
