@@ -17,6 +17,7 @@ interface IReserveManager {
     }
 
     /// @notice Returns a list of vaults without including any metadata
+<<<<<<< HEAD:interfaces/IReserveManager.sol
     function getReserveState() external view returns (DataTypes.ReserveState memory);
 
     /// @notice Returns a list of vaults with requested metadata
@@ -24,4 +25,23 @@ interface IReserveManager {
         external
         view
         returns (DataTypes.ReserveState memory);
+=======
+    function listVaults()
+        external
+        view
+        returns (DataTypes.VaultInfo[] memory, uint256 reserveUSDValue);
+
+    /// @notice Returns a list of vaults with requested metadata
+    function listVaults(
+        bool includeMetadata,
+        bool includePrice,
+        bool includeCurrentWeight
+    ) external view returns (DataTypes.VaultInfo[] memory, uint256 reserveUSDValue);
+
+    /// @notice Returns the current vault price oracle
+    function getPriceOracle() external view returns (IUSDPriceOracle);
+
+    /// @notice Set the vault price oracle
+    function setPriceOracle(address priceOracle) external;
+>>>>>>> 76ff380 (Updates to short term flow logging):interfaces/IVaultManager.sol
 }
