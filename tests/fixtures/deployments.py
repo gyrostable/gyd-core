@@ -220,7 +220,12 @@ def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
 @pytest.fixture(scope="module")
 def pamm(TestingPAMMV1):
     return TestingPAMMV1.deploy(
-        (constants.ALPHA_MIN_REL, constants.XU_MAX_REL, constants.THETA_FLOOR),
+        (
+            constants.ALPHA_MIN_REL,
+            constants.XU_MAX_REL,
+            constants.THETA_FLOOR,
+            constants.OUTFLOW_MEMORY,
+        ),
         {"from": accounts[0]},
     )
 

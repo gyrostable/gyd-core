@@ -23,7 +23,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             redemptionLevel: anchoredState.redemptionLevel,
             reserveValue: b,
             totalGyroSupply: y,
-            lastSeenBlock: anchoredState.lastSeenBlock
+            lastSeenBlock: 0
         });
 
         return computeReserveValueRegion(state, systemParams, derived);
@@ -43,7 +43,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             redemptionLevel: anchoredState.redemptionLevel,
             reserveValue: b,
             totalGyroSupply: y,
-            lastSeenBlock: anchoredState.lastSeenBlock
+            lastSeenBlock: 0
         });
         return computeAnchoredReserveValue(state, params, derived);
     }

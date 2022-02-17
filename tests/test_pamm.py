@@ -11,6 +11,7 @@ from hypothesis.control import assume
 import tests.support.pamm as pypamm
 from tests.support.constants import (
     ALPHA_MIN_REL,
+    OUTFLOW_MEMORY,
     THETA_FLOOR,
     UNSCALED_THETA_FLOOR,
     UNSCALED_XU_MAX_REL,
@@ -56,7 +57,8 @@ def st_params(draw):
             max(theta_bar_min, scale("0.01")), scale(1), max_exclusive=True
         )
     )
-    return (alpha_bar, xu_bar, theta_bar)
+    outflow_memory = scale(1)
+    return (alpha_bar, xu_bar, theta_bar, outflow_memory)
 
 
 @st.composite
@@ -99,10 +101,11 @@ def qd_args(args):
 
 
 def test_params(pamm):
-    (alphaBar, xuBar, thetaBar) = pamm.systemParams()
+    (alphaBar, xuBar, thetaBar, outflowMemory) = pamm.systemParams()
     assert alphaBar == ALPHA_MIN_REL
     assert xuBar == XU_MAX_REL
     assert thetaBar == THETA_FLOOR
+    assert outflowMemory == OUTFLOW_MEMORY
 
 
 @pytest.mark.parametrize("alpha_min", ["1", "0.3"])
@@ -194,7 +197,9 @@ def test_compute_slope(pamm, args):
 def test_compute_reserve(pamm, args, alpha_min):
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
     expected = pypamm.compute_reserve(*qd_args(args), pyparams)  # type: ignore
-    args = scale_args(args) + ((scale(alpha_min), XU_MAX_REL, THETA_FLOOR),)
+    args = scale_args(args) + (
+        (scale(alpha_min), XU_MAX_REL, THETA_FLOOR, OUTFLOW_MEMORY),
+    )
     result = pamm.testComputeReserve(*args)
     assert result == scale(expected)
 
@@ -219,7 +224,8 @@ def test_compute_region(pamm, args, alpha_min):
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
     expected = pypamm.compute_region(*qd_args(args), pyparams)  # type: ignore
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
-    computed_region = pamm.computeRegion(scale_args(args))
+    args_final = scale_args(args) + ((0))
+    computed_region = pamm.computeRegion(args_final)
     assert computed_region == expected.value
 
 
@@ -269,24 +275,24 @@ def test_path_independence(admin, TestingPAMMV1, data: st.DataObject):
 
 
 def run_path_independence_test(
-    admin, PAMM, x1: int, x2: int, ba: int, ya: int, params: Tuple[int, int, int]
+    admin, PAMM, x1: int, x2: int, ba: int, ya: int, params: Tuple[int, int, int, int]
 ):
     assert x1 + x2 <= ya
 
     pamm = admin.deploy(PAMM, params)
-    pamm.setState((D(0), ba, ya))
+    pamm.setState((D(0), ba, ya, D(0)))
 
     pamm_2step = admin.deploy(PAMM, params)
-    pamm_2step.setState((D(0), ba, ya))
+    pamm_2step.setState((D(0), ba, ya, D(0)))
 
     # NOTE: the current input generation is slightly problematic as it generates
     # inputs that are not valid and result in integer overflows/underflow
     # we ignore these for now to at least be able to test the path independence
     # on valid inputs
     try:
-        redeem_tx = pamm.redeem(x1 + x2)
-        redeem1_tx = pamm_2step.redeem(x1)
-        redeem2_tx = pamm_2step.redeem(x2)
+        redeem_tx = pamm.redeem(x1 + x2, ba)
+        redeem1_tx = pamm_2step.redeem(x1, ba)
+        redeem2_tx = pamm_2step.redeem(x2, ba - redeem1_tx.value)
     except VirtualMachineError as ex:
         if ex.revert_msg != "Integer overflow":  # type: ignore
             raise ex
@@ -294,8 +300,8 @@ def run_path_independence_test(
         return
     # print("RUNNING PATH INDEPENDENCE TEST")
 
-    (x, b, y) = pamm.systemState()
-    (x2, b2, y2) = pamm_2step.systemState()
+    (x, b, y, last_seen_block) = pamm.systemState()
+    (x2, b2, y2, last_seen_block_2) = pamm_2step.systemState()
 
     # First two are trivial / sanity checks
     assert x == x2
