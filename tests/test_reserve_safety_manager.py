@@ -2,6 +2,7 @@ from asyncio import constants
 
 import hypothesis.strategies as st
 from brownie.test import given
+from numpy import exp
 
 from tests.reserve.reserve_math_implementation import (
     calculate_ideal_weights,
@@ -409,15 +410,174 @@ def test_update_vault_with_price_safety_tiny_prices(
         )
     )
 )
-def test_update_metadata_with_price_safety(bundle_metadata):
+def test_update_metadata_with_price_safety_peg(
+    bundle_metadata,
+    reserve_safety_manager,
+    asset_registry,
+    dai,
+    usdc,
+    mock_balancer_vault,
+    admin,
+    mock_price_oracle,
+):
     if not bundle_metadata:
         return
     metadata = bundle_to_metadata(bundle_metadata)
-    print(metadata)
+
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.addStableAsset(dai, {"from": admin})
+
+    asset_registry.setAssetAddress("USDC", usdc)
+    asset_registry.addStableAsset(usdc, {"from": admin})
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
+    )
+
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+
+    updated_metadata = reserve_safety_manager.updateMetadataWithPriceSafety(metadata)
+    onenotonpeg = False
+    for vault in updated_metadata[0]:
+        if vault[6] == False:
+            onenotonpeg = True
+
+    if onenotonpeg:
+        assert updated_metadata[2] == False
+    else:
+        assert updated_metadata[2] == True
+
+    mock_price_oracle.setUSDPrice(usdc, D("0.92e18"))
+
+    updated_metadata = reserve_safety_manager.updateMetadataWithPriceSafety(metadata)
+    onenotonpeg = False
+    for vault in updated_metadata[0]:
+        if vault[6] == False:
+            onenotonpeg = True
+
+    if onenotonpeg:
+        assert updated_metadata[2] == False
+    else:
+        assert updated_metadata[2] == True
 
 
-def test_safe_to_execute_outside_epsilon():
-    pass
+@given(
+    bundle_metadata=st.lists(
+        st.tuples(
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            price_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+        )
+    )
+)
+def test_update_metadata_with_price_safety_tiny_prices(
+    bundle_metadata,
+    reserve_safety_manager,
+    abc,
+    sdt,
+    asset_registry,
+    mock_balancer_vault,
+    mock_price_oracle,
+):
+    if not bundle_metadata:
+        return
+    metadata = bundle_to_metadata(bundle_metadata)
+
+    asset_registry.setAssetAddress("ABC", abc)
+    asset_registry.setAssetAddress("SDT", sdt)
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [sdt, abc], [D("2e20"), D("2e20")]
+    )
+
+    mock_price_oracle.setUSDPrice(abc, D("1e16"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e16"))
+
+    updated_metadata = reserve_safety_manager.updateMetadataWithPriceSafety(metadata)
+    onevaultpricestoosmall = False
+    for vault in updated_metadata[0]:
+        if vault[7] == False:
+            onevaultpricestoosmall = True
+
+    if onevaultpricestoosmall:
+        assert updated_metadata[3] == False
+    else:
+        assert updated_metadata[3] == True
+
+    mock_price_oracle.setUSDPrice(sdt, D("1e12"))
+    mock_price_oracle.setUSDPrice(abc, D("1e12"))
+
+    updated_metadata = reserve_safety_manager.updateMetadataWithPriceSafety(metadata)
+    onevaultpricestoosmall = False
+    for vault in updated_metadata[0]:
+        if vault[7] == False:
+            onevaultpricestoosmall = True
+
+    if onevaultpricestoosmall:
+        assert updated_metadata[3] == False
+    else:
+        assert updated_metadata[3] == True
+
+
+@given(
+    bundle_metadata=st.lists(
+        st.tuples(
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            weight_generator,
+            price_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+            boolean_generator,
+        )
+    )
+)
+def test_safe_to_execute_outside_epsilon(bundle_metadata, reserve_safety_manager):
+    if not bundle_metadata:
+        return
+    metadata = bundle_to_metadata(bundle_metadata)
+
+    if metadata[4] == True:
+        expected = True
+        for vault in metadata[0]:
+            if vault[6] == True:
+                continue
+            if vault[4] > vault[1]:
+                expected = False
+
+        result_sol = reserve_safety_manager.safeToExecuteOutsideEpsilon(metadata)
+
+        if expected == False:
+            assert result_sol == expected
+
+    if metadata[4] == False:
+        expected = True
+        for vault in metadata[0]:
+            if vault[8]:
+                continue
+            resulting_to_ideal = abs(vault[3] - vault[1])
+            current_to_ideal = abs(vault[2] - vault[1])
+            if resulting_to_ideal >= current_to_ideal:
+                expected = False
+
+        result_sol = reserve_safety_manager.safeToExecuteOutsideEpsilon(metadata)
+
+        assert expected == result_sol
 
 
 def test_is_mint_safe():
