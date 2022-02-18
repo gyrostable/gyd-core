@@ -1,15 +1,19 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+
 import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../interfaces/IAssetPricer.sol";
 import "../interfaces/IGyroConfig.sol";
 
 import "../libraries/FixedPoint.sol";
 import "../libraries/ConfigHelpers.sol";
+import "../libraries/DecimalScale.sol";
 
 contract AssetPricer is IAssetPricer {
     using FixedPoint for uint256;
+    using DecimalScale for uint256;
     using ConfigHelpers for IGyroConfig;
 
     IGyroConfig public immutable gyroConfig;
@@ -49,6 +53,8 @@ contract AssetPricer is IAssetPricer {
         IUSDPriceOracle priceOracle
     ) internal view returns (uint256) {
         uint256 price = priceOracle.getPriceUSD(monetaryAmount.tokenAddress);
-        return price.mulDown(monetaryAmount.amount);
+        uint8 decimals = IERC20Metadata(monetaryAmount.tokenAddress).decimals();
+        uint256 scaledAmount = monetaryAmount.amount.scaleFrom(decimals);
+        return price.mulDown(scaledAmount);
     }
 }

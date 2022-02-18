@@ -3,6 +3,7 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 import "../../interfaces/IGyroVault.sol";
 import "../../libraries/FixedPoint.sol";
@@ -24,6 +25,10 @@ contract BaseVault is IGyroVault, ERC20 {
         string memory symbol
     ) ERC20(name, symbol) {
         underlying = _underlying;
+    }
+
+    function decimals() public view virtual override returns (uint8) {
+        return IERC20Metadata(underlying).decimals();
     }
 
     /// @inheritdoc IGyroVault

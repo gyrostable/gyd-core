@@ -11,18 +11,22 @@ from tests.fixtures.mainnet_contracts import (
 from tests.support import config_keys, constants
 from tests.support.utils import scale
 
-MotherboardArgs = namedtuple(
-    "MotherboardArgs",
-    [
-        "gydToken",
-        "exchangerRegistry",
-        "pamm",
-        "gyroConfig",
-        "feeBank",
-        "reserve",
-        "priceOracle",
-    ],
-)
+
+@pytest.fixture(scope="module")
+def vault_registry(admin, VaultRegistry, gyro_config):
+    vault_registry = admin.deploy(VaultRegistry, gyro_config)
+    gyro_config.setAddress(config_keys.VAULT_REGISTRY_ADDRESS, vault_registry)
+    return vault_registry
+
+
+@pytest.fixture(scope="module")
+def vault_manager(admin, VaultManager, gyro_config, request):
+    dependencies = ["reserve", "mock_price_oracle", "vault_registry"]
+    for dep in dependencies:
+        request.getfixturevalue(dep)
+    vault_manager = admin.deploy(VaultManager, gyro_config)
+    gyro_config.setAddress(config_keys.VAULT_MANAGER_ADDRESS, vault_manager)
+    return vault_manager
 
 
 @pytest.fixture(scope="module")
@@ -33,8 +37,8 @@ def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def gyd_token(admin, ERC20, gyro_config):
-    gyd_token = admin.deploy(ERC20, "GYD Token", "GYD")
+def gyd_token(admin, GydToken, gyro_config):
+    gyd_token = admin.deploy(GydToken, "GYD Token", "GYD")
     gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token)
     return gyd_token
 
@@ -90,7 +94,9 @@ def bal_pool_registry(admin, BalancerPoolRegistry):
 
 @pytest.fixture(scope="module")
 def gyro_config(admin, GyroConfig):
-    return admin.deploy(GyroConfig)
+    config = admin.deploy(GyroConfig)
+    config.setUint(config_keys.MINT_FEE, 0)
+    return config
 
 
 @pytest.fixture(scope="module")
@@ -156,7 +162,9 @@ def mock_price_oracle(admin, MockPriceOracle, gyro_config):
 
 @pytest.fixture(scope="module")
 def asset_pricer(admin, AssetPricer, gyro_config):
-    return admin.deploy(AssetPricer, gyro_config)
+    asset_pricer = admin.deploy(AssetPricer, gyro_config)
+    gyro_config.setAddress(config_keys.ASSET_PRICER_ADDRESS, asset_pricer)
+    return asset_pricer
 
 
 @pytest.fixture(scope="module")
@@ -230,17 +238,27 @@ def mainnet_checked_price_oracle(
 
 
 @pytest.fixture(scope="module")
-def motherboard(admin, Motherboard, gyro_config, reserve, request):
-    dependencies = [
-        "gyd_token",
+def root_safety_check(admin, RootSafetyCheck, gyro_config):
+    safety_check = admin.deploy(RootSafetyCheck)
+    gyro_config.setAddress(config_keys.ROOT_SAFETY_CHECK_ADDRESS, safety_check)
+    return safety_check
+
+
+@pytest.fixture(scope="module")
+def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
+    extra_dependencies = [
         "fee_bank",
         "lp_token_exchanger_registry",
         "mock_pamm",
         "mock_price_oracle",
+        "vault_manager",
+        "asset_pricer",
+        "root_safety_check",
     ]
-    for dep in dependencies:
+    for dep in extra_dependencies:
         request.getfixturevalue(dep)
     motherboard = admin.deploy(Motherboard, gyro_config)
+    gyd_token.grantRole(gyd_token.MINTER_ROLE(), motherboard, {"from": admin})
     reserve.addManager(motherboard, {"from": admin})
     return motherboard
 
@@ -299,3 +317,10 @@ def decimals(underlying, interface):
 @pytest.fixture(scope="module")
 def vault(admin, BaseVault, underlying):
     return admin.deploy(BaseVault, underlying, "Base Vault Token", "BVT")
+
+
+# NOTE: this is a vault that contains only USDC as underlying
+# this is for testing purposes only
+@pytest.fixture(scope="module")
+def usdc_vault(admin, BaseVault, usdc):
+    return admin.deploy(BaseVault, usdc, "USDC Vault", "gUSDC")

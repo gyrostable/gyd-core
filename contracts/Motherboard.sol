@@ -76,7 +76,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         require(remainingGyro >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
 
-        gydToken.mint(gyroToMint);
+        gydToken.mint(address(this), gyroToMint);
         gyroConfig.getFeeBank().depositFees(address(gydToken), feeToPay);
 
         gydToken.safeTransfer(msg.sender, remainingGyro);
@@ -90,7 +90,7 @@ contract Motherboard is IMotherBoard, Governable {
         override
         returns (uint256[] memory)
     {
-        gydToken.burnFor(gydToRedeem, msg.sender);
+        gydToken.burnFrom(msg.sender, gydToRedeem);
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem);
         ISafetyCheck.Order memory order = _createRedeemOrder(usdValueToRedeem, assets);
         gyroConfig.getRootSafetyCheck().checkAndPersistRedeem(order);
@@ -239,6 +239,7 @@ contract Motherboard is IMotherBoard, Governable {
             );
         }
 
+        IERC20(lpTokenAddress).safeApprove(address(vault), lpTokenAmount);
         return vault.deposit(lpTokenAmount, 0);
     }
 
