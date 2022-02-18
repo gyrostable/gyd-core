@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 /// @notice A vault is one of the component of the reserve and has a one-to-one
 /// mapping to an underlying pool (e.g. Balancer pool, Curve pool, Uniswap pool...)
 /// It is itself an ERC-20 token that is used to track the ownership of the LP tokens
 /// deposited in the vault
 /// A vault can be associated with a strategy to generate yield on the deposited funds
-interface IGyroVault is IERC20 {
+interface IGyroVault is IERC20Metadata {
     /// @return The token associated with this vault
     function underlying() external view returns (address);
 

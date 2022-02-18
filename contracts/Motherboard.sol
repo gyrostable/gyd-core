@@ -20,6 +20,7 @@ import "../libraries/ConfigKeys.sol";
 import "../libraries/ConfigHelpers.sol";
 import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
+import "../libraries/DecimalScale.sol";
 
 import "./auth/Governable.sol";
 
@@ -27,6 +28,7 @@ import "./auth/Governable.sol";
 /// of the Gyro protocol
 contract Motherboard is IMotherBoard, Governable {
     using FixedPoint for uint256;
+    using DecimalScale for uint256;
     using SafeERC20 for IERC20;
     using SafeERC20 for IGYDToken;
     using ConfigHelpers for IGyroConfig;
@@ -298,8 +300,9 @@ contract Motherboard is IMotherBoard, Governable {
             uint256 vaultTokenPrice = priceOracle.getPriceUSD(address(vault));
 
             uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultTokenPrice);
+            uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vault.decimals());
             order.vaultsWithAmount[i] = ISafetyCheck.VaultWithAmount({
-                amount: vaultTokenAmount,
+                amount: scaledVaultTokenAmount,
                 vaultInfo: _getVaultInfo(
                     asset.originVault,
                     gyroConfig.getVaultManager().listVaults()

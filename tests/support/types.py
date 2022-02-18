@@ -11,6 +11,13 @@ class MintAsset(NamedTuple):
     destinationVault: str
 
 
+class RedeemAsset(NamedTuple):
+    outputToken: str
+    minOutputAmount: DecimalLike
+    valueRatio: DecimalLike
+    originVault: str
+
+
 class CEMMMathParams(NamedTuple):
     alpha: DecimalLike
     beta: DecimalLike
