@@ -2,7 +2,6 @@ from asyncio import constants
 
 import hypothesis.strategies as st
 from brownie.test import given
-from numpy import exp
 
 from tests.reserve.reserve_math_implementation import (
     calculate_ideal_weights,
@@ -653,8 +652,85 @@ def test_is_mint_safe(
     mint_order = [vaults_with_amount, True]
     redeem_order = [vaults_with_amount, False]
 
+    metadata = reserve_safety_manager.buildMetaData(mint_order)
+
     response = reserve_safety_manager.isMintSafe(mint_order)
-    print(response)
+    assert response == ""
+
+
+def test_is_mint_safe_outside_epsilon(
+    reserve_safety_manager,
+    mock_price_oracle,
+    mock_balancer_vault,
+    admin,
+    dai,
+    usdc,
+    asset_registry,
+):
+
+    vaults_with_amount = []
+
+    persisted_metadata_one = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID)
+
+    vault_info = (
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+        D("1e19"),
+        persisted_metadata_one,
+        D("4e20"),
+        D("5e17"),
+    )
+
+    vault_one = (vault_info, D("1e19"))
+    vaults_with_amount.append(vault_one)
+
+    persisted_metadata_two = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID_2)
+
+    vault_info_two = (
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C566",
+        D("1e19"),
+        persisted_metadata_two,
+        D("4e20"),
+        D("5e17"),
+    )
+
+    vault_two = (vault_info_two, D("1e19"))
+
+    vaults_with_amount.append(vault_two)
+
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.addStableAsset(dai, {"from": admin})
+
+    asset_registry.setAssetAddress("USDC", usdc)
+    asset_registry.addStableAsset(usdc, {"from": admin})
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
+    )
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_2, [usdc, dai], [D("2e20"), D("2e20")]
+    )
+
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+
+    mint_order = [vaults_with_amount, True]
+
+    metadata = reserve_safety_manager.buildMetaData(mint_order)
+    print("Ideal weight", metadata[0][0][1])
+    print("Current weight", metadata[0][0][2])
+    print("Resulting weight", metadata[0][0][3])
+    print("Delta weight", metadata[0][0][4])
+    print("Price", metadata[0][0][5])
+
+    print("Ideal weight", metadata[0][1][1])
+    print("Current weight", metadata[0][0][2])
+    print("Resulting weight", metadata[0][1][3])
+    print("Delta weight", metadata[0][1][4])
+    print("Price", metadata[0][1][5])
+
+    response = reserve_safety_manager.isMintSafe(mint_order)
+    assert response == "52"
 
 
 def test_is_redeem_safe():

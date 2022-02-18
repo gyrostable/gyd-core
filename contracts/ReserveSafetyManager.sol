@@ -86,8 +86,8 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         returns (uint256[] memory, uint256)
     {
         uint256[] memory weights = new uint256[](prices.length);
-        uint256 total = 0;
 
+        uint256 total = 0;
         for (uint256 i = 0; i < amounts.length; i++) {
             uint256 amountInUSD = amounts[i].mulDown(prices[i]);
             total += amountInUSD;
@@ -118,7 +118,6 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         uint256[] memory weightedReturns = new uint256[](vaultsWithAmount.length);
 
         uint256 returnsSum;
-
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
             weightedReturns[i] = (vaultsWithAmount[i].vaultInfo.price)
                 .divDown(vaultsWithAmount[i].vaultInfo.persistedMetadata.initialPrice)
@@ -180,6 +179,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             }
 
             metaData.vaultMetadata[i].price = order.vaultsWithAmount[i].vaultInfo.price;
+            prices[i] = order.vaultsWithAmount[i].vaultInfo.price;
 
             metaData.vaultMetadata[i].underlyingPoolId = order
                 .vaultsWithAmount[i]
