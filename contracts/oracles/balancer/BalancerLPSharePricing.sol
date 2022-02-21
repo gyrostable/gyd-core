@@ -139,27 +139,98 @@ library BalancerLPSharePricing {
      *  virtual reserves are chosen such that alpha = lower price bound and 1/alpha = upper price bound
      *  @param cbrtAlpha = cube root of alpha (lower price bound)
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool */
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  The calculation includes a kind of no-arbitrage equilibrium computation, see the Gyroscope Oracles document, p. 7. */
     function priceBptCPMMv3(
         uint256 cbrtAlpha,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
-        /**********************************************************************************************
-        //                 L                     1/3                            1/3     //
-        //     bptPrice = ---  ( 3 (p_x p_y p_z)^     - (p_x + p_y + p_z) alpha^    )   //
-        //                 S                                                            //
-        **********************************************************************************************/
-        uint256 cbrtPxPyPz = underlyingPrices[0].mulDown(underlyingPrices[1]).mulDown(
-            underlyingPrices[2]
-        );
-        cbrtPxPyPz = FixedPoint.powDown(cbrtPxPyPz, FixedPoint.ONE / 3);
-        bptPrice = 3 * FixedPoint.ONE.mulDown(cbrtPxPyPz);
-        uint256 term = (underlyingPrices[0] + underlyingPrices[1] + underlyingPrices[2]).mulUp(
+        uint256 pXZPool;
+        uint256 pYZPool;
+        {
+            uint256 alpha = cbrtAlpha.mulDown(cbrtAlpha).mulDown(cbrtAlpha);
+            uint256 pXZ = underlyingPrices[0].divDown(underlyingPrices[2]);
+            uint256 pYZ = underlyingPrices[1].divDown(underlyingPrices[2]);
+            (pXZPool, pYZPool) = relativeEquilibriumPricesCPMMv3(alpha, pXZ, pYZ);
+        }
+
+        uint256 cbrtPxzPyzPool = pXZPool.mulDown(pYZPool);
+        cbrtPxzPyzPool = FixedPoint.powDown(cbrtPxzPyzPool, FixedPoint.ONE / 3);
+
+        // term = helper variable that will be re-used below to avoid stack-too-deep.
+        uint256 term = underlyingPrices[0].divDown(pXZPool);
+        term = term.add(underlyingPrices[1].divDown(pYZPool));
+        term = term.add(underlyingPrices[2]);
+
+        bptPrice = cbrtPxzPyzPool.mulDown(term);
+
+        term = (underlyingPrices[0] + underlyingPrices[1] + underlyingPrices[2]).mulUp(
             cbrtAlpha
         );
         bptPrice = bptPrice - term;
         bptPrice = bptPrice.mulDown(invariantDivSupply);
+    }
+
+    /** @dev Compute the unique price vector of a CPMMv pool that is in equilibrium with an external market with the given relative prices.
+        See Gyroscope Oracles document, Section 4.3.
+        @param alpha = lower price bound
+        @param pXZ = relative price of asset x denoted in units of z of the external market
+        @param pYZ = relative price of asset y denoted in units of z of the external market
+        @return relative prices of x and y, respectively, denoted in units of z, of a pool in equilibrium with (pXZ, pYZ).
+     */
+    function relativeEquilibriumPricesCPMMv3(
+        uint256 alpha,
+        uint256 pXZ,
+        uint256 pYZ
+    ) internal pure returns (uint256, uint256) {
+        // NOTE: Rounding directions are less critical here b/c all functions are continuous and we don't take any roots where the radicand can become negative.
+        // SOMEDAY this should be reviewed so that we round in a way most favorable to us I guess?
+        uint256 alphaInv = FixedPoint.ONE.divDown(alpha);
+        {
+            uint256 thresholdX = pYZ.divDown(pXZ.mulDown(pXZ));
+            if (thresholdX < alpha) {
+                if (pYZ < alpha)
+                    return (FixedPoint.ONE, alpha);
+                else if (pYZ > alphaInv)
+                    return (alphaInv, alphaInv);
+                else {
+                    uint256 pXPool = alphaInv.mulDown(pYZ).powDown(ONEHALF);
+                    return (pXPool, pYZ);
+                }
+            }
+        }
+        {
+            uint256 thresholdY = pXZ.divDown(pYZ.mulDown(pYZ));
+            if (thresholdY < alpha) {
+                if (pXZ < alpha)
+                    return (alpha, FixedPoint.ONE);
+                else if (thresholdY > alphaInv)
+                    return (alphaInv, alphaInv);
+                else {
+                    uint256 pYPool = alphaInv.mulDown(pXZ).powDown(ONEHALF);
+                    return (pXZ, pYPool);
+                }
+            }
+        }
+        {
+            uint256 thresholdXY = pXZ.mulDown(pYZ);
+            if (thresholdXY < alpha) {
+                uint256 pXY = pXZ.divDown(pYZ);
+                if (pXY < alpha)
+                    return (alpha, FixedPoint.ONE);
+                else if (pXY > alphaInv)
+                    return (FixedPoint.ONE, alpha);
+                else {
+                    // TODO SOMEDAY sqrtAlpha could be made immutable in the pool and passed as a parameter.
+                    uint256 sqrtAlpha = alpha.powDown(ONEHALF);
+                    uint256 sqrtPXY = pXY.powDown(ONEHALF);
+                    return (sqrtAlpha.mulDown(sqrtPXY), sqrtAlpha.divDown(sqrtPXY));
+                }
+            }
+        }
+
+        return (pXZ, pYZ);
     }
 
     /** @dev Calculates the value of BPT for constant ellipse (CEMM) pools of two assets
