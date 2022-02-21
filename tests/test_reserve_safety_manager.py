@@ -1,9 +1,12 @@
 from asyncio import constants
+from curses import meta
+from decimal import Decimal
 
 import hypothesis.strategies as st
 from brownie.test import given
 
 from tests.reserve.reserve_math_implementation import (
+    build_metadata,
     calculate_ideal_weights,
     calculate_weights_and_total,
     update_metadata_with_epsilon_status,
@@ -200,17 +203,84 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
     assert result_sol == result_exp
 
 
-# @given(bundle=st.lists(st.tuples(price_generator, amount_generator, weight_generator)))
-# def test_build_metadata(reserve_safety_manager, bundle):
-#     if not bundle:
-#         return
-#     vaults_with_amount = bundle_to_vaults(bundle)
-#     metadata_exp = build_metadata(vaults_with_amount)
+def order_builder(
+    mint, initial_price, initial_weight, reserve_balance, current_vault_price, amount
+):
+    vaults_with_amount = []
 
-#     metadata_sol = reserve_safety_manager.buildMetaData(vaults_with_amount)
+    for i in range(len(initial_price)):
 
-#     print("SOL", metadata_sol)
-#     print("EXP", metadata_exp)
+        persisted_metadata = (
+            initial_price[i],
+            initial_weight[i],
+            constants.BALANCER_POOL_ID,
+        )
+
+        vault_info = (
+            "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+            current_vault_price[i],
+            persisted_metadata,
+            reserve_balance[i],
+        )
+
+        vault = (vault_info, amount[i])
+        vaults_with_amount.append(vault)
+
+    if mint:
+        return [vaults_with_amount, True]
+    else:
+        return [vaults_with_amount, False]
+
+
+@given(
+    order_bundle=st.lists(
+        st.tuples(
+            price_generator,
+            weight_generator,
+            amount_generator,
+            price_generator,
+            amount_generator,
+        ),
+        min_size=1,
+        max_size=15,
+    )
+)
+def test_build_metadata(reserve_safety_manager, order_bundle):
+    if not order_bundle:
+        return
+    (initial_price, initial_weight, reserve_balance, current_vault_price, amount) = [
+        list(v) for v in zip(*order_bundle)
+    ]
+
+    mint_order = order_builder(
+        True,
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+    )
+
+    metadata = reserve_safety_manager.buildMetaData(mint_order)
+    metadata_exp = build_metadata(mint_order)
+
+    vaults_metadata = metadata[0]
+    allVaultsWithinEpsilon = metadata[1]
+    allStablecoinsAllVaultsOnPeg = metadata[2]
+    allVaultsUsingLargeEnoughPrices = metadata[3]
+    mint = metadata[4]
+
+    assert mint == True
+
+    for meta in vaults_metadata:
+        assert meta[0] == mint_order[0][vaults_metadata.index(meta)][0][2][2]
+        assert meta[5] == mint_order[0][vaults_metadata.index(meta)][0][1]
+
+        assert meta[1] == to_decimal(metadata[0][vaults_metadata.index(meta)][1])
+        assert meta[2] == to_decimal(metadata[0][vaults_metadata.index(meta)][2])
+        assert meta[3] == to_decimal(metadata[0][vaults_metadata.index(meta)][3])
+        assert meta[4] == to_decimal(metadata[0][vaults_metadata.index(meta)][4])
+        assert meta[5] == to_decimal(metadata[0][vaults_metadata.index(meta)][5])
 
 
 @given(
@@ -665,6 +735,7 @@ def test_is_mint_safe_outside_epsilon(
     admin,
     dai,
     usdc,
+    sdt,
     asset_registry,
 ):
 
@@ -693,7 +764,7 @@ def test_is_mint_safe_outside_epsilon(
         D("5e17"),
     )
 
-    vault_two = (vault_info_two, D("1e19"))
+    vault_two = (vault_info_two, D("0"))
 
     vaults_with_amount.append(vault_two)
 
@@ -703,16 +774,19 @@ def test_is_mint_safe_outside_epsilon(
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
 
+    asset_registry.setAssetAddress("SDT", sdt)
+
     mock_balancer_vault.setPoolTokens(
         constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
     )
 
     mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_2, [usdc, dai], [D("2e20"), D("2e20")]
+        constants.BALANCER_POOL_ID_2, [sdt, dai], [D("2e20"), D("2e20")]
     )
 
     mock_price_oracle.setUSDPrice(dai, D("1e18"))
-    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("0.94e18"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e18"))
 
     mint_order = [vaults_with_amount, True]
 
@@ -731,6 +805,86 @@ def test_is_mint_safe_outside_epsilon(
 
     response = reserve_safety_manager.isMintSafe(mint_order)
     assert response == "52"
+
+
+# def test_is_mint_safe_outside_epsilon_resulting_current(
+#     reserve_safety_manager,
+#     mock_price_oracle,
+#     mock_balancer_vault,
+#     admin,
+#     dai,
+#     usdc,
+#     sdt,
+#     abc,
+#     asset_registry,
+# ):
+
+#     vaults_with_amount = []
+
+#     persisted_metadata_one = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID)
+
+#     vault_info = (
+#         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+#         D("1e19"),
+#         persisted_metadata_one,
+#         D("4e20"),
+#         D("5e17"),
+#     )
+
+#     vault_one = (vault_info, D("1.5e19"))
+#     vaults_with_amount.append(vault_one)
+
+#     persisted_metadata_two = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID_2)
+
+#     vault_info_two = (
+#         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C566",
+#         D("1e19"),
+#         persisted_metadata_two,
+#         D("4e20"),
+#         D("5e17"),
+#     )
+
+#     vault_two = (vault_info_two, D("1e19"))
+
+#     vaults_with_amount.append(vault_two)
+
+#     asset_registry.setAssetAddress("DAI", dai)
+#     asset_registry.addStableAsset(dai, {"from": admin})
+
+#     asset_registry.setAssetAddress("USDC", usdc)
+#     asset_registry.addStableAsset(usdc, {"from": admin})
+
+#     asset_registry.setAssetAddress("SDT", sdt)
+
+#     mock_balancer_vault.setPoolTokens(
+#         constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
+#     )
+
+#     mock_balancer_vault.setPoolTokens(
+#         constants.BALANCER_POOL_ID_2, [sdt, dai], [D("2e20"), D("2e20")]
+#     )
+
+#     mock_price_oracle.setUSDPrice(dai, D("1e18"))
+#     mock_price_oracle.setUSDPrice(usdc, D("0.94e18"))
+#     mock_price_oracle.setUSDPrice(sdt, D("1e18"))
+
+#     mint_order = [vaults_with_amount, True]
+
+#     metadata = reserve_safety_manager.buildMetaData(mint_order)
+#     print("Ideal weight", metadata[0][0][1])
+#     print("Current weight", metadata[0][0][2])
+#     print("Resulting weight", metadata[0][0][3])
+#     print("Delta weight", metadata[0][0][4])
+#     print("Price", metadata[0][0][5])
+
+#     print("Ideal weight", metadata[0][1][1])
+#     print("Current weight", metadata[0][0][2])
+#     print("Resulting weight", metadata[0][1][3])
+#     print("Delta weight", metadata[0][1][4])
+#     print("Price", metadata[0][1][5])
+
+#     response = reserve_safety_manager.isMintSafe(mint_order)
+#     assert response == "52"
 
 
 def test_is_redeem_safe():

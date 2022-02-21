@@ -45,7 +45,6 @@ library DataTypes {
         uint256 price;
         PersistedVaultMetadata persistedMetadata;
         uint256 reserveBalance;
-        uint256 currentWeight;
     }
 
     struct TokenProperties {

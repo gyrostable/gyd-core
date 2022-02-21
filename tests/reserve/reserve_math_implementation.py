@@ -81,54 +81,69 @@ def update_vault_with_price_safety(vault_metadata):
     pass
 
 
-# def build_metadata(vaults_with_amount: List[Tuple]) -> List[D]:
+def build_metadata(order: List[Tuple]) -> List[D]:
 
-#     metadata = []
+    metadata = []
+    vault_metadata_array = []
 
-#     current_amounts = []
-#     delta_amounts = []
-#     resulting_amounts = []
-#     prices = []
+    current_amounts = []
+    delta_amounts = []
+    resulting_amounts = []
+    prices = []
 
-#     for vault in vaults_with_amount:
-#         current_amounts.append(D(vault[0][4]))
+    vaults_with_amount = order[0]
+    order_type = order[1]
 
-#         delta_amounts.append(D(vault[1]))
+    for vault in vaults_with_amount:
+        vault_metadata = []
 
-#         if vault[2]:
-#             resulting_amounts.append(D(vault[0][4]) + D(vault[1]))
-#         else:
-#             resulting_amounts.append(D(vault[0][4]) - D(vault[1]))
+        current_amounts.append(D(vault[0][3]))
+        delta_amounts.append(D(vault[1]))
 
-#         prices.append(D(vault[0][1]))
+        if order[1]:
+            resulting_amounts.append(D(vault[0][3]) + D(vault[1]))
+        else:
+            resulting_amounts.append(D(vault[0][3]) - D(vault[1]))
 
-#     ideal_weights = calculate_implied_pool_weights(vaults_with_amount)
-#     metadata.append(ideal_weights)
+        prices.append(D(vault[0][1]))
 
-#     current_weights, current_usd_value = calculate_weights_and_total(
-#         current_amounts, prices
-#     )
+        ideal_weights = calculate_ideal_weights(vaults_with_amount)
 
-#     if current_usd_value == D("0"):
-#         metadata.append(ideal_weights)
-#     else:
-#         metadata.append(current_weights)
+        current_weights, current_usd_value = calculate_weights_and_total(
+            current_amounts, prices
+        )
+        resulting_weights, resultingTotal = calculate_weights_and_total(
+            resulting_amounts, prices
+        )
 
-#     resulting_weights, resultingTotal = calculate_weights_and_total(
-#         resulting_amounts, prices
-#     )
+        delta_weights, delta_total = calculate_weights_and_total(delta_amounts, prices)
 
-#     metadata.append(resulting_weights)
+        vault_metadata.append(vault[0][2][2])
+        vault_metadata.append(ideal_weights)
 
-#     delta_weights, delta_total = calculate_weights_and_total(delta_amounts, prices)
+        if current_usd_value == D("0"):
+            vault_metadata.append(ideal_weights)
+        else:
+            vault_metadata.append(current_weights)
 
-#     if delta_total == D("0"):
-#         metadata.append(ideal_weights)
-#     else:
-#         metadata.append(delta_weights)
+        vault_metadata.append(resulting_weights)
 
-#     metadata.append(prices)
+        if delta_total == D("0"):
+            vault_metadata.append(ideal_weights)
+        else:
+            vault_metadata.append(delta_weights)
 
-#     metadata.append(delta_total)
+        vault_metadata.append(vault[0][1])
+        vault_metadata.append(False)
+        vault_metadata.append(False)
+        vault_metadata.append(False)
 
-#     return metadata
+        vault_metadata_array.append(vault_metadata)
+
+    metadata.append(vault_metadata_array)
+    metadata.append(False)
+    metadata.append(False)
+    metadata.append(False)
+    metadata.append(order_type)
+
+    return metadata
