@@ -165,9 +165,7 @@ library BalancerLPSharePricing {
 
         bptPrice = cbrtPxzPyzPool.mulDown(term);
 
-        term = (underlyingPrices[0] + underlyingPrices[1] + underlyingPrices[2]).mulUp(
-            cbrtAlpha
-        );
+        term = (underlyingPrices[0] + underlyingPrices[1] + underlyingPrices[2]).mulUp(cbrtAlpha);
         bptPrice = bptPrice - term;
         bptPrice = bptPrice.mulDown(invariantDivSupply);
     }
@@ -190,10 +188,8 @@ library BalancerLPSharePricing {
         {
             uint256 thresholdX = pYZ.divDown(pXZ.mulDown(pXZ));
             if (thresholdX < alpha) {
-                if (pYZ < alpha)
-                    return (FixedPoint.ONE, alpha);
-                else if (pYZ > alphaInv)
-                    return (alphaInv, alphaInv);
+                if (pYZ < alpha) return (FixedPoint.ONE, alpha);
+                else if (pYZ > alphaInv) return (alphaInv, alphaInv);
                 else {
                     uint256 pXPool = alphaInv.mulDown(pYZ).powDown(ONEHALF);
                     return (pXPool, pYZ);
@@ -203,10 +199,8 @@ library BalancerLPSharePricing {
         {
             uint256 thresholdY = pXZ.divDown(pYZ.mulDown(pYZ));
             if (thresholdY < alpha) {
-                if (pXZ < alpha)
-                    return (alpha, FixedPoint.ONE);
-                else if (thresholdY > alphaInv)
-                    return (alphaInv, alphaInv);
+                if (pXZ < alpha) return (alpha, FixedPoint.ONE);
+                else if (thresholdY > alphaInv) return (alphaInv, alphaInv);
                 else {
                     uint256 pYPool = alphaInv.mulDown(pXZ).powDown(ONEHALF);
                     return (pXZ, pYPool);
@@ -217,10 +211,8 @@ library BalancerLPSharePricing {
             uint256 thresholdXY = pXZ.mulDown(pYZ);
             if (thresholdXY < alpha) {
                 uint256 pXY = pXZ.divDown(pYZ);
-                if (pXY < alpha)
-                    return (alpha, FixedPoint.ONE);
-                else if (pXY > alphaInv)
-                    return (FixedPoint.ONE, alpha);
+                if (pXY < alpha) return (alpha, FixedPoint.ONE);
+                else if (pXY > alphaInv) return (FixedPoint.ONE, alpha);
                 else {
                     // TODO SOMEDAY sqrtAlpha could be made immutable in the pool and passed as a parameter.
                     uint256 sqrtAlpha = alpha.powDown(ONEHALF);
@@ -284,7 +276,7 @@ library BalancerLPSharePricing {
         pure
         returns (int256 ret)
     {
-        ret = t1.x.mulDown(t2.x).add(t1.y.mulDown(t2.y));
+        ret = t1.x.mulDown(t2.x) + t1.y.mulDown(t2.y);
     }
 
     /** @dev Calculate A^{-1}t where A^{-1} is given in Section 2.2
@@ -307,10 +299,10 @@ library BalancerLPSharePricing {
         pure
         returns (ICEMM.Vector2 memory t)
     {
-        t.x = params.c.mulDown(tp.x).divDown(params.lambda).sub(
-            params.s.mulDown(tp.y).divDown(params.lambda)
-        );
-        t.y = params.s.mulDown(tp.x).add(params.c.mulDown(tp.y));
+        t.x =
+            params.c.mulDown(tp.x).divDown(params.lambda) -
+            params.s.mulDown(tp.y).divDown(params.lambda);
+        t.y = params.s.mulDown(tp.x) + params.c.mulDown(tp.y);
     }
 
     /** @dev Given price px on the transformed ellipse, get the untransformed price pxc on the circle
