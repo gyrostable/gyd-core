@@ -19,6 +19,16 @@ contract MockGyroVault is IGyroVault, ERC20 {
         _underlying = lpToken_;
     }
 
+    function vaultType() external pure override returns (VaultType) {
+        return VaultType.GENERIC;
+    }
+
+    function getTokens() external view override returns (IERC20[] memory) {
+        IERC20[] memory tokens = new IERC20[](1);
+        tokens[0] = IERC20(_underlying);
+        return tokens;
+    }
+
     function underlying() external view override returns (address) {
         return _underlying;
     }

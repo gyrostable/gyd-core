@@ -36,7 +36,6 @@ library DataTypes {
     struct PersistedVaultMetadata {
         uint256 initialPrice;
         uint256 initialWeight;
-        bytes32 underlyingPoolId;
     }
 
     /// @notice Vault with metadata
