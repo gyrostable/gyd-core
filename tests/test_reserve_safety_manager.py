@@ -40,7 +40,6 @@ def vault_builder(price_generator, amount_generator, weight_generator):
         price_generator,
         persisted_metadata,
         amount_generator,
-        weight_generator,
     )
     return (vault_info, amount_generator)
 
@@ -56,7 +55,6 @@ def vault_builder_two(price_generator, amount_generator, weight_generator):
         price_generator,
         persisted_metadata,
         amount_generator,
-        weight_generator,
     )
     return (vault_info, amount_generator)
 
@@ -164,6 +162,8 @@ def test_calculate_ideal_weights(reserve_safety_manager, bundle):
         return
 
     vaults_with_amount = bundle_to_vaults(bundle)
+
+    print(vaults_with_amount)
 
     result_exp = calculate_ideal_weights(vaults_with_amount)
 
@@ -682,7 +682,6 @@ def test_is_mint_safe(
         D("1e19"),
         persisted_metadata_one,
         D("2e20"),
-        D("5e17"),
     )
 
     vault_one = (vault_info, D("1e19"))
@@ -695,7 +694,6 @@ def test_is_mint_safe(
         D("1e19"),
         persisted_metadata_two,
         D("2e20"),
-        D("5e17"),
     )
 
     vault_two = (vault_info_two, D("1e19"))
@@ -748,7 +746,6 @@ def test_is_mint_safe_outside_epsilon(
         D("1e19"),
         persisted_metadata_one,
         D("4e20"),
-        D("5e17"),
     )
 
     vault_one = (vault_info, D("1e19"))
@@ -761,7 +758,6 @@ def test_is_mint_safe_outside_epsilon(
         D("1e19"),
         persisted_metadata_two,
         D("4e20"),
-        D("5e17"),
     )
 
     vault_two = (vault_info_two, D("0"))
