@@ -160,8 +160,8 @@ library BalancerLPSharePricing {
 
         // term = helper variable that will be re-used below to avoid stack-too-deep.
         uint256 term = underlyingPrices[0].divDown(pXZPool);
-        term = term.add(underlyingPrices[1].divDown(pYZPool));
-        term = term.add(underlyingPrices[2]);
+        term += underlyingPrices[1].divDown(pYZPool);
+        term += underlyingPrices[2];
 
         bptPrice = cbrtPxzPyzPool.mulDown(term);
 
