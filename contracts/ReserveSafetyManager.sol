@@ -300,10 +300,6 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         //If both true, then mint
         //note: should always be able to mint at the ideal weights!
 
-        if (metaData.mint && !_vaultWeightWithOffPegFalls(metaData)) {
-            return false;
-        }
-
         for (uint256 i; i < metaData.vaultMetadata.length; i++) {
             VaultMetadata memory vaultData = metaData.vaultMetadata[i];
 
@@ -334,18 +330,16 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             return Errors.TOKEN_PRICES_TOO_SMALL;
         }
 
-        if (metaData.allStablecoinsAllVaultsOnPeg) {
-            if (metaData.allVaultsWithinEpsilon) {
+        if (metaData.allVaultsWithinEpsilon) {
+            if (metaData.allStablecoinsAllVaultsOnPeg) {
+                return "";
+            } else if (_vaultWeightWithOffPegFalls(metaData)) {
                 return "";
             }
-        } else {
-            if (metaData.allVaultsWithinEpsilon) {
-                if (_vaultWeightWithOffPegFalls(metaData)) {
-                    return "";
-                }
-            } else if (_safeToExecuteOutsideEpsilon(metaData)) {
-                return "";
-            }
+        } else if (
+            _safeToExecuteOutsideEpsilon(metaData) && _vaultWeightWithOffPegFalls(metaData)
+        ) {
+            return "";
         }
         return Errors.NOT_SAFE_TO_MINT;
     }
