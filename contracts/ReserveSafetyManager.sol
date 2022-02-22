@@ -341,6 +341,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         ) {
             return "";
         }
+
         return Errors.NOT_SAFE_TO_MINT;
     }
 
@@ -358,9 +359,9 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
             return "";
         } else if (_safeToExecuteOutsideEpsilon(metaData)) {
             return "";
-        } else {
-            return Errors.NOT_SAFE_TO_REDEEM;
         }
+
+        return Errors.NOT_SAFE_TO_REDEEM;
     }
 
     /// @inheritdoc ISafetyCheck

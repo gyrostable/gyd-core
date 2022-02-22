@@ -663,224 +663,79 @@ def test_safe_to_execute_outside_epsilon(bundle_metadata, reserve_safety_manager
         assert expected == result_sol
 
 
+@given(
+    order_bundle=st.lists(
+        st.tuples(
+            price_generator,
+            weight_generator,
+            amount_generator,
+            price_generator,
+            amount_generator,
+        ),
+        min_size=1,
+        max_size=5,
+    )
+)
 def test_is_mint_safe(
     reserve_safety_manager,
-    mock_price_oracle,
-    mock_balancer_vault,
-    admin,
-    dai,
-    usdc,
+    order_bundle,
     asset_registry,
-):
-
-    vaults_with_amount = []
-
-    persisted_metadata_one = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID)
-
-    vault_info = (
-        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-        D("1e19"),
-        persisted_metadata_one,
-        D("2e20"),
-    )
-
-    vault_one = (vault_info, D("1e19"))
-    vaults_with_amount.append(vault_one)
-
-    persisted_metadata_two = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID_2)
-
-    vault_info_two = (
-        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C566",
-        D("1e19"),
-        persisted_metadata_two,
-        D("2e20"),
-    )
-
-    vault_two = (vault_info_two, D("1e19"))
-
-    vaults_with_amount.append(vault_two)
-
-    asset_registry.setAssetAddress("DAI", dai)
-    asset_registry.addStableAsset(dai, {"from": admin})
-
-    asset_registry.setAssetAddress("USDC", usdc)
-    asset_registry.addStableAsset(usdc, {"from": admin})
-
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
-    )
-
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_2, [usdc, dai], [D("2e20"), D("2e20")]
-    )
-
-    mock_price_oracle.setUSDPrice(dai, D("1e18"))
-    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
-
-    mint_order = [vaults_with_amount, True]
-    redeem_order = [vaults_with_amount, False]
-
-    metadata = reserve_safety_manager.buildMetaData(mint_order)
-
-    response = reserve_safety_manager.isMintSafe(mint_order)
-    assert response == ""
-
-
-def test_is_mint_safe_outside_epsilon(
-    reserve_safety_manager,
-    mock_price_oracle,
-    mock_balancer_vault,
     admin,
     dai,
     usdc,
     sdt,
-    asset_registry,
+    abc,
+    mock_price_oracle,
+    mock_balancer_vault,
 ):
+    if not order_bundle:
+        return
+    (initial_price, initial_weight, reserve_balance, current_vault_price, amount) = [
+        list(v) for v in zip(*order_bundle)
+    ]
 
-    vaults_with_amount = []
-
-    persisted_metadata_one = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID)
-
-    vault_info = (
-        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-        D("1e19"),
-        persisted_metadata_one,
-        D("4e20"),
+    mint_order = order_builder(
+        True,
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
     )
-
-    vault_one = (vault_info, D("1e19"))
-    vaults_with_amount.append(vault_one)
-
-    persisted_metadata_two = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID_2)
-
-    vault_info_two = (
-        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C566",
-        D("1e19"),
-        persisted_metadata_two,
-        D("4e20"),
-    )
-
-    vault_two = (vault_info_two, D("0"))
-
-    vaults_with_amount.append(vault_two)
 
     asset_registry.setAssetAddress("DAI", dai)
     asset_registry.addStableAsset(dai, {"from": admin})
 
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
+
+    asset_registry.setAssetAddress("ABC", abc)
+    asset_registry.addStableAsset(abc, {"from": admin})
 
     asset_registry.setAssetAddress("SDT", sdt)
 
     mock_balancer_vault.setPoolTokens(
         constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
     )
-
     mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_2, [sdt, dai], [D("2e20"), D("2e20")]
+        constants.BALANCER_POOL_ID_2, [usdc, sdt], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_3, [sdt, dai], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_4, [abc, dai], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_5, [usdc, abc], [D("2e20"), D("2e20")]
     )
 
     mock_price_oracle.setUSDPrice(dai, D("1e18"))
-    mock_price_oracle.setUSDPrice(usdc, D("0.94e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+    mock_price_oracle.setUSDPrice(abc, D("1e18"))
     mock_price_oracle.setUSDPrice(sdt, D("1e18"))
 
-    mint_order = [vaults_with_amount, True]
-
-    metadata = reserve_safety_manager.buildMetaData(mint_order)
-    print("Ideal weight", metadata[0][0][1])
-    print("Current weight", metadata[0][0][2])
-    print("Resulting weight", metadata[0][0][3])
-    print("Delta weight", metadata[0][0][4])
-    print("Price", metadata[0][0][5])
-
-    print("Ideal weight", metadata[0][1][1])
-    print("Current weight", metadata[0][0][2])
-    print("Resulting weight", metadata[0][1][3])
-    print("Delta weight", metadata[0][1][4])
-    print("Price", metadata[0][1][5])
-
     response = reserve_safety_manager.isMintSafe(mint_order)
-    assert response == "52"
-
-
-# def test_is_mint_safe_outside_epsilon_resulting_current(
-#     reserve_safety_manager,
-#     mock_price_oracle,
-#     mock_balancer_vault,
-#     admin,
-#     dai,
-#     usdc,
-#     sdt,
-#     abc,
-#     asset_registry,
-# ):
-
-#     vaults_with_amount = []
-
-#     persisted_metadata_one = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID)
-
-#     vault_info = (
-#         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-#         D("1e19"),
-#         persisted_metadata_one,
-#         D("4e20"),
-#         D("5e17"),
-#     )
-
-#     vault_one = (vault_info, D("1.5e19"))
-#     vaults_with_amount.append(vault_one)
-
-#     persisted_metadata_two = (D("1e18"), D("5e17"), constants.BALANCER_POOL_ID_2)
-
-#     vault_info_two = (
-#         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C566",
-#         D("1e19"),
-#         persisted_metadata_two,
-#         D("4e20"),
-#         D("5e17"),
-#     )
-
-#     vault_two = (vault_info_two, D("1e19"))
-
-#     vaults_with_amount.append(vault_two)
-
-#     asset_registry.setAssetAddress("DAI", dai)
-#     asset_registry.addStableAsset(dai, {"from": admin})
-
-#     asset_registry.setAssetAddress("USDC", usdc)
-#     asset_registry.addStableAsset(usdc, {"from": admin})
-
-#     asset_registry.setAssetAddress("SDT", sdt)
-
-#     mock_balancer_vault.setPoolTokens(
-#         constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
-#     )
-
-#     mock_balancer_vault.setPoolTokens(
-#         constants.BALANCER_POOL_ID_2, [sdt, dai], [D("2e20"), D("2e20")]
-#     )
-
-#     mock_price_oracle.setUSDPrice(dai, D("1e18"))
-#     mock_price_oracle.setUSDPrice(usdc, D("0.94e18"))
-#     mock_price_oracle.setUSDPrice(sdt, D("1e18"))
-
-#     mint_order = [vaults_with_amount, True]
-
-#     metadata = reserve_safety_manager.buildMetaData(mint_order)
-#     print("Ideal weight", metadata[0][0][1])
-#     print("Current weight", metadata[0][0][2])
-#     print("Resulting weight", metadata[0][0][3])
-#     print("Delta weight", metadata[0][0][4])
-#     print("Price", metadata[0][0][5])
-
-#     print("Ideal weight", metadata[0][1][1])
-#     print("Current weight", metadata[0][0][2])
-#     print("Resulting weight", metadata[0][1][3])
-#     print("Delta weight", metadata[0][1][4])
-#     print("Price", metadata[0][1][5])
-
-#     response = reserve_safety_manager.isMintSafe(mint_order)
-#     assert response == "52"
 
 
 def test_is_redeem_safe():

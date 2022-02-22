@@ -1,3 +1,4 @@
+from importlib.metadata import metadata
 from typing import Dict, Iterable, List, Tuple
 
 from tests.support import constants
@@ -77,10 +78,6 @@ def update_metadata_with_epsilon_status(metadata):
     return tuple(metadata_new)
 
 
-def update_vault_with_price_safety(vault_metadata):
-    pass
-
-
 def build_metadata(order: List[Tuple]) -> List[D]:
 
     metadata = []
@@ -147,3 +144,52 @@ def build_metadata(order: List[Tuple]) -> List[D]:
     metadata.append(order_type)
 
     return metadata
+
+
+def is_mint_safe(order: List[Tuple]) -> str:
+    metadata = build_metadata(order)
+    metadata = update_metadata_with_price_safety(metadata)
+    metadata = update_metadata_with_epsilon_status(metadata)
+
+    if not metadata[3]:
+        return "55"
+
+    if metadata[1]:
+        if metadata[2]:
+            return ""
+        elif vault_weight_off_peg_falls(metadata):
+            return ""
+    elif safe_to_execute_outside_epsilon(metadata) & vault_weight_off_peg_falls(
+        metadata
+    ):
+        return ""
+
+    return "52"
+
+
+def is_redeem_safe(order: List[Tuple]) -> str:
+    metadata = build_metadata(order)
+    metadata = update_metadata_with_price_safety(metadata)
+    metadata = update_metadata_with_epsilon_status(metadata)
+
+    if not metadata[3]:
+        return "55"
+
+    if metadata[1]:
+        return ""
+    elif safe_to_execute_outside_epsilon(metadata):
+        return ""
+
+    return "52"
+
+
+def update_vault_with_price_safety(vault_metadata):
+    pass
+
+
+def update_metadata_with_price_safety(metadata):
+    pass
+
+
+def safe_to_execute_outside_epsilon():
+    pass

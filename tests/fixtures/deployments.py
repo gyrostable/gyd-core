@@ -3,8 +3,11 @@ from unittest.mock import Mock
 
 import pytest
 from brownie import accounts
-from tests.fixtures.mainnet_contracts import (ChainlinkFeeds, TokenAddresses,
-                                              UniswapPools)
+from tests.fixtures.mainnet_contracts import (
+    ChainlinkFeeds,
+    TokenAddresses,
+    UniswapPools,
+)
 from tests.support import constants
 from tests.support.utils import scale
 
@@ -58,6 +61,21 @@ def mock_balancer_pool_two(admin, MockBalancerPool):
 
 
 @pytest.fixture(scope="module")
+def mock_balancer_pool_three(admin, MockBalancerPool):
+    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID_3)
+
+
+@pytest.fixture(scope="module")
+def mock_balancer_pool_four(admin, MockBalancerPool):
+    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID_4)
+
+
+@pytest.fixture(scope="module")
+def mock_balancer_pool_five(admin, MockBalancerPool):
+    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID_5)
+
+
+@pytest.fixture(scope="module")
 def mock_balancer_vault(admin, MockBalVault):
     return admin.deploy(MockBalVault)
 
@@ -89,6 +107,7 @@ def dai(Token):
         token.transfer(accounts[i], 100, {"from": accounts[0]})
     yield token
 
+
 @pytest.fixture(scope="module")
 def sdt(Token):
     token = Token.deploy("SDT Token", "SDT", 18, 1e20, {"from": accounts[0]})
@@ -96,12 +115,14 @@ def sdt(Token):
         token.transfer(accounts[i], 100, {"from": accounts[0]})
     yield token
 
+
 @pytest.fixture(scope="module")
 def abc(Token):
     token = Token.deploy("ABC Token", "ABC", 18, 1e20, {"from": accounts[0]})
     for i in range(1, 10):
         token.transfer(accounts[i], 100, {"from": accounts[0]})
     yield token
+
 
 @pytest.fixture(scope="module")
 def usdc(Token):
@@ -262,7 +283,14 @@ def reserve_safety_manager(
 
 @pytest.fixture(scope="module")
 def set_data_for_mock_bal_vault(
-    mock_balancer_vault, mock_balancer_pool, mock_balancer_pool_two, dai, usdc
+    mock_balancer_vault,
+    mock_balancer_pool,
+    mock_balancer_pool_two,
+    mock_balancer_pool_three,
+    mock_balancer_pool_four,
+    mock_balancer_pool_five,
+    dai,
+    usdc,
 ):
     mock_balancer_vault.setCash(100000000000000000000000000)
     mock_balancer_vault.setPoolTokens(
@@ -271,4 +299,13 @@ def set_data_for_mock_bal_vault(
     mock_balancer_vault.storePoolAddress(constants.BALANCER_POOL_ID, mock_balancer_pool)
     mock_balancer_vault.storePoolAddress(
         constants.BALANCER_POOL_ID_2, mock_balancer_pool_two
+    )
+    mock_balancer_vault.storePoolAddress(
+        constants.BALANCER_POOL_ID_2, mock_balancer_pool_three
+    )
+    mock_balancer_vault.storePoolAddress(
+        constants.BALANCER_POOL_ID_2, mock_balancer_pool_four
+    )
+    mock_balancer_vault.storePoolAddress(
+        constants.BALANCER_POOL_ID_2, mock_balancer_pool_five
     )
