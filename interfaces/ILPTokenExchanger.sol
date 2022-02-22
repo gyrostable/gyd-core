@@ -33,4 +33,12 @@ interface ILPTokenExchanger {
     function withdraw(DataTypes.MonetaryAmount memory tokenToWithdraw)
         external
         returns (uint256 lpTokenAmount);
+
+    /// @notice Dry version of `withdraw`
+    /// and sends back an underlyingMonetaryAmount
+    /// @param tokenToWithdraw the underlying token and amount to withdraw
+    function dryWithdraw(DataTypes.MonetaryAmount memory tokenToWithdraw)
+        external
+        view
+        returns (uint256 lpTokenAmount, string memory err);
 }

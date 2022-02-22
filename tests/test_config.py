@@ -5,7 +5,7 @@ from brownie.test.managers.runner import RevertContextManager as reverts
 from tests.support.utils import format_to_bytes, scale
 from tests.support import error_codes
 
-FEE_BANK_DUMMY_ADDRESS = "0x0057Ea85A6B3ccE0f4c2ee16EC34dA3a7b3DCE14"
+DUMMY_ADDRESS = "0x0057Ea85A6B3ccE0f4c2ee16EC34dA3a7b3DCE14"
 
 
 CONFIG_TYPES = {
@@ -17,8 +17,8 @@ CONFIG_TYPES = {
 @pytest.mark.parametrize(
     "config_type,plain_key,value",
     [
-        ("uint", "MINT_FEE", scale(2, 16)),
-        ("address", "FEE_BANK", FEE_BANK_DUMMY_ADDRESS),
+        ("uint", "SOME_UINT", scale(2, 16)),
+        ("address", "SOME_ADDRESS", DUMMY_ADDRESS),
     ],
 )
 def test_set_config(admin, alice, gyro_config, config_type, plain_key, value):
@@ -44,7 +44,7 @@ def test_set_config(admin, alice, gyro_config, config_type, plain_key, value):
     with reverts(error_codes.NOT_AUTHORIZED):
         setter(key, value, {"from": alice})
 
-    other_value_type = scale(1) if isinstance(value, str) else FEE_BANK_DUMMY_ADDRESS
+    other_value_type = scale(1) if isinstance(value, str) else DUMMY_ADDRESS
     other_type = "address" if config_type == "uint" else "uint"
     other_setter = getattr(gyro_config, "set" + other_type.capitalize())
 
@@ -55,8 +55,8 @@ def test_set_config(admin, alice, gyro_config, config_type, plain_key, value):
 @pytest.mark.parametrize(
     "config_type,plain_key,value",
     [
-        ("uint", "MINT_FEE", scale(2, 16)),
-        ("address", "FEE_BANK", FEE_BANK_DUMMY_ADDRESS),
+        ("uint", "SOME_UINT", scale(2, 16)),
+        ("address", "SOME_ADDRESS", DUMMY_ADDRESS),
     ],
 )
 def test_unset_config(admin, gyro_config, config_type, plain_key, value):
@@ -81,8 +81,8 @@ def test_unset_config(admin, gyro_config, config_type, plain_key, value):
 @pytest.mark.parametrize(
     "config_type,plain_key,value",
     [
-        ("uint", "MINT_FEE", scale(2, 16)),
-        ("address", "FEE_BANK", FEE_BANK_DUMMY_ADDRESS),
+        ("uint", "SOME_UINT", scale(2, 16)),
+        ("address", "SOME_ADDRESS", DUMMY_ADDRESS),
     ],
 )
 def test_freeze_config(admin, gyro_config, config_type, plain_key, value):

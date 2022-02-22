@@ -3,43 +3,58 @@ from unittest.mock import Mock
 
 import pytest
 from brownie import accounts
-from tests.fixtures.mainnet_contracts import (ChainlinkFeeds, TokenAddresses,
-                                              UniswapPools)
-from tests.support import constants
+from tests.fixtures.mainnet_contracts import (
+    ChainlinkFeeds,
+    TokenAddresses,
+    UniswapPools,
+)
+from tests.support import config_keys, constants
 from tests.support.utils import scale
 
-MotherboardArgs = namedtuple(
-    "MotherboardArgs",
-    [
-        "gydToken",
-        "exchangerRegistry",
-        "pamm",
-        "gyroConfig",
-        "feeBank",
-        "reserve",
-        "priceOracle",
-    ],
-)
+
+@pytest.fixture(scope="module")
+def vault_registry(admin, VaultRegistry, gyro_config):
+    vault_registry = admin.deploy(VaultRegistry, gyro_config)
+    gyro_config.setAddress(config_keys.VAULT_REGISTRY_ADDRESS, vault_registry)
+    return vault_registry
 
 
 @pytest.fixture(scope="module")
-def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry):
-    return admin.deploy(LPTokenExchangerRegistry)
+def vault_manager(admin, VaultManager, gyro_config, request):
+    dependencies = ["reserve", "mock_price_oracle", "vault_registry"]
+    for dep in dependencies:
+        request.getfixturevalue(dep)
+    vault_manager = admin.deploy(VaultManager, gyro_config)
+    gyro_config.setAddress(config_keys.VAULT_MANAGER_ADDRESS, vault_manager)
+    return vault_manager
 
 
 @pytest.fixture(scope="module")
-def gyd_token(admin, ERC20):
-    return admin.deploy(ERC20, "GYD Token", "GYD")
+def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry, gyro_config):
+    exchanger_registry = admin.deploy(LPTokenExchangerRegistry)
+    gyro_config.setAddress(config_keys.EXCHANGER_REGISTRY_ADDRESS, exchanger_registry)
+    return exchanger_registry
 
 
 @pytest.fixture(scope="module")
-def fee_bank(admin, FeeBank):
-    return admin.deploy(FeeBank)
+def gyd_token(admin, GydToken, gyro_config):
+    gyd_token = admin.deploy(GydToken, "GYD Token", "GYD")
+    gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token)
+    return gyd_token
 
 
 @pytest.fixture(scope="module")
-def reserve(admin, Reserve):
-    return admin.deploy(Reserve)
+def fee_bank(admin, FeeBank, gyro_config):
+    fee_bank = admin.deploy(FeeBank)
+    gyro_config.setAddress(config_keys.FEE_BANK_ADDRESS, fee_bank)
+    return fee_bank
+
+
+@pytest.fixture(scope="module")
+def reserve(admin, Reserve, gyro_config):
+    reserve = admin.deploy(Reserve)
+    gyro_config.setAddress(config_keys.RESERVE_ADDRESS, reserve)
+    return reserve
 
 
 @pytest.fixture(scope="module")
@@ -79,64 +94,77 @@ def bal_pool_registry(admin, BalancerPoolRegistry):
 
 @pytest.fixture(scope="module")
 def gyro_config(admin, GyroConfig):
-    return admin.deploy(GyroConfig)
+    config = admin.deploy(GyroConfig)
+    config.setUint(config_keys.MINT_FEE, 0)
+    return config
 
 
 @pytest.fixture(scope="module")
 def dai(Token):
-    token = Token.deploy("Dai Token", "DAI", 18, 1e20, {"from": accounts[0]})
+    token = Token.deploy("Dai Token", "DAI", 18, scale(10_000), {"from": accounts[0]})
     for i in range(1, 10):
-        token.transfer(accounts[i], 100, {"from": accounts[0]})
+        token.transfer(accounts[i], scale(100), {"from": accounts[0]})
     yield token
+
 
 @pytest.fixture(scope="module")
 def sdt(Token):
-    token = Token.deploy("SDT Token", "SDT", 18, 1e20, {"from": accounts[0]})
+    token = Token.deploy("SDT Token", "SDT", 18, scale(10_000), {"from": accounts[0]})
     for i in range(1, 10):
-        token.transfer(accounts[i], 100, {"from": accounts[0]})
+        token.transfer(accounts[i], scale(100), {"from": accounts[0]})
     yield token
+
 
 @pytest.fixture(scope="module")
 def abc(Token):
-    token = Token.deploy("ABC Token", "ABC", 18, 1e20, {"from": accounts[0]})
+    token = Token.deploy("ABC Token", "ABC", 18, scale(10_000), {"from": accounts[0]})
     for i in range(1, 10):
-        token.transfer(accounts[i], 100, {"from": accounts[0]})
+        token.transfer(accounts[i], scale(100), {"from": accounts[0]})
     yield token
+
 
 @pytest.fixture(scope="module")
 def usdc(Token):
-    token = Token.deploy("USDC Token", "USDC", 6, 1e20, {"from": accounts[0]})
+    token = Token.deploy(
+        "USDC Token", "USDC", 6, scale(10_000, 6), {"from": accounts[0]}
+    )
     for i in range(1, 10):
-        token.transfer(accounts[i], 100, {"from": accounts[0]})
+        token.transfer(accounts[i], scale(100, 6), {"from": accounts[0]})
     yield token
 
 
 @pytest.fixture(scope="module")
 def usdt(Token):
-    token = Token.deploy("Tether", "USDT", 6, 1e20, {"from": accounts[0]})
+    token = Token.deploy("Tether", "USDT", 6, scale(10_000, 6), {"from": accounts[0]})
     for i in range(1, 10):
-        token.transfer(accounts[i], 100, {"from": accounts[0]})
+        token.transfer(accounts[i], scale(100, 6), {"from": accounts[0]})
     yield token
 
 
 @pytest.fixture(scope="module")
 def lp_token(Token):
-    yield Token.deploy("LP Token", "LPT", 18, 1e20, {"from": accounts[0]})
+    yield Token.deploy("LP Token", "LPT", 18, scale(10_000), {"from": accounts[0]})
 
 
 @pytest.fixture(scope="module")
-def mock_pamm(admin, MockPAMM):
-    return admin.deploy(MockPAMM)
+def mock_pamm(admin, MockPAMM, gyro_config):
+    pamm = admin.deploy(MockPAMM)
+    gyro_config.setAddress(config_keys.PAMM_ADDRESS, pamm)
+    return pamm
 
 
 @pytest.fixture(scope="module")
-def mock_price_oracle(admin, MockPriceOracle):
-    return admin.deploy(MockPriceOracle)
+def mock_price_oracle(admin, MockPriceOracle, gyro_config):
+    mock_price_oracle = admin.deploy(MockPriceOracle)
+    gyro_config.setAddress(config_keys.ROOT_PRICE_ORACLE_ADDRESS, mock_price_oracle)
+    return mock_price_oracle
 
 
 @pytest.fixture(scope="module")
-def asset_pricer(admin, AssetPricer, mock_price_oracle):
-    return admin.deploy(AssetPricer, mock_price_oracle)
+def asset_pricer(admin, AssetPricer, gyro_config):
+    asset_pricer = admin.deploy(AssetPricer, gyro_config)
+    gyro_config.setAddress(config_keys.ASSET_PRICER_ADDRESS, asset_pricer)
+    return asset_pricer
 
 
 @pytest.fixture(scope="module")
@@ -210,27 +238,29 @@ def mainnet_checked_price_oracle(
 
 
 @pytest.fixture(scope="module")
-def motherboard(
-    admin,
-    Motherboard,
-    gyd_token,
-    fee_bank,
-    gyro_config,
-    lp_token_exchanger_registry,
-    mock_pamm,
-    reserve,
-    mock_price_oracle,
-):
-    args = MotherboardArgs(
-        gydToken=gyd_token,
-        exchangerRegistry=lp_token_exchanger_registry,
-        pamm=mock_pamm,
-        gyroConfig=gyro_config,
-        feeBank=fee_bank,
-        reserve=reserve,
-        priceOracle=mock_price_oracle,
-    )
-    return admin.deploy(Motherboard, args)
+def root_safety_check(admin, RootSafetyCheck, gyro_config):
+    safety_check = admin.deploy(RootSafetyCheck)
+    gyro_config.setAddress(config_keys.ROOT_SAFETY_CHECK_ADDRESS, safety_check)
+    return safety_check
+
+
+@pytest.fixture(scope="module")
+def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
+    extra_dependencies = [
+        "fee_bank",
+        "lp_token_exchanger_registry",
+        "mock_pamm",
+        "mock_price_oracle",
+        "vault_manager",
+        "asset_pricer",
+        "root_safety_check",
+    ]
+    for dep in extra_dependencies:
+        request.getfixturevalue(dep)
+    motherboard = admin.deploy(Motherboard, gyro_config)
+    gyd_token.grantRole(gyd_token.MINTER_ROLE(), motherboard, {"from": admin})
+    reserve.addManager(motherboard, {"from": admin})
+    return motherboard
 
 
 @pytest.fixture(scope="module")
@@ -245,7 +275,6 @@ def pamm(TestingPAMMV1):
 def reserve_safety_manager(
     admin,
     TestingReserveSafetyManager,
-    mock_balancer_vault,
     mock_price_oracle,
     asset_registry,
 ):
@@ -254,7 +283,6 @@ def reserve_safety_manager(
         constants.MAX_ALLOWED_VAULT_DEVIATION,
         constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
-        mock_balancer_vault,
         mock_price_oracle,
         asset_registry,
     )
@@ -272,3 +300,25 @@ def set_data_for_mock_bal_vault(
     mock_balancer_vault.storePoolAddress(
         constants.BALANCER_POOL_ID_2, mock_balancer_pool_two
     )
+
+
+@pytest.fixture(scope="module")
+def underlying(request):
+    return request.getfixturevalue(request.param)
+
+
+@pytest.fixture(scope="module")
+def decimals(underlying, interface):
+    return interface.ERC20(underlying).decimals()
+
+
+@pytest.fixture(scope="module")
+def vault(admin, BaseVault, underlying):
+    return admin.deploy(BaseVault, underlying, "Base Vault Token", "BVT")
+
+
+# NOTE: this is a vault that contains only USDC as underlying
+# this is for testing purposes only
+@pytest.fixture(scope="module")
+def usdc_vault(admin, BaseVault, usdc):
+    return admin.deploy(BaseVault, usdc, "USDC Vault", "gUSDC")

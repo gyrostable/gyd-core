@@ -50,7 +50,7 @@ def st_scaled_decimals(
 def st_params(draw):
     alpha_bar = draw(st_scaled_decimals(scale("0.01"), scale(1)))
     xu_bar = draw(st_scaled_decimals(scale("0.01"), scale(1), max_exclusive=True))
-    theta_bar_min = int((1 - math.sqrt(2 * alpha_bar / 10 ** 18)) * 10 ** 18)
+    theta_bar_min = int((1 - math.sqrt(2 * alpha_bar / 10**18)) * 10**18)
     theta_bar = draw(
         st_scaled_decimals(
             max(theta_bar_min, scale("0.01")), scale(1), max_exclusive=True
@@ -65,10 +65,10 @@ def st_baya(draw, theta_floor):
     # Unclear if these actually point to a problem.
     ya = draw(st_scaled_decimals(scale("0.01"), scale(5), min_exclusive=True))
     # We only test the interesting, open bit here
-    assume(ya * theta_floor / 10 ** 18 + 10 ** 9 < ya - 10 ** 9)
+    assume(ya * theta_floor / 10**18 + 10**9 < ya - 10**9)
     ba = draw(
         st_scaled_decimals(
-            ya * theta_floor / 10 ** 18 + 10 ** 9, ya - 10 ** 9, exclusive=True
+            ya * theta_floor / 10**18 + 10**9, ya - 10**9, exclusive=True
         )
     )
     return ba, ya
@@ -125,16 +125,18 @@ def test_compute_derived_params(pamm, alpha_min):
     ) = tuple(int(v) for v in pamm.computeDerivedParams())
     assert baThresholdRegionI == scale(pyparams.ba_threshold_region_I)
     assert baThresholdRegionII == scale(pyparams.ba_threshold_region_II)
-    assert xlThresholdAtThresholdI == pytest.approx(
-        scale(pyparams.xl_threshold_at_threshold_I)
+    assert (
+        xlThresholdAtThresholdI
+        == scale(pyparams.xl_threshold_at_threshold_I).approxed()
     )
-    assert xlThresholdAtThresholdII == pytest.approx(
-        scale(pyparams.xl_threshold_at_threshold_II)
+    assert (
+        xlThresholdAtThresholdII
+        == scale(pyparams.xl_threshold_at_threshold_II).approxed()
     )
     assert baThresholdIIHL == scale(pyparams.ba_threshold_II_hl)
     assert xuThresholdIIHL == scale(pyparams.xu_threshold_II_hl)
     # NOTE: 1 difference, likely because of square root approximation
-    assert xlThresholdIIHL == pytest.approx(scale(pyparams.xl_threshold_II_hl))
+    assert xlThresholdIIHL == scale(pyparams.xl_threshold_II_hl).approxed()
     assert baThresholdIIIHL == scale(pyparams.ba_threshold_III_hl)
     assert alphaThresholdIIIHL == scale(pyparams.slope_threshold_III_HL)
     assert xlThresholdIIIHL == scale(pyparams.xl_threshold_III_HL)
@@ -302,7 +304,7 @@ def run_path_independence_test(
     # These two are the actual meat (and they're also kinda equivalent):
     # values are scaled to 10^18 so we allow for some absolute error of 10^-8
     # as there might be some small differences because of root computations etc
-    assert int(b) == pytest.approx(b2, abs=10 ** 10)
+    assert int(b) == pytest.approx(b2, abs=10**10)
     assert int(redeem_tx.return_value) == pytest.approx(
-        redeem1_tx.return_value + redeem2_tx.return_value, abs=10 ** 10
+        redeem1_tx.return_value + redeem2_tx.return_value, abs=10**10
     )

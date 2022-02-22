@@ -9,9 +9,18 @@ pytest_plugins = [
 ]
 
 
-@pytest.fixture(scope="module")
-def admin(accounts):
-    return accounts[0]
+def pytest_addoption(parser):
+    parser.addoption("--underlying", help="only run tests for given underlying")
+
+
+def pytest_generate_tests(metafunc):
+    if "underlying" in metafunc.fixturenames:
+        underlying = metafunc.config.getoption("underlying")
+        if underlying:
+            underlying = underlying.split(",")
+        else:
+            underlying = ["dai", "usdc", "usdt"]
+        metafunc.parametrize("underlying", underlying, indirect=True, scope="module")
 
 
 @pytest.fixture(autouse=True)

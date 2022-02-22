@@ -59,7 +59,7 @@ abstract contract BaseVaultRouter is IGyroVaultRouter {
         view
         returns (address[] memory)
     {
-        address lpToken = IGyroVault(vaultAddress).lpToken();
+        address lpToken = IGyroVault(vaultAddress).underlying();
         ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpToken);
         return exchanger.getSupportedTokens();
     }

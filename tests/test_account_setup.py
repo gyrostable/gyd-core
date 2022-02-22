@@ -1,31 +1,25 @@
-import brownie
+from brownie.test.managers.runner import RevertContextManager as reverts
 import pytest
 
-# NOTE: needed to avoid instantiating the fitures from within fn_isolation
-# because features are dynamically loaded within the parameterized tests
-pytestmark = pytest.mark.usefixtures("usdc", "usdt", "dai")
+from tests.support.utils import scale
 
 
-@pytest.mark.parametrize("token_name", ["dai", "usdc", "usdt"])
-def test_transfer_adjusts_sender_balance(accounts, token_name, request):
-    token = request.getfixturevalue(token_name)
-    balance = token.balanceOf(accounts[0])
-    token.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
+def test_transfer_adjusts_sender_balance(accounts, underlying, decimals):
+    balance = underlying.balanceOf(accounts[0])
+    underlying.transfer(accounts[1], scale(10, decimals), {"from": accounts[0]})
 
-    assert token.balanceOf(accounts[0]) == balance - 10 ** 18
+    assert underlying.balanceOf(accounts[0]) == balance - scale(10, decimals)
 
 
-@pytest.mark.parametrize("token_name", ["dai", "usdc", "usdt"])
-def test_transfer_adjusts_receiver_balance(accounts, token_name, request):
-    token = request.getfixturevalue(token_name)
-    balance = token.balanceOf(accounts[1])
-    token.transfer(accounts[1], 10 ** 18, {"from": accounts[0]})
+def test_transfer_adjusts_receiver_balance(accounts, underlying, decimals):
+    balance = underlying.balanceOf(accounts[1])
+    underlying.transfer(accounts[1], scale(10, decimals), {"from": accounts[0]})
 
-    assert token.balanceOf(accounts[1]) == balance + 10 ** 18
+    assert underlying.balanceOf(accounts[1]) == balance + scale(10, decimals)
 
 
-@pytest.mark.parametrize("token_name", ["dai", "usdc", "usdt"])
-def test_transfer_fails_from_insufficient_balance(accounts, token_name, request):
-    token = request.getfixturevalue(token_name)
-    with brownie.reverts("ERC20: transfer amount exceeds balance"):
-        token.transfer(accounts[2], 10 ** 18, {"from": accounts[1]})
+def test_transfer_fails_from_insufficient_balance(accounts, underlying, decimals):
+    with reverts("ERC20: transfer amount exceeds balance"):
+        underlying.transfer(
+            accounts[2], scale(100, decimals) + 1, {"from": accounts[1]}
+        )
