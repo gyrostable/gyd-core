@@ -5,7 +5,7 @@ import "../../interfaces/balancer/IVault.sol";
 
 import "./BaseVault.sol";
 
-contract BalancerVault is BaseVault {
+contract BalancerPoolVault is BaseVault {
     /// @notice Balancer pool ID
     bytes32 public immutable poolId;
 
