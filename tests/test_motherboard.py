@@ -14,9 +14,7 @@ def set_mock_oracle_prices(mock_price_oracle, usdc, usdc_vault):
 
 @pytest.fixture
 def register_usdc_vault(vault_registry, usdc_vault, admin):
-    vault_registry.registerVault(
-        usdc_vault, scale(1), format_to_bytes("0", 32), {"from": admin}
-    )
+    vault_registry.registerVault(usdc_vault, scale(1), {"from": admin})
 
 
 @pytest.mark.usefixtures("set_mock_oracle_prices", "register_usdc_vault")

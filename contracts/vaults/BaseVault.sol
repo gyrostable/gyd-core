@@ -27,6 +27,19 @@ contract BaseVault is IGyroVault, ERC20 {
         underlying = _underlying;
     }
 
+    /// @inheritdoc IGyroVault
+    function vaultType() external pure virtual override returns (VaultType) {
+        return VaultType.GENERIC;
+    }
+
+    /// @inheritdoc IGyroVault
+    function getTokens() external view virtual override returns (IERC20[] memory) {
+        IERC20[] memory tokens = new IERC20[](1);
+        tokens[0] = IERC20(underlying);
+        return tokens;
+    }
+
+    /// @inheritdoc IERC20Metadata
     function decimals() public view virtual override(ERC20, IERC20Metadata) returns (uint8) {
         return IERC20Metadata(underlying).decimals();
     }

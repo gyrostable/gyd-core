@@ -9,8 +9,23 @@ import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 /// deposited in the vault
 /// A vault can be associated with a strategy to generate yield on the deposited funds
 interface IGyroVault is IERC20Metadata {
+    enum VaultType {
+        GENERIC,
+        BALANCER
+    }
+
     /// @return The token associated with this vault
+    function vaultType() external view returns (VaultType);
+
+    /// @return The token associated with this vault
+    /// This can be any type of token but will likely be an LP token in practice
     function underlying() external view returns (address);
+
+    /// @return The token associated with this vault
+    /// In the case of an LP token, this will be the underlying tokens
+    /// associated to it (e.g. [ETH, DAI] for a ETH/DAI pool LP token or [USDC] for aUSDC)
+    /// In most cases, the tokens returned will not be LP tokens
+    function getTokens() external view returns (IERC20[] memory);
 
     /// @return The total amount of underlying tokens in the vault
     function totalUnderlying() external view returns (uint256);
