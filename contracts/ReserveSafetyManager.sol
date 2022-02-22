@@ -21,7 +21,6 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     uint256 public stablecoinMaxDeviation;
     uint256 public minTokenPrice;
 
-    IVault internal balancerVault;
     IUSDPriceOracle internal priceOracle;
     IAssetRegistry internal assetRegistry;
 
@@ -52,14 +51,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         uint256 _maxAllowedVaultDeviation,
         uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice,
-        IVault _balancerVault,
         IUSDPriceOracle _priceOracle,
         IAssetRegistry _assetRegistry
     ) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;
-        balancerVault = _balancerVault;
         priceOracle = _priceOracle;
         assetRegistry = _assetRegistry;
     }

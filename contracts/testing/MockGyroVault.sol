@@ -14,9 +14,10 @@ contract MockGyroVault is IGyroVault, ERC20 {
 
     address internal _strategy;
     address internal _underlying;
+    IERC20[] internal _tokens;
 
-    constructor(address lpToken_) ERC20("Vault", "VLT") {
-        _underlying = lpToken_;
+    constructor(address underlying_) ERC20("Vault", "VLT") {
+        _underlying = underlying_;
     }
 
     function vaultType() external pure override returns (VaultType) {
@@ -24,9 +25,11 @@ contract MockGyroVault is IGyroVault, ERC20 {
     }
 
     function getTokens() external view override returns (IERC20[] memory) {
-        IERC20[] memory tokens = new IERC20[](1);
-        tokens[0] = IERC20(_underlying);
-        return tokens;
+        return _tokens;
+    }
+
+    function setTokens(IERC20[] calldata tokens) external {
+        _tokens = tokens;
     }
 
     function underlying() external view override returns (address) {
