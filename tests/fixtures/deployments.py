@@ -161,13 +161,6 @@ def mock_price_oracle(admin, MockPriceOracle, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def asset_pricer(admin, AssetPricer, gyro_config):
-    asset_pricer = admin.deploy(AssetPricer, gyro_config)
-    gyro_config.setAddress(config_keys.ASSET_PRICER_ADDRESS, asset_pricer)
-    return asset_pricer
-
-
-@pytest.fixture(scope="module")
 def asset_registry(admin, AssetRegistry):
     return admin.deploy(AssetRegistry)
 
@@ -252,7 +245,6 @@ def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
         "mock_pamm",
         "mock_price_oracle",
         "vault_manager",
-        "asset_pricer",
         "root_safety_check",
     ]
     for dep in extra_dependencies:

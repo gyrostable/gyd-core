@@ -6,6 +6,11 @@ from tests.support.utils import scale
 
 
 @pytest.fixture(scope="module")
+def asset_pricer(admin, TestingAssetPricer, mock_price_oracle):
+    return admin.deploy(TestingAssetPricer, mock_price_oracle)
+
+
+@pytest.fixture(scope="module")
 def asset_1(Token, admin):
     return admin.deploy(Token, "Asset 1", "A1", 18, scale(10_000))
 

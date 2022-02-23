@@ -12,7 +12,6 @@ import "../interfaces/IPAMM.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeBank.sol";
-import "../interfaces/IAssetPricer.sol";
 import "../interfaces/oracles/IUSDPriceOracle.sol";
 
 import "../libraries/DataTypes.sol";
@@ -21,6 +20,7 @@ import "../libraries/ConfigHelpers.sol";
 import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/DecimalScale.sol";
+import "../libraries/AssetPricer.sol";
 
 import "./auth/Governable.sol";
 
@@ -32,6 +32,7 @@ contract Motherboard is IMotherBoard, Governable {
     using SafeERC20 for IERC20;
     using SafeERC20 for IGYDToken;
     using ConfigHelpers for IGyroConfig;
+    using AssetPricer for IUSDPriceOracle;
 
     /// @inheritdoc IMotherBoard
     IGYDToken public immutable override gydToken;
@@ -69,7 +70,7 @@ contract Motherboard is IMotherBoard, Governable {
         }
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        uint256 usdValue = gyroConfig.getAssetPricer().getBasketUSDValue(vaultAmounts);
+        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
         uint256 gyroToMint = pamm().mint(usdValue);
 
         uint256 feeToPay = gyroToMint.mulUp(mintFeeFraction);
@@ -117,7 +118,7 @@ contract Motherboard is IMotherBoard, Governable {
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        uint256 usdValue = gyroConfig.getAssetPricer().getBasketUSDValue(vaultAmounts);
+        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
         mintedGYDAmount = pamm().computeMintAmount(usdValue);
 
         uint256 feeToPay = mintedGYDAmount.mulUp(mintFeeFraction);
