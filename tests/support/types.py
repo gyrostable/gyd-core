@@ -1,6 +1,7 @@
 from collections import namedtuple
+from decimal import Decimal
 
-from typing import NamedTuple
+from typing import List, NamedTuple
 
 from tests.support.quantized_decimal import DecimalLike
 
@@ -34,3 +35,10 @@ class Vector2(NamedTuple):
 class CEMMMathDerivedParams(NamedTuple):
     tauAlpha: Vector2
     tauBeta: Vector2
+
+
+class JoinPoolRequest(NamedTuple):
+    assets: List[str]
+    max_amounts_in: List[int]
+    user_data: bytes
+    from_internal_balancer: bool = False

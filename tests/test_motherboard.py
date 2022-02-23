@@ -1,20 +1,29 @@
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
+from eth_abi.abi import encode_abi
 
-from tests.support import error_codes
-from tests.support.types import MintAsset, RedeemAsset
-from tests.support.utils import format_to_bytes, scale
+from tests.support import constants, error_codes
+from tests.support.types import JoinPoolRequest, MintAsset, RedeemAsset
+from tests.support.utils import scale
 
 
 @pytest.fixture(scope="module")
-def set_mock_oracle_prices(mock_price_oracle, usdc, usdc_vault):
+def set_mock_oracle_prices(mock_price_oracle, usdc, usdc_vault, dai, dai_vault):
     mock_price_oracle.setUSDPrice(usdc, scale(1))
     mock_price_oracle.setUSDPrice(usdc_vault, scale(1))
+    mock_price_oracle.setUSDPrice(dai, scale(1))
+    mock_price_oracle.setUSDPrice(dai_vault, scale(1))
 
 
 @pytest.fixture
 def register_usdc_vault(vault_registry, usdc_vault, admin):
     vault_registry.registerVault(usdc_vault, scale(1), {"from": admin})
+
+
+@pytest.fixture
+def register_usdc_and_dai_vaults(vault_registry, usdc_vault, dai_vault, admin):
+    vault_registry.registerVault(dai_vault, scale("0.6"), {"from": admin})
+    vault_registry.registerVault(usdc_vault, scale("0.4"), {"from": admin})
 
 
 @pytest.mark.usefixtures("set_mock_oracle_prices", "register_usdc_vault")
@@ -41,6 +50,26 @@ def test_mint_vault_underlying(motherboard, usdc, usdc_vault, alice, gyd_token):
     gyd_minted = tx.return_value
     assert gyd_token.balanceOf(alice) == scale(10)
     assert gyd_minted == scale(10)
+
+
+@pytest.mark.usefixtures("set_mock_oracle_prices", "register_usdc_and_dai_vaults")
+def test_mint_using_multiple_assets(
+    motherboard, usdc, usdc_vault, dai, dai_vault, gyd_token, alice
+):
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    dai_amount = scale(5, dai.decimals())
+    dai.approve(motherboard, dai_amount, {"from": alice})
+    mint_assets = [
+        MintAsset(
+            inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+        ),
+        MintAsset(inputToken=dai, inputAmount=dai_amount, destinationVault=dai_vault),
+    ]
+    tx = motherboard.mint(mint_assets, 0, {"from": alice})
+    gyd_minted = tx.return_value
+    assert gyd_token.balanceOf(alice) == scale(15)
+    assert gyd_minted == scale(15)
 
 
 @pytest.mark.usefixtures("set_mock_oracle_prices", "register_usdc_vault")
@@ -166,3 +195,32 @@ def test_redeem_invalid_ratio(motherboard, usdc, usdc_vault, alice, value_ratio)
     )
     with reverts(error_codes.INVALID_ARGUMENT):
         motherboard.redeem(scale(10), [redeem_asset], {"from": alice})
+
+
+@pytest.mark.mainetFork
+def test_simple_mint_bpt(motherboard, balancer_vault, interface, alice, dai):
+    eth_amount = scale("0.01")
+    dai_amount = scale(50)
+
+    weth = interface.IWETH(constants.WETH_ADDRESS)
+    weth.deposit({"from": alice, "value": eth_amount})
+    join_kind = 1  # EXACT_TOKENS_IN_FOR_BPT_OUT
+    balances = [int(eth_amount), int(dai_amount)]
+    abi = ["uint256", "uint256[]", "uint256"]
+    data = [join_kind, balances, 0]
+    encoded_user_data = encode_abi(abi, data)
+
+    weth.approve(motherboard, eth_amount, {"from": alice})
+    dai.approve(motherboard, dai_amount, {"from": alice})
+
+    tx = balancer_vault.joinPool(
+        constants.BALANCER_POOL_IDS["WETH_DAI"],
+        alice,
+        alice,
+        JoinPoolRequest(
+            [constants.WETH_ADDRESS, constants.DAI_ADDRESS],
+            balances,
+            encoded_user_data,
+        ),
+        {"from": alice},
+    )
