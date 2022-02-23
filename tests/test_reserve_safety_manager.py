@@ -40,6 +40,7 @@ def vault_builder(price_generator, amount_generator, weight_generator):
         price_generator,
         persisted_metadata,
         amount_generator,
+        weight_generator,
     )
     return (vault_info, amount_generator)
 
@@ -55,6 +56,7 @@ def vault_builder_two(price_generator, amount_generator, weight_generator):
         price_generator,
         persisted_metadata,
         amount_generator,
+        weight_generator,
     )
     return (vault_info, amount_generator)
 
@@ -204,7 +206,13 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
 
 
 def order_builder(
-    mint, initial_price, initial_weight, reserve_balance, current_vault_price, amount
+    mint,
+    initial_price,
+    initial_weight,
+    reserve_balance,
+    current_vault_price,
+    amount,
+    current_weight,
 ):
     vaults_with_amount = []
 
@@ -221,6 +229,7 @@ def order_builder(
             current_vault_price[i],
             persisted_metadata,
             reserve_balance[i],
+            current_weight[i],
         )
 
         vault = (vault_info, amount[i])
@@ -240,6 +249,7 @@ def order_builder(
             amount_generator,
             price_generator,
             amount_generator,
+            weight_generator,
         ),
         min_size=1,
         max_size=15,
@@ -248,9 +258,14 @@ def order_builder(
 def test_build_metadata(reserve_safety_manager, order_bundle):
     if not order_bundle:
         return
-    (initial_price, initial_weight, reserve_balance, current_vault_price, amount) = [
-        list(v) for v in zip(*order_bundle)
-    ]
+    (
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    ) = [list(v) for v in zip(*order_bundle)]
 
     mint_order = order_builder(
         True,
@@ -259,6 +274,7 @@ def test_build_metadata(reserve_safety_manager, order_bundle):
         reserve_balance,
         current_vault_price,
         amount,
+        current_weight,
     )
 
     metadata = reserve_safety_manager.buildMetaData(mint_order)
@@ -635,32 +651,18 @@ def test_safe_to_execute_outside_epsilon(bundle_metadata, reserve_safety_manager
         return
     metadata = bundle_to_metadata(bundle_metadata)
 
-    if metadata[4] == True:
-        expected = True
-        for vault in metadata[0]:
-            if vault[6] == True:
-                continue
-            if vault[4] > vault[1]:
-                expected = False
+    expected = True
+    for vault in metadata[0]:
+        if vault[8]:
+            continue
+        resulting_to_ideal = abs(vault[3] - vault[1])
+        current_to_ideal = abs(vault[2] - vault[1])
+        if resulting_to_ideal >= current_to_ideal:
+            expected = False
 
-        result_sol = reserve_safety_manager.safeToExecuteOutsideEpsilon(metadata)
+    result_sol = reserve_safety_manager.safeToExecuteOutsideEpsilon(metadata)
 
-        if expected == False:
-            assert result_sol == expected
-
-    if metadata[4] == False:
-        expected = True
-        for vault in metadata[0]:
-            if vault[8]:
-                continue
-            resulting_to_ideal = abs(vault[3] - vault[1])
-            current_to_ideal = abs(vault[2] - vault[1])
-            if resulting_to_ideal >= current_to_ideal:
-                expected = False
-
-        result_sol = reserve_safety_manager.safeToExecuteOutsideEpsilon(metadata)
-
-        assert expected == result_sol
+    assert expected == result_sol
 
 
 @given(

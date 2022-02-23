@@ -183,7 +183,7 @@ def is_redeem_safe(order: List[Tuple]) -> str:
     return "52"
 
 
-def update_vault_with_price_safety(vault_metadata):
+def update_vault_with_price_safety(vault_metadata: List):
     pass
 
 

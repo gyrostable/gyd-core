@@ -238,27 +238,27 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         }
     }
 
-    /// @notice given input _vaultData, updates it with the information about whether the vault contains assets
+    /// @notice given input vaultMetadata, updates it with the information about whether the vault contains assets
     /// with safe prices. For a stablecoin, safe means the asset is sufficiently close to the peg. For a
     /// vault consisting of entirely non-stablecoin assets, this means that all of the prices are not 'dust',
     /// to avoid numerical error.
-    /// @param vaultData a VaultMetadata struct containing information for a particular vault.
-    function _updateVaultWithPriceSafety(VaultMetadata memory vaultData) internal view {
-        (IERC20[] memory tokens, , ) = balancerVault.getPoolTokens(vaultData.underlyingPoolId);
+    /// @param vaultMetadata a VaultMetadata struct containing information for a particular vault.
+    function _updateVaultWithPriceSafety(VaultMetadata memory vaultMetadata) internal view {
+        (IERC20[] memory tokens, , ) = balancerVault.getPoolTokens(vaultMetadata.underlyingPoolId);
 
-        vaultData.allStablecoinsOnPeg = true;
-        vaultData.allTokenPricesLargeEnough = false;
+        vaultMetadata.allStablecoinsOnPeg = true;
+        vaultMetadata.allTokenPricesLargeEnough = false;
         for (uint256 i = 0; i < tokens.length; i++) {
             address tokenAddress = address(tokens[i]);
             uint256 tokenPrice = priceOracle.getPriceUSD(tokenAddress);
 
             if (assetRegistry.isAssetStable(tokenAddress)) {
-                vaultData.allTokenPricesLargeEnough = true;
+                vaultMetadata.allTokenPricesLargeEnough = true;
                 if (tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
-                    vaultData.allStablecoinsOnPeg = false;
+                    vaultMetadata.allStablecoinsOnPeg = false;
                 }
             } else if (tokenPrice >= minTokenPrice) {
-                vaultData.allTokenPricesLargeEnough = true;
+                vaultMetadata.allTokenPricesLargeEnough = true;
             }
         }
     }
@@ -284,16 +284,8 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// @notice given input metadata,
     /// @param metaData a metadata struct containing all the vault information, updated with price safety and the
     /// status of the vault regarding whether it is within epsilon.
-
-    /// If minting, there are two requirements for this function to return true: (i) that if the stablecoin is off peg,
-    /// then the weight of the delta is equal to or less than the ideal weight (and therefore the amount above epsilon is
-    /// decreasing) and (ii) for any individual vault that is outside of epsilon, that the resulting weight would be
-    /// closer to the ideal weight than the current weight.
-
-    /// If redeeming, then there is a single requirement for this function to return true: that for any vault that is
-    /// outside of epsilon, the resulting weight would be closer to the ideal weight than the current weight.
     /// @return bool equal to true if for any pool that is outside of epsilon, the weight after the mint/redeem will
-    /// be closer to the ideal weight than the current weight is, i.e., the operation rebalances.
+    /// be closer to the ideal weight than the current weight is, i.e., the operation promotes rebalancing.
     function _safeToExecuteOutsideEpsilon(MetaData memory metaData) internal pure returns (bool) {
         //Check that amount above maxAllowedVaultDeviation is decreasing
         //Check that unhealthy pools have input weight below ideal weight
@@ -301,16 +293,18 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         //note: should always be able to mint at the ideal weights!
 
         for (uint256 i; i < metaData.vaultMetadata.length; i++) {
-            VaultMetadata memory vaultData = metaData.vaultMetadata[i];
+            VaultMetadata memory vaultMetadata = metaData.vaultMetadata[i];
 
-            if (vaultData.vaultWithinEpsilon) {
+            if (vaultMetadata.vaultWithinEpsilon) {
                 continue;
             }
 
-            uint256 distanceResultingToIdeal = vaultData.resultingWeight.absSub(
-                vaultData.idealWeight
+            uint256 distanceResultingToIdeal = vaultMetadata.resultingWeight.absSub(
+                vaultMetadata.idealWeight
             );
-            uint256 distanceCurrentToIdeal = vaultData.currentWeight.absSub(vaultData.idealWeight);
+            uint256 distanceCurrentToIdeal = vaultMetadata.currentWeight.absSub(
+                vaultMetadata.idealWeight
+            );
 
             if (distanceResultingToIdeal >= distanceCurrentToIdeal) {
                 return false;
