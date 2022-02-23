@@ -292,6 +292,7 @@ contract Motherboard is IMotherBoard, Governable {
             vaultsWithAmount: new ISafetyCheck.VaultWithAmount[](assets.length)
         });
 
+        DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
         uint256 totalValueRatio = 0;
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.RedeemAsset memory asset = assets[i];
@@ -304,10 +305,7 @@ contract Motherboard is IMotherBoard, Governable {
             uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vault.decimals());
             order.vaultsWithAmount[i] = ISafetyCheck.VaultWithAmount({
                 amount: scaledVaultTokenAmount,
-                vaultInfo: _getVaultInfo(
-                    asset.originVault,
-                    gyroConfig.getVaultManager().listVaults()
-                )
+                vaultInfo: _getVaultInfo(asset.originVault, vaultsInfo)
             });
         }
 
