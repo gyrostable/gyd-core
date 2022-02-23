@@ -9,7 +9,12 @@ from tests.reserve.reserve_math_implementation import (
     build_metadata,
     calculate_ideal_weights,
     calculate_weights_and_total,
+    is_mint_safe,
+    is_redeem_safe,
+    safe_to_execute_outside_epsilon,
     update_metadata_with_epsilon_status,
+    update_metadata_with_price_safety,
+    update_vault_with_price_safety,
     vault_weight_off_peg_falls,
 )
 from tests.support import constants
@@ -165,8 +170,6 @@ def test_calculate_ideal_weights(reserve_safety_manager, bundle):
 
     vaults_with_amount = bundle_to_vaults(bundle)
 
-    print(vaults_with_amount)
-
     result_exp = calculate_ideal_weights(vaults_with_amount)
 
     result_sol = reserve_safety_manager.calculateIdealWeights(vaults_with_amount)
@@ -235,10 +238,7 @@ def order_builder(
         vault = (vault_info, amount[i])
         vaults_with_amount.append(vault)
 
-    if mint:
-        return [vaults_with_amount, True]
-    else:
-        return [vaults_with_amount, False]
+    return [vaults_with_amount, mint]
 
 
 @given(
@@ -651,18 +651,11 @@ def test_safe_to_execute_outside_epsilon(bundle_metadata, reserve_safety_manager
         return
     metadata = bundle_to_metadata(bundle_metadata)
 
-    expected = True
-    for vault in metadata[0]:
-        if vault[8]:
-            continue
-        resulting_to_ideal = abs(vault[3] - vault[1])
-        current_to_ideal = abs(vault[2] - vault[1])
-        if resulting_to_ideal >= current_to_ideal:
-            expected = False
+    result_exp = safe_to_execute_outside_epsilon(metadata)
 
     result_sol = reserve_safety_manager.safeToExecuteOutsideEpsilon(metadata)
 
-    assert expected == result_sol
+    assert result_exp == result_sol
 
 
 @given(
@@ -673,12 +666,13 @@ def test_safe_to_execute_outside_epsilon(bundle_metadata, reserve_safety_manager
             amount_generator,
             price_generator,
             amount_generator,
+            weight_generator,
         ),
         min_size=1,
         max_size=5,
     )
 )
-def test_is_mint_safe(
+def test_is_mint_safe_normal(
     reserve_safety_manager,
     order_bundle,
     asset_registry,
@@ -692,9 +686,14 @@ def test_is_mint_safe(
 ):
     if not order_bundle:
         return
-    (initial_price, initial_weight, reserve_balance, current_vault_price, amount) = [
-        list(v) for v in zip(*order_bundle)
-    ]
+    (
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    ) = [list(v) for v in zip(*order_bundle)]
 
     mint_order = order_builder(
         True,
@@ -703,6 +702,7 @@ def test_is_mint_safe(
         reserve_balance,
         current_vault_price,
         amount,
+        current_weight,
     )
 
     asset_registry.setAssetAddress("DAI", dai)
@@ -739,6 +739,267 @@ def test_is_mint_safe(
 
     response = reserve_safety_manager.isMintSafe(mint_order)
 
+    response_expected = is_mint_safe(
+        mint_order, mock_balancer_vault, mock_price_oracle, asset_registry
+    )
 
-def test_is_redeem_safe():
-    pass
+    assert response == response_expected
+
+
+@given(
+    order_bundle=st.lists(
+        st.tuples(
+            price_generator,
+            weight_generator,
+            amount_generator,
+            price_generator,
+            amount_generator,
+            weight_generator,
+        ),
+        min_size=2,
+        max_size=2,
+    )
+)
+def test_is_mint_safe_small_prices(
+    reserve_safety_manager,
+    order_bundle,
+    asset_registry,
+    admin,
+    dai,
+    usdc,
+    sdt,
+    abc,
+    mock_price_oracle,
+    mock_balancer_vault,
+):
+    if not order_bundle:
+        return
+    (
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    ) = [list(v) for v in zip(*order_bundle)]
+
+    mint_order = order_builder(
+        True,
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    )
+
+    asset_registry.setAssetAddress("ABC", abc)
+
+    asset_registry.setAssetAddress("SDT", sdt)
+
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.addStableAsset(dai, {"from": admin})
+
+    asset_registry.setAssetAddress("USDC", usdc)
+    asset_registry.addStableAsset(usdc, {"from": admin})
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [sdt, abc], [D("2e20"), D("2e20")]
+    )
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_2, [usdc, dai], [D("2e20"), D("2e20")]
+    )
+
+    mock_price_oracle.setUSDPrice(abc, D("1e11"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e11"))
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+
+    response = reserve_safety_manager.isMintSafe(mint_order)
+
+    response_expected = is_mint_safe(
+        mint_order, mock_balancer_vault, mock_price_oracle, asset_registry
+    )
+
+    assert response == response_expected == "55"
+
+
+@given(
+    order_bundle=st.lists(
+        st.tuples(
+            price_generator,
+            weight_generator,
+            amount_generator,
+            price_generator,
+            amount_generator,
+            weight_generator,
+        ),
+        min_size=1,
+        max_size=5,
+    )
+)
+def test_is_mint_safe_off_peg(
+    reserve_safety_manager,
+    order_bundle,
+    asset_registry,
+    admin,
+    dai,
+    usdc,
+    sdt,
+    abc,
+    mock_price_oracle,
+    mock_balancer_vault,
+):
+    if not order_bundle:
+        return
+    (
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    ) = [list(v) for v in zip(*order_bundle)]
+
+    mint_order = order_builder(
+        True,
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    )
+
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.addStableAsset(dai, {"from": admin})
+
+    asset_registry.setAssetAddress("USDC", usdc)
+    asset_registry.addStableAsset(usdc, {"from": admin})
+
+    asset_registry.setAssetAddress("ABC", abc)
+    asset_registry.addStableAsset(abc, {"from": admin})
+
+    asset_registry.setAssetAddress("SDT", sdt)
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_2, [usdc, sdt], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_3, [sdt, dai], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_4, [abc, dai], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_5, [usdc, abc], [D("2e20"), D("2e20")]
+    )
+
+    mock_price_oracle.setUSDPrice(dai, D("0.8e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+    mock_price_oracle.setUSDPrice(abc, D("1e18"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e18"))
+
+    response = reserve_safety_manager.isMintSafe(mint_order)
+
+    response_expected = is_mint_safe(
+        mint_order, mock_balancer_vault, mock_price_oracle, asset_registry
+    )
+
+    assert response == response_expected
+
+
+@given(
+    order_bundle=st.lists(
+        st.tuples(
+            price_generator,
+            weight_generator,
+            amount_generator,
+            price_generator,
+            amount_generator,
+            weight_generator,
+        ),
+        min_size=1,
+        max_size=5,
+    )
+)
+def test_is_redeem_safe_normal(
+    reserve_safety_manager,
+    order_bundle,
+    asset_registry,
+    admin,
+    dai,
+    usdc,
+    sdt,
+    abc,
+    mock_price_oracle,
+    mock_balancer_vault,
+):
+    if not order_bundle:
+        return
+    (
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    ) = [list(v) for v in zip(*order_bundle)]
+
+    for i in range(len(reserve_balance)):
+        if reserve_balance[i] <= amount[i]:
+            amount[i] = reserve_balance[i] - 10
+
+    redeem_order = order_builder(
+        False,
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    )
+
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.addStableAsset(dai, {"from": admin})
+
+    asset_registry.setAssetAddress("USDC", usdc)
+    asset_registry.addStableAsset(usdc, {"from": admin})
+
+    asset_registry.setAssetAddress("ABC", abc)
+    asset_registry.addStableAsset(abc, {"from": admin})
+
+    asset_registry.setAssetAddress("SDT", sdt)
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_2, [usdc, sdt], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_3, [sdt, dai], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_4, [abc, dai], [D("2e20"), D("2e20")]
+    )
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_5, [usdc, abc], [D("2e20"), D("2e20")]
+    )
+
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+    mock_price_oracle.setUSDPrice(abc, D("1e18"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e18"))
+
+    response = reserve_safety_manager.isRedeemSafe(redeem_order)
+
+    response_expected = is_redeem_safe(
+        redeem_order, mock_balancer_vault, mock_price_oracle, asset_registry
+    )
+
+    assert response == response_expected

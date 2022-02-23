@@ -1,3 +1,4 @@
+from curses import meta
 from importlib.metadata import metadata
 from typing import Dict, Iterable, List, Tuple
 
@@ -89,48 +90,48 @@ def build_metadata(order: List[Tuple]) -> List[D]:
     prices = []
 
     vaults_with_amount = order[0]
-    order_type = order[1]
+
+    ideal_weights = calculate_ideal_weights(vaults_with_amount)
 
     for vault in vaults_with_amount:
-        vault_metadata = []
+        vault_info = vault[0]
 
-        current_amounts.append(D(vault[0][3]))
+        current_amounts.append(D(vault_info[3]))
         delta_amounts.append(D(vault[1]))
 
         if order[1]:
-            resulting_amounts.append(D(vault[0][3]) + D(vault[1]))
+            resulting_amounts.append(D(vault_info[3]) + D(vault[1]))
         else:
-            resulting_amounts.append(D(vault[0][3]) - D(vault[1]))
+            resulting_amounts.append(D(vault_info[3]) - D(vault[1]))
 
-        prices.append(D(vault[0][1]))
+        prices.append(D(vault_info[1]))
 
-        ideal_weights = calculate_ideal_weights(vaults_with_amount)
+    current_weights, current_usd_value = calculate_weights_and_total(
+        current_amounts, prices
+    )
+    resulting_weights, resultingTotal = calculate_weights_and_total(
+        resulting_amounts, prices
+    )
 
-        current_weights, current_usd_value = calculate_weights_and_total(
-            current_amounts, prices
-        )
-        resulting_weights, resultingTotal = calculate_weights_and_total(
-            resulting_amounts, prices
-        )
+    delta_weights, delta_total = calculate_weights_and_total(delta_amounts, prices)
 
-        delta_weights, delta_total = calculate_weights_and_total(delta_amounts, prices)
+    if current_usd_value == D("0"):
+        current_weights = ideal_weights
 
-        vault_metadata.append(vault[0][2][2])
-        vault_metadata.append(ideal_weights)
+    if delta_total == D("0"):
+        delta_weights = ideal_weights
 
-        if current_usd_value == D("0"):
-            vault_metadata.append(ideal_weights)
-        else:
-            vault_metadata.append(current_weights)
+    for i in range(len(vaults_with_amount)):
+        vault_info = vaults_with_amount[i][0]
 
-        vault_metadata.append(resulting_weights)
+        vault_metadata = []
 
-        if delta_total == D("0"):
-            vault_metadata.append(ideal_weights)
-        else:
-            vault_metadata.append(delta_weights)
-
-        vault_metadata.append(vault[0][1])
+        vault_metadata.append(vault_info[2][2])
+        vault_metadata.append(ideal_weights[i])
+        vault_metadata.append(current_weights[i])
+        vault_metadata.append(resulting_weights[i])
+        vault_metadata.append(delta_weights[i])
+        vault_metadata.append(vault_info[1])
         vault_metadata.append(False)
         vault_metadata.append(False)
         vault_metadata.append(False)
@@ -141,14 +142,18 @@ def build_metadata(order: List[Tuple]) -> List[D]:
     metadata.append(False)
     metadata.append(False)
     metadata.append(False)
-    metadata.append(order_type)
+    metadata.append(order[1])
 
     return metadata
 
 
-def is_mint_safe(order: List[Tuple]) -> str:
+def is_mint_safe(
+    order: List[Tuple], mock_balancer_vault, mock_price_oracle, asset_registry
+) -> str:
     metadata = build_metadata(order)
-    metadata = update_metadata_with_price_safety(metadata)
+    metadata = update_metadata_with_price_safety(
+        metadata, mock_balancer_vault, mock_price_oracle, asset_registry
+    )
     metadata = update_metadata_with_epsilon_status(metadata)
 
     if not metadata[3]:
@@ -167,9 +172,13 @@ def is_mint_safe(order: List[Tuple]) -> str:
     return "52"
 
 
-def is_redeem_safe(order: List[Tuple]) -> str:
+def is_redeem_safe(
+    order: List[Tuple], mock_balancer_vault, mock_price_oracle, asset_registry
+) -> str:
     metadata = build_metadata(order)
-    metadata = update_metadata_with_price_safety(metadata)
+    metadata = update_metadata_with_price_safety(
+        metadata, mock_balancer_vault, mock_price_oracle, asset_registry
+    )
     metadata = update_metadata_with_epsilon_status(metadata)
 
     if not metadata[3]:
@@ -183,13 +192,52 @@ def is_redeem_safe(order: List[Tuple]) -> str:
     return "52"
 
 
-def update_vault_with_price_safety(vault_metadata: List):
-    pass
+def update_vault_with_price_safety(
+    vault_metadata: List, mock_balancer_vault, mock_price_oracle, asset_registry
+):
+    (tokens, balances, last_change_block) = mock_balancer_vault.getPoolTokens(
+        vault_metadata[0]
+    )
+    vault_metadata[6] = True
+    vault_metadata[7] = False
+
+    for token in tokens:
+        token_price = mock_price_oracle.getPriceUSD(token)
+        if asset_registry.isAssetStable(token):
+            vault_metadata[7] = True
+            if (abs(token_price - D("1e18"))) > constants.STABLECOIN_MAX_DEVIATION:
+                vault_metadata[6] = False
+        elif token_price >= constants.MIN_TOKEN_PRICE:
+            vault_metadata[7] = True
+
+    return vault_metadata
 
 
-def update_metadata_with_price_safety(metadata):
-    pass
+def update_metadata_with_price_safety(
+    metadata, mock_balancer_vault, mock_price_oracle, asset_registry
+):
+    metadata[2] = True
+    metadata[3] = True
+    for vault_metadata in metadata[0]:
+        new_vault_metadata = update_vault_with_price_safety(
+            vault_metadata, mock_balancer_vault, mock_price_oracle, asset_registry
+        )
+        if not new_vault_metadata[6]:
+            metadata[2] = False
+        if not new_vault_metadata[7]:
+            metadata[3] = False
+
+    return metadata
 
 
-def safe_to_execute_outside_epsilon():
-    pass
+def safe_to_execute_outside_epsilon(metadata):
+    expected = True
+    for vault in metadata[0]:
+        if vault[8]:
+            continue
+        resulting_to_ideal = abs(vault[3] - vault[1])
+        current_to_ideal = abs(vault[2] - vault[1])
+        if resulting_to_ideal >= current_to_ideal:
+            expected = False
+
+    return expected
