@@ -117,3 +117,17 @@ def weth(Token, interface, is_forked, accounts):
     for i in range(1, 10):
         token.transfer(accounts[i], scale(1), {"from": accounts[0]})
     yield token
+
+
+@pytest.fixture(scope="module")
+def wbtc(Token, accounts, is_forked):
+    if is_forked:
+        token = interface.ERC20(USDC_ADDRESS)
+        mint_coin_for(accounts[0], token, USDC_DEFAULT_MINT_AMOUNT)
+    else:
+        token = Token.deploy(
+            "Wrapped Bitcoin", "WBTC", 8, scale(30, 8), {"from": accounts[0]}
+        )
+    for i in range(1, 10):
+        token.transfer(accounts[i], scale("0.5", 6), {"from": accounts[0]})
+    yield token

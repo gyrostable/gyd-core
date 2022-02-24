@@ -1,9 +1,20 @@
 from decimal import Decimal
-from typing import Iterable, List, Literal, NamedTuple, Optional, Union, overload
+from typing import Iterable, List, Literal, NamedTuple, Optional, Tuple, Union, overload
+
+from brownie import interface
+from eth_abi import encode_abi  # type: ignore
 
 from tests.support.quantized_decimal import DecimalLike, QuantizedDecimal
+from tests.support.types import JoinPoolRequest
 
 DEFAULT_DECIMALS = 18
+
+
+class JoinKind:
+    INIT = 0
+    EXACT_TOKENS_IN_FOR_BPT_OUT = 1
+    TOKEN_IN_FOR_EXACT_BPT_OUT = 2
+    ALL_TOKENS_IN_FOR_EXACT_BPT_OUT = 3
 
 
 def truncate(value: Decimal, precision: int = 5, decimals: int = DEFAULT_DECIMALS):
@@ -92,4 +103,33 @@ def scale(x, decimals=18):
 
 
 def scale_scalar(x: DecimalLike, decimals: int = 18) -> QuantizedDecimal:
-    return (to_decimal(x) * 10 ** decimals).floor()
+    return (to_decimal(x) * 10**decimals).floor()
+
+
+def join_pool(
+    account: str,
+    vault,
+    pool_id: str,
+    amounts: List[Tuple[str, int]],
+    join_kind=JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+):
+    amounts = sorted(amounts, key=lambda b: b[0])
+    for token, amount in amounts:
+        interface.ERC20(token).approve(vault, amount, {"from": account})
+
+    tokens, balances = zip(*amounts)
+    abi = ["uint256", "uint256[]", "uint256"]
+    data = [join_kind, balances, 0]
+    encoded_user_data = encode_abi(abi, data)
+
+    return vault.joinPool(
+        pool_id,
+        account,
+        account,
+        JoinPoolRequest(
+            tokens,  # type: ignore
+            balances,  # type: ignore
+            encoded_user_data,
+        ),
+        {"from": account},
+    )

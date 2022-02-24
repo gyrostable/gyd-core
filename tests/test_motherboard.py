@@ -1,10 +1,10 @@
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
-from eth_abi.abi import encode_abi
 
-from tests.support import constants, error_codes
-from tests.support.types import JoinPoolRequest, MintAsset, RedeemAsset
-from tests.support.utils import scale
+from tests.support import error_codes
+from tests.support.constants import BALANCER_POOL_IDS
+from tests.support.types import MintAsset, RedeemAsset
+from tests.support.utils import join_pool, scale
 
 
 @pytest.fixture(scope="module")
@@ -198,29 +198,6 @@ def test_redeem_invalid_ratio(motherboard, usdc, usdc_vault, alice, value_ratio)
 
 
 @pytest.mark.mainetFork
-def test_simple_mint_bpt(motherboard, balancer_vault, interface, alice, dai):
-    eth_amount = scale("0.01")
-    dai_amount = scale(50)
-
-    weth = interface.IWETH(constants.WETH_ADDRESS)
-    weth.deposit({"from": alice, "value": eth_amount})
-    join_kind = 1  # EXACT_TOKENS_IN_FOR_BPT_OUT
-    balances = [int(eth_amount), int(dai_amount)]
-    abi = ["uint256", "uint256[]", "uint256"]
-    data = [join_kind, balances, 0]
-    encoded_user_data = encode_abi(abi, data)
-
-    weth.approve(motherboard, eth_amount, {"from": alice})
-    dai.approve(motherboard, dai_amount, {"from": alice})
-
-    tx = balancer_vault.joinPool(
-        constants.BALANCER_POOL_IDS["WETH_DAI"],
-        alice,
-        alice,
-        JoinPoolRequest(
-            [constants.WETH_ADDRESS, constants.DAI_ADDRESS],
-            balances,
-            encoded_user_data,
-        ),
-        {"from": alice},
-    )
+def test_simple_mint_bpt(motherboard, balancer_vault, alice, dai, weth):
+    amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
+    join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
