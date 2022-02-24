@@ -73,7 +73,7 @@ contract Motherboard is IMotherBoard, Governable {
         }
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        uint256 usdValueIn = gyroConfig.getAssetPricer().getBasketUSDValue(vaultAmounts);
+        uint256 usdValueIn = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
         uint256 gyroToMint = pamm().mint(usdValueIn, reserveUSDValue);
 
         require(gyroToMint >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
