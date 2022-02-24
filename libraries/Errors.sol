@@ -44,6 +44,5 @@ library Errors {
     string public constant TOKEN_PRICES_TOO_SMALL = "55";
     string public constant TRYING_TO_REDEEM_MORE_THAN_VAULT_CONTAINS = "56";
 
-    // Misc errors
-    string public constant NOT_IMPLEMENTED = "90";
+    string public constant VAULT_FLOW_TOO_HIGH = "60";
 }

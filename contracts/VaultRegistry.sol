@@ -53,9 +53,22 @@ contract VaultRegistry is IVaultRegistry, Governable {
             .getPriceUSD(vault);
         vaultsMetadata[vault] = DataTypes.PersistedVaultMetadata({
             initialWeight: initialVaultWeight,
-            initialPrice: price
+            initialPrice: price,
+            shortFlowMemory: 0, //NB these need to be calibrated
+            shortFlowThreshold: 0 //NB these need to be calibrated
         });
         emit VaultRegistered(vault);
+    }
+
+    // NB: URGENT TO-DO make this callable only by the motherboard
+    function updatePersistedVaultMetadata(
+        address[] memory vaultsToUpdate,
+        DataTypes.PersistedVaultMetadata[] memory persistedVaultsMetadata
+    ) external {
+        for (uint256 i = 0; i < vaultsToUpdate.length; i++) {
+            require(vaultAddresses.contains(vaultsToUpdate[i]), Errors.VAULT_NOT_FOUND);
+            vaultsMetadata[vaultsToUpdate[i]] = persistedVaultsMetadata[i];
+        }
     }
 
     /// @inheritdoc IVaultRegistry
