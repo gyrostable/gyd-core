@@ -1,5 +1,15 @@
 from decimal import Decimal
-from typing import Iterable, List, Literal, NamedTuple, Optional, Tuple, Union, overload
+from typing import (
+    Iterable,
+    List,
+    Literal,
+    NamedTuple,
+    Optional,
+    Tuple,
+    Union,
+    cast,
+    overload,
+)
 
 from brownie import interface
 from eth_abi import encode_abi  # type: ignore
@@ -73,25 +83,25 @@ def to_decimal(x):
     return scalar_to_decimal(x)
 
 
-@overload
-def scale(x: DecimalLike, decimals=...) -> QuantizedDecimal:
-    ...
-
-
-@overload
-def scale(x: Iterable[DecimalLike], decimals=...) -> List[QuantizedDecimal]:
-    ...
-
-
-@overload
-def scale(x: NamedTuple, decimals: Optional[int]) -> NamedTuple:
-    ...
-
-
 def isinstance_namedtuple(obj) -> bool:
     return (
         isinstance(obj, tuple) and hasattr(obj, "_asdict") and hasattr(obj, "_fields")
     )
+
+
+@overload
+def scale(x: DecimalLike, decimals: int = ...) -> QuantizedDecimal:
+    ...
+
+
+@overload
+def scale(x: Iterable[DecimalLike], decimals: int = ...) -> List[QuantizedDecimal]:
+    ...
+
+
+@overload
+def scale(x: NamedTuple, decimals: int = ...) -> NamedTuple:
+    ...
 
 
 def scale(x, decimals=18):
@@ -113,7 +123,7 @@ def join_pool(
     amounts: List[Tuple[str, int]],
     join_kind=JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
 ):
-    amounts = sorted(amounts, key=lambda b: b[0])
+    amounts = sorted(amounts, key=lambda b: int(b[0], 16))
     for token, amount in amounts:
         interface.ERC20(token).approve(vault, amount, {"from": account})
 

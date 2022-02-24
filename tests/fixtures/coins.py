@@ -7,6 +7,7 @@ from tests.support.constants import (
     SUSHISWAP_ROUTER,
     UNISWAP_ROUTER,
     USDC_ADDRESS,
+    WBTC_ADDRESS,
     WETH_ADDRESS,
 )
 from tests.support.utils import scale
@@ -122,8 +123,8 @@ def weth(Token, interface, is_forked, accounts):
 @pytest.fixture(scope="module")
 def wbtc(Token, accounts, is_forked):
     if is_forked:
-        token = interface.ERC20(USDC_ADDRESS)
-        mint_coin_for(accounts[0], token, USDC_DEFAULT_MINT_AMOUNT)
+        token = interface.ERC20(WBTC_ADDRESS)
+        mint_coin_for(accounts[0], token, scale(30, 8))
     else:
         token = Token.deploy(
             "Wrapped Bitcoin", "WBTC", 8, scale(30, 8), {"from": accounts[0]}
