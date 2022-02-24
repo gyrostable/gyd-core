@@ -91,7 +91,7 @@ contract Motherboard is IMotherBoard, Governable {
         override
         returns (uint256[] memory)
     {
-        gydToken.burnFor(gydToRedeem, msg.sender);
+        gydToken.burnFrom(msg.sender, gydToRedeem);
         (DataTypes.VaultInfo[] memory vaultsInfo, uint256 reserveUSDValue) = gyroConfig
             .getVaultManager()
             .listVaults();
@@ -123,7 +123,7 @@ contract Motherboard is IMotherBoard, Governable {
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        uint256 usdValue = gyroConfig.getAssetPricer().getBasketUSDValue(vaultAmounts);
+        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
         mintedGYDAmount = pamm().computeMintAmount(usdValue, reserveUSDValue);
 
         if (mintedGYDAmount < minReceivedAmount) {
