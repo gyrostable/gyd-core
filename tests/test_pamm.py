@@ -224,7 +224,8 @@ def test_compute_region(pamm, args, alpha_min):
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
     expected = pypamm.compute_region(*qd_args(args), pyparams)  # type: ignore
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
-    args_final = scale_args(args) + ((0))
+    args_final = scale_args(args)
+    args_final = (*args_final, D("0"))
     computed_region = pamm.computeRegion(args_final)
     assert computed_region == expected.value
 
@@ -255,14 +256,19 @@ def test_compute_reserve_value(pamm, args, alpha_min):
     assert expected is not None
 
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
-    computed_reserve = pamm.computeReserveValue(scale_args(args))
+    args_final = scale_args(args)
+    args_final = (*args_final, D("0"))
+
+    computed_reserve = pamm.computeReserveValue(args_final)
     assert computed_reserve == scale(expected)
 
 
 @pytest.mark.parametrize("args,alpha_min", COMPUTE_RESERVE_CASES)
 def test_compute_reserve_value_gas(pamm, args, alpha_min):
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
-    pamm.computeReserveValueWithGas(scale_args(args))
+    args_final = scale_args(args)
+    args_final = args_final = (*args_final, D("0"))
+    pamm.computeReserveValueWithGas(args_final)
 
 
 @given(st.data())
