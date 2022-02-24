@@ -2,6 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "../libraries/DataTypes.sol";
+import "../contracts/ReserveSafetyManager.sol";
 
 interface ISafetyCheck {
     struct VaultWithAmount {

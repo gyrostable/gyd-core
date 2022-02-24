@@ -113,6 +113,11 @@ def build_metadata(order: List[Tuple]) -> List[D]:
         resulting_amounts, prices
     )
 
+    if len(resulting_weights) == 0:
+        resulting_weights = []
+        for i in range(len(resulting_amounts)):
+            resulting_weights.append(D("0"))
+
     delta_weights, delta_total = calculate_weights_and_total(delta_amounts, prices)
 
     if current_usd_value == D("0"):
@@ -172,9 +177,19 @@ def is_mint_safe(
     return "52"
 
 
+def is_redeem_feasible(order: List[Tuple]):
+    for vault in order[0]:
+        if vault[0][3] < vault[1]:
+            return False
+    return True
+
+
 def is_redeem_safe(
     order: List[Tuple], mock_balancer_vault, mock_price_oracle, asset_registry
 ) -> str:
+    if not is_redeem_feasible(order):
+        return "56"
+
     metadata = build_metadata(order)
     metadata = update_metadata_with_price_safety(
         metadata, mock_balancer_vault, mock_price_oracle, asset_registry
@@ -185,11 +200,13 @@ def is_redeem_safe(
         return "55"
 
     if metadata[1]:
+        print("All vaults in epsilon")
         return ""
     elif safe_to_execute_outside_epsilon(metadata):
+        print("Safe outside epsilon")
         return ""
 
-    return "52"
+    return "53"
 
 
 def update_vault_with_price_safety(

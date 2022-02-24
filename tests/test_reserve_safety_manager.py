@@ -950,10 +950,6 @@ def test_is_redeem_safe_normal(
         current_weight,
     ) = [list(v) for v in zip(*order_bundle)]
 
-    for i in range(len(reserve_balance)):
-        if reserve_balance[i] <= amount[i]:
-            amount[i] = reserve_balance[i] - 10
-
     redeem_order = order_builder(
         False,
         initial_price,
@@ -1003,3 +999,83 @@ def test_is_redeem_safe_normal(
     )
 
     assert response == response_expected
+
+
+@given(
+    order_bundle=st.lists(
+        st.tuples(
+            price_generator,
+            weight_generator,
+            amount_generator,
+            price_generator,
+            amount_generator,
+            weight_generator,
+        ),
+        min_size=2,
+        max_size=2,
+    )
+)
+def test_is_redeem_safe_small_prices(
+    reserve_safety_manager,
+    order_bundle,
+    asset_registry,
+    admin,
+    dai,
+    usdc,
+    sdt,
+    abc,
+    mock_price_oracle,
+    mock_balancer_vault,
+):
+    if not order_bundle:
+        return
+    (
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    ) = [list(v) for v in zip(*order_bundle)]
+
+    redeem_order = order_builder(
+        False,
+        initial_price,
+        initial_weight,
+        reserve_balance,
+        current_vault_price,
+        amount,
+        current_weight,
+    )
+
+    asset_registry.setAssetAddress("ABC", abc)
+
+    asset_registry.setAssetAddress("SDT", sdt)
+
+    asset_registry.setAssetAddress("DAI", dai)
+    asset_registry.addStableAsset(dai, {"from": admin})
+
+    asset_registry.setAssetAddress("USDC", usdc)
+    asset_registry.addStableAsset(usdc, {"from": admin})
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID, [sdt, abc], [D("2e20"), D("2e20")]
+    )
+
+    mock_balancer_vault.setPoolTokens(
+        constants.BALANCER_POOL_ID_2, [usdc, dai], [D("2e20"), D("2e20")]
+    )
+
+    mock_price_oracle.setUSDPrice(abc, D("1e11"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e11"))
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+
+    response = reserve_safety_manager.isRedeemSafe(redeem_order)
+
+    response_expected = is_redeem_safe(
+        redeem_order, mock_balancer_vault, mock_price_oracle, asset_registry
+    )
+
+    if not response == "56" == response_expected:
+        assert response == response_expected == "55"

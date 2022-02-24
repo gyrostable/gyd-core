@@ -154,6 +154,19 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         return true;
     }
 
+    function isRedeemFeasible(Order memory order) internal pure returns (bool) {
+        for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
+            if (
+                order.vaultsWithAmount[i].vaultInfo.reserveBalance <
+                order.vaultsWithAmount[i].amount
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /// @notice this function takes an order struct and builds the metadata struct, for use in this contract.
     /// @param order an order struct received by the Reserve Safety Manager contract
     /// @return metaData object
@@ -341,6 +354,10 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
 
     /// @inheritdoc ISafetyCheck
     function isRedeemSafe(Order memory order) public view returns (string memory) {
+        if (!isRedeemFeasible(order)) {
+            return Errors.TRYING_TO_REDEEM_MORE_THAN_VAULT_CONTAINS;
+        }
+
         MetaData memory metaData = _buildMetaData(order);
         _updateMetadataWithPriceSafety(metaData);
         _updateMetaDataWithEpsilonStatus(metaData);
