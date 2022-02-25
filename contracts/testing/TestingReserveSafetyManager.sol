@@ -28,11 +28,15 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _calculateWeightsAndTotal(amounts, prices);
     }
 
-    function buildMetaData(Order memory order) external pure returns (MetaData memory metaData) {
+    function buildMetaData(DataTypes.Order memory order)
+        external
+        pure
+        returns (MetaData memory metaData)
+    {
         return _buildMetaData(order);
     }
 
-    function calculateIdealWeights(VaultWithAmount[] memory vaultsWithAmount)
+    function calculateIdealWeights(DataTypes.VaultWithAmount[] memory vaultsWithAmount)
         external
         pure
         returns (uint256[] memory)

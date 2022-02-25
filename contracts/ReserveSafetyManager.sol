@@ -106,7 +106,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// given (i) the vault's initial weight and (ii) the evolution of prices since the vault's initialization.
     /// @param vaultsWithAmount an array of VaultWithAmountStructs
     /// @return idealWeights an array of the ideal weights
-    function _calculateIdealWeights(VaultWithAmount[] memory vaultsWithAmount)
+    function _calculateIdealWeights(DataTypes.VaultWithAmount[] memory vaultsWithAmount)
         internal
         pure
         returns (uint256[] memory)
@@ -156,7 +156,11 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// @notice this function takes an order struct and builds the metadata struct, for use in this contract.
     /// @param order an order struct received by the Reserve Safety Manager contract
     /// @return metaData object
-    function _buildMetaData(Order memory order) internal pure returns (MetaData memory metaData) {
+    function _buildMetaData(DataTypes.Order memory order)
+        internal
+        pure
+        returns (MetaData memory metaData)
+    {
         metaData.vaultMetadata = new VaultMetadata[](order.vaultsWithAmount.length);
 
         uint256[] memory idealWeights = _calculateIdealWeights(order.vaultsWithAmount);
@@ -316,7 +320,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isMintSafe(Order memory order) public view returns (string memory) {
+    function isMintSafe(DataTypes.Order memory order) public view returns (string memory) {
         MetaData memory metaData = _buildMetaData(order);
         _updateMetadataWithPriceSafety(metaData);
         _updateMetaDataWithEpsilonStatus(metaData);
@@ -342,7 +346,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isRedeemSafe(Order memory order) public view returns (string memory) {
+    function isRedeemSafe(DataTypes.Order memory order) public view returns (string memory) {
         MetaData memory metaData = _buildMetaData(order);
         _updateMetadataWithPriceSafety(metaData);
         _updateMetaDataWithEpsilonStatus(metaData);
@@ -361,12 +365,20 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistMint(Order memory order) external view returns (string memory) {
+    function checkAndPersistMint(DataTypes.Order memory order)
+        external
+        view
+        returns (string memory)
+    {
         return isMintSafe(order);
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistRedeem(Order memory order) external view returns (string memory) {
+    function checkAndPersistRedeem(DataTypes.Order memory order)
+        external
+        view
+        returns (string memory)
+    {
         return isRedeemSafe(order);
     }
 }

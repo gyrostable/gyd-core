@@ -40,4 +40,23 @@ library AssetPricer {
         }
         return total;
     }
+
+    /// @notice Quotes the USD value of `vaultWithAmounts`
+    /// @param vaultWithAmounts a basket of tokens and associated amounts to be priced
+    /// @return the USD value of the tokens
+    function getBasketUSDValue(
+        IUSDPriceOracle priceOracle,
+        DataTypes.VaultWithAmount[] memory vaultWithAmounts
+    ) internal view returns (uint256) {
+        uint256 length = vaultWithAmounts.length;
+        uint256 total = 0;
+        for (uint256 i = 0; i < length; i++) {
+            DataTypes.MonetaryAmount memory monetaryAmount = DataTypes.MonetaryAmount({
+                amount: vaultWithAmounts[i].amount,
+                tokenAddress: vaultWithAmounts[i].vaultInfo.vault
+            });
+            total += getUSDValue(priceOracle, monetaryAmount);
+        }
+        return total;
+    }
 }

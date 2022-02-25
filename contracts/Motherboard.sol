@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+import "../interfaces/IFeeHandler.sol";
 import "../interfaces/IMotherBoard.sol";
 import "../interfaces/IGyroVault.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
@@ -60,7 +61,7 @@ contract Motherboard is IMotherBoard, Governable {
             assets
         );
         DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
-        ISafetyCheck.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
+        DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
 
         gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
 
@@ -69,20 +70,18 @@ contract Motherboard is IMotherBoard, Governable {
             IERC20(vaultAmount.tokenAddress).safeTransfer(address(reserve), vaultAmount.amount);
         }
 
-        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
+        DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
+
+        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(
+            orderAfterFees.vaultsWithAmount
+        );
         uint256 gyroToMint = pamm().mint(usdValue);
 
-        uint256 feeToPay = gyroToMint.mulUp(mintFeeFraction);
-
-        uint256 remainingGyro = gyroToMint - feeToPay;
-
-        require(remainingGyro >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
+        require(gyroToMint >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
 
         gydToken.mint(address(this), gyroToMint);
-        gyroConfig.getFeeBank().depositFees(address(gydToken), feeToPay);
 
-        gydToken.safeTransfer(msg.sender, remainingGyro);
+        gydToken.safeTransfer(msg.sender, gyroToMint);
 
         return gyroToMint;
     }
@@ -95,9 +94,10 @@ contract Motherboard is IMotherBoard, Governable {
     {
         gydToken.burnFrom(msg.sender, gydToRedeem);
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem);
-        ISafetyCheck.Order memory order = _createRedeemOrder(usdValueToRedeem, assets);
+        DataTypes.Order memory order = _createRedeemOrder(usdValueToRedeem, assets);
         gyroConfig.getRootSafetyCheck().checkAndPersistRedeem(order);
-        return _convertAndSendRedeemOutputAssets(assets, order);
+        DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
+        return _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
     }
 
     /// @inheritdoc IMotherBoard
@@ -114,7 +114,7 @@ contract Motherboard is IMotherBoard, Governable {
         }
 
         DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
-        ISafetyCheck.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
+        DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
@@ -140,7 +140,7 @@ contract Motherboard is IMotherBoard, Governable {
         outputAmounts = new uint256[](assets.length);
 
         uint256 usdValueToRedeem = pamm().computeRedeemAmount(gydToRedeem);
-        ISafetyCheck.Order memory order = _createRedeemOrder(usdValueToRedeem, assets);
+        DataTypes.Order memory order = _createRedeemOrder(usdValueToRedeem, assets);
         err = gyroConfig.getRootSafetyCheck().isRedeemSafe(order);
         if (bytes(err).length > 0) {
             return (outputAmounts, err);
@@ -264,15 +264,15 @@ contract Motherboard is IMotherBoard, Governable {
     function _monetaryAmountsToMintOrder(
         DataTypes.MonetaryAmount[] memory amounts,
         DataTypes.VaultInfo[] memory vaultsInfo
-    ) internal pure returns (ISafetyCheck.Order memory) {
-        ISafetyCheck.Order memory order = ISafetyCheck.Order({
+    ) internal pure returns (DataTypes.Order memory) {
+        DataTypes.Order memory order = DataTypes.Order({
             mint: true,
-            vaultsWithAmount: new ISafetyCheck.VaultWithAmount[](amounts.length)
+            vaultsWithAmount: new DataTypes.VaultWithAmount[](amounts.length)
         });
 
         for (uint256 i = 0; i < amounts.length; i++) {
             DataTypes.MonetaryAmount memory vaultAmount = amounts[i];
-            order.vaultsWithAmount[i] = ISafetyCheck.VaultWithAmount({
+            order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
                 amount: vaultAmount.amount,
                 vaultInfo: _getVaultInfo(vaultAmount.tokenAddress, vaultsInfo)
             });
@@ -283,13 +283,13 @@ contract Motherboard is IMotherBoard, Governable {
     function _createRedeemOrder(uint256 usdValueToRedeem, DataTypes.RedeemAsset[] calldata assets)
         internal
         view
-        returns (ISafetyCheck.Order memory)
+        returns (DataTypes.Order memory)
     {
         IUSDPriceOracle priceOracle = gyroConfig.getRootPriceOracle();
 
-        ISafetyCheck.Order memory order = ISafetyCheck.Order({
+        DataTypes.Order memory order = DataTypes.Order({
             mint: false,
-            vaultsWithAmount: new ISafetyCheck.VaultWithAmount[](assets.length)
+            vaultsWithAmount: new DataTypes.VaultWithAmount[](assets.length)
         });
 
         DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
@@ -303,7 +303,7 @@ contract Motherboard is IMotherBoard, Governable {
 
             uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultTokenPrice);
             uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vault.decimals());
-            order.vaultsWithAmount[i] = ISafetyCheck.VaultWithAmount({
+            order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
                 amount: scaledVaultTokenAmount,
                 vaultInfo: _getVaultInfo(asset.originVault, vaultsInfo)
             });
@@ -316,7 +316,7 @@ contract Motherboard is IMotherBoard, Governable {
 
     function _convertAndSendRedeemOutputAssets(
         DataTypes.RedeemAsset[] calldata assets,
-        ISafetyCheck.Order memory order
+        DataTypes.Order memory order
     ) internal returns (uint256[] memory outputAmounts) {
         outputAmounts = new uint256[](assets.length);
         ILPTokenExchangerRegistry exchangerRegistry = gyroConfig.getExchangerRegistry();
@@ -367,7 +367,7 @@ contract Motherboard is IMotherBoard, Governable {
 
     function _computeRedeemOutputAmounts(
         DataTypes.RedeemAsset[] calldata assets,
-        ISafetyCheck.Order memory order
+        DataTypes.Order memory order
     ) internal view returns (uint256[] memory outputAmounts, string memory err) {
         outputAmounts = new uint256[](assets.length);
         ILPTokenExchangerRegistry exchangerRegistry = gyroConfig.getExchangerRegistry();
