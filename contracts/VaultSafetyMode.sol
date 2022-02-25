@@ -28,6 +28,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     function calculateRemainingBlocks(uint256 lastRemainingBlocks, uint256 blocksElapsed)
         internal
+        pure
         returns (uint256)
     {
         if (blocksElapsed >= lastRemainingBlocks) {
@@ -39,6 +40,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     function updateVaultFlows(address[] memory vaultAddresses, uint256 currentBlockNumber)
         internal
+        view
         returns (DataTypes.FlowData[] memory memoryFlowSafetyData)
     {
         memoryFlowSafetyData = accessFlowSafetyData(vaultAddresses);
@@ -80,7 +82,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     function checkVaultFlow(
         DataTypes.FlowData memory flowData,
         uint256 proposedFlowChange,
-        uint256 threshold,
         bool mint,
         uint256 safetyBlocksAutomatic
     )
@@ -99,10 +100,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 return (flowData, false, true);
             }
             uint256 newInFlow = flowData.shortFlowIn + proposedFlowChange;
-            if (newInFlow > threshold) {
+            if (newInFlow > flowData.shortFlowThreshold) {
                 allowTransaction = false;
                 flowData.remainingSafetyBlocksIn = safetyBlocksAutomatic;
-            } else if (newInFlow > thresholdBuffer * threshold) {
+            } else if (newInFlow > thresholdBuffer * flowData.shortFlowThreshold) {
                 flowData.remainingSafetyBlocksIn = safetyBlocksAutomatic;
                 flowData.shortFlowIn += newInFlow;
                 isSafetyModeActivated = true;
@@ -114,10 +115,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 return (flowData, false, true);
             }
             uint256 newOutFlow = flowData.shortFlowOut + proposedFlowChange;
-            if (newOutFlow > threshold) {
+            if (newOutFlow > flowData.shortFlowThreshold) {
                 allowTransaction = false;
                 flowData.remainingSafetyBlocksOut = safetyBlocksAutomatic;
-            } else if (newOutFlow > thresholdBuffer * threshold) {
+            } else if (newOutFlow > thresholdBuffer * flowData.shortFlowThreshold) {
                 flowData.remainingSafetyBlocksOut = safetyBlocksAutomatic;
                 flowData.shortFlowOut += newOutFlow;
                 isSafetyModeActivated = true;
@@ -133,7 +134,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// This is only called when an actual mint is performed
     /// The implementation should store any relevant information for the mint
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function checkAndPersistMint(Order memory order) public view returns (string memory) {
+    function checkAndPersistMint(Order memory order) public returns (string memory) {
         uint256 currentBlockNumber = block.number;
 
         address[] memory vaultAddresses;
@@ -153,7 +154,8 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             (latestFlowData[i], allowTransaction, isSafetyModeActivated) = checkVaultFlow(
                 latestFlowData[i],
                 order.vaultsWithAmount[i].amount,
-                order.mint
+                order.mint,
+                safetyTimeParams.safetyBlocksAutomatic
             );
 
             if (isSafetyModeActivated) {
@@ -201,10 +203,8 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
         address[] memory vaultAddresses;
         for (uint256 i = 0; i < vaultsToProtect.length; i++) {
-            vaultAddresses[i] = vaultsToProtect.vaultAddress;
+            vaultAddresses[i] = vaultsToProtect[i].vaultAddress;
         }
-
-        DataTypes.FlowData[] memory memoryFlowSafetyData = accessFlowSafetyData(vaultAddresses);
 
         for (uint256 i = 0; i < vaultsToProtect.length; i++) {
             if (vaultsToProtect[i].direction == 0 || vaultsToProtect[i].direction == 3) {
@@ -217,7 +217,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             }
         }
 
-        storeFlowSafetyData(flowSafetyDataUpdate);
+        storeFlowSafetyData(flowSafetyDataUpdate, vaultAddresses);
     }
 
     /// @notice Checks whether a mint operation is safe
@@ -241,7 +241,9 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             bool isSafetyModeActivated;
             (latestFlowData[i], allowTransaction, isSafetyModeActivated) = checkVaultFlow(
                 latestFlowData[i],
-                order.mint
+                order.vaultsWithAmount[i].amount,
+                order.mint,
+                safetyTimeParams.safetyBlocksAutomatic
             );
             if (isSafetyModeActivated) {
                 safetyModeOff = false;
@@ -252,7 +254,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         }
 
         if (!safetyModeOff) {
-            emit SafetyModeActivated(safetyModeOff);
+            return Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED;
         }
 
         return "";
@@ -268,7 +270,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// This is only called when an actual redeem is performed
     /// The implementation should store any relevant information for the redeem
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function checkAndPersistRedeem(Order memory order) external view returns (string memory) {
+    function checkAndPersistRedeem(Order memory order) external returns (string memory) {
         return checkAndPersistMint(order);
     }
 }
