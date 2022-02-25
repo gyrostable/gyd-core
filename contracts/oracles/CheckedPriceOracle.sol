@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/utils/math/Math.sol";
+
 import "../../interfaces/oracles/IUSDPriceOracle.sol";
 import "../../interfaces/oracles/IRelativePriceOracle.sol";
 import "../../interfaces/oracles/IUSDBatchPriceOracle.sol";
@@ -116,4 +118,102 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
         require(relativePriceDifference <= relativeEpsilon, Errors.STALE_PRICE);
     }
+
+    function medianizeTwaps(uint256[] memory twapPrices) internal pure returns (uint256) {
+        // min if there are two, or the 2nd min if more than two
+        uint256 min = twapPrices[0];
+        uint256 secondMin = 2**256 - 1;
+        for (uint256 i = 0; i < twapPrices.length; i++) {
+            if (twapPrices[i] < min) {
+                secondMin = min;
+                min = twapPrices[i];
+            } else if (twapPrices[i] < secondMin) {
+                secondMin = twapPrices[i];
+            }
+        }
+        if (twapPrices.length == 2) {
+            return min;
+        } else {
+            return secondMin;
+        }
+    }
+
+    function swap(
+        int256[] memory array,
+        uint256 i,
+        uint256 j
+    ) internal pure {
+        (array[i], array[j]) = (array[j], array[i]);
+    }
+
+    function sort(
+        int256[] memory array,
+        uint256 begin,
+        uint256 end
+    ) internal pure {
+        if (begin < end) {
+            uint256 j = begin;
+            int256 pivot = array[j];
+            for (uint256 i = begin + 1; i < end; ++i) {
+                if (array[i] < pivot) {
+                    swap(array, i, ++j);
+                }
+            }
+            swap(array, begin, j);
+            sort(array, begin, j);
+            sort(array, j + 1, end);
+        }
+    }
+
+    function median(int256[] memory array, uint256 length) internal pure returns (int256) {
+        sort(array, 0, length);
+        return
+            length % 2 == 0
+                ? Math.average(array[length / 2 - 1], array[length / 2])
+                : array[length / 2];
+    }
+
+    // inputs: chainlink ETH/USD price, Coinbase ETH/USD price, OKEx ETH/USD price,  array of ETH/stablecoin TWAPS
+    // compute min(ETH/stablecoin TWAPs):
+    // min if there are only two, or the 2nd min if more than two
+    // compute median (coinbase, OKex, min-TWAP)
+    // check that chainlink is within epsilon of median
+    function calculateWETHPriceAnchor(uint256[] memory signedPrices, uint256[] memory twapPrices)
+        internal
+        pure
+        returns (uint256)
+    {
+        uint256 medianizedTwap = medianizeTwaps(twapPrices);
+        int256[] memory prices = new int256[](signedPrices.length + 1);
+        // fill in prices array with signedPrices and medianizedTwap, and safe casting to int
+        uint256 priceAnchor = median(prices);
+        return priceAnchor;
+    }
+
+    // function sort(uint256[] memory data) public returns (uint256[] memory) {
+    //     quickSort(data, int256(0), int256(data.length - 1));
+    //     return data;
+    // }
+
+    // function quickSort(
+    //     uint256[] memory arr,
+    //     int256 left,
+    //     int256 right
+    // ) internal {
+    //     int256 i = left;
+    //     int256 j = right;
+    //     if (i == j) return;
+    //     uint256 pivot = arr[uint256(left + (right - left) / 2)];
+    //     while (i <= j) {
+    //         while (arr[uint256(i)] < pivot) i++;
+    //         while (pivot < arr[uint256(j)]) j--;
+    //         if (i <= j) {
+    //             (arr[uint256(i)], arr[uint256(j)]) = (arr[uint256(j)], arr[uint256(i)]);
+    //             i++;
+    //             j--;
+    //         }
+    //     }
+    //     if (left < j) quickSort(arr, left, j);
+    //     if (i < right) quickSort(arr, i, right);
+    // }
 }
