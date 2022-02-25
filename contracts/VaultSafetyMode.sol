@@ -20,11 +20,17 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     mapping(address => DataTypes.FlowData) public flowSafetyDataStorage;
 
-    DataTypes.SafetyTimeParams public safetyTimeParams;
+    uint256 public immutable safetyBlocksAutomatic;
+    uint256 public immutable safetyBlocksGuardian;
 
     uint256 public constant THRESHOLD_BUFFER = 8e17;
 
     event SafetyModeActivated(bool);
+
+    constructor(uint256 _safetyBlocksAutomatic, uint256 _safetyBlocksGuardian) {
+        safetyBlocksAutomatic = _safetyBlocksAutomatic;
+        safetyBlocksGuardian = _safetyBlocksGuardian;
+    }
 
     function calculateRemainingBlocks(uint256 lastRemainingBlocks, uint256 blocksElapsed)
         internal
@@ -59,44 +65,44 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         }
     }
 
-    function initializeVaultFlowData(address[] memory vaultAddresses, uint256 currentBlockNumber)
-        internal
-        view
-        returns (DataTypes.FlowData[] memory memoryFlowSafetyData)
-    {
-        memoryFlowSafetyData = accessFlowSafetyData(vaultAddresses);
+    function initializeVaultFlowData(
+        address[] memory vaultAddresses,
+        uint256 currentBlockNumber,
+        Order memory order
+    ) internal view returns (DataTypes.FlowData[] memory newData) {
+        newData = accessFlowSafetyData(vaultAddresses);
 
-        for (uint256 i = 0; i < memoryFlowSafetyData.length; i++) {
-            uint256 blocksElapsed = currentBlockNumber - memoryFlowSafetyData[i].lastSeenBlock;
+        for (uint256 i = 0; i < newData.length; i++) {
+            uint256 blocksElapsed = currentBlockNumber - newData[i].lastSeenBlock;
 
-            memoryFlowSafetyData[i].remainingSafetyBlocksIn = calculateRemainingBlocks(
-                memoryFlowSafetyData[i].remainingSafetyBlocksIn,
+            newData[i].remainingSafetyBlocksIn = calculateRemainingBlocks(
+                newData[i].remainingSafetyBlocksIn,
                 blocksElapsed
             );
 
-            memoryFlowSafetyData[i].remainingSafetyBlocksOut = calculateRemainingBlocks(
-                memoryFlowSafetyData[i].remainingSafetyBlocksOut,
+            newData[i].remainingSafetyBlocksOut = calculateRemainingBlocks(
+                newData[i].remainingSafetyBlocksOut,
                 blocksElapsed
             );
 
-            memoryFlowSafetyData[i].shortFlowIn = FlowSafety.updateFlow(
-                memoryFlowSafetyData[i].shortFlowIn,
+            newData[i].shortFlowIn = FlowSafety.updateFlow(
+                newData[i].shortFlowIn,
                 currentBlockNumber,
-                memoryFlowSafetyData[i].lastSeenBlock,
-                memoryFlowSafetyData[i].shortFlowMemory
+                newData[i].lastSeenBlock,
+                order.vaultsWithAmount[i].vaultInfo.persistedMetadata.shortFlowMemory
             );
 
-            memoryFlowSafetyData[i].shortFlowOut = FlowSafety.updateFlow(
-                memoryFlowSafetyData[i].shortFlowOut,
+            newData[i].shortFlowOut = FlowSafety.updateFlow(
+                newData[i].shortFlowOut,
                 currentBlockNumber,
-                memoryFlowSafetyData[i].lastSeenBlock,
-                memoryFlowSafetyData[i].shortFlowMemory
+                newData[i].lastSeenBlock,
+                order.vaultsWithAmount[i].vaultInfo.persistedMetadata.shortFlowMemory
             );
 
-            memoryFlowSafetyData[i].lastSeenBlock = currentBlockNumber;
+            newData[i].lastSeenBlock = currentBlockNumber;
         }
 
-        return memoryFlowSafetyData;
+        return newData;
     }
 
     // TODO: emit events when a safety mode is activated
@@ -104,10 +110,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         DataTypes.FlowData memory flowData,
         uint256 proposedFlowChange,
         bool mint,
-        uint256 safetyBlocksAutomatic
+        uint256 shortFlowThreshold
     )
         private
-        pure
+        view
         returns (
             DataTypes.FlowData memory,
             bool,
@@ -121,10 +127,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 return (flowData, false, true);
             }
             uint256 newInFlow = flowData.shortFlowIn + proposedFlowChange;
-            if (newInFlow > flowData.shortFlowThreshold) {
+            if (newInFlow > shortFlowThreshold) {
                 allowTransaction = false;
                 flowData.remainingSafetyBlocksIn = safetyBlocksAutomatic;
-            } else if (newInFlow > THRESHOLD_BUFFER * flowData.shortFlowThreshold) {
+            } else if (newInFlow > THRESHOLD_BUFFER * shortFlowThreshold) {
                 flowData.remainingSafetyBlocksIn = safetyBlocksAutomatic;
                 flowData.shortFlowIn += newInFlow;
                 isSafetyModeActivated = true;
@@ -136,10 +142,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 return (flowData, false, true);
             }
             uint256 newOutFlow = flowData.shortFlowOut + proposedFlowChange;
-            if (newOutFlow > flowData.shortFlowThreshold) {
+            if (newOutFlow > shortFlowThreshold) {
                 allowTransaction = false;
                 flowData.remainingSafetyBlocksOut = safetyBlocksAutomatic;
-            } else if (newOutFlow > THRESHOLD_BUFFER * flowData.shortFlowThreshold) {
+            } else if (newOutFlow > THRESHOLD_BUFFER * shortFlowThreshold) {
                 flowData.remainingSafetyBlocksOut = safetyBlocksAutomatic;
                 flowData.shortFlowOut += newOutFlow;
                 isSafetyModeActivated = true;
@@ -152,9 +158,12 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     }
 
     //TODO: make a whitelist of addresses that can call this and make this list settable by governance
-    function activateOracleGuardian(DataTypes.GuardedVaults[] memory vaultsToProtect) external {
+    function activateOracleGuardian(
+        DataTypes.GuardedVaults[] memory vaultsToProtect,
+        uint256 blocksToActivate
+    ) external {
         DataTypes.FlowData[] memory flowSafetyDataUpdate;
-        DataTypes.SafetyTimeParams memory memorySafetyTimeParams = safetyTimeParams;
+        require(blocksToActivate <= safetyBlocksGuardian, Errors.ORACLE_GUARDIAN_TIME_LIMIT);
 
         address[] memory vaultAddresses;
         for (uint256 i = 0; i < vaultsToProtect.length; i++) {
@@ -163,12 +172,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
         for (uint256 i = 0; i < vaultsToProtect.length; i++) {
             if (vaultsToProtect[i].direction == 0 || vaultsToProtect[i].direction == 3) {
-                flowSafetyDataUpdate[i].remainingSafetyBlocksIn = memorySafetyTimeParams
-                    .safetyBlocksGuardian;
+                flowSafetyDataUpdate[i].remainingSafetyBlocksIn = blocksToActivate;
             }
             if (vaultsToProtect[i].direction == 1 || vaultsToProtect[i].direction == 3) {
-                flowSafetyDataUpdate[i].remainingSafetyBlocksOut = memorySafetyTimeParams
-                    .safetyBlocksGuardian;
+                flowSafetyDataUpdate[i].remainingSafetyBlocksOut = blocksToActivate;
             }
         }
 
@@ -176,7 +183,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     }
 
     function flowSafetyEngine(Order memory order)
-        public
+        internal
         view
         returns (
             string memory,
@@ -190,7 +197,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             vaultAddresses[i] = order.vaultsWithAmount[i].vaultInfo.vault;
         }
 
-        latestFlowData = initializeVaultFlowData(vaultAddresses, currentBlockNumber);
+        latestFlowData = initializeVaultFlowData(vaultAddresses, currentBlockNumber, order);
 
         bool safetyModeOff = true;
         for (uint256 i = 0; i < latestFlowData.length; i++) {
@@ -200,7 +207,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 latestFlowData[i],
                 order.vaultsWithAmount[i].amount,
                 order.mint,
-                safetyTimeParams.safetyBlocksAutomatic
+                order.vaultsWithAmount[i].vaultInfo.persistedMetadata.shortFlowThreshold
             );
             if (isSafetyModeActivated) {
                 safetyModeOff = false;
@@ -223,16 +230,17 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     /// @notice Checks whether a mint operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function isMintSafe(Order memory order) public view returns (string memory) {
+    function isMintSafe(Order memory order) external view returns (string memory) {
         (string memory mintSafety, , ) = flowSafetyEngine(order);
         return mintSafety;
     }
 
+    //TODO: ensure only callable by motherboard
     /// @notice Checks whether a mint operation is safe
     /// This is only called when an actual mint is performed
     /// The implementation should store any relevant information for the mint
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function checkAndPersistMint(Order memory order) public returns (string memory) {
+    function checkAndPersistMint(Order memory order) external returns (string memory) {
         (
             string memory mintSafety,
             DataTypes.FlowData[] memory latestFlowData,
@@ -249,6 +257,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return redeemSafety;
     }
 
+    //TODO: ensure only callable by motherboard
     /// @notice Checks whether a redeem operation is safe
     /// This is only called when an actual redeem is performed
     /// The implementation should store any relevant information for the redeem

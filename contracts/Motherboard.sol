@@ -71,7 +71,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         string memory mintSafety = gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
 
-        //TODO: insert this logic into the other motherboard functions, possible abstract it
+        //TODO: insert this logic into the other motherboard functions, possible abstract it.
         if (
             keccak256(bytes(mintSafety)) ==
             keccak256(bytes(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED))
