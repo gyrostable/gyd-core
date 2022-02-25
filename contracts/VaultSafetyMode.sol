@@ -18,6 +18,7 @@ import "../interfaces/IVaultRegistry.sol";
 contract VaultSafetyMode is ISafetyCheck, Governable {
     using FixedPoint for uint256;
 
+    //TODO: does this need any sort of Access Control?
     mapping(address => DataTypes.FlowData) public flowSafetyDataStorage;
 
     uint256 public immutable safetyBlocksAutomatic;
