@@ -47,6 +47,7 @@ library DataTypes {
         uint256 remainingSafetyBlocksIn;
         uint256 remainingSafetyBlocksOut;
         uint256 shortFlowMemory;
+        uint256 shortFlowThreshold;
     }
 
     struct GuardedVaults {
