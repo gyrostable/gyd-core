@@ -26,8 +26,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     uint256 public constant THRESHOLD_BUFFER = 8e17;
 
-    event SafetyModeActivated(bool);
-
     constructor(uint256 _safetyBlocksAutomatic, uint256 _safetyBlocksGuardian) {
         safetyBlocksAutomatic = _safetyBlocksAutomatic;
         safetyBlocksGuardian = _safetyBlocksGuardian;
