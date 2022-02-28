@@ -9,23 +9,23 @@ import "../libraries/DataTypes.sol";
 import "../libraries/FixedPoint.sol";
 import "../interfaces/IVaultManager.sol";
 import "../interfaces/IAssetRegistry.sol";
+import "../interfaces/IGyroVault.sol";
 import "../interfaces/balancer/IVault.sol";
 import "../libraries/Errors.sol";
 import "../interfaces/ISafetyCheck.sol";
 
-contract ReserveSafetyManager is ISafetyCheck, Governable {
+contract ReserveSafetyManager is Governable, ISafetyCheck {
     using FixedPoint for uint256;
 
     uint256 public maxAllowedVaultDeviation;
     uint256 public stablecoinMaxDeviation;
     uint256 public minTokenPrice;
 
-    IVault internal balancerVault;
     IUSDPriceOracle internal priceOracle;
     IAssetRegistry internal assetRegistry;
 
     struct VaultMetadata {
-        bytes32 underlyingPoolId;
+        address vault;
         uint256 idealWeight;
         uint256 currentWeight;
         uint256 resultingWeight;
@@ -51,14 +51,12 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
         uint256 _maxAllowedVaultDeviation,
         uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice,
-        IVault _balancerVault,
         IUSDPriceOracle _priceOracle,
         IAssetRegistry _assetRegistry
     ) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;
-        balancerVault = _balancerVault;
         priceOracle = _priceOracle;
         assetRegistry = _assetRegistry;
     }
@@ -191,14 +189,9 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
                 resultingAmounts[i] = currentAmounts[i] - deltaAmounts[i];
             }
 
+            metaData.vaultMetadata[i].vault = order.vaultsWithAmount[i].vaultInfo.vault;
             metaData.vaultMetadata[i].price = order.vaultsWithAmount[i].vaultInfo.price;
             prices[i] = order.vaultsWithAmount[i].vaultInfo.price;
-
-            metaData.vaultMetadata[i].underlyingPoolId = order
-                .vaultsWithAmount[i]
-                .vaultInfo
-                .persistedMetadata
-                .underlyingPoolId;
         }
 
         (uint256[] memory currentWeights, uint256 currentUSDValue) = _calculateWeightsAndTotal(
@@ -257,7 +250,7 @@ contract ReserveSafetyManager is ISafetyCheck, Governable {
     /// to avoid numerical error.
     /// @param vaultMetadata a VaultMetadata struct containing information for a particular vault.
     function _updateVaultWithPriceSafety(VaultMetadata memory vaultMetadata) internal view {
-        (IERC20[] memory tokens, , ) = balancerVault.getPoolTokens(vaultMetadata.underlyingPoolId);
+        IERC20[] memory tokens = IGyroVault(vaultMetadata.vault).getTokens();
 
         vaultMetadata.allStablecoinsOnPeg = true;
         vaultMetadata.allTokenPricesLargeEnough = false;

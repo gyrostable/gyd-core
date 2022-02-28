@@ -13,4 +13,14 @@ library DecimalScale {
             return value * 10**(DECIMALS - decimals);
         }
     }
+
+    function scaleTo(uint256 value, uint8 decimals) internal pure returns (uint256) {
+        if (decimals == DECIMALS) {
+            return value;
+        } else if (decimals > DECIMALS) {
+            return value * 10**(decimals - DECIMALS);
+        } else {
+            return value / 10**(DECIMALS - decimals);
+        }
+    }
 }

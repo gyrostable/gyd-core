@@ -4,14 +4,18 @@ from typing import NamedTuple
 
 from tests.support.quantized_decimal import DecimalLike
 
-MintAsset = namedtuple(
-    "MintAsset",
-    [
-        "inputToken",
-        "inputAmount",
-        "destinationVault",
-    ],
-)
+
+class MintAsset(NamedTuple):
+    inputToken: str
+    inputAmount: DecimalLike
+    destinationVault: str
+
+
+class RedeemAsset(NamedTuple):
+    outputToken: str
+    minOutputAmount: DecimalLike
+    valueRatio: DecimalLike
+    originVault: str
 
 
 class CEMMMathParams(NamedTuple):

@@ -1,8 +1,5 @@
-from asyncio import constants
-from curses import meta
-from decimal import Decimal
-
 import hypothesis.strategies as st
+import pytest
 from brownie.test import given
 
 from tests.reserve.reserve_math_implementation import (
@@ -21,7 +18,8 @@ from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
 
-# pytestmark = pytest.mark.usefixtures("set_data_for_mock_bal_vault")
+MAX_VAULTS = 10
+
 
 amount_generator = st.integers(
     min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000))
@@ -37,9 +35,28 @@ stablecoin_price_generator = st.integers(
     min_value=int(scale("0.94")), max_value=int(scale("1.06"))
 )
 
+vault_metadatas = st.tuples(
+    weight_generator,
+    weight_generator,
+    weight_generator,
+    weight_generator,
+    price_generator,
+    boolean_generator,
+    boolean_generator,
+    boolean_generator,
+)
+
+global_metadatas = st.tuples(
+    boolean_generator, boolean_generator, boolean_generator, boolean_generator
+)
+
+
+def vault_lists(*args, **kwargs):
+    return st.lists(*args, **kwargs, min_size=1, max_size=MAX_VAULTS)
+
 
 def vault_builder(price_generator, amount_generator, weight_generator):
-    persisted_metadata = (price_generator, weight_generator, constants.BALANCER_POOL_ID)
+    persisted_metadata = (price_generator, weight_generator)
     vault_info = (
         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
         price_generator,
@@ -50,93 +67,34 @@ def vault_builder(price_generator, amount_generator, weight_generator):
     return (vault_info, amount_generator)
 
 
-def vault_builder_two(price_generator, amount_generator, weight_generator):
-    persisted_metadata = (
-        price_generator,
-        weight_generator,
-        constants.BALANCER_POOL_ID_2,
+def bundle_to_metadata(bundle, mock_vaults):
+    vaults_metadata, global_metadata = bundle
+    vaults_metadata = [(mock_vaults[i],) + v for i, v in enumerate(vaults_metadata)]
+    return (vaults_metadata,) + global_metadata
+
+
+def bundle_to_vaults(bundle):
+    prices, amounts, weights = [list(v) for v in zip(*bundle)]
+
+    vaults_with_amount = []
+    for i in range(len(prices)):
+        vault = vault_builder(prices[i], amounts[i], weights[i])
+        vaults_with_amount.append(vault)
+
+    return vaults_with_amount
+
+
+@pytest.fixture(scope="module")
+def mock_vaults(admin, MockGyroVault, dai):
+    return [admin.deploy(MockGyroVault, dai) for _ in range(MAX_VAULTS)]
+
+
+@given(
+    amounts_and_prices=st.lists(
+        st.tuples(amount_generator, price_generator), min_size=1
     )
-    vault_info = (
-        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C566",
-        price_generator,
-        persisted_metadata,
-        amount_generator,
-        weight_generator,
-    )
-    return (vault_info, amount_generator)
-
-
-def vault_metadata_builder(
-    ideal_weight,
-    current_weight,
-    resulting_weight,
-    delta_weight,
-    price,
-    all_stablecoins_on_peg,
-    all_token_prices_large_enough,
-    vault_within_epsilon,
-):
-    vault_meta_data = (
-        constants.BALANCER_POOL_ID,
-        ideal_weight,
-        current_weight,
-        resulting_weight,
-        delta_weight,
-        price,
-        all_stablecoins_on_peg,
-        all_token_prices_large_enough,
-        vault_within_epsilon,
-    )
-
-    return vault_meta_data
-
-
-def bundle_to_metadata(bundle):
-    (
-        ideal_weight,
-        current_weight,
-        resulting_weight,
-        delta_weight,
-        price,
-        all_stablecoins_on_peg,
-        all_token_prices_large_enough,
-        vault_within_epsilon,
-        all_vaults_within_epsilon,
-        all_stablecoins_all_vaults_on_peg,
-        all_vaults_using_large_enough_prices,
-        mint,
-    ) = [list(v) for v in zip(*bundle)]
-
-    vaultmetadata = []
-    for i in range(len(ideal_weight)):
-        vault = vault_metadata_builder(
-            ideal_weight[i],
-            current_weight[i],
-            resulting_weight[i],
-            delta_weight[i],
-            price[i],
-            all_stablecoins_on_peg[i],
-            all_token_prices_large_enough[i],
-            vault_within_epsilon[i],
-        )
-        vaultmetadata.append(vault)
-
-    metadata = (
-        vaultmetadata,
-        all_vaults_within_epsilon[0],
-        all_stablecoins_all_vaults_on_peg[0],
-        all_vaults_using_large_enough_prices[0],
-        mint[0],
-    )
-
-    return metadata
-
-
-@given(amounts_and_prices=st.lists(st.tuples(amount_generator, price_generator)))
+)
 def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices):
-    if not amounts_and_prices:
-        return
-
     amounts, prices = [list(v) for v in zip(*amounts_and_prices)]
 
     weights_exp, total_exp = calculate_weights_and_total(
@@ -152,22 +110,12 @@ def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices)
     assert total_exp == scale(total_sol).approxed()
 
 
-def bundle_to_vaults(bundle):
-    prices, amounts, weights = [list(v) for v in zip(*bundle)]
-
-    vaults_with_amount = []
-    for i in range(len(prices)):
-        vault = vault_builder(prices[i], amounts[i], weights[i])
-        vaults_with_amount.append(vault)
-
-    return vaults_with_amount
-
-
-@given(bundle=st.lists(st.tuples(price_generator, amount_generator, weight_generator)))
+@given(
+    bundle=st.lists(
+        st.tuples(price_generator, amount_generator, weight_generator), min_size=1
+    )
+)
 def test_calculate_ideal_weights(reserve_safety_manager, bundle):
-    if not bundle:
-        return
-
     vaults_with_amount = bundle_to_vaults(bundle)
 
     result_exp = calculate_ideal_weights(vaults_with_amount)
@@ -177,30 +125,11 @@ def test_calculate_ideal_weights(reserve_safety_manager, bundle):
     assert scale(result_exp) == to_decimal(result_sol)
 
 
-@given(
-    bundle_metadata=st.lists(
-        st.tuples(
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            price_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-        )
-    )
-)
+@given(bundle_metadata=st.tuples(vault_lists(vault_metadatas), global_metadatas))
 def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
-    reserve_safety_manager, bundle_metadata
+    reserve_safety_manager, bundle_metadata, mock_vaults
 ):
-    if not bundle_metadata:
-        return
-    metadata = bundle_to_metadata(bundle_metadata)
+    metadata = bundle_to_metadata(bundle_metadata, mock_vaults)
 
     result_sol = reserve_safety_manager.vaultWeightWithOffPegFalls(metadata)
     result_exp = vault_weight_off_peg_falls(metadata)
@@ -216,19 +145,16 @@ def order_builder(
     current_vault_price,
     amount,
     current_weight,
+    mock_vaults,
 ):
     vaults_with_amount = []
 
     for i in range(len(initial_price)):
 
-        persisted_metadata = (
-            initial_price[i],
-            initial_weight[i],
-            constants.BALANCER_POOL_ID,
-        )
+        persisted_metadata = (initial_price[i], initial_weight[i])
 
         vault_info = (
-            "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+            mock_vaults[i].address,
             current_vault_price[i],
             persisted_metadata,
             reserve_balance[i],
@@ -255,9 +181,7 @@ def order_builder(
         max_size=15,
     )
 )
-def test_build_metadata(reserve_safety_manager, order_bundle):
-    if not order_bundle:
-        return
+def test_build_metadata(reserve_safety_manager, order_bundle, mock_vaults):
     (
         initial_price,
         initial_weight,
@@ -275,10 +199,11 @@ def test_build_metadata(reserve_safety_manager, order_bundle):
         current_vault_price,
         amount,
         current_weight,
+        mock_vaults,
     )
 
     metadata = reserve_safety_manager.buildMetaData(mint_order)
-    metadata_exp = build_metadata(mint_order)
+    metadata_exp = build_metadata(mint_order, mock_vaults)
 
     vaults_metadata = metadata[0]
     allVaultsWithinEpsilon = metadata[1]
@@ -289,7 +214,6 @@ def test_build_metadata(reserve_safety_manager, order_bundle):
     assert mint == True
 
     for meta in vaults_metadata:
-        assert meta[0] == mint_order[0][vaults_metadata.index(meta)][0][2][2]
         assert meta[5] == mint_order[0][vaults_metadata.index(meta)][0][1]
 
         assert meta[1] == to_decimal(metadata[0][vaults_metadata.index(meta)][1])
@@ -299,28 +223,11 @@ def test_build_metadata(reserve_safety_manager, order_bundle):
         assert meta[5] == to_decimal(metadata[0][vaults_metadata.index(meta)][5])
 
 
-@given(
-    bundle_metadata=st.lists(
-        st.tuples(
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            price_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-        )
-    )
-)
-def test_update_metadata_with_epsilon_status(reserve_safety_manager, bundle_metadata):
-    if not bundle_metadata:
-        return
-    metadata = bundle_to_metadata(bundle_metadata)
+@given(bundle_metadata=st.tuples(vault_lists(vault_metadatas), global_metadatas))
+def test_update_metadata_with_epsilon_status(
+    reserve_safety_manager, bundle_metadata, mock_vaults
+):
+    metadata = bundle_to_metadata(bundle_metadata, mock_vaults)
 
     result_sol = reserve_safety_manager.updateMetaDataWithEpsilonStatus(metadata)
     result_exp = update_metadata_with_epsilon_status(metadata)
@@ -328,27 +235,16 @@ def test_update_metadata_with_epsilon_status(reserve_safety_manager, bundle_meta
     assert result_sol[1] == result_exp[1]
 
 
-@given(
-    bundle_vault_metadata=st.tuples(
-        weight_generator,
-        weight_generator,
-        weight_generator,
-        weight_generator,
-        price_generator,
-        boolean_generator,
-        boolean_generator,
-        boolean_generator,
-    )
-)
+@given(bundle_vault_metadata=vault_metadatas)
 def test_update_vault_with_price_safety(
     reserve_safety_manager,
     bundle_vault_metadata,
     mock_price_oracle,
-    mock_balancer_vault,
     dai,
     usdc,
     asset_registry,
     admin,
+    mock_vaults,
 ):
     asset_registry.setAssetAddress("DAI", dai)
     asset_registry.addStableAsset(dai, {"from": admin})
@@ -356,20 +252,9 @@ def test_update_vault_with_price_safety(
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
-    )
+    vault_metadata = (mock_vaults[0],) + bundle_vault_metadata
 
-    vault_metadata = vault_metadata_builder(
-        bundle_vault_metadata[0],
-        bundle_vault_metadata[1],
-        bundle_vault_metadata[2],
-        bundle_vault_metadata[3],
-        bundle_vault_metadata[4],
-        bundle_vault_metadata[5],
-        bundle_vault_metadata[6],
-        bundle_vault_metadata[7],
-    )
+    mock_vaults[0].setTokens([usdc, dai])
 
     mock_price_oracle.setUSDPrice(dai, D("1e18"))
     mock_price_oracle.setUSDPrice(usdc, D("1e18"))
@@ -405,45 +290,21 @@ def test_update_vault_with_price_safety(
     assert status_of_all_stablecoins == False
 
 
-@given(
-    bundle_vault_metadata=st.tuples(
-        weight_generator,
-        weight_generator,
-        weight_generator,
-        weight_generator,
-        price_generator,
-        boolean_generator,
-        boolean_generator,
-        boolean_generator,
-    )
-)
+@given(bundle_vault_metadata=vault_metadatas)
 def test_update_vault_with_price_safety_tiny_prices(
     reserve_safety_manager,
     bundle_vault_metadata,
     mock_price_oracle,
-    mock_balancer_vault,
     abc,
     sdt,
     asset_registry,
-    admin,
+    mock_vaults,
 ):
     asset_registry.setAssetAddress("ABC", abc)
     asset_registry.setAssetAddress("SDT", sdt)
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [sdt, abc], [D("2e20"), D("2e20")]
-    )
-
-    vault_metadata = vault_metadata_builder(
-        bundle_vault_metadata[0],
-        bundle_vault_metadata[1],
-        bundle_vault_metadata[2],
-        bundle_vault_metadata[3],
-        bundle_vault_metadata[4],
-        bundle_vault_metadata[5],
-        bundle_vault_metadata[6],
-        bundle_vault_metadata[7],
-    )
+    vault_metadata = (mock_vaults[0],) + bundle_vault_metadata
+    mock_vaults[0].setTokens([sdt, abc])
 
     mock_price_oracle.setUSDPrice(abc, D("1e16"))
     mock_price_oracle.setUSDPrice(sdt, D("1e16"))
@@ -491,37 +352,20 @@ def test_update_vault_with_price_safety_tiny_prices(
     assert prices_large_enough == False
 
 
-@given(
-    bundle_metadata=st.lists(
-        st.tuples(
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            price_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-        )
-    )
-)
+@given(bundle_metadata=st.tuples(vault_lists(vault_metadatas), global_metadatas))
 def test_update_metadata_with_price_safety_peg(
     bundle_metadata,
     reserve_safety_manager,
     asset_registry,
     dai,
     usdc,
-    mock_balancer_vault,
     admin,
     mock_price_oracle,
+    mock_vaults,
 ):
     if not bundle_metadata:
         return
-    metadata = bundle_to_metadata(bundle_metadata)
+    metadata = bundle_to_metadata(bundle_metadata, mock_vaults)
 
     asset_registry.setAssetAddress("DAI", dai)
     asset_registry.addStableAsset(dai, {"from": admin})
@@ -529,9 +373,7 @@ def test_update_metadata_with_price_safety_peg(
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
-    )
+    mock_vaults[0].setTokens([usdc, dai])
 
     mock_price_oracle.setUSDPrice(dai, D("1e18"))
     mock_price_oracle.setUSDPrice(usdc, D("1e18"))
@@ -561,46 +403,26 @@ def test_update_metadata_with_price_safety_peg(
         assert updated_metadata[2] == True
 
 
-@given(
-    bundle_metadata=st.lists(
-        st.tuples(
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            price_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-        )
-    )
-)
+@given(bundle_metadata=st.tuples(vault_lists(vault_metadatas), global_metadatas))
 def test_update_metadata_with_price_safety_tiny_prices(
     bundle_metadata,
     reserve_safety_manager,
     abc,
     sdt,
     asset_registry,
-    mock_balancer_vault,
     mock_price_oracle,
+    mock_vaults,
 ):
-    if not bundle_metadata:
-        return
-    metadata = bundle_to_metadata(bundle_metadata)
+
+    metadata = bundle_to_metadata(bundle_metadata, mock_vaults)
 
     asset_registry.setAssetAddress("ABC", abc)
     asset_registry.setAssetAddress("SDT", sdt)
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [sdt, abc], [D("2e20"), D("2e20")]
-    )
-
     mock_price_oracle.setUSDPrice(abc, D("1e16"))
     mock_price_oracle.setUSDPrice(sdt, D("1e16"))
+
+    mock_vaults[0].setTokens([abc, sdt])
 
     updated_metadata = reserve_safety_manager.updateMetadataWithPriceSafety(metadata)
     onevaultpricestoosmall = False
@@ -628,28 +450,12 @@ def test_update_metadata_with_price_safety_tiny_prices(
         assert updated_metadata[3] == True
 
 
-@given(
-    bundle_metadata=st.lists(
-        st.tuples(
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            weight_generator,
-            price_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-            boolean_generator,
-        )
-    )
-)
-def test_safe_to_execute_outside_epsilon(bundle_metadata, reserve_safety_manager):
-    if not bundle_metadata:
-        return
-    metadata = bundle_to_metadata(bundle_metadata)
+@given(bundle_metadata=st.tuples(vault_lists(vault_metadatas), global_metadatas))
+def test_safe_to_execute_outside_epsilon(
+    bundle_metadata, reserve_safety_manager, mock_vaults
+):
+
+    metadata = bundle_to_metadata(bundle_metadata, mock_vaults)
 
     result_exp = safe_to_execute_outside_epsilon(metadata)
 
@@ -682,7 +488,7 @@ def test_is_mint_safe_normal(
     sdt,
     abc,
     mock_price_oracle,
-    mock_balancer_vault,
+    mock_vaults,
 ):
     if not order_bundle:
         return
@@ -703,6 +509,7 @@ def test_is_mint_safe_normal(
         current_vault_price,
         amount,
         current_weight,
+        mock_vaults,
     )
 
     asset_registry.setAssetAddress("DAI", dai)
@@ -716,21 +523,10 @@ def test_is_mint_safe_normal(
 
     asset_registry.setAssetAddress("SDT", sdt)
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_2, [usdc, sdt], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_3, [sdt, dai], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_4, [abc, dai], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_5, [usdc, abc], [D("2e20"), D("2e20")]
-    )
+    tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
+
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
 
     mock_price_oracle.setUSDPrice(dai, D("1e18"))
     mock_price_oracle.setUSDPrice(usdc, D("1e18"))
@@ -740,7 +536,7 @@ def test_is_mint_safe_normal(
     response = reserve_safety_manager.isMintSafe(mint_order)
 
     response_expected = is_mint_safe(
-        mint_order, mock_balancer_vault, mock_price_oracle, asset_registry
+        mint_order, tokens, mock_price_oracle, asset_registry
     )
 
     assert response == response_expected
@@ -770,10 +566,9 @@ def test_is_mint_safe_small_prices(
     sdt,
     abc,
     mock_price_oracle,
-    mock_balancer_vault,
+    mock_vaults,
 ):
-    if not order_bundle:
-        return
+
     (
         initial_price,
         initial_weight,
@@ -791,6 +586,7 @@ def test_is_mint_safe_small_prices(
         current_vault_price,
         amount,
         current_weight,
+        mock_vaults,
     )
 
     asset_registry.setAssetAddress("ABC", abc)
@@ -803,13 +599,10 @@ def test_is_mint_safe_small_prices(
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [sdt, abc], [D("2e20"), D("2e20")]
-    )
+    tokens = [[abc, sdt], [dai, usdc]]
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_2, [usdc, dai], [D("2e20"), D("2e20")]
-    )
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
 
     mock_price_oracle.setUSDPrice(abc, D("1e11"))
     mock_price_oracle.setUSDPrice(sdt, D("1e11"))
@@ -819,7 +612,7 @@ def test_is_mint_safe_small_prices(
     response = reserve_safety_manager.isMintSafe(mint_order)
 
     response_expected = is_mint_safe(
-        mint_order, mock_balancer_vault, mock_price_oracle, asset_registry
+        mint_order, tokens, mock_price_oracle, asset_registry
     )
 
     assert response == response_expected == "55"
@@ -849,7 +642,7 @@ def test_is_mint_safe_off_peg(
     sdt,
     abc,
     mock_price_oracle,
-    mock_balancer_vault,
+    mock_vaults,
 ):
     if not order_bundle:
         return
@@ -870,6 +663,7 @@ def test_is_mint_safe_off_peg(
         current_vault_price,
         amount,
         current_weight,
+        mock_vaults,
     )
 
     asset_registry.setAssetAddress("DAI", dai)
@@ -883,21 +677,10 @@ def test_is_mint_safe_off_peg(
 
     asset_registry.setAssetAddress("SDT", sdt)
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_2, [usdc, sdt], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_3, [sdt, dai], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_4, [abc, dai], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_5, [usdc, abc], [D("2e20"), D("2e20")]
-    )
+    tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
+
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
 
     mock_price_oracle.setUSDPrice(dai, D("0.8e18"))
     mock_price_oracle.setUSDPrice(usdc, D("1e18"))
@@ -907,7 +690,7 @@ def test_is_mint_safe_off_peg(
     response = reserve_safety_manager.isMintSafe(mint_order)
 
     response_expected = is_mint_safe(
-        mint_order, mock_balancer_vault, mock_price_oracle, asset_registry
+        mint_order, tokens, mock_price_oracle, asset_registry
     )
 
     assert response == response_expected
@@ -937,7 +720,7 @@ def test_is_redeem_safe_normal(
     sdt,
     abc,
     mock_price_oracle,
-    mock_balancer_vault,
+    mock_vaults,
 ):
     if not order_bundle:
         return
@@ -958,6 +741,7 @@ def test_is_redeem_safe_normal(
         current_vault_price,
         amount,
         current_weight,
+        mock_vaults,
     )
 
     asset_registry.setAssetAddress("DAI", dai)
@@ -971,21 +755,10 @@ def test_is_redeem_safe_normal(
 
     asset_registry.setAssetAddress("SDT", sdt)
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [usdc, dai], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_2, [usdc, sdt], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_3, [sdt, dai], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_4, [abc, dai], [D("2e20"), D("2e20")]
-    )
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_5, [usdc, abc], [D("2e20"), D("2e20")]
-    )
+    tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
+
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
 
     mock_price_oracle.setUSDPrice(dai, D("1e18"))
     mock_price_oracle.setUSDPrice(usdc, D("1e18"))
@@ -995,7 +768,7 @@ def test_is_redeem_safe_normal(
     response = reserve_safety_manager.isRedeemSafe(redeem_order)
 
     response_expected = is_redeem_safe(
-        redeem_order, mock_balancer_vault, mock_price_oracle, asset_registry
+        redeem_order, tokens, mock_price_oracle, asset_registry
     )
 
     assert response == response_expected
@@ -1025,7 +798,7 @@ def test_is_redeem_safe_small_prices(
     sdt,
     abc,
     mock_price_oracle,
-    mock_balancer_vault,
+    mock_vaults,
 ):
     if not order_bundle:
         return
@@ -1046,6 +819,7 @@ def test_is_redeem_safe_small_prices(
         current_vault_price,
         amount,
         current_weight,
+        mock_vaults,
     )
 
     asset_registry.setAssetAddress("ABC", abc)
@@ -1058,13 +832,10 @@ def test_is_redeem_safe_small_prices(
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID, [sdt, abc], [D("2e20"), D("2e20")]
-    )
+    tokens = [[sdt, abc], [usdc, abc]]
 
-    mock_balancer_vault.setPoolTokens(
-        constants.BALANCER_POOL_ID_2, [usdc, dai], [D("2e20"), D("2e20")]
-    )
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
 
     mock_price_oracle.setUSDPrice(abc, D("1e11"))
     mock_price_oracle.setUSDPrice(sdt, D("1e11"))
@@ -1074,7 +845,7 @@ def test_is_redeem_safe_small_prices(
     response = reserve_safety_manager.isRedeemSafe(redeem_order)
 
     response_expected = is_redeem_safe(
-        redeem_order, mock_balancer_vault, mock_price_oracle, asset_registry
+        redeem_order, tokens, mock_price_oracle, asset_registry
     )
 
     if not response == "56" == response_expected:

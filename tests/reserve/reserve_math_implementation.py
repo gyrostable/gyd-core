@@ -79,7 +79,7 @@ def update_metadata_with_epsilon_status(metadata):
     return tuple(metadata_new)
 
 
-def build_metadata(order: List[Tuple]) -> List[D]:
+def build_metadata(order: List[Tuple], tokens) -> List[D]:
 
     metadata = []
     vault_metadata_array = []
@@ -131,7 +131,7 @@ def build_metadata(order: List[Tuple]) -> List[D]:
 
         vault_metadata = []
 
-        vault_metadata.append(vault_info[2][2])
+        vault_metadata.append(tokens[i])
         vault_metadata.append(ideal_weights[i])
         vault_metadata.append(current_weights[i])
         vault_metadata.append(resulting_weights[i])
@@ -152,12 +152,10 @@ def build_metadata(order: List[Tuple]) -> List[D]:
     return metadata
 
 
-def is_mint_safe(
-    order: List[Tuple], mock_balancer_vault, mock_price_oracle, asset_registry
-) -> str:
-    metadata = build_metadata(order)
+def is_mint_safe(order: List[Tuple], tokens, mock_price_oracle, asset_registry) -> str:
+    metadata = build_metadata(order, tokens)
     metadata = update_metadata_with_price_safety(
-        metadata, mock_balancer_vault, mock_price_oracle, asset_registry
+        metadata, mock_price_oracle, asset_registry
     )
     metadata = update_metadata_with_epsilon_status(metadata)
 
@@ -185,14 +183,14 @@ def is_redeem_feasible(order: List[Tuple]):
 
 
 def is_redeem_safe(
-    order: List[Tuple], mock_balancer_vault, mock_price_oracle, asset_registry
+    order: List[Tuple], tokens, mock_price_oracle, asset_registry
 ) -> str:
     if not is_redeem_feasible(order):
         return "56"
 
-    metadata = build_metadata(order)
+    metadata = build_metadata(order, tokens)
     metadata = update_metadata_with_price_safety(
-        metadata, mock_balancer_vault, mock_price_oracle, asset_registry
+        metadata, mock_price_oracle, asset_registry
     )
     metadata = update_metadata_with_epsilon_status(metadata)
 
@@ -210,11 +208,10 @@ def is_redeem_safe(
 
 
 def update_vault_with_price_safety(
-    vault_metadata: List, mock_balancer_vault, mock_price_oracle, asset_registry
+    vault_metadata: List, mock_price_oracle, asset_registry
 ):
-    (tokens, balances, last_change_block) = mock_balancer_vault.getPoolTokens(
-        vault_metadata[0]
-    )
+    tokens = vault_metadata[0]
+
     vault_metadata[6] = True
     vault_metadata[7] = False
 
@@ -230,14 +227,12 @@ def update_vault_with_price_safety(
     return vault_metadata
 
 
-def update_metadata_with_price_safety(
-    metadata, mock_balancer_vault, mock_price_oracle, asset_registry
-):
+def update_metadata_with_price_safety(metadata, mock_price_oracle, asset_registry):
     metadata[2] = True
     metadata[3] = True
     for vault_metadata in metadata[0]:
         new_vault_metadata = update_vault_with_price_safety(
-            vault_metadata, mock_balancer_vault, mock_price_oracle, asset_registry
+            vault_metadata, mock_price_oracle, asset_registry
         )
         if not new_vault_metadata[6]:
             metadata[2] = False

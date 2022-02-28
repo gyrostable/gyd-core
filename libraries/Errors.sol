@@ -22,10 +22,12 @@ library Errors {
     string public constant MUL_OVERFLOW = "28";
     string public constant DIV_INTERNAL = "29";
 
+    // User errors
     string public constant NOT_AUTHORIZED = "30";
     string public constant INVALID_ARGUMENT = "31";
     string public constant KEY_NOT_FOUND = "32";
     string public constant KEY_FROZEN = "33";
+    string public constant INSUFFICIENT_BALANCE = "34";
 
     // Oracle related errors
     string public constant ASSET_NOT_SUPPORTED = "40";
