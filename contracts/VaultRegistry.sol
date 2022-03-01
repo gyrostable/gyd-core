@@ -60,14 +60,15 @@ contract VaultRegistry is IVaultRegistry, Governable {
         emit VaultRegistered(vault);
     }
 
-    // NB: URGENT TO-DO make this callable only by the motherboard
-    function updatePersistedVaultMetadata(
+    function updatePersistedVaultFlowParams(
         address[] memory vaultsToUpdate,
-        DataTypes.PersistedVaultMetadata[] memory persistedVaultsMetadata
-    ) external {
+        uint256[] memory newShortFlowMemory,
+        uint256[] memory newShortFlowThreshold
+    ) external governanceOnly {
         for (uint256 i = 0; i < vaultsToUpdate.length; i++) {
             require(vaultAddresses.contains(vaultsToUpdate[i]), Errors.VAULT_NOT_FOUND);
-            vaultsMetadata[vaultsToUpdate[i]] = persistedVaultsMetadata[i];
+            vaultsMetadata[vaultsToUpdate[i]].shortFlowMemory = newShortFlowMemory[i];
+            vaultsMetadata[vaultsToUpdate[i]].shortFlowMemory = newShortFlowThreshold[i];
         }
     }
 

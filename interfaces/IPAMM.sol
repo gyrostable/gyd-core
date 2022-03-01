@@ -6,6 +6,17 @@ import "../contracts/auth/Governable.sol";
 
 /// @title IPAMM is the pricing contract for the Primary Market
 interface IPAMM {
+    /// @notice this event is emitted when the system parameters are updated
+    event SystemParamsUpdated(uint64 alphaBar, uint64 xuBar, uint64 thetaBar, uint64 outflowMemory);
+
+    // NB gas optimization, don't need to use uint64
+    struct Params {
+        uint64 alphaBar; // ᾱ ∊ [0,1]
+        uint64 xuBar; // x̄_U ∊ [0,1]
+        uint64 thetaBar; // θ̄ ∊ [0,1]
+        uint64 outflowMemory; // this is [0,1]
+    }
+
     /// @notice Quotes the amount of GYD to mint for the given USD amount
     /// @param usdAmount the USD value to add to the reserve
     /// @return the amount of GYD to mint
@@ -34,10 +45,5 @@ interface IPAMM {
     function redeem(uint256 gydAmount, uint256 reserveUSDValue) external returns (uint256);
 
     /// @notice Allows for the system parameters to be updated
-    function setSystemParams(
-        uint64 alphaBar,
-        uint64 xuBar,
-        uint64 thetaBar,
-        uint64 outflowMemory
-    ) external;
+    function setSystemParams(Params memory params) external;
 }

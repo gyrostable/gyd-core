@@ -26,12 +26,7 @@ contract MockPAMM is IPAMM {
     }
 
     /// @notice Allows for the system parameters to be updated
-    function setSystemParams(
-        uint64,
-        uint64,
-        uint64,
-        uint64
-    ) external pure {
+    function setSystemParams(Params memory params) external pure {
         return;
     }
 }

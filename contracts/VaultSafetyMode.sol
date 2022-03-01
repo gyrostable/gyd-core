@@ -18,8 +18,7 @@ import "../interfaces/IVaultRegistry.sol";
 contract VaultSafetyMode is ISafetyCheck, Governable {
     using FixedPoint for uint256;
 
-    //TODO: does this need any sort of Access Control?
-    mapping(address => DataTypes.FlowData) public flowSafetyDataStorage;
+    mapping(address => DataTypes.FlowData) public flowDataBidirectionalStored;
 
     uint256 public immutable safetyBlocksAutomatic;
     uint256 public immutable safetyBlocksGuardian;
@@ -44,23 +43,41 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     }
 
     //TODO: gas optimize this
-    function storeFlowSafetyData(
-        DataTypes.FlowData[] memory flowData,
+    function storeDirectionalFlowData(
+        DataTypes.DirectionalFlowData[] memory directionalFlowData,
+        Order memory order,
         address[] memory vaultAddresses
     ) private {
-        for (uint256 i = 0; i < flowData.length; i++) {
-            flowSafetyDataStorage[vaultAddresses[i]] = flowData[i];
+        if (order.mint) {
+            for (uint256 i = 0; i < directionalFlowData.length; i++) {
+                flowDataBidirectionalStored[vaultAddresses[i]].inFlow = directionalFlowData[i];
+            }
+        } else {
+            for (uint256 i = 0; i < directionalFlowData.length; i++) {
+                flowDataBidirectionalStored[vaultAddresses[i]].outFlow = directionalFlowData[i];
+            }
         }
     }
 
     //TODO: gas optimize this. The parameters for this contract could also potentially be packed here.
-    function accessFlowSafetyData(address[] memory vaultAddresses)
+    function accessDirectionalFlowData(address[] memory vaultAddresses, Order memory order)
         private
         view
-        returns (DataTypes.FlowData[] memory flowData)
+        returns (
+            DataTypes.DirectionalFlowData[] memory directionalFlowData,
+            uint256[] memory lastSeenBlock
+        )
     {
-        for (uint256 i = 0; i < vaultAddresses.length; i++) {
-            flowData[i] = flowSafetyDataStorage[vaultAddresses[i]];
+        if (order.mint) {
+            for (uint256 i = 0; i < vaultAddresses.length; i++) {
+                directionalFlowData[i] = flowDataBidirectionalStored[vaultAddresses[i]].inFlow;
+                lastSeenBlock[i] = flowDataBidirectionalStored[vaultAddresses[i]].lastSeenBlock;
+            }
+        } else {
+            for (uint256 i = 0; i < vaultAddresses.length; i++) {
+                directionalFlowData[i] = flowDataBidirectionalStored[vaultAddresses[i]].outFlow;
+                lastSeenBlock[i] = flowDataBidirectionalStored[vaultAddresses[i]].lastSeenBlock;
+            }
         }
     }
 
@@ -68,92 +85,68 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         address[] memory vaultAddresses,
         uint256 currentBlockNumber,
         Order memory order
-    ) internal view returns (DataTypes.FlowData[] memory newData) {
-        newData = accessFlowSafetyData(vaultAddresses);
+    )
+        internal
+        view
+        returns (
+            DataTypes.DirectionalFlowData[] memory directionalFlowData,
+            uint256[] memory lastSeenBlock
+        )
+    {
+        (directionalFlowData, lastSeenBlock) = accessDirectionalFlowData(vaultAddresses, order);
 
-        for (uint256 i = 0; i < newData.length; i++) {
-            uint256 blocksElapsed = currentBlockNumber - newData[i].lastSeenBlock;
+        for (uint256 i = 0; i < directionalFlowData.length; i++) {
+            uint256 blocksElapsed = currentBlockNumber - lastSeenBlock[i];
 
-            newData[i].remainingSafetyBlocksIn = calculateRemainingBlocks(
-                newData[i].remainingSafetyBlocksIn,
+            directionalFlowData[i].remainingSafetyBlocks = calculateRemainingBlocks(
+                directionalFlowData[i].remainingSafetyBlocks,
                 blocksElapsed
             );
 
-            newData[i].remainingSafetyBlocksOut = calculateRemainingBlocks(
-                newData[i].remainingSafetyBlocksOut,
-                blocksElapsed
-            );
-
-            newData[i].shortFlowIn = FlowSafety.updateFlow(
-                newData[i].shortFlowIn,
+            directionalFlowData[i].shortFlow = FlowSafety.updateFlow(
+                directionalFlowData[i].shortFlow,
                 currentBlockNumber,
-                newData[i].lastSeenBlock,
+                lastSeenBlock[i],
                 order.vaultsWithAmount[i].vaultInfo.persistedMetadata.shortFlowMemory
             );
 
-            newData[i].shortFlowOut = FlowSafety.updateFlow(
-                newData[i].shortFlowOut,
-                currentBlockNumber,
-                newData[i].lastSeenBlock,
-                order.vaultsWithAmount[i].vaultInfo.persistedMetadata.shortFlowMemory
-            );
-
-            newData[i].lastSeenBlock = currentBlockNumber;
+            // lastSeenBlock[i] = currentBlockNumber;
         }
-
-        return newData;
     }
 
     // TODO: emit events when a safety mode is activated
     function updateVaultFlowSafety(
-        DataTypes.FlowData memory flowData,
+        DataTypes.DirectionalFlowData memory directionalFlowData,
         uint256 proposedFlowChange,
-        bool mint,
         uint256 shortFlowThreshold
     )
         private
         view
         returns (
-            DataTypes.FlowData memory,
+            DataTypes.DirectionalFlowData memory,
             bool,
             bool
         )
     {
         bool allowTransaction = true;
         bool isSafetyModeActivated = false;
-        if (mint) {
-            if (flowData.remainingSafetyBlocksIn > 0) {
-                return (flowData, false, true);
-            }
-            uint256 newInFlow = flowData.shortFlowIn + proposedFlowChange;
-            if (newInFlow > shortFlowThreshold) {
-                allowTransaction = false;
-                flowData.remainingSafetyBlocksIn = safetyBlocksAutomatic;
-            } else if (newInFlow > THRESHOLD_BUFFER * shortFlowThreshold) {
-                flowData.remainingSafetyBlocksIn = safetyBlocksAutomatic;
-                flowData.shortFlowIn += newInFlow;
-                isSafetyModeActivated = true;
-            } else {
-                flowData.shortFlowIn += newInFlow;
-            }
+
+        if (directionalFlowData.remainingSafetyBlocks > 0) {
+            return (directionalFlowData, false, true);
+        }
+        uint256 newFlow = directionalFlowData.shortFlow + proposedFlowChange;
+        if (newFlow > shortFlowThreshold) {
+            allowTransaction = false;
+            directionalFlowData.remainingSafetyBlocks = safetyBlocksAutomatic;
+        } else if (newFlow > THRESHOLD_BUFFER.mulDown(shortFlowThreshold)) {
+            directionalFlowData.remainingSafetyBlocks = safetyBlocksAutomatic;
+            directionalFlowData.shortFlow += newFlow;
+            isSafetyModeActivated = true;
         } else {
-            if (flowData.remainingSafetyBlocksOut > 0) {
-                return (flowData, false, true);
-            }
-            uint256 newOutFlow = flowData.shortFlowOut + proposedFlowChange;
-            if (newOutFlow > shortFlowThreshold) {
-                allowTransaction = false;
-                flowData.remainingSafetyBlocksOut = safetyBlocksAutomatic;
-            } else if (newOutFlow > THRESHOLD_BUFFER * shortFlowThreshold) {
-                flowData.remainingSafetyBlocksOut = safetyBlocksAutomatic;
-                flowData.shortFlowOut += newOutFlow;
-                isSafetyModeActivated = true;
-            } else {
-                flowData.shortFlowOut += newOutFlow;
-            }
+            directionalFlowData.shortFlow += newFlow;
         }
 
-        return (flowData, allowTransaction, isSafetyModeActivated);
+        return (directionalFlowData, allowTransaction, isSafetyModeActivated);
     }
 
     //TODO: make a whitelist of addresses that can call this and make this list settable by governance
@@ -161,32 +154,34 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         DataTypes.GuardedVaults[] memory vaultsToProtect,
         uint256 blocksToActivate
     ) external {
-        DataTypes.FlowData[] memory flowSafetyDataUpdate;
         require(blocksToActivate <= safetyBlocksGuardian, Errors.ORACLE_GUARDIAN_TIME_LIMIT);
 
-        address[] memory vaultAddresses;
         for (uint256 i = 0; i < vaultsToProtect.length; i++) {
-            vaultAddresses[i] = vaultsToProtect[i].vaultAddress;
-        }
-
-        for (uint256 i = 0; i < vaultsToProtect.length; i++) {
-            if (vaultsToProtect[i].direction == 0 || vaultsToProtect[i].direction == 3) {
-                flowSafetyDataUpdate[i].remainingSafetyBlocksIn = blocksToActivate;
+            if (
+                vaultsToProtect[i].direction == DataTypes.Direction.In ||
+                vaultsToProtect[i].direction == DataTypes.Direction.Both
+            ) {
+                flowDataBidirectionalStored[vaultsToProtect[i].vaultAddress]
+                    .inFlow
+                    .remainingSafetyBlocks = blocksToActivate;
             }
-            if (vaultsToProtect[i].direction == 1 || vaultsToProtect[i].direction == 3) {
-                flowSafetyDataUpdate[i].remainingSafetyBlocksOut = blocksToActivate;
+            if (
+                vaultsToProtect[i].direction == DataTypes.Direction.Out ||
+                vaultsToProtect[i].direction == DataTypes.Direction.Both
+            ) {
+                flowDataBidirectionalStored[vaultsToProtect[i].vaultAddress]
+                    .outFlow
+                    .remainingSafetyBlocks = blocksToActivate;
             }
         }
-
-        storeFlowSafetyData(flowSafetyDataUpdate, vaultAddresses);
     }
 
-    function flowSafetyEngine(Order memory order)
+    function flowSafetyStateUpdater(Order memory order)
         internal
         view
         returns (
             string memory,
-            DataTypes.FlowData[] memory latestFlowData,
+            DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
             address[] memory vaultAddresses
         )
     {
@@ -196,41 +191,49 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             vaultAddresses[i] = order.vaultsWithAmount[i].vaultInfo.vault;
         }
 
-        latestFlowData = initializeVaultFlowData(vaultAddresses, currentBlockNumber, order);
+        (latestDirectionalFlowData, ) = initializeVaultFlowData(
+            vaultAddresses,
+            currentBlockNumber,
+            order
+        );
 
         bool safetyModeOff = true;
-        for (uint256 i = 0; i < latestFlowData.length; i++) {
+        for (uint256 i = 0; i < latestDirectionalFlowData.length; i++) {
             bool allowTransaction;
             bool isSafetyModeActivated;
-            (latestFlowData[i], allowTransaction, isSafetyModeActivated) = updateVaultFlowSafety(
-                latestFlowData[i],
+            (
+                latestDirectionalFlowData[i],
+                allowTransaction,
+                isSafetyModeActivated
+            ) = updateVaultFlowSafety(
+                latestDirectionalFlowData[i],
                 order.vaultsWithAmount[i].amount,
-                order.mint,
                 order.vaultsWithAmount[i].vaultInfo.persistedMetadata.shortFlowThreshold
             );
+
             if (isSafetyModeActivated) {
                 safetyModeOff = false;
             }
             if (!allowTransaction) {
-                return (Errors.VAULT_FLOW_TOO_HIGH, latestFlowData, vaultAddresses);
+                return (Errors.VAULT_FLOW_TOO_HIGH, latestDirectionalFlowData, vaultAddresses);
             }
         }
 
         if (!safetyModeOff) {
             return (
                 Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED,
-                latestFlowData,
+                latestDirectionalFlowData,
                 vaultAddresses
             );
         }
 
-        return ("", latestFlowData, vaultAddresses);
+        return ("", latestDirectionalFlowData, vaultAddresses);
     }
 
     /// @notice Checks whether a mint operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
     function isMintSafe(Order memory order) external view returns (string memory) {
-        (string memory mintSafety, , ) = flowSafetyEngine(order);
+        (string memory mintSafety, , ) = flowSafetyStateUpdater(order);
         return mintSafety;
     }
 
@@ -242,17 +245,17 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     function checkAndPersistMint(Order memory order) external returns (string memory) {
         (
             string memory mintSafety,
-            DataTypes.FlowData[] memory latestFlowData,
+            DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
             address[] memory vaultAddresses
-        ) = flowSafetyEngine(order);
-        storeFlowSafetyData(latestFlowData, vaultAddresses);
+        ) = flowSafetyStateUpdater(order);
+        storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
         return mintSafety;
     }
 
     /// @notice Checks whether a redeem operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
     function isRedeemSafe(Order memory order) external view returns (string memory) {
-        (string memory redeemSafety, , ) = flowSafetyEngine(order);
+        (string memory redeemSafety, , ) = flowSafetyStateUpdater(order);
         return redeemSafety;
     }
 
@@ -264,10 +267,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     function checkAndPersistRedeem(Order memory order) external returns (string memory) {
         (
             string memory redeemSafety,
-            DataTypes.FlowData[] memory latestFlowData,
+            DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
             address[] memory vaultAddresses
-        ) = flowSafetyEngine(order);
-        storeFlowSafetyData(latestFlowData, vaultAddresses);
+        ) = flowSafetyStateUpdater(order);
+        storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
         return redeemSafety;
     }
 }

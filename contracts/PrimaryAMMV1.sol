@@ -18,9 +18,6 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
     uint256 constant TWO = 2e18;
     uint256 constant ANCHOR = ONE;
 
-    /// @notice this event is emitted when the system parameters are updated
-    event SystemParamsUpdated(uint64 alphaBar, uint64 xuBar, uint64 thetaBar, uint64 outflowMemory);
-
     enum Region {
         CASE_i,
         CASE_I_ii,
@@ -40,14 +37,6 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
         uint256 reserveValue; // b
         uint256 totalGyroSupply; // y
         uint256 lastSeenBlock;
-    }
-
-    // NB gas optimization, don't need to use uint64
-    struct Params {
-        uint64 alphaBar; // ᾱ ∊ [0,1]
-        uint64 xuBar; // x̄_U ∊ [0,1]
-        uint64 thetaBar; // θ̄ ∊ [0,1]
-        uint64 outflowMemory; // this is [0,1]
     }
 
     struct DerivedParams {
@@ -75,14 +64,14 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
     }
 
     /// @inheritdoc IPAMM
-    function setSystemParams(
-        uint64 alphaBar,
-        uint64 xuBar,
-        uint64 thetaBar,
-        uint64 outflowMemory
-    ) external governanceOnly {
-        systemParams = Params(alphaBar, xuBar, thetaBar, outflowMemory);
-        emit SystemParamsUpdated(alphaBar, xuBar, thetaBar, outflowMemory);
+    function setSystemParams(Params memory params) external governanceOnly {
+        systemParams = params;
+        emit SystemParamsUpdated(
+            params.alphaBar,
+            params.xuBar,
+            params.thetaBar,
+            params.outflowMemory
+        );
     }
 
     /// Helpers to compute various parameters

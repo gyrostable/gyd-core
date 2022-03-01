@@ -40,17 +40,26 @@ library DataTypes {
         uint256 shortFlowThreshold;
     }
 
+    struct DirectionalFlowData {
+        uint256 shortFlow;
+        uint256 remainingSafetyBlocks;
+    }
+
     struct FlowData {
         uint256 lastSeenBlock;
-        uint256 shortFlowIn;
-        uint256 shortFlowOut;
-        uint256 remainingSafetyBlocksIn;
-        uint256 remainingSafetyBlocksOut;
+        DirectionalFlowData inFlow;
+        DirectionalFlowData outFlow;
+    }
+
+    enum Direction {
+        In,
+        Out,
+        Both
     }
 
     struct GuardedVaults {
         address vaultAddress;
-        uint256 direction; // 0 means in, 1 means out, 2 means both
+        Direction direction;
     }
 
     /// @notice Vault with metadata
