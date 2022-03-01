@@ -4,15 +4,15 @@ pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import "./auth/Governable.sol";
-import "../libraries/DataTypes.sol";
-import "../libraries/FixedPoint.sol";
-import "../interfaces/IVaultManager.sol";
-import "../interfaces/IAssetRegistry.sol";
-import "../interfaces/IGyroVault.sol";
-import "../interfaces/balancer/IVault.sol";
-import "../libraries/Errors.sol";
-import "../interfaces/ISafetyCheck.sol";
+import "../auth/Governable.sol";
+import "../../libraries/DataTypes.sol";
+import "../../libraries/FixedPoint.sol";
+import "../../interfaces/IVaultManager.sol";
+import "../../interfaces/IAssetRegistry.sol";
+import "../../interfaces/IGyroVault.sol";
+import "../../interfaces/balancer/IVault.sol";
+import "../../libraries/Errors.sol";
+import "../../interfaces/ISafetyCheck.sol";
 
 contract ReserveSafetyManager is Governable, ISafetyCheck {
     using FixedPoint for uint256;
@@ -23,6 +23,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
     IUSDPriceOracle internal priceOracle;
     IAssetRegistry internal assetRegistry;
+    IVaultManager internal vaultManager;
 
     struct VaultMetadata {
         address vault;
@@ -52,13 +53,15 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice,
         IUSDPriceOracle _priceOracle,
-        IAssetRegistry _assetRegistry
+        IAssetRegistry _assetRegistry,
+        IVaultManager _vaultManager
     ) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;
         priceOracle = _priceOracle;
         assetRegistry = _assetRegistry;
+        vaultManager = _vaultManager;
     }
 
     function setVaultMaxDeviation(uint256 _maxAllowedVaultDeviation) external governanceOnly {
@@ -104,26 +107,25 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
     /// @notice For a given set of input vaults, calculates the ideal weight the vault should now have,
     /// given (i) the vault's initial weight and (ii) the evolution of prices since the vault's initialization.
-    /// @param vaultsWithAmount an array of VaultWithAmountStructs
+    /// @param vaultsInfo an array of VaultWithAmountStructs
     /// @return idealWeights an array of the ideal weights
-    function _calculateIdealWeights(VaultWithAmount[] memory vaultsWithAmount)
+    function _calculateIdealWeights(DataTypes.VaultInfo[] memory vaultsInfo)
         internal
         pure
         returns (uint256[] memory)
     {
-        // order of prices must be same as order of poolProperties
-        uint256[] memory idealWeights = new uint256[](vaultsWithAmount.length);
-        uint256[] memory weightedReturns = new uint256[](vaultsWithAmount.length);
+        uint256[] memory idealWeights = new uint256[](vaultsInfo.length);
+        uint256[] memory weightedReturns = new uint256[](vaultsInfo.length);
 
         uint256 returnsSum;
-        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
-            weightedReturns[i] = (vaultsWithAmount[i].vaultInfo.price)
-                .divDown(vaultsWithAmount[i].vaultInfo.persistedMetadata.initialPrice)
-                .mulDown(vaultsWithAmount[i].vaultInfo.persistedMetadata.initialWeight);
+        for (uint256 i = 0; i < vaultsInfo.length; i++) {
+            weightedReturns[i] = (vaultsInfo[i].price)
+                .divDown(vaultsInfo[i].persistedMetadata.initialPrice)
+                .mulDown(vaultsInfo[i].persistedMetadata.initialWeight);
             returnsSum += weightedReturns[i];
         }
 
-        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
+        for (uint256 i = 0; i < vaultsInfo.length; i++) {
             idealWeights[i] = weightedReturns[i].divDown(returnsSum);
         }
 
@@ -166,12 +168,82 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     }
 
     /// @notice this function takes an order struct and builds the metadata struct, for use in this contract.
+    /// In the single asset case, the metadata is constructed using the whole reserve as a comparison explictly.
+    /// In the multiasset case, the state of the reserve is used implicitly.
+    /// @param order an order struct received by the Reserve Safety Manager contract
+    /// @return metaData object
+    function _buildMetaDataSingleAsset(Order memory order)
+        internal
+        view
+        returns (MetaData memory metaData)
+    {
+        DataTypes.VaultInfo[] memory vaultsInfo = vaultManager.listVaults();
+
+        uint256[] memory idealWeights = _calculateIdealWeights(vaultsInfo);
+        uint256[] memory currentAmounts = new uint256[](vaultsInfo.length);
+        uint256[] memory deltaAmounts = new uint256[](vaultsInfo.length);
+        uint256[] memory resultingAmounts = new uint256[](vaultsInfo.length);
+        uint256[] memory prices = new uint256[](vaultsInfo.length);
+
+        for (uint256 i = 0; i < vaultsInfo.length; i++) {
+            currentAmounts[i] = vaultsInfo[i].reserveBalance;
+            prices[i] = vaultsInfo[i].price;
+            metaData.mint = order.mint;
+            if (vaultsInfo[i].vault == order.vaultsWithAmount[0].vaultInfo.vault) {
+                deltaAmounts[i] = order.vaultsWithAmount[0].amount;
+
+                if (order.mint) {
+                    resultingAmounts[i] = currentAmounts[i] + deltaAmounts[i];
+                } else {
+                    resultingAmounts[i] = currentAmounts[i] - deltaAmounts[i];
+                }
+            } else {
+                deltaAmounts[i] = 0;
+                resultingAmounts[i] = currentAmounts[i];
+            }
+
+            metaData.vaultMetadata[i].vault = vaultsInfo[i].vault;
+            metaData.vaultMetadata[i].price = vaultsInfo[i].price;
+            prices[i] = vaultsInfo[i].price;
+        }
+
+        (uint256[] memory currentWeights, uint256 currentUSDValue) = _calculateWeightsAndTotal(
+            currentAmounts,
+            prices
+        );
+
+        // deltaWeights = weighting of proposed inputs or outputs, not change in weights from resulting to current
+        (uint256[] memory deltaWeights, ) = _calculateWeightsAndTotal(deltaAmounts, prices);
+
+        (uint256[] memory resultingWeights, ) = _calculateWeightsAndTotal(resultingAmounts, prices);
+
+        if (currentUSDValue == 0) {
+            currentWeights = idealWeights;
+        }
+
+        for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
+            metaData.vaultMetadata[i].idealWeight = idealWeights[i];
+            metaData.vaultMetadata[i].currentWeight = currentWeights[i];
+            metaData.vaultMetadata[i].resultingWeight = resultingWeights[i];
+            metaData.vaultMetadata[i].deltaWeight = deltaWeights[i];
+        }
+    }
+
+    /// @notice this function takes an order struct and builds the metadata struct, for use in this contract.
     /// @param order an order struct received by the Reserve Safety Manager contract
     /// @return metaData object
     function _buildMetaData(Order memory order) internal pure returns (MetaData memory metaData) {
         metaData.vaultMetadata = new VaultMetadata[](order.vaultsWithAmount.length);
 
-        uint256[] memory idealWeights = _calculateIdealWeights(order.vaultsWithAmount);
+        DataTypes.VaultInfo[] memory vaultsInfo = new DataTypes.VaultInfo[](
+            order.vaultsWithAmount.length
+        );
+
+        for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
+            vaultsInfo[i] = order.vaultsWithAmount[i].vaultInfo;
+        }
+
+        uint256[] memory idealWeights = _calculateIdealWeights(vaultsInfo);
 
         uint256[] memory currentAmounts = new uint256[](order.vaultsWithAmount.length);
         uint256[] memory deltaAmounts = new uint256[](order.vaultsWithAmount.length);
@@ -322,7 +394,13 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
     /// @inheritdoc ISafetyCheck
     function isMintSafe(Order memory order) public view returns (string memory) {
-        MetaData memory metaData = _buildMetaData(order);
+        MetaData memory metaData;
+        if (order.vaultsWithAmount.length == 1) {
+            metaData = _buildMetaDataSingleAsset(order);
+        } else {
+            metaData = _buildMetaData(order);
+        }
+
         _updateMetadataWithPriceSafety(metaData);
         _updateMetaDataWithEpsilonStatus(metaData);
 
@@ -351,7 +429,13 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             return Errors.TRYING_TO_REDEEM_MORE_THAN_VAULT_CONTAINS;
         }
 
-        MetaData memory metaData = _buildMetaData(order);
+        MetaData memory metaData;
+        if (order.vaultsWithAmount.length == 1) {
+            metaData = _buildMetaDataSingleAsset(order);
+        } else {
+            metaData = _buildMetaData(order);
+        }
+
         _updateMetadataWithPriceSafety(metaData);
         _updateMetaDataWithEpsilonStatus(metaData);
 
