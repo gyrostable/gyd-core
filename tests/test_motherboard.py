@@ -197,7 +197,7 @@ def test_redeem_invalid_ratio(motherboard, usdc, usdc_vault, alice, value_ratio)
         motherboard.redeem(scale(10), [redeem_asset], {"from": alice})
 
 
-@pytest.mark.mainetFork
+@pytest.mark.mainnetFork
 def test_simple_mint_bpt(motherboard, balancer_vault, alice, dai, weth, wbtc):
     amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
