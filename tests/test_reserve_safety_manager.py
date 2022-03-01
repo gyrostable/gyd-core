@@ -733,6 +733,12 @@ def test_is_redeem_safe_normal(
         current_weight,
     ) = [list(v) for v in zip(*order_bundle)]
 
+    print("Current vault price", current_vault_price)
+    print("initial vault price", initial_price)
+
+    if current_vault_price == initial_price:
+        return
+
     redeem_order = order_builder(
         False,
         initial_price,

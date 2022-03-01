@@ -35,6 +35,9 @@ def calculate_ideal_weights(vaults_with_amount: List[Tuple]) -> List[D]:
     returns_sum = D("0")
 
     for vault in vaults_with_amount:
+        print("vault price", D(vault[0][1]))
+        print("initial price", D(vault[0][2][0]))
+        print("initial weight", D(vault[0][2][1]))
         weighted_return = D(vault[0][1]) / D(vault[0][2][0]) * D(vault[0][2][1])
         returns_sum += D(weighted_return)
         weighted_returns.append(weighted_return)
@@ -91,7 +94,11 @@ def build_metadata(order: List[Tuple], tokens) -> List[D]:
 
     vaults_with_amount = order[0]
 
+    print("Vaults with amounts", vaults_with_amount)
+
     ideal_weights = calculate_ideal_weights(vaults_with_amount)
+
+    print("Ideal weights", ideal_weights)
 
     for vault in vaults_with_amount:
         vault_info = vault[0]
@@ -109,6 +116,9 @@ def build_metadata(order: List[Tuple], tokens) -> List[D]:
     current_weights, current_usd_value = calculate_weights_and_total(
         current_amounts, prices
     )
+    print("Current amounts", current_amounts)
+    print("Resulting amounts", resulting_amounts)
+    print("resulting prices", prices)
     resulting_weights, resultingTotal = calculate_weights_and_total(
         resulting_amounts, prices
     )
@@ -193,6 +203,8 @@ def is_redeem_safe(
         metadata, mock_price_oracle, asset_registry
     )
     metadata = update_metadata_with_epsilon_status(metadata)
+
+    print("Python metadata", metadata)
 
     if not metadata[3]:
         return "55"

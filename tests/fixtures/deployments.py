@@ -73,21 +73,6 @@ def mock_balancer_pool_two(admin, MockBalancerPool):
 
 
 @pytest.fixture(scope="module")
-def mock_balancer_pool_three(admin, MockBalancerPool):
-    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID_3)
-
-
-@pytest.fixture(scope="module")
-def mock_balancer_pool_four(admin, MockBalancerPool):
-    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID_4)
-
-
-@pytest.fixture(scope="module")
-def mock_balancer_pool_five(admin, MockBalancerPool):
-    return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID_5)
-
-
-@pytest.fixture(scope="module")
 def mock_balancer_vault(admin, MockBalVault):
     return admin.deploy(MockBalVault)
 
