@@ -35,12 +35,13 @@ def calculate_ideal_weights(vaults_with_amount: List[Tuple]) -> List[D]:
     returns_sum = D("0")
 
     for vault in vaults_with_amount:
-        print("vault price", D(vault[0][1]))
-        print("initial price", D(vault[0][2][0]))
-        print("initial weight", D(vault[0][2][1]))
         weighted_return = D(vault[0][1]) / D(vault[0][2][0]) * D(vault[0][2][1])
         returns_sum += D(weighted_return)
         weighted_returns.append(weighted_return)
+
+    # if len(vaults_with_amount) == 1:
+    #     implied_ideal_weights.append(weighted_returns)
+    #     return implied_ideal_weights
 
     for i in range(len(vaults_with_amount)):
         implied_ideal_weight = weighted_returns[i] / returns_sum
@@ -94,11 +95,7 @@ def build_metadata(order: List[Tuple], tokens) -> List[D]:
 
     vaults_with_amount = order[0]
 
-    print("Vaults with amounts", vaults_with_amount)
-
     ideal_weights = calculate_ideal_weights(vaults_with_amount)
-
-    print("Ideal weights", ideal_weights)
 
     for vault in vaults_with_amount:
         vault_info = vault[0]
@@ -116,12 +113,11 @@ def build_metadata(order: List[Tuple], tokens) -> List[D]:
     current_weights, current_usd_value = calculate_weights_and_total(
         current_amounts, prices
     )
-    print("Current amounts", current_amounts)
-    print("Resulting amounts", resulting_amounts)
-    print("resulting prices", prices)
+
     resulting_weights, resultingTotal = calculate_weights_and_total(
         resulting_amounts, prices
     )
+    print("RESULTING WEIGHTS", resulting_weights)
 
     if len(resulting_weights) == 0:
         resulting_weights = []
@@ -129,6 +125,11 @@ def build_metadata(order: List[Tuple], tokens) -> List[D]:
             resulting_weights.append(D("0"))
 
     delta_weights, delta_total = calculate_weights_and_total(delta_amounts, prices)
+
+    print("Ideal weights", ideal_weights)
+    print("Current weights", current_weights)
+    print("Resulting weights", resulting_weights)
+    print("Delta weights", delta_weights)
 
     if current_usd_value == D("0"):
         current_weights = ideal_weights
@@ -204,16 +205,12 @@ def is_redeem_safe(
     )
     metadata = update_metadata_with_epsilon_status(metadata)
 
-    print("Python metadata", metadata)
-
     if not metadata[3]:
         return "55"
 
     if metadata[1]:
-        print("All vaults in epsilon")
         return ""
     elif safe_to_execute_outside_epsilon(metadata):
-        print("Safe outside epsilon")
         return ""
 
     return "53"

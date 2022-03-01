@@ -137,19 +137,18 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
     assert result_sol == result_exp
 
 
-def order_builder(
-    mint,
+def reserve_builder(
     initial_price,
     initial_weight,
     reserve_balance,
     current_vault_price,
-    amount,
-    current_weight,
     mock_vaults,
 ):
-    vaults_with_amount = []
+    vaults = []
 
-    for i in range(len(initial_price)):
+    current_weight = calculate_weights_and_total(reserve_balance, current_vault_price)
+
+    for i, vault in enumerate(mock_vaults):
 
         persisted_metadata = (initial_price[i], initial_weight[i])
 
@@ -161,8 +160,40 @@ def order_builder(
             current_weight[i],
         )
 
-        vault = (vault_info, amount[i])
+        vaults.append(vault_info)
+
+    return vaults
+
+
+def order_builder(
+    mint,
+    initial_price,
+    initial_weight,
+    reserve_balance,
+    current_vault_price,
+    amount,
+    current_weight,
+    mock_vaults,
+    no_of_vaults_in_order,
+):
+    vaults_with_amount = []
+
+    built_vaults = 0
+
+    while built_vaults < no_of_vaults_in_order - 1:
+        persisted_metadata = (initial_price[built_vaults], initial_weight[built_vaults])
+
+        vault_info = (
+            mock_vaults[built_vaults].address,
+            current_vault_price[built_vaults],
+            persisted_metadata,
+            reserve_balance[built_vaults],
+            current_weight[built_vaults],
+        )
+
+        vault = (vault_info, amount[built_vaults])
         vaults_with_amount.append(vault)
+        built_vaults += 1
 
     return [vaults_with_amount, mint]
 
@@ -475,7 +506,7 @@ def test_safe_to_execute_outside_epsilon(
             weight_generator,
         ),
         min_size=1,
-        max_size=5,
+        max_size=1,
     )
 )
 def test_is_mint_safe_normal(
@@ -697,7 +728,7 @@ def test_is_mint_safe_off_peg(
 
 
 @given(
-    order_bundle=st.lists(
+    reserve_state=st.lists(
         st.tuples(
             price_generator,
             weight_generator,
@@ -706,13 +737,13 @@ def test_is_mint_safe_off_peg(
             amount_generator,
             weight_generator,
         ),
-        min_size=1,
+        min_size=5,
         max_size=5,
-    )
+    ),
+    no_of_vaults_in_order=st.integers(min_value=1, max_value=5),
 )
 def test_is_redeem_safe_normal(
     reserve_safety_manager,
-    order_bundle,
     asset_registry,
     admin,
     dai,
@@ -721,8 +752,10 @@ def test_is_redeem_safe_normal(
     abc,
     mock_price_oracle,
     mock_vaults,
+    no_of_vaults_in_order,
+    reserve_state,
 ):
-    if not order_bundle:
+    if not reserve_state:
         return
     (
         initial_price,
@@ -731,10 +764,7 @@ def test_is_redeem_safe_normal(
         current_vault_price,
         amount,
         current_weight,
-    ) = [list(v) for v in zip(*order_bundle)]
-
-    print("Current vault price", current_vault_price)
-    print("initial vault price", initial_price)
+    ) = [list(v) for v in zip(*reserve_state)]
 
     if current_vault_price == initial_price:
         return
@@ -748,6 +778,7 @@ def test_is_redeem_safe_normal(
         amount,
         current_weight,
         mock_vaults,
+        no_of_vaults_in_order,
     )
 
     asset_registry.setAssetAddress("DAI", dai)
@@ -762,6 +793,10 @@ def test_is_redeem_safe_normal(
     asset_registry.setAssetAddress("SDT", sdt)
 
     tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
+
+    all_reserve_vaults = reserve_builder(
+        initial_price, initial_weight, reserve_balance, current_vault_price, mock_vaults
+    )
 
     for i, token in enumerate(tokens):
         mock_vaults[i].setTokens(token)
