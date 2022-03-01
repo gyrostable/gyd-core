@@ -169,7 +169,7 @@ def test_price_bpt_cpmm_equal_weights_4(
         weight, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert int(bpt_price_sol) == scale(bpt_price).approxed(rel=D("10") ** -4)
 
 
 ######################################################################
