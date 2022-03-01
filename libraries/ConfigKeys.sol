@@ -9,7 +9,6 @@ library ConfigKeys {
     bytes32 internal constant PAMM_ADDRESS = "PAMM_ADDRESS";
     bytes32 internal constant FEE_BANK_ADDRESS = "FEE_BANK_ADDRESS";
     bytes32 internal constant RESERVE_ADDRESS = "RESERVE_ADDRESS";
-    bytes32 internal constant ASSET_PRICER_ADDRESS = "ASSET_PRICER_ADDRESS";
     bytes32 internal constant ROOT_PRICE_ORACLE_ADDRESS = "ROOT_PRICE_ORACLE_ADDRESS";
     bytes32 internal constant ROOT_SAFETY_CHECK_ADDRESS = "ROOT_SAFETY_CHECK_ADDRESS";
     bytes32 internal constant VAULT_REGISTRY_ADDRESS = "VAULT_REGISTRY_ADDRESS";

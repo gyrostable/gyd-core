@@ -4,6 +4,7 @@ from brownie.network import gas_price, priority_fee
 from brownie._config import CONFIG
 
 pytest_plugins = [
+    "tests.fixtures.coins",
     "tests.fixtures.deployments",
     "tests.fixtures.accounts",
 ]

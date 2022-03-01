@@ -100,48 +100,6 @@ def gyro_config(admin, GyroConfig):
 
 
 @pytest.fixture(scope="module")
-def dai(Token):
-    token = Token.deploy("Dai Token", "DAI", 18, scale(10_000), {"from": accounts[0]})
-    for i in range(1, 10):
-        token.transfer(accounts[i], scale(100), {"from": accounts[0]})
-    yield token
-
-
-@pytest.fixture(scope="module")
-def sdt(Token):
-    token = Token.deploy("SDT Token", "SDT", 18, scale(10_000), {"from": accounts[0]})
-    for i in range(1, 10):
-        token.transfer(accounts[i], scale(100), {"from": accounts[0]})
-    yield token
-
-
-@pytest.fixture(scope="module")
-def abc(Token):
-    token = Token.deploy("ABC Token", "ABC", 18, scale(10_000), {"from": accounts[0]})
-    for i in range(1, 10):
-        token.transfer(accounts[i], scale(100), {"from": accounts[0]})
-    yield token
-
-
-@pytest.fixture(scope="module")
-def usdc(Token):
-    token = Token.deploy(
-        "USDC Token", "USDC", 6, scale(10_000, 6), {"from": accounts[0]}
-    )
-    for i in range(1, 10):
-        token.transfer(accounts[i], scale(100, 6), {"from": accounts[0]})
-    yield token
-
-
-@pytest.fixture(scope="module")
-def usdt(Token):
-    token = Token.deploy("Tether", "USDT", 6, scale(10_000, 6), {"from": accounts[0]})
-    for i in range(1, 10):
-        token.transfer(accounts[i], scale(100, 6), {"from": accounts[0]})
-    yield token
-
-
-@pytest.fixture(scope="module")
 def lp_token(Token):
     yield Token.deploy("LP Token", "LPT", 18, scale(10_000), {"from": accounts[0]})
 
@@ -158,13 +116,6 @@ def mock_price_oracle(admin, MockPriceOracle, gyro_config):
     mock_price_oracle = admin.deploy(MockPriceOracle)
     gyro_config.setAddress(config_keys.ROOT_PRICE_ORACLE_ADDRESS, mock_price_oracle)
     return mock_price_oracle
-
-
-@pytest.fixture(scope="module")
-def asset_pricer(admin, AssetPricer, gyro_config):
-    asset_pricer = admin.deploy(AssetPricer, gyro_config)
-    gyro_config.setAddress(config_keys.ASSET_PRICER_ADDRESS, asset_pricer)
-    return asset_pricer
 
 
 @pytest.fixture(scope="module")
@@ -252,7 +203,6 @@ def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
         "mock_pamm",
         "mock_price_oracle",
         "vault_manager",
-        "asset_pricer",
         "root_safety_check",
     ]
     for dep in extra_dependencies:
@@ -322,3 +272,15 @@ def vault(admin, BaseVault, underlying):
 @pytest.fixture(scope="module")
 def usdc_vault(admin, BaseVault, usdc):
     return admin.deploy(BaseVault, usdc, "USDC Vault", "gUSDC")
+
+
+# NOTE: this is a vault that contains only DAI as underlying
+# this is for testing purposes only
+@pytest.fixture(scope="module")
+def dai_vault(admin, BaseVault, dai):
+    return admin.deploy(BaseVault, dai, "DAI Vault", "gDAI")
+
+
+@pytest.fixture(scope="module")
+def balancer_vault(interface):
+    return interface.IVault(constants.BALANCER_VAULT_ADDRESS)
