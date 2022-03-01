@@ -117,15 +117,14 @@ contract Motherboard is IMotherBoard, Governable {
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
-        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
-        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
+        DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
+
+        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(
+            orderAfterFees.vaultsWithAmount
+        );
         mintedGYDAmount = pamm().computeMintAmount(usdValue);
 
-        uint256 feeToPay = mintedGYDAmount.mulUp(mintFeeFraction);
-
-        uint256 remainingGyro = mintedGYDAmount - feeToPay;
-
-        if (remainingGyro < minReceivedAmount) {
+        if (mintedGYDAmount < minReceivedAmount) {
             err = Errors.TOO_MUCH_SLIPPAGE;
         }
     }
@@ -145,7 +144,8 @@ contract Motherboard is IMotherBoard, Governable {
         if (bytes(err).length > 0) {
             return (outputAmounts, err);
         }
-        return _computeRedeemOutputAmounts(assets, order);
+        DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
+        return _computeRedeemOutputAmounts(assets, orderAfterFees);
     }
 
     /// @inheritdoc IMotherBoard

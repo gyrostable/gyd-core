@@ -62,7 +62,7 @@ library DataTypes {
     }
 
     struct VaultWithAmount {
-        DataTypes.VaultInfo vaultInfo;
+        VaultInfo vaultInfo;
         uint256 amount;
     }
 

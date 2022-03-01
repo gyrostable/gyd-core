@@ -30,6 +30,13 @@ def vault_manager(admin, VaultManager, gyro_config, request):
 
 
 @pytest.fixture(scope="module")
+def static_percentage_fee_handler(StaticPercentageFeeHandler, admin, gyro_config):
+    fee_handler = admin.deploy(StaticPercentageFeeHandler)
+    gyro_config.setAddress(config_keys.FEE_HANDLER_ADDRESS, fee_handler)
+    return fee_handler
+
+
+@pytest.fixture(scope="module")
 def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry, gyro_config):
     exchanger_registry = admin.deploy(LPTokenExchangerRegistry)
     gyro_config.setAddress(config_keys.EXCHANGER_REGISTRY_ADDRESS, exchanger_registry)
@@ -94,9 +101,7 @@ def bal_pool_registry(admin, BalancerPoolRegistry):
 
 @pytest.fixture(scope="module")
 def gyro_config(admin, GyroConfig):
-    config = admin.deploy(GyroConfig)
-    config.setUint(config_keys.MINT_FEE, 0)
-    return config
+    return admin.deploy(GyroConfig)
 
 
 @pytest.fixture(scope="module")
@@ -204,6 +209,7 @@ def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
         "mock_price_oracle",
         "vault_manager",
         "root_safety_check",
+        "static_percentage_fee_handler",
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
