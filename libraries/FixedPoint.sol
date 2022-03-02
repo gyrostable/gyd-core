@@ -141,4 +141,22 @@ library FixedPoint {
     function max(uint256 x, uint256 y) internal pure returns (uint256) {
         return x > y ? x : y;
     }
+
+    /**
+     * @notice This is taken from the Balancer V1 code base.
+     * Computes a**b where a is a scaled fixed-point number and b is an integer
+     * The computation is performed in O(log n)
+     */
+    function intPowDown(uint256 base, uint256 exp) internal pure returns (uint256) {
+        uint256 result = FixedPoint.ONE;
+
+        while (exp > 0) {
+            if (exp % 2 == 1) {
+                result = mulDown(result, base);
+            }
+            exp /= 2;
+            base = mulDown(base, base);
+        }
+        return result;
+    }
 }

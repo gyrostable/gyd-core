@@ -4,16 +4,16 @@ pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import "./auth/Governable.sol";
-import "../libraries/DataTypes.sol";
-import "../libraries/FlowSafety.sol";
-import "../interfaces/IVaultManager.sol";
-import "../interfaces/IAssetRegistry.sol";
-import "../interfaces/IGyroVault.sol";
-import "../interfaces/balancer/IVault.sol";
-import "../libraries/Errors.sol";
-import "../interfaces/ISafetyCheck.sol";
-import "../interfaces/IVaultRegistry.sol";
+import "./../auth/Governable.sol";
+import "../../libraries/DataTypes.sol";
+import "../../libraries/FlowSafety.sol";
+import "../../interfaces/IVaultManager.sol";
+import "../../interfaces/IAssetRegistry.sol";
+import "../../interfaces/IGyroVault.sol";
+import "../../interfaces/balancer/IVault.sol";
+import "../../libraries/Errors.sol";
+import "../../interfaces/ISafetyCheck.sol";
+import "../../interfaces/IVaultRegistry.sol";
 
 contract VaultSafetyMode is ISafetyCheck, Governable {
     using FixedPoint for uint256;
@@ -28,6 +28,22 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     constructor(uint256 _safetyBlocksAutomatic, uint256 _safetyBlocksGuardian) {
         safetyBlocksAutomatic = _safetyBlocksAutomatic;
         safetyBlocksGuardian = _safetyBlocksGuardian;
+    }
+
+    // This function calculates an exponential moving sum based on memoryParam
+    function updateFlow(
+        uint256 flowHistory,
+        uint256 currentBlock,
+        uint256 lastSeenBlock,
+        uint256 memoryParam
+    ) internal pure returns (uint256 updatedFlowHistory) {
+        if (lastSeenBlock < currentBlock) {
+            uint256 blockDifference = currentBlock - lastSeenBlock;
+            uint256 memoryParamRaised = memoryParam.intPowDown(blockDifference);
+            updatedFlowHistory = flowHistory.mulDown(memoryParamRaised);
+        } else if (lastSeenBlock == currentBlock) {
+            //TODO: add logic here
+        }
     }
 
     function calculateRemainingBlocks(uint256 lastRemainingBlocks, uint256 blocksElapsed)
