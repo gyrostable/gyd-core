@@ -11,8 +11,8 @@ import "../interfaces/IVaultManager.sol";
 import "../interfaces/IFeeBank.sol";
 import "../interfaces/IReserve.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
-import "../interfaces/IAssetPricer.sol";
 import "../interfaces/IGYDToken.sol";
+import "../interfaces/IFeeHandler.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
 library ConfigHelpers {
@@ -53,7 +53,7 @@ library ConfigHelpers {
             ILPTokenExchangerRegistry(gyroConfig.getAddress(ConfigKeys.EXCHANGER_REGISTRY_ADDRESS));
     }
 
-    function getAssetPricer(IGyroConfig gyroConfig) internal view returns (IAssetPricer) {
-        return IAssetPricer(gyroConfig.getAddress(ConfigKeys.ASSET_PRICER_ADDRESS));
+    function getFeeHandler(IGyroConfig gyroConfig) internal view returns (IFeeHandler) {
+        return IFeeHandler(gyroConfig.getAddress(ConfigKeys.FEE_HANDLER_ADDRESS));
     }
 }

@@ -37,7 +37,11 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistMint(Order memory order) external override returns (string memory err) {
+    function checkAndPersistMint(DataTypes.Order memory order)
+        external
+        override
+        returns (string memory err)
+    {
         uint256 length = 0;
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).checkAndPersistMint(order);
@@ -48,7 +52,12 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isMintSafe(Order memory order) external view override returns (string memory err) {
+    function isMintSafe(DataTypes.Order memory order)
+        external
+        view
+        override
+        returns (string memory err)
+    {
         uint256 length = 0;
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).isMintSafe(order);
@@ -59,7 +68,12 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isRedeemSafe(Order memory order) external view override returns (string memory err) {
+    function isRedeemSafe(DataTypes.Order memory order)
+        external
+        view
+        override
+        returns (string memory err)
+    {
         uint256 length = 0;
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).isRedeemSafe(order);
@@ -70,7 +84,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistRedeem(Order memory order)
+    function checkAndPersistRedeem(DataTypes.Order memory order)
         external
         override
         returns (string memory err)

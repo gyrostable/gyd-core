@@ -122,23 +122,12 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     /// @notice this function takes an order struct and builds the metadata struct, for use in this contract.
     /// @param order an order struct received by the Reserve Safety Manager contract
     /// @return metaData object
-    function _buildMetaData(Order memory order) internal view returns (MetaData memory metaData) {
-        bool singleVaultOperation = false;
-        DataTypes.VaultInfo[] memory vaultsInfo;
-        //Single vault being used for mint or redeem
-        if (order.vaultsWithAmount.length == 1) {
-            metaData.vaultMetadata = new VaultMetadata[](1);
-            // Examine all the vaults in the reserve in the single vault case
-            vaultsInfo = vaultManager.listVaults();
-            singleVaultOperation = true;
-        } else {
-            //Case where weights are defined in relation to a subset of assets
-            metaData.vaultMetadata = new VaultMetadata[](order.vaultsWithAmount.length);
-            vaultsInfo = new DataTypes.VaultInfo[](order.vaultsWithAmount.length);
-            for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
-                vaultsInfo[i] = order.vaultsWithAmount[i].vaultInfo;
-            }
-        }
+    function _buildMetaData(DataTypes.Order memory order)
+        internal
+        pure
+        returns (MetaData memory metaData)
+    {
+        metaData.vaultMetadata = new VaultMetadata[](order.vaultsWithAmount.length);
 
         uint256[] memory idealWeights = _calculateIdealWeights(vaultsInfo);
         uint256[] memory currentAmounts = new uint256[](vaultsInfo.length);
@@ -341,12 +330,20 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistMint(Order memory order) external view returns (string memory) {
+    function checkAndPersistMint(DataTypes.Order memory order)
+        external
+        view
+        returns (string memory)
+    {
         return isMintSafe(order);
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistRedeem(Order memory order) external view returns (string memory) {
+    function checkAndPersistRedeem(DataTypes.Order memory order)
+        external
+        view
+        returns (string memory)
+    {
         return isRedeemSafe(order);
     }
 }

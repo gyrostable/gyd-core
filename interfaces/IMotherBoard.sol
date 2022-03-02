@@ -8,7 +8,6 @@ import "./IReserve.sol";
 import "./IPAMM.sol";
 import "./IGyroVaultRouter.sol";
 import "./IFeeBank.sol";
-import "./IAssetPricer.sol";
 
 /// @title IMotherBoard is the central contract connecting the different pieces
 /// of the Gyro protocol
