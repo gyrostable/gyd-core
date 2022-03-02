@@ -29,13 +29,14 @@ contract VaultManager is IVaultManager, Governable {
 
     /// @inheritdoc IVaultManager
     function listVaults() external view returns (DataTypes.VaultInfo[] memory) {
-        return listVaults(true, true, true);
+        return listVaults(true, true, true, true);
     }
 
     function listVaults(
         bool includeMetadata,
         bool includePrice,
-        bool includeCurrentWeight
+        bool includeCurrentWeight,
+        bool includeIdealWeight
     ) public view returns (DataTypes.VaultInfo[] memory) {
         require(!includeCurrentWeight || includePrice, Errors.INVALID_ARGUMENT);
 
@@ -49,7 +50,7 @@ contract VaultManager is IVaultManager, Governable {
         }
 
         uint256 length = vaultAddresses.length;
-        DataTypes.VaultInfo[] memory result = new DataTypes.VaultInfo[](length);
+        DataTypes.VaultInfo[] memory vaultsInfo = new DataTypes.VaultInfo[](length);
 
         for (uint256 i = 0; i < length; i++) {
             uint256 price = includePrice ? prices[i] : 0;
@@ -63,12 +64,13 @@ contract VaultManager is IVaultManager, Governable {
                 ? IERC20(vaultAddresses[i]).balanceOf(reserveAddress)
                 : 0;
 
-            result[i] = DataTypes.VaultInfo({
+            vaultsInfo[i] = DataTypes.VaultInfo({
                 vault: vaultAddresses[i],
                 persistedMetadata: persistedMetadata,
                 reserveBalance: reserveBalance,
                 price: price,
-                currentWeight: 0
+                currentWeight: 0,
+                idealWeight: 0
             });
         }
 
@@ -76,18 +78,32 @@ contract VaultManager is IVaultManager, Governable {
             uint256 reserveUSDValue = 0;
             uint256[] memory usdValues = new uint256[](length);
             for (uint256 i = 0; i < length; i++) {
-                uint256 usdValue = result[i].price.mulDown(result[i].reserveBalance);
+                uint256 usdValue = vaultsInfo[i].price.mulDown(vaultsInfo[i].reserveBalance);
                 usdValues[i] = usdValue;
                 reserveUSDValue += usdValue;
             }
             for (uint256 i = 0; i < length; i++) {
-                result[i].currentWeight = reserveUSDValue == 0
+                vaultsInfo[i].currentWeight = reserveUSDValue == 0
                     ? 0
                     : usdValues[i].divDown(reserveUSDValue);
             }
         }
 
-        return result;
+        if (includeIdealWeight) {
+            uint256 returnsSum = 0;
+            uint256[] memory weightedReturns = new uint256[](length);
+            for (uint256 i = 0; i < length; i++) {
+                weightedReturns[i] = (vaultsInfo[i].price)
+                    .divDown(vaultsInfo[i].persistedMetadata.initialPrice)
+                    .mulDown(vaultsInfo[i].persistedMetadata.initialWeight);
+                returnsSum += weightedReturns[i];
+            }
+            for (uint256 i = 0; i < length; i++) {
+                vaultsInfo[i].idealWeight = weightedReturns[i].divDown(returnsSum);
+            }
+        }
+
+        return vaultsInfo;
     }
 
     /// @inheritdoc IVaultManager

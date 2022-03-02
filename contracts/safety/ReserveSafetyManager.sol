@@ -25,25 +25,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     IAssetRegistry internal assetRegistry;
     IVaultManager internal vaultManager;
 
-    struct VaultMetadata {
-        address vault;
-        uint256 idealWeight;
-        uint256 currentWeight;
-        uint256 resultingWeight;
-        uint256 price;
-        bool allStablecoinsOnPeg;
-        bool allTokenPricesLargeEnough;
-        bool vaultWithinEpsilon;
-    }
-
-    struct MetaData {
-        VaultMetadata[] vaultMetadata;
-        bool allVaultsWithinEpsilon;
-        bool allStablecoinsAllVaultsOnPeg;
-        bool allVaultsUsingLargeEnoughPrices;
-        bool mint;
-    }
-
     /// @notice a stablecoin should be equal to 1 USD
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
 
@@ -102,33 +83,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         }
 
         return (weights, total);
-    }
-
-    /// @notice For a given set of input vaults, calculates the ideal weight the vault should now have,
-    /// given (i) the vault's initial weight and (ii) the evolution of prices since the vault's initialization.
-    /// @param vaultsInfo an array of VaultWithAmountStructs
-    /// @return idealWeights an array of the ideal weights
-    function _calculateIdealWeights(DataTypes.VaultInfo[] memory vaultsInfo)
-        internal
-        pure
-        returns (uint256[] memory)
-    {
-        uint256[] memory idealWeights = new uint256[](vaultsInfo.length);
-        uint256[] memory weightedReturns = new uint256[](vaultsInfo.length);
-
-        uint256 returnsSum;
-        for (uint256 i = 0; i < vaultsInfo.length; i++) {
-            weightedReturns[i] = (vaultsInfo[i].price)
-                .divDown(vaultsInfo[i].persistedMetadata.initialPrice)
-                .mulDown(vaultsInfo[i].persistedMetadata.initialWeight);
-            returnsSum += weightedReturns[i];
-        }
-
-        for (uint256 i = 0; i < vaultsInfo.length; i++) {
-            idealWeights[i] = weightedReturns[i].divDown(returnsSum);
-        }
-
-        return idealWeights;
     }
 
     /// @notice checks for all vaults whether if a particular vault contains a stablecoin that is off its peg,

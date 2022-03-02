@@ -4,16 +4,6 @@ pragma solidity ^0.8.4;
 import "../libraries/DataTypes.sol";
 
 interface ISafetyCheck {
-    struct VaultWithAmount {
-        DataTypes.VaultInfo vaultInfo;
-        uint256 amount;
-    }
-
-    struct Order {
-        VaultWithAmount[] vaultsWithAmount;
-        bool mint;
-    }
-
     /// @notice Checks whether a mint operation is safe
     /// This is only called when an actual mint is performed
     /// The implementation should store any relevant information for the mint
