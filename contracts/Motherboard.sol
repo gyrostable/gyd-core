@@ -248,6 +248,18 @@ contract Motherboard is IMotherBoard, Governable {
         return vault.deposit(lpTokenAmount, 0);
     }
 
+    function _getAssetAmountMint(address vault, DataTypes.MonetaryAmount[] memory amounts)
+        internal
+        pure
+        returns (uint256)
+    {
+        for (uint256 i = 0; i < amounts.length; i++) {
+            DataTypes.MonetaryAmount memory vaultAmount = amounts[i];
+            if (vaultAmount.tokenAddress == vault) return vaultAmount.amount;
+        }
+        return 0;
+    }
+
     function _monetaryAmountsToMintOrder(
         DataTypes.MonetaryAmount[] memory amounts,
         DataTypes.VaultInfo[] memory vaultsInfo
@@ -259,22 +271,34 @@ contract Motherboard is IMotherBoard, Governable {
 
         for (uint256 i = 0; i < vaultsInfo.length; i++) {
             DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
-            for (uint256 j = 0; j < amounts.length; i++) {
-                DataTypes.MonetaryAmount memory vaultAmount = amounts[j];
-                if (vaultAmount.tokenAddress == vaultInfo.vault) {
-                    order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
-                        amount: vaultAmount.amount,
-                        vaultInfo: vaultInfo
-                    });
-                } else {
-                    order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
-                        amount: 0,
-                        vaultInfo: vaultInfo
-                    });
-                }
+            order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
+                amount: _getAssetAmountMint(vaultInfo.vault, amounts),
+                vaultInfo: vaultInfo
+            });
+        }
+
+        return order;
+    }
+
+    function _getAssetAmountAndValueRatioRedeem(
+        address vaultAddress,
+        uint256 usdValueToRedeem,
+        DataTypes.RedeemAsset[] calldata assets
+    ) internal view returns (uint256, uint256) {
+        for (uint256 i = 0; i < assets.length; i++) {
+            DataTypes.RedeemAsset memory redeemAsset = assets[i];
+            if (redeemAsset.originVault == vaultAddress) {
+                IGyroVault vault = IGyroVault(redeemAsset.originVault);
+                IUSDPriceOracle priceOracle = gyroConfig.getRootPriceOracle();
+                uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(redeemAsset.valueRatio);
+                uint256 vaultTokenPrice = priceOracle.getPriceUSD(address(vault));
+                uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultTokenPrice);
+                uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vault.decimals());
+
+                return (scaledVaultTokenAmount, redeemAsset.valueRatio);
             }
         }
-        return order;
+        return (0, 0);
     }
 
     function _createRedeemOrder(uint256 usdValueToRedeem, DataTypes.RedeemAsset[] calldata assets)
@@ -283,8 +307,6 @@ contract Motherboard is IMotherBoard, Governable {
         returns (DataTypes.Order memory)
     {
         DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
-
-        IUSDPriceOracle priceOracle = gyroConfig.getRootPriceOracle();
 
         DataTypes.Order memory order = DataTypes.Order({
             mint: false,
@@ -295,27 +317,17 @@ contract Motherboard is IMotherBoard, Governable {
 
         for (uint256 i = 0; i < vaultsInfo.length; i++) {
             DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
-            for (uint256 j = 0; j < assets.length; j++) {
-                DataTypes.RedeemAsset memory asset = assets[j];
-                totalValueRatio += asset.valueRatio;
-                IGyroVault vault = IGyroVault(asset.originVault);
-                uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(asset.valueRatio);
-                uint256 vaultTokenPrice = priceOracle.getPriceUSD(address(vault));
-                uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultTokenPrice);
-                uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vault.decimals());
+            (uint256 amount, uint256 valueRatio) = _getAssetAmountAndValueRatioRedeem(
+                vaultInfo.vault,
+                usdValueToRedeem,
+                assets
+            );
+            totalValueRatio += valueRatio;
 
-                if (asset.originVault == vaultInfo.vault) {
-                    order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
-                        amount: scaledVaultTokenAmount,
-                        vaultInfo: vaultInfo
-                    });
-                } else {
-                    order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
-                        amount: 0,
-                        vaultInfo: vaultInfo
-                    });
-                }
-            }
+            order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
+                amount: amount,
+                vaultInfo: vaultInfo
+            });
         }
 
         require(totalValueRatio == FixedPoint.ONE, Errors.INVALID_ARGUMENT);
