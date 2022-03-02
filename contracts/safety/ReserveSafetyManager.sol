@@ -90,9 +90,13 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     /// @param metaData an metadata struct containing all the vault information. Must be fully updated with the price
     /// safety and epsilon data.
     /// @return bool of whether all vaults exhibit this weight decreasing behavior
-    function _vaultWeightWithOffPegFalls(MetaData memory metaData) internal pure returns (bool) {
+    function _vaultWeightWithOffPegFalls(DataTypes.Metadata memory metaData)
+        internal
+        pure
+        returns (bool)
+    {
         for (uint256 i; i < metaData.vaultMetadata.length; i++) {
-            VaultMetadata memory vaultData = metaData.vaultMetadata[i];
+            DataTypes.VaultMetadata memory vaultData = metaData.vaultMetadata[i];
 
             if (vaultData.allStablecoinsOnPeg) {
                 continue;
@@ -106,7 +110,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         return true;
     }
 
-    function isRedeemFeasible(Order memory order) internal pure returns (bool) {
+    function isRedeemFeasible(DataTypes.Order memory order) internal pure returns (bool) {
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             if (
                 order.vaultsWithAmount[i].vaultInfo.reserveBalance <
@@ -125,9 +129,9 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     function _buildMetaData(DataTypes.Order memory order)
         internal
         pure
-        returns (MetaData memory metaData)
+        returns (DataTypes.Metadata memory metaData)
     {
-        metaData.vaultMetadata = new VaultMetadata[](order.vaultsWithAmount.length);
+        metaData.vaultMetadata = new DataTypes.VaultMetadata[](order.vaultsWithAmount.length);
 
         uint256[] memory idealWeights = _calculateIdealWeights(vaultsInfo);
         uint256[] memory currentAmounts = new uint256[](vaultsInfo.length);
@@ -183,11 +187,11 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     /// @notice given input metadata, updates it with the information about whether the vault would remain within
     /// an acceptable band (+/- epsilon) around the ideal weight for the vault.
     /// @param metaData a metadata struct containing all the vault information.
-    function _updateMetaDataWithEpsilonStatus(MetaData memory metaData) internal view {
+    function _updateMetaDataWithEpsilonStatus(DataTypes.Metadata memory metaData) internal view {
         metaData.allVaultsWithinEpsilon = true;
 
         for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
-            VaultMetadata memory vaultData = metaData.vaultMetadata[i];
+            DataTypes.VaultMetadata memory vaultData = metaData.vaultMetadata[i];
             uint256 scaledEpsilon = vaultData.idealWeight.mulUp(maxAllowedVaultDeviation);
             bool withinEpsilon = vaultData.idealWeight.absSub(vaultData.resultingWeight) <=
                 scaledEpsilon;
@@ -205,7 +209,10 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     /// vault consisting of entirely non-stablecoin assets, this means that all of the prices are not 'dust',
     /// to avoid numerical error.
     /// @param vaultMetadata a VaultMetadata struct containing information for a particular vault.
-    function _updateVaultWithPriceSafety(VaultMetadata memory vaultMetadata) internal view {
+    function _updateVaultWithPriceSafety(DataTypes.VaultMetadata memory vaultMetadata)
+        internal
+        view
+    {
         IERC20[] memory tokens = IGyroVault(vaultMetadata.vault).getTokens();
 
         vaultMetadata.allStablecoinsOnPeg = true;
@@ -228,11 +235,11 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     /// @notice given input metadata, updates it with the information about whether all vaults contains assets with
     /// safe prices as determined by the _updateVaultWithPriceSafety function.
     /// @param metaData a metadata struct containing all the vault information.
-    function _updateMetadataWithPriceSafety(MetaData memory metaData) internal view {
+    function _updateMetadataWithPriceSafety(DataTypes.Metadata memory metaData) internal view {
         metaData.allStablecoinsAllVaultsOnPeg = true;
         metaData.allVaultsUsingLargeEnoughPrices = true;
         for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
-            VaultMetadata memory vaultData = metaData.vaultMetadata[i];
+            DataTypes.VaultMetadata memory vaultData = metaData.vaultMetadata[i];
             _updateVaultWithPriceSafety(vaultData);
             if (!vaultData.allStablecoinsOnPeg) {
                 metaData.allStablecoinsAllVaultsOnPeg = false;
@@ -248,14 +255,18 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     /// status of the vault regarding whether it is within epsilon.
     /// @return bool equal to true if for any pool that is outside of epsilon, the weight after the mint/redeem will
     /// be closer to the ideal weight than the current weight is, i.e., the operation promotes rebalancing.
-    function _safeToExecuteOutsideEpsilon(MetaData memory metaData) internal pure returns (bool) {
+    function _safeToExecuteOutsideEpsilon(DataTypes.Metadata memory metaData)
+        internal
+        pure
+        returns (bool)
+    {
         //Check that amount above maxAllowedVaultDeviation is decreasing
         //Check that unhealthy pools have input weight below ideal weight
         //If both true, then mint
         //note: should always be able to mint at the ideal weights!
 
         for (uint256 i; i < metaData.vaultMetadata.length; i++) {
-            VaultMetadata memory vaultMetadata = metaData.vaultMetadata[i];
+            DataTypes.VaultMetadata memory vaultMetadata = metaData.vaultMetadata[i];
 
             if (vaultMetadata.vaultWithinEpsilon) {
                 continue;
@@ -277,8 +288,8 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isMintSafe(Order memory order) public view returns (string memory) {
-        MetaData memory metaData;
+    function isMintSafe(DataTypes.Order memory order) public view returns (string memory) {
+        DataTypes.Metadata memory metaData;
         metaData = _buildMetaData(order);
 
         _updateMetadataWithPriceSafety(metaData);
@@ -304,12 +315,12 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     }
 
     /// @inheritdoc ISafetyCheck
-    function isRedeemSafe(Order memory order) public view returns (string memory) {
+    function isRedeemSafe(DataTypes.Order memory order) public view returns (string memory) {
         if (!isRedeemFeasible(order)) {
             return Errors.TRYING_TO_REDEEM_MORE_THAN_VAULT_CONTAINS;
         }
 
-        MetaData memory metaData;
+        DataTypes.Metadata memory metaData;
 
         metaData = _buildMetaData(order);
 
