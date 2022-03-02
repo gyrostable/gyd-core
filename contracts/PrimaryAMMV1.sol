@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "../libraries/LogExpMath.sol";
 import "../libraries/FixedPoint.sol";
-import "../libraries/FlowSafety.sol";
+import "../libraries/Flow.sol";
 import "../interfaces/IPAMM.sol";
 import "./auth/Governable.sol";
 
@@ -488,7 +488,7 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
         currentState = systemState;
         currentState.reserveValue = reserveUSDValue;
         uint256 currentBlock = block.number;
-        currentState.redemptionLevel = FlowSafety.updateFlow(
+        currentState.redemptionLevel = Flow.updateFlow(
             currentState.redemptionLevel,
             currentBlock,
             currentState.lastSeenBlock,

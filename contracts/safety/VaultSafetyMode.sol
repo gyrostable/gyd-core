@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
-import "../../libraries/FlowSafety.sol";
 import "../../interfaces/IVaultManager.sol";
 import "../../interfaces/IAssetRegistry.sol";
 import "../../interfaces/IGyroVault.sol";
@@ -14,6 +13,8 @@ import "../../interfaces/balancer/IVault.sol";
 import "../../libraries/Errors.sol";
 import "../../interfaces/ISafetyCheck.sol";
 import "../../interfaces/IVaultRegistry.sol";
+import "../../libraries/FixedPoint.sol";
+import "../../libraries/Flow.sol";
 
 contract VaultSafetyMode is ISafetyCheck, Governable {
     using FixedPoint for uint256;
@@ -28,22 +29,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     constructor(uint256 _safetyBlocksAutomatic, uint256 _safetyBlocksGuardian) {
         safetyBlocksAutomatic = _safetyBlocksAutomatic;
         safetyBlocksGuardian = _safetyBlocksGuardian;
-    }
-
-    // This function calculates an exponential moving sum based on memoryParam
-    function updateFlow(
-        uint256 flowHistory,
-        uint256 currentBlock,
-        uint256 lastSeenBlock,
-        uint256 memoryParam
-    ) internal pure returns (uint256 updatedFlowHistory) {
-        if (lastSeenBlock < currentBlock) {
-            uint256 blockDifference = currentBlock - lastSeenBlock;
-            uint256 memoryParamRaised = memoryParam.intPowDown(blockDifference);
-            updatedFlowHistory = flowHistory.mulDown(memoryParamRaised);
-        } else if (lastSeenBlock == currentBlock) {
-            //TODO: add logic here
-        }
     }
 
     function calculateRemainingBlocks(uint256 lastRemainingBlocks, uint256 blocksElapsed)
@@ -119,7 +104,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 blocksElapsed
             );
 
-            directionalFlowData[i].shortFlow = FlowSafety.updateFlow(
+            directionalFlowData[i].shortFlow = Flow.updateFlow(
                 directionalFlowData[i].shortFlow,
                 currentBlockNumber,
                 lastSeenBlock[i],
@@ -163,33 +148,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         }
 
         return (directionalFlowData, allowTransaction, isSafetyModeActivated);
-    }
-
-    //TODO: make a whitelist of addresses that can call this and make this list settable by governance
-    function activateOracleGuardian(
-        DataTypes.GuardedVaults[] memory vaultsToProtect,
-        uint256 blocksToActivate
-    ) external {
-        require(blocksToActivate <= safetyBlocksGuardian, Errors.ORACLE_GUARDIAN_TIME_LIMIT);
-
-        for (uint256 i = 0; i < vaultsToProtect.length; i++) {
-            if (
-                vaultsToProtect[i].direction == DataTypes.Direction.In ||
-                vaultsToProtect[i].direction == DataTypes.Direction.Both
-            ) {
-                flowDataBidirectionalStored[vaultsToProtect[i].vaultAddress]
-                    .inFlow
-                    .remainingSafetyBlocks = blocksToActivate;
-            }
-            if (
-                vaultsToProtect[i].direction == DataTypes.Direction.Out ||
-                vaultsToProtect[i].direction == DataTypes.Direction.Both
-            ) {
-                flowDataBidirectionalStored[vaultsToProtect[i].vaultAddress]
-                    .outFlow
-                    .remainingSafetyBlocks = blocksToActivate;
-            }
-        }
     }
 
     function flowSafetyStateUpdater(Order memory order)
