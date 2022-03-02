@@ -69,21 +69,6 @@ def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices)
     assert total_exp == scale(total_sol).approxed()
 
 
-@given(
-    bundle=st.lists(
-        st.tuples(price_generator, amount_generator, weight_generator), min_size=1
-    )
-)
-def test_calculate_ideal_weights(reserve_safety_manager, bundle, mock_vaults):
-    vault_info = object_creation.bundle_to_vault_info(bundle, mock_vaults)
-
-    result_exp = calculate_ideal_weights(vault_info)
-
-    result_sol = reserve_safety_manager.calculateIdealWeights(vault_info)
-
-    assert scale(result_exp) == to_decimal(result_sol)
-
-
 # @given(bundle_metadata=st.tuples(vault_lists(vault_metadatas), global_metadatas))
 # def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
 #     reserve_safety_manager, bundle_metadata, mock_vaults

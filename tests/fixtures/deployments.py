@@ -229,7 +229,7 @@ def pamm(TestingPAMMV1):
 
 @pytest.fixture(scope="module")
 def reserve_safety_manager(
-    admin, TestingReserveSafetyManager, mock_price_oracle, asset_registry, vault_manager
+    admin, TestingReserveSafetyManager, mock_price_oracle, asset_registry
 ):
     return admin.deploy(
         TestingReserveSafetyManager,
@@ -238,7 +238,6 @@ def reserve_safety_manager(
         constants.MIN_TOKEN_PRICE,
         mock_price_oracle,
         asset_registry,
-        vault_manager,
     )
 
 
