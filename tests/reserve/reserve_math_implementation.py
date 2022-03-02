@@ -107,13 +107,16 @@ def build_metadata(order: List[Tuple], tokens: None) -> List[D]:
         resulting_amounts, prices
     )
 
+    if len(resulting_weights) == 0:
+        for i in range(len(vaults_with_amount)):
+            resulting_weights.append(D("0"))
+
     for i, vault in enumerate(vaults_with_amount):
         vault_metadata = []
-
         vault_metadata.append(tokens[i])
         vault_metadata.append(vault[0][5])
         vault_metadata.append(vault[0][4])
-        vault_metadata.append(resulting_weights[i])
+        vault_metadata.append(scale(resulting_weights[i]))
         vault_metadata.append(vault[0][1])
         vault_metadata.append(False)
         vault_metadata.append(False)
@@ -142,12 +145,15 @@ def is_mint_safe(order: List[Tuple], tokens, mock_price_oracle, asset_registry) 
 
     if metadata[1]:
         if metadata[2]:
+            print("BINGO 1")
             return ""
         elif vault_weight_off_peg_falls(metadata):
+            print("BINGO 2")
             return ""
     elif safe_to_execute_outside_epsilon(metadata) & vault_weight_off_peg_falls(
         metadata
     ):
+        print("BINGO 3")
         return ""
 
     return "52"
@@ -225,6 +231,11 @@ def safe_to_execute_outside_epsilon(metadata):
             continue
         resulting_to_ideal = abs(vault[3] - vault[1])
         current_to_ideal = abs(vault[2] - vault[1])
+        print("Ideal", vault[1])
+        print("Current", vault[2])
+        print("Resulting", vault[3])
+        print("resulting to ideal", resulting_to_ideal)
+        print("Current to ideal", current_to_ideal)
         if resulting_to_ideal >= current_to_ideal:
             expected = False
 

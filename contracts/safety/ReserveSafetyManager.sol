@@ -99,10 +99,13 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
                 continue;
             }
 
-            //TODO: consider if this, or the original, is what we want
+            //TODO: consider if this, or the original (below), is what we want
             if ((vaultData.resultingWeight >= vaultData.currentWeight) && (metaData.mint)) {
                 return false;
             }
+            // if (vaultData.deltaWeight > vaultData.idealWeight) {
+            //     return false;
+            // }
         }
 
         return true;
