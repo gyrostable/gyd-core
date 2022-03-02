@@ -102,6 +102,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
                 continue;
             }
 
+            //TODO: consider if this, or the original, is what we want
             if ((vaultData.resultingWeight >= vaultData.currentWeight) && (metaData.mint)) {
                 return false;
             }
@@ -131,55 +132,35 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         pure
         returns (DataTypes.Metadata memory metaData)
     {
+        DataTypes.VaultWithAmount[] memory vaultsWithAmount = order.vaultsWithAmount;
+
+        metaData.mint = order.mint;
         metaData.vaultMetadata = new DataTypes.VaultMetadata[](order.vaultsWithAmount.length);
 
-        uint256[] memory idealWeights = _calculateIdealWeights(vaultsInfo);
-        uint256[] memory currentAmounts = new uint256[](vaultsInfo.length);
-        uint256[] memory resultingAmounts = new uint256[](vaultsInfo.length);
-        uint256[] memory prices = new uint256[](vaultsInfo.length);
+        uint256[] memory resultingAmounts = new uint256[](vaultsWithAmount.length);
+        uint256[] memory prices = new uint256[](vaultsWithAmount.length);
 
-        for (uint256 i = 0; i < vaultsInfo.length; i++) {
-            currentAmounts[i] = vaultsInfo[i].reserveBalance;
-            metaData.mint = order.mint;
-
-            if (singleVaultOperation) {
-                if (vaultsInfo[i].vault == order.vaultsWithAmount[0].vaultInfo.vault) {
-                    if (order.mint) {
-                        resultingAmounts[i] = currentAmounts[i] + order.vaultsWithAmount[0].amount;
-                    } else {
-                        resultingAmounts[i] = currentAmounts[i] - order.vaultsWithAmount[0].amount;
-                    }
-                } else {
-                    resultingAmounts[i] = currentAmounts[i];
-                }
+        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
+            if (order.mint) {
+                resultingAmounts[i] =
+                    vaultsWithAmount[i].vaultInfo.reserveBalance +
+                    vaultsWithAmount[i].amount;
             } else {
-                if (order.mint) {
-                    resultingAmounts[i] = currentAmounts[i] + order.vaultsWithAmount[i].amount;
-                } else {
-                    resultingAmounts[i] = currentAmounts[i] - order.vaultsWithAmount[i].amount;
-                }
+                resultingAmounts[i] =
+                    vaultsWithAmount[i].vaultInfo.reserveBalance -
+                    vaultsWithAmount[i].amount;
             }
 
-            metaData.vaultMetadata[i].vault = vaultsInfo[i].vault;
-            metaData.vaultMetadata[i].price = vaultsInfo[i].price;
-            prices[i] = vaultsInfo[i].price;
+            metaData.vaultMetadata[i].vault = vaultsWithAmount[i].vaultInfo.vault;
+            metaData.vaultMetadata[i].idealWeight = vaultsWithAmount[i].vaultInfo.idealWeight;
+            metaData.vaultMetadata[i].currentWeight = vaultsWithAmount[i].vaultInfo.currentWeight;
+            metaData.vaultMetadata[i].price = vaultsWithAmount[i].vaultInfo.price;
+            prices[i] = vaultsWithAmount[i].vaultInfo.price;
         }
-
-        (uint256[] memory currentWeights, uint256 currentUSDValue) = _calculateWeightsAndTotal(
-            currentAmounts,
-            prices
-        );
 
         (uint256[] memory resultingWeights, ) = _calculateWeightsAndTotal(resultingAmounts, prices);
 
-        // treat 0 inputs/outputs as proportional changes
-        if (currentUSDValue == 0) {
-            currentWeights = idealWeights;
-        }
-
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
-            metaData.vaultMetadata[i].idealWeight = idealWeights[i];
-            metaData.vaultMetadata[i].currentWeight = currentWeights[i];
             metaData.vaultMetadata[i].resultingWeight = resultingWeights[i];
         }
     }

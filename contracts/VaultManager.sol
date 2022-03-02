@@ -84,7 +84,7 @@ contract VaultManager is IVaultManager, Governable {
             }
             for (uint256 i = 0; i < length; i++) {
                 vaultsInfo[i].currentWeight = reserveUSDValue == 0
-                    ? 0
+                    ? vaultsInfo[i].persistedMetadata.initialWeight
                     : usdValues[i].divDown(reserveUSDValue);
             }
         }
