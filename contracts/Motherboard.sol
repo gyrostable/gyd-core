@@ -61,6 +61,8 @@ contract Motherboard is IMotherBoard, Governable {
             assets
         );
         DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
+
+        //This order object contains an entry for every vault, even if the delta amount is 0
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
 
         gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
@@ -246,36 +248,31 @@ contract Motherboard is IMotherBoard, Governable {
         return vault.deposit(lpTokenAmount, 0);
     }
 
-    function _getVaultInfo(address vaultAddress, DataTypes.VaultInfo[] memory vaultInfo)
-        internal
-        pure
-        returns (DataTypes.VaultInfo memory)
-    {
-        uint256 length = vaultInfo.length;
-        for (uint256 i = 0; i < length; i++) {
-            DataTypes.VaultInfo memory info = vaultInfo[i];
-            if (info.vault == vaultAddress) {
-                return info;
-            }
-        }
-        revert(Errors.INVALID_ARGUMENT);
-    }
-
     function _monetaryAmountsToMintOrder(
         DataTypes.MonetaryAmount[] memory amounts,
         DataTypes.VaultInfo[] memory vaultsInfo
     ) internal pure returns (DataTypes.Order memory) {
         DataTypes.Order memory order = DataTypes.Order({
             mint: true,
-            vaultsWithAmount: new DataTypes.VaultWithAmount[](amounts.length)
+            vaultsWithAmount: new DataTypes.VaultWithAmount[](vaultsInfo.length)
         });
 
-        for (uint256 i = 0; i < amounts.length; i++) {
-            DataTypes.MonetaryAmount memory vaultAmount = amounts[i];
-            order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
-                amount: vaultAmount.amount,
-                vaultInfo: _getVaultInfo(vaultAmount.tokenAddress, vaultsInfo)
-            });
+        for (uint256 i = 0; i < vaultsInfo.length; i++) {
+            DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
+            for (uint256 j = 0; j < amounts.length; i++) {
+                DataTypes.MonetaryAmount memory vaultAmount = amounts[j];
+                if (vaultAmount.tokenAddress == vaultInfo.vault) {
+                    order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
+                        amount: vaultAmount.amount,
+                        vaultInfo: vaultInfo
+                    });
+                } else {
+                    order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
+                        amount: 0,
+                        vaultInfo: vaultInfo
+                    });
+                }
+            }
         }
         return order;
     }
@@ -285,28 +282,40 @@ contract Motherboard is IMotherBoard, Governable {
         view
         returns (DataTypes.Order memory)
     {
+        DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
+
         IUSDPriceOracle priceOracle = gyroConfig.getRootPriceOracle();
 
         DataTypes.Order memory order = DataTypes.Order({
             mint: false,
-            vaultsWithAmount: new DataTypes.VaultWithAmount[](assets.length)
+            vaultsWithAmount: new DataTypes.VaultWithAmount[](vaultsInfo.length)
         });
 
-        DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
         uint256 totalValueRatio = 0;
-        for (uint256 i = 0; i < assets.length; i++) {
-            DataTypes.RedeemAsset memory asset = assets[i];
-            totalValueRatio += asset.valueRatio;
-            IGyroVault vault = IGyroVault(asset.originVault);
-            uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(asset.valueRatio);
-            uint256 vaultTokenPrice = priceOracle.getPriceUSD(address(vault));
 
-            uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultTokenPrice);
-            uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vault.decimals());
-            order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
-                amount: scaledVaultTokenAmount,
-                vaultInfo: _getVaultInfo(asset.originVault, vaultsInfo)
-            });
+        for (uint256 i = 0; i < vaultsInfo.length; i++) {
+            DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
+            for (uint256 j = 0; j < assets.length; j++) {
+                DataTypes.RedeemAsset memory asset = assets[j];
+                totalValueRatio += asset.valueRatio;
+                IGyroVault vault = IGyroVault(asset.originVault);
+                uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(asset.valueRatio);
+                uint256 vaultTokenPrice = priceOracle.getPriceUSD(address(vault));
+                uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultTokenPrice);
+                uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vault.decimals());
+
+                if (asset.originVault == vaultInfo.vault) {
+                    order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
+                        amount: scaledVaultTokenAmount,
+                        vaultInfo: vaultInfo
+                    });
+                } else {
+                    order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
+                        amount: 0,
+                        vaultInfo: vaultInfo
+                    });
+                }
+            }
         }
 
         require(totalValueRatio == FixedPoint.ONE, Errors.INVALID_ARGUMENT);

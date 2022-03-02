@@ -67,11 +67,6 @@ library DataTypes {
         bool mint;
     }
 
-    struct VaultWithAmount {
-        DataTypes.VaultInfo vaultInfo;
-        uint256 amount;
-    }
-
     struct Order {
         VaultWithAmount[] vaultsWithAmount;
         bool mint;
@@ -80,11 +75,5 @@ library DataTypes {
     struct VaultWithAmount {
         VaultInfo vaultInfo;
         uint256 amount;
-    }
-
-    /// @notice Represents a mint or redeem order
-    struct Order {
-        VaultWithAmount[] vaultsWithAmount;
-        bool mint;
     }
 }
