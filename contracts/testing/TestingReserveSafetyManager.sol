@@ -30,7 +30,7 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _calculateWeightsAndTotal(amounts, prices);
     }
 
-    function buildMetaData(Order memory order) external pure returns (MetaData memory metaData) {
+    function buildMetaData(Order memory order) external view returns (MetaData memory metaData) {
         return _buildMetaData(order);
     }
 
