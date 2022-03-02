@@ -13,7 +13,5 @@ library ConfigKeys {
     bytes32 internal constant ROOT_SAFETY_CHECK_ADDRESS = "ROOT_SAFETY_CHECK_ADDRESS";
     bytes32 internal constant VAULT_REGISTRY_ADDRESS = "VAULT_REGISTRY_ADDRESS";
     bytes32 internal constant VAULT_MANAGER_ADDRESS = "VAULT_MANAGER_ADDRESS";
-
-    // Fees
-    bytes32 internal constant MINT_FEE = "MINT_FEE";
+    bytes32 internal constant FEE_HANDLER_ADDRESS = "FEE_HANDLER_ADDRESS";
 }

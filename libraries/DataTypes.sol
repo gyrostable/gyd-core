@@ -60,4 +60,15 @@ library DataTypes {
         uint256 initialPoolWeight;
         uint256 initialPoolPrice;
     }
+
+    struct VaultWithAmount {
+        VaultInfo vaultInfo;
+        uint256 amount;
+    }
+
+    /// @notice Represents a mint or redeem order
+    struct Order {
+        VaultWithAmount[] vaultsWithAmount;
+        bool mint;
+    }
 }
