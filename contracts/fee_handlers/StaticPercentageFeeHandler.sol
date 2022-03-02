@@ -11,6 +11,9 @@ import "../auth/Governable.sol";
 contract StaticPercentageFeeHandler is IFeeHandler, Governable {
     using FixedPoint for uint256;
 
+    /// @notice Mint and redeem fees cannot be above 20%
+    uint64 public constant MAX_FEE = 0.2e18;
+
     /// @notice holds the mint and redeem fees for a single vault
     struct Fees {
         bool exists;
@@ -28,7 +31,7 @@ contract StaticPercentageFeeHandler is IFeeHandler, Governable {
         uint64 redeemFee
     ) external governanceOnly {
         require(vault != address(0), Errors.INVALID_ARGUMENT);
-        require(mintFee < FixedPoint.ONE && redeemFee < FixedPoint.ONE, Errors.INVALID_ARGUMENT);
+        require(mintFee <= MAX_FEE && redeemFee <= MAX_FEE, Errors.INVALID_ARGUMENT);
         vaultFees[vault] = Fees({exists: true, mint: mintFee, redeem: redeemFee});
     }
 

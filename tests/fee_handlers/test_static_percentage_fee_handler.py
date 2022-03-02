@@ -1,7 +1,8 @@
 from decimal import Decimal
-from typing import Iterable, List, Tuple
+from typing import Iterable, Tuple
 
 import pytest
+from brownie.test.managers.runner import RevertContextManager as reverts
 from tests.support.types import (
     Order,
     PersistedVaultMetadata,
@@ -9,7 +10,7 @@ from tests.support.types import (
     VaultWithAmount,
 )
 from tests.support.utils import scale
-
+from tests.support import error_codes
 
 VAULT_FEES = [
     (Decimal("0.05"), Decimal("0.08")),
@@ -62,3 +63,16 @@ def test_apply_fees(static_percentage_fee_handler, mock_vaults, mint):
         assert amount <= amounts[i]
         fee = VAULT_FEES[i][0 if mint else 1]
         assert amount == amounts[i] - int(fee * amounts[i])
+
+
+def test_set_fee_to_high(static_percentage_fee_handler, mock_vaults, admin):
+    max_fee = scale("0.2")
+    with reverts(error_codes.INVALID_ARGUMENT):
+        static_percentage_fee_handler.setVaultFees(
+            mock_vaults[0], max_fee + 1, 0, {"from": admin}
+        )
+
+    with reverts(error_codes.INVALID_ARGUMENT):
+        static_percentage_fee_handler.setVaultFees(
+            mock_vaults[0], 0, max_fee + 1, {"from": admin}
+        )
