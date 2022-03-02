@@ -181,10 +181,9 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             //Case where weights are defined in relation to a subset of assets
             metaData.vaultMetadata = new VaultMetadata[](order.vaultsWithAmount.length);
             vaultsInfo = new DataTypes.VaultInfo[](order.vaultsWithAmount.length);
-        }
-
-        for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
-            vaultsInfo[i] = order.vaultsWithAmount[i].vaultInfo;
+            for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
+                vaultsInfo[i] = order.vaultsWithAmount[i].vaultInfo;
+            }
         }
 
         uint256[] memory idealWeights = _calculateIdealWeights(vaultsInfo);

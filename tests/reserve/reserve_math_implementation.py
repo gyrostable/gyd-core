@@ -48,9 +48,9 @@ def calculate_ideal_weights(vaults_info: List[Tuple]) -> List[D]:
 
 def vault_weight_off_peg_falls(metadata) -> bool:
     for i in metadata[0]:
-        if i[6]:
+        if i[5]:
             continue
-        if i[4] > i[1]:
+        if (i[3] >= i[2]) and (metadata[4]):
             return False
     return True
 
@@ -71,7 +71,7 @@ def update_metadata_with_epsilon_status(metadata):
             within_epsilon = False
             metadata_new[1] = False
 
-        vault_metadata_new[8] = within_epsilon
+        vault_metadata_new[7] = within_epsilon
         vaults_metadata.append(tuple(vault_metadata_new))
 
     metadata_new[0] = vaults_metadata
@@ -79,7 +79,8 @@ def update_metadata_with_epsilon_status(metadata):
     return tuple(metadata_new)
 
 
-def build_metadata(order: List[Tuple], tokens) -> List[D]:
+def build_metadata(order: List[Tuple], tokens, all_reserve_vaults) -> List[D]:
+    single_vault_operation = False
 
     metadata = []
     vault_metadata_array = []
@@ -88,19 +89,27 @@ def build_metadata(order: List[Tuple], tokens) -> List[D]:
     resulting_amounts = []
     prices = []
 
-    vaults_info = []
-
-    vaults_with_amount = order[0]
-
-    for vault in vaults_with_amount:
-        vaults_info.append(vault[0])
+    if len(order[0] == 1):
+        single_vault_operation = True
+        vaults_info = all_reserve_vaults
+    else:
+        vaults_info = []
+        for vault in order[0]:
+            vaults_info.append(vault[0])
 
     ideal_weights = calculate_ideal_weights(vaults_info)
 
-    for vault in vaults_with_amount:
-        vault_info = vault[0]
+    for vault in vaults_info:
+        current_amounts.append(D(vault_info[2]))
 
-        current_amounts.append(D(vault_info[3]))
+        if single_vault_operation:
+            if (vault[0] == order[0][0][0]):
+                if order[1]:
+                   resulting_amounts.append(D(vault[3]) + D(vault[1])) 
+                else:
+                   resulting_amounts.append(D(vault_info[3]) - D(vault[1])) 
+            else:
+                resulting_amounts.append(D(vault_info[]))
 
         if order[1]:
             resulting_amounts.append(D(vault_info[3]) + D(vault[1]))
