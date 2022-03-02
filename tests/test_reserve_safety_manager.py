@@ -55,7 +55,7 @@ def vault_lists(*args, **kwargs):
     return st.lists(*args, **kwargs, min_size=1, max_size=MAX_VAULTS)
 
 
-def vault_builder(price_generator, amount_generator, weight_generator):
+def vault_with_amount_builder(price_generator, amount_generator, weight_generator):
     persisted_metadata = (price_generator, weight_generator)
     vault_info = (
         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
@@ -65,6 +65,18 @@ def vault_builder(price_generator, amount_generator, weight_generator):
         weight_generator,
     )
     return (vault_info, amount_generator)
+
+
+def vault_info_builder(price_generator, amount_generator, weight_generator):
+    persisted_metadata = (price_generator, weight_generator)
+    vault_info = (
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+        price_generator,
+        persisted_metadata,
+        amount_generator,
+        weight_generator,
+    )
+    return vault_info
 
 
 def bundle_to_metadata(bundle, mock_vaults):
@@ -78,10 +90,20 @@ def bundle_to_vaults(bundle):
 
     vaults_with_amount = []
     for i in range(len(prices)):
-        vault = vault_builder(prices[i], amounts[i], weights[i])
+        vault = vault_with_amount_builder(prices[i], amounts[i], weights[i])
         vaults_with_amount.append(vault)
 
     return vaults_with_amount
+
+
+def bundle_to_vault_info(bundle):
+    prices, amounts, weights = [list(v) for v in zip(*bundle)]
+    vaults_info = []
+    for i in range(len(prices)):
+        vault = vault_info_builder(prices[i], amounts[i], weights[i])
+        vaults_info.append(vault)
+
+    return vaults_info
 
 
 @pytest.fixture(scope="module")
@@ -116,11 +138,11 @@ def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices)
     )
 )
 def test_calculate_ideal_weights(reserve_safety_manager, bundle):
-    vaults_with_amount = bundle_to_vaults(bundle)
+    vault_info = bundle_to_vault_info(bundle)
 
-    result_exp = calculate_ideal_weights(vaults_with_amount)
+    result_exp = calculate_ideal_weights(vault_info)
 
-    result_sol = reserve_safety_manager.calculateIdealWeights(vaults_with_amount)
+    result_sol = reserve_safety_manager.calculateIdealWeights(vault_info)
 
     assert scale(result_exp) == to_decimal(result_sol)
 
@@ -165,6 +187,39 @@ def reserve_builder(
     return vaults
 
 
+# def order_builder(
+#     mint,
+#     initial_price,
+#     initial_weight,
+#     reserve_balance,
+#     current_vault_price,
+#     amount,
+#     current_weight,
+#     mock_vaults,
+#     no_of_vaults_in_order,
+# ):
+#     vaults_with_amount = []
+
+#     built_vaults = 0
+
+#     while built_vaults < no_of_vaults_in_order - 1:
+#         persisted_metadata = (initial_price[built_vaults], initial_weight[built_vaults])
+
+#         vault_info = (
+#             mock_vaults[built_vaults].address,
+#             current_vault_price[built_vaults],
+#             persisted_metadata,
+#             reserve_balance[built_vaults],
+#             current_weight[built_vaults],
+#         )
+
+#         vault = (vault_info, amount[built_vaults])
+#         vaults_with_amount.append(vault)
+#         built_vaults += 1
+
+#     return [vaults_with_amount, mint]
+
+
 def order_builder(
     mint,
     initial_price,
@@ -174,26 +229,23 @@ def order_builder(
     amount,
     current_weight,
     mock_vaults,
-    no_of_vaults_in_order,
 ):
     vaults_with_amount = []
 
-    built_vaults = 0
+    for i in range(len(initial_price)):
 
-    while built_vaults < no_of_vaults_in_order - 1:
-        persisted_metadata = (initial_price[built_vaults], initial_weight[built_vaults])
+        persisted_metadata = (initial_price[i], initial_weight[i])
 
         vault_info = (
-            mock_vaults[built_vaults].address,
-            current_vault_price[built_vaults],
+            mock_vaults[i].address,
+            current_vault_price[i],
             persisted_metadata,
-            reserve_balance[built_vaults],
-            current_weight[built_vaults],
+            reserve_balance[i],
+            current_weight[i],
         )
 
-        vault = (vault_info, amount[built_vaults])
+        vault = (vault_info, amount[i])
         vaults_with_amount.append(vault)
-        built_vaults += 1
 
     return [vaults_with_amount, mint]
 
@@ -209,7 +261,7 @@ def order_builder(
             weight_generator,
         ),
         min_size=1,
-        max_size=15,
+        max_size=10,
     )
 )
 def test_build_metadata(reserve_safety_manager, order_bundle, mock_vaults):
@@ -233,25 +285,19 @@ def test_build_metadata(reserve_safety_manager, order_bundle, mock_vaults):
         mock_vaults,
     )
 
-    metadata = reserve_safety_manager.buildMetaData(mint_order)
+    metadata_sol = reserve_safety_manager.buildMetaData(mint_order)
     metadata_exp = build_metadata(mint_order, mock_vaults)
 
-    vaults_metadata = metadata[0]
-    allVaultsWithinEpsilon = metadata[1]
-    allStablecoinsAllVaultsOnPeg = metadata[2]
-    allVaultsUsingLargeEnoughPrices = metadata[3]
-    mint = metadata[4]
+    vault_metadata_array_sol = metadata_sol[0]
+    vault_metadata_array_exp = metadata_exp[0]
 
-    assert mint == True
-
-    for meta in vaults_metadata:
-        assert meta[5] == mint_order[0][vaults_metadata.index(meta)][0][1]
-
-        assert meta[1] == to_decimal(metadata[0][vaults_metadata.index(meta)][1])
-        assert meta[2] == to_decimal(metadata[0][vaults_metadata.index(meta)][2])
-        assert meta[3] == to_decimal(metadata[0][vaults_metadata.index(meta)][3])
-        assert meta[4] == to_decimal(metadata[0][vaults_metadata.index(meta)][4])
-        assert meta[5] == to_decimal(metadata[0][vaults_metadata.index(meta)][5])
+    for i, vault in enumerate(vault_metadata_array_exp):
+        assert vault_metadata_array_exp[i][0] == vault_metadata_array_sol[i][0]
+        print("A", vault_metadata_array_exp[i][2])
+        print("b", vault_metadata_array_sol[i][2])
+        assert scale(vault_metadata_array_exp[i][2]).approxed() == to_decimal(
+            vault_metadata_array_sol[i][2]
+        )
 
 
 @given(bundle_metadata=st.tuples(vault_lists(vault_metadatas), global_metadatas))

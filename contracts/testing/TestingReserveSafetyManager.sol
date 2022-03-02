@@ -9,14 +9,16 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice,
         IUSDPriceOracle _priceOracle,
-        IAssetRegistry _assetRegistry
+        IAssetRegistry _assetRegistry,
+        IVaultManager _vaultManager
     )
         ReserveSafetyManager(
             _maxAllowedVaultDeviation,
             _stablecoinMaxDeviation,
             _minTokenPrice,
             _priceOracle,
-            _assetRegistry
+            _assetRegistry,
+            _vaultManager
         )
     {}
 
@@ -32,12 +34,12 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         return _buildMetaData(order);
     }
 
-    function calculateIdealWeights(VaultWithAmount[] memory vaultsWithAmount)
+    function calculateIdealWeights(DataTypes.VaultInfo[] memory vaultsInfo)
         external
         pure
         returns (uint256[] memory)
     {
-        return _calculateIdealWeights(vaultsWithAmount);
+        return _calculateIdealWeights(vaultsInfo);
     }
 
     function updateMetaDataWithEpsilonStatus(MetaData memory metaData)

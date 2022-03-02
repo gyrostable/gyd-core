@@ -30,7 +30,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         uint256 idealWeight;
         uint256 currentWeight;
         uint256 resultingWeight;
-        uint256 deltaWeight;
         uint256 price;
         bool allStablecoinsOnPeg;
         bool allTokenPricesLargeEnough;
@@ -133,8 +132,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     }
 
     /// @notice checks for all vaults whether if a particular vault contains a stablecoin that is off its peg,
-    /// whether the proposed change to the vault weight is equal to or smaller than the ideal weight, i.e., whether
-    /// the operation would be reducing the weight of the vault with the failed asset (as desired).
+    /// whether the proposed change to the vault would be reducing the weight of the vault with the failed asset (as desired).
     /// @param metaData an metadata struct containing all the vault information. Must be fully updated with the price
     /// safety and epsilon data.
     /// @return bool of whether all vaults exhibit this weight decreasing behavior
@@ -146,7 +144,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
                 continue;
             }
 
-            if (vaultData.deltaWeight > vaultData.idealWeight) {
+            if (vaultData.resultingWeight >= vaultData.currentWeight) {
                 return false;
             }
         }
@@ -181,7 +179,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
         uint256[] memory idealWeights = _calculateIdealWeights(vaultsInfo);
         uint256[] memory currentAmounts = new uint256[](vaultsInfo.length);
-        uint256[] memory deltaAmounts = new uint256[](vaultsInfo.length);
         uint256[] memory resultingAmounts = new uint256[](vaultsInfo.length);
         uint256[] memory prices = new uint256[](vaultsInfo.length);
 
@@ -190,15 +187,12 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             prices[i] = vaultsInfo[i].price;
             metaData.mint = order.mint;
             if (vaultsInfo[i].vault == order.vaultsWithAmount[0].vaultInfo.vault) {
-                deltaAmounts[i] = order.vaultsWithAmount[0].amount;
-
                 if (order.mint) {
-                    resultingAmounts[i] = currentAmounts[i] + deltaAmounts[i];
+                    resultingAmounts[i] = currentAmounts[i] + order.vaultsWithAmount[0].amount;
                 } else {
-                    resultingAmounts[i] = currentAmounts[i] - deltaAmounts[i];
+                    resultingAmounts[i] = currentAmounts[i] - order.vaultsWithAmount[0].amount;
                 }
             } else {
-                deltaAmounts[i] = 0;
                 resultingAmounts[i] = currentAmounts[i];
             }
 
@@ -212,9 +206,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             prices
         );
 
-        // deltaWeights = weighting of proposed inputs or outputs, not change in weights from resulting to current
-        (uint256[] memory deltaWeights, ) = _calculateWeightsAndTotal(deltaAmounts, prices);
-
         (uint256[] memory resultingWeights, ) = _calculateWeightsAndTotal(resultingAmounts, prices);
 
         if (currentUSDValue == 0) {
@@ -225,7 +216,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             metaData.vaultMetadata[i].idealWeight = idealWeights[i];
             metaData.vaultMetadata[i].currentWeight = currentWeights[i];
             metaData.vaultMetadata[i].resultingWeight = resultingWeights[i];
-            metaData.vaultMetadata[i].deltaWeight = deltaWeights[i];
         }
     }
 
@@ -246,19 +236,17 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         uint256[] memory idealWeights = _calculateIdealWeights(vaultsInfo);
 
         uint256[] memory currentAmounts = new uint256[](order.vaultsWithAmount.length);
-        uint256[] memory deltaAmounts = new uint256[](order.vaultsWithAmount.length);
         uint256[] memory resultingAmounts = new uint256[](order.vaultsWithAmount.length);
         uint256[] memory prices = new uint256[](order.vaultsWithAmount.length);
 
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             currentAmounts[i] = order.vaultsWithAmount[i].vaultInfo.reserveBalance;
-            deltaAmounts[i] = order.vaultsWithAmount[i].amount;
 
             metaData.mint = order.mint;
             if (order.mint) {
-                resultingAmounts[i] = currentAmounts[i] + deltaAmounts[i];
+                resultingAmounts[i] = currentAmounts[i] + order.vaultsWithAmount[i].amount;
             } else {
-                resultingAmounts[i] = currentAmounts[i] - deltaAmounts[i];
+                resultingAmounts[i] = currentAmounts[i] - order.vaultsWithAmount[i].amount;
             }
 
             metaData.vaultMetadata[i].vault = order.vaultsWithAmount[i].vaultInfo.vault;
@@ -271,12 +259,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             prices
         );
 
-        // deltaWeights = weighting of proposed inputs or outputs, not change in weights from resulting to current
-        (uint256[] memory deltaWeights, uint256 valueinUSDDeltas) = _calculateWeightsAndTotal(
-            deltaAmounts,
-            prices
-        );
-
         (uint256[] memory resultingWeights, ) = _calculateWeightsAndTotal(resultingAmounts, prices);
 
         // treat 0 inputs/outputs as proportional changes
@@ -284,15 +266,10 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             currentWeights = idealWeights;
         }
 
-        if (valueinUSDDeltas == 0) {
-            deltaWeights = idealWeights;
-        }
-
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             metaData.vaultMetadata[i].idealWeight = idealWeights[i];
             metaData.vaultMetadata[i].currentWeight = currentWeights[i];
             metaData.vaultMetadata[i].resultingWeight = resultingWeights[i];
-            metaData.vaultMetadata[i].deltaWeight = deltaWeights[i];
         }
     }
 

@@ -28,22 +28,18 @@ def calculate_weights_and_total(
     return weights, total
 
 
-def calculate_ideal_weights(vaults_with_amount: List[Tuple]) -> List[D]:
+def calculate_ideal_weights(vaults_info: List[Tuple]) -> List[D]:
     implied_ideal_weights = []
     weighted_returns = []
 
     returns_sum = D("0")
 
-    for vault in vaults_with_amount:
-        weighted_return = D(vault[0][1]) / D(vault[0][2][0]) * D(vault[0][2][1])
+    for vault in vaults_info:
+        weighted_return = D(vault[1]) / D(vault[2][0]) * D(vault[2][1])
         returns_sum += D(weighted_return)
         weighted_returns.append(weighted_return)
 
-    # if len(vaults_with_amount) == 1:
-    #     implied_ideal_weights.append(weighted_returns)
-    #     return implied_ideal_weights
-
-    for i in range(len(vaults_with_amount)):
+    for i, vault in enumerate(vaults_info):
         implied_ideal_weight = weighted_returns[i] / returns_sum
         implied_ideal_weights.append(implied_ideal_weight)
 
@@ -89,19 +85,22 @@ def build_metadata(order: List[Tuple], tokens) -> List[D]:
     vault_metadata_array = []
 
     current_amounts = []
-    delta_amounts = []
     resulting_amounts = []
     prices = []
 
+    vaults_info = []
+
     vaults_with_amount = order[0]
 
-    ideal_weights = calculate_ideal_weights(vaults_with_amount)
+    for vault in vaults_with_amount:
+        vaults_info.append(vault[0])
+
+    ideal_weights = calculate_ideal_weights(vaults_info)
 
     for vault in vaults_with_amount:
         vault_info = vault[0]
 
         current_amounts.append(D(vault_info[3]))
-        delta_amounts.append(D(vault[1]))
 
         if order[1]:
             resulting_amounts.append(D(vault_info[3]) + D(vault[1]))
@@ -117,25 +116,9 @@ def build_metadata(order: List[Tuple], tokens) -> List[D]:
     resulting_weights, resultingTotal = calculate_weights_and_total(
         resulting_amounts, prices
     )
-    print("RESULTING WEIGHTS", resulting_weights)
-
-    if len(resulting_weights) == 0:
-        resulting_weights = []
-        for i in range(len(resulting_amounts)):
-            resulting_weights.append(D("0"))
-
-    delta_weights, delta_total = calculate_weights_and_total(delta_amounts, prices)
-
-    print("Ideal weights", ideal_weights)
-    print("Current weights", current_weights)
-    print("Resulting weights", resulting_weights)
-    print("Delta weights", delta_weights)
 
     if current_usd_value == D("0"):
         current_weights = ideal_weights
-
-    if delta_total == D("0"):
-        delta_weights = ideal_weights
 
     for i in range(len(vaults_with_amount)):
         vault_info = vaults_with_amount[i][0]
@@ -146,7 +129,6 @@ def build_metadata(order: List[Tuple], tokens) -> List[D]:
         vault_metadata.append(ideal_weights[i])
         vault_metadata.append(current_weights[i])
         vault_metadata.append(resulting_weights[i])
-        vault_metadata.append(delta_weights[i])
         vault_metadata.append(vault_info[1])
         vault_metadata.append(False)
         vault_metadata.append(False)
