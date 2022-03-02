@@ -1,7 +1,6 @@
 import hypothesis.strategies as st
 import pytest
 from brownie.test import given
-
 from tests.reserve.reserve_math_implementation import (
     build_metadata,
     calculate_ideal_weights,
@@ -17,9 +16,6 @@ from tests.reserve.reserve_math_implementation import (
 from tests.support import constants
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
-
-MAX_VAULTS = 10
-
 
 amount_generator = st.integers(
     min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000))
@@ -49,66 +45,6 @@ vault_metadatas = st.tuples(
 global_metadatas = st.tuples(
     boolean_generator, boolean_generator, boolean_generator, boolean_generator
 )
-
-
-def vault_lists(*args, **kwargs):
-    return st.lists(*args, **kwargs, min_size=1, max_size=MAX_VAULTS)
-
-
-def vault_with_amount_builder(price_generator, amount_generator, weight_generator):
-    persisted_metadata = (price_generator, weight_generator)
-    vault_info = (
-        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-        price_generator,
-        persisted_metadata,
-        amount_generator,
-        weight_generator,
-    )
-    return (vault_info, amount_generator)
-
-
-def vault_info_builder(price_generator, amount_generator, weight_generator):
-    persisted_metadata = (price_generator, weight_generator)
-    vault_info = (
-        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-        price_generator,
-        persisted_metadata,
-        amount_generator,
-        weight_generator,
-    )
-    return vault_info
-
-
-def bundle_to_metadata(bundle, mock_vaults):
-    vaults_metadata, global_metadata = bundle
-    vaults_metadata = [(mock_vaults[i],) + v for i, v in enumerate(vaults_metadata)]
-    return (vaults_metadata,) + global_metadata
-
-
-def bundle_to_vaults(bundle):
-    prices, amounts, weights = [list(v) for v in zip(*bundle)]
-
-    vaults_with_amount = []
-    for i in range(len(prices)):
-        vault = vault_with_amount_builder(prices[i], amounts[i], weights[i])
-        vaults_with_amount.append(vault)
-
-    return vaults_with_amount
-
-
-def bundle_to_vault_info(bundle):
-    prices, amounts, weights = [list(v) for v in zip(*bundle)]
-    vaults_info = []
-    for i in range(len(prices)):
-        vault = vault_info_builder(prices[i], amounts[i], weights[i])
-        vaults_info.append(vault)
-
-    return vaults_info
-
-
-@pytest.fixture(scope="module")
-def mock_vaults(admin, MockGyroVault, dai):
-    return [admin.deploy(MockGyroVault, dai) for _ in range(MAX_VAULTS)]
 
 
 @given(
@@ -157,97 +93,6 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
     result_exp = vault_weight_off_peg_falls(metadata)
 
     assert result_sol == result_exp
-
-
-def reserve_builder(
-    initial_price,
-    initial_weight,
-    reserve_balance,
-    current_vault_price,
-    mock_vaults,
-):
-    vaults = []
-
-    current_weight = calculate_weights_and_total(reserve_balance, current_vault_price)
-
-    for i, vault in enumerate(mock_vaults):
-
-        persisted_metadata = (initial_price[i], initial_weight[i])
-
-        vault_info = (
-            mock_vaults[i].address,
-            current_vault_price[i],
-            persisted_metadata,
-            reserve_balance[i],
-            current_weight[i],
-        )
-
-        vaults.append(vault_info)
-
-    return vaults
-
-
-# def order_builder(
-#     mint,
-#     initial_price,
-#     initial_weight,
-#     reserve_balance,
-#     current_vault_price,
-#     amount,
-#     current_weight,
-#     mock_vaults,
-#     no_of_vaults_in_order,
-# ):
-#     vaults_with_amount = []
-
-#     built_vaults = 0
-
-#     while built_vaults < no_of_vaults_in_order - 1:
-#         persisted_metadata = (initial_price[built_vaults], initial_weight[built_vaults])
-
-#         vault_info = (
-#             mock_vaults[built_vaults].address,
-#             current_vault_price[built_vaults],
-#             persisted_metadata,
-#             reserve_balance[built_vaults],
-#             current_weight[built_vaults],
-#         )
-
-#         vault = (vault_info, amount[built_vaults])
-#         vaults_with_amount.append(vault)
-#         built_vaults += 1
-
-#     return [vaults_with_amount, mint]
-
-
-def order_builder(
-    mint,
-    initial_price,
-    initial_weight,
-    reserve_balance,
-    current_vault_price,
-    amount,
-    current_weight,
-    mock_vaults,
-):
-    vaults_with_amount = []
-
-    for i in range(len(initial_price)):
-
-        persisted_metadata = (initial_price[i], initial_weight[i])
-
-        vault_info = (
-            mock_vaults[i].address,
-            current_vault_price[i],
-            persisted_metadata,
-            reserve_balance[i],
-            current_weight[i],
-        )
-
-        vault = (vault_info, amount[i])
-        vaults_with_amount.append(vault)
-
-    return [vaults_with_amount, mint]
 
 
 @given(

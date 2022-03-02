@@ -327,3 +327,8 @@ def vault(admin, BaseVault, underlying):
 @pytest.fixture(scope="module")
 def usdc_vault(admin, BaseVault, usdc):
     return admin.deploy(BaseVault, usdc, "USDC Vault", "gUSDC")
+
+
+@pytest.fixture(scope="module")
+def mock_vaults(admin, MockGyroVault, dai):
+    return [admin.deploy(MockGyroVault, dai) for _ in range(constants.RESERVE_VAULTS)]
