@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
 import "../../libraries/FixedPoint.sol";
-import "../../interfaces/IVaultManager.sol";
 import "../../interfaces/IAssetRegistry.sol";
+import "../../interfaces/oracles/IUSDPriceOracle.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../interfaces/balancer/IVault.sol";
 import "../../libraries/Errors.sol";
@@ -23,7 +23,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
     IUSDPriceOracle internal priceOracle;
     IAssetRegistry internal assetRegistry;
-    IVaultManager internal vaultManager;
 
     /// @notice a stablecoin should be equal to 1 USD
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
@@ -33,15 +32,13 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice,
         IUSDPriceOracle _priceOracle,
-        IAssetRegistry _assetRegistry,
-        IVaultManager _vaultManager
+        IAssetRegistry _assetRegistry
     ) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;
         priceOracle = _priceOracle;
         assetRegistry = _assetRegistry;
-        vaultManager = _vaultManager;
     }
 
     function setVaultMaxDeviation(uint256 _maxAllowedVaultDeviation) external governanceOnly {
@@ -270,8 +267,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
     /// @inheritdoc ISafetyCheck
     function isMintSafe(DataTypes.Order memory order) public view returns (string memory) {
-        DataTypes.Metadata memory metaData;
-        metaData = _buildMetaData(order);
+        DataTypes.Metadata memory metaData = _buildMetaData(order);
 
         _updateMetadataWithPriceSafety(metaData);
         _updateMetaDataWithEpsilonStatus(metaData);

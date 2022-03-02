@@ -10,16 +10,14 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
         uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice,
         IUSDPriceOracle _priceOracle,
-        IAssetRegistry _assetRegistry,
-        IVaultManager _vaultManager
+        IAssetRegistry _assetRegistry
     )
         ReserveSafetyManager(
             _maxAllowedVaultDeviation,
             _stablecoinMaxDeviation,
             _minTokenPrice,
             _priceOracle,
-            _assetRegistry,
-            _vaultManager
+            _assetRegistry
         )
     {}
 
