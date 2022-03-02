@@ -79,65 +79,42 @@ def update_metadata_with_epsilon_status(metadata):
     return tuple(metadata_new)
 
 
-def build_metadata(order: List[Tuple], tokens, vault_manager: None) -> List[D]:
-    single_vault_operation = False
+def build_metadata(order: List[Tuple], tokens: None) -> List[D]:
+
+    vaults_with_amount = order[0]
+    mint = order[1]
 
     metadata = []
     vault_metadata_array = []
 
-    current_amounts = []
     resulting_amounts = []
     prices = []
 
-    if len(order[0] == 1):
-        single_vault_operation = True
-        vaults_info = vault_manager.listVaults()
-    else:
-        vaults_info = []
-        for vault in order[0]:
-            vaults_info.append(vault[0])
+    for vault_with_amount in vaults_with_amount:
 
-    ideal_weights = calculate_ideal_weights(vaults_info)
-
-    for vault in vaults_info:
-        current_amounts.append(D(vault[3]))
-
-        if single_vault_operation:
-            if vault[0] == order[0][0][0]:
-                if order[1]:
-                    resulting_amounts.append(D(vault[3]) + D(order[0][0][1]))
-                else:
-                    resulting_amounts.append(D(vault[3]) - D(order[0][0][1]))
-            else:
-                resulting_amounts.append(D(vault[3]))
-
+        if mint:
+            resulting_amounts.append(
+                D(vault_with_amount[0][3]) + D(vault_with_amount[1])
+            )
         else:
-            if order[1]:
-                resulting_amounts.append(D(vault[3]) + D(order[0][0][1]))
-            else:
-                resulting_amounts.append(D(vault[3]) - D(order[0][0][1]))
+            resulting_amounts.append(
+                D(vault_with_amount[0][3]) - D(vault_with_amount[1])
+            )
 
-        prices.append(D(vault[4]))
-
-    current_weights, current_usd_value = calculate_weights_and_total(
-        current_amounts, prices
-    )
+        prices.append(D(vault_with_amount[0][1]))
 
     resulting_weights, resultingTotal = calculate_weights_and_total(
         resulting_amounts, prices
     )
 
-    if current_usd_value == D("0"):
-        current_weights = ideal_weights
-
-    for i, vault in enumerate(vaults_info):
+    for i, vault in enumerate(vaults_with_amount):
         vault_metadata = []
 
         vault_metadata.append(tokens[i])
-        vault_metadata.append(ideal_weights[i])
-        vault_metadata.append(current_weights[i])
+        vault_metadata.append(vault[0][5])
+        vault_metadata.append(vault[0][4])
         vault_metadata.append(resulting_weights[i])
-        vault_metadata.append(prices[i])
+        vault_metadata.append(vault[0][1])
         vault_metadata.append(False)
         vault_metadata.append(False)
         vault_metadata.append(False)
@@ -148,7 +125,7 @@ def build_metadata(order: List[Tuple], tokens, vault_manager: None) -> List[D]:
     metadata.append(False)
     metadata.append(False)
     metadata.append(False)
-    metadata.append(order[1])
+    metadata.append(mint)
 
     return metadata
 

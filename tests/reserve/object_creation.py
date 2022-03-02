@@ -74,6 +74,7 @@ def bundle_to_order(order_bundle, mint, mock_vaults):
         current_vault_prices,
         amounts,
         current_weights,
+        ideal_weights,
     ) = [list(v) for v in zip(*order_bundle)]
 
     return order_builder(
@@ -84,6 +85,7 @@ def bundle_to_order(order_bundle, mint, mock_vaults):
         current_vault_prices,
         amounts,
         current_weights,
+        ideal_weights,
         mock_vaults,
     )
 
@@ -96,6 +98,7 @@ def order_builder(
     current_vault_prices,
     amounts,
     current_weights,
+    ideal_weights,
     mock_vaults,
 ):
     vaults_with_amount = []
@@ -110,6 +113,7 @@ def order_builder(
             persisted_metadata,
             reserve_balances[i],
             current_weights[i],
+            ideal_weights[i],
         )
 
         vault = (vault_info, amounts[i])

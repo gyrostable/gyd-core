@@ -81,54 +81,48 @@ def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices)
 #     assert result_sol == result_exp
 
 
-# @given(
-#     order_bundle=st.lists(
-#         st.tuples(
-#             price_generator,
-#             weight_generator,
-#             amount_generator,
-#             price_generator,
-#             amount_generator,
-#             weight_generator,
-#         ),
-#         min_size=1,
-#         max_size=10,
-#     )
-# )
-# def test_build_metadata(reserve_safety_manager, order_bundle, mock_vaults):
-#     (
-#         initial_price,
-#         initial_weight,
-#         reserve_balance,
-#         current_vault_price,
-#         amount,
-#         current_weight,
-#     ) = [list(v) for v in zip(*order_bundle)]
+@given(
+    order_bundle=st.lists(
+        st.tuples(
+            price_generator,
+            weight_generator,
+            amount_generator,
+            price_generator,
+            amount_generator,
+            weight_generator,
+            weight_generator,
+        ),
+        min_size=1,
+        max_size=10,
+    )
+)
+def test_build_metadata(reserve_safety_manager, order_bundle, mock_vaults):
 
-#     mint_order = order_builder(
-#         True,
-#         initial_price,
-#         initial_weight,
-#         reserve_balance,
-#         current_vault_price,
-#         amount,
-#         current_weight,
-#         mock_vaults,
-#     )
+    mint_order = object_creation.bundle_to_order(order_bundle, True, mock_vaults)
 
-#     metadata_sol = reserve_safety_manager.buildMetaData(mint_order)
-#     metadata_exp = build_metadata(mint_order, mock_vaults)
+    metadata_sol = reserve_safety_manager.buildMetaData(mint_order)
+    metadata_exp = build_metadata(mint_order, mock_vaults)
 
-#     vault_metadata_array_sol = metadata_sol[0]
-#     vault_metadata_array_exp = metadata_exp[0]
+    assert metadata_sol[1] == metadata_exp[1]
+    assert metadata_sol[2] == metadata_exp[2]
+    assert metadata_sol[3] == metadata_exp[3]
+    assert metadata_sol[4] == metadata_exp[4]
 
-#     for i, vault in enumerate(vault_metadata_array_exp):
-#         assert vault_metadata_array_exp[i][0] == vault_metadata_array_sol[i][0]
-#         print("A", vault_metadata_array_exp[i][2])
-#         print("b", vault_metadata_array_sol[i][2])
-#         assert scale(vault_metadata_array_exp[i][2]).approxed() == to_decimal(
-#             vault_metadata_array_sol[i][2]
-#         )
+    vault_metadata_array_sol = metadata_sol[0]
+    vault_metadata_array_exp = metadata_exp[0]
+
+    for i in range(len(mint_order[0])):
+        assert vault_metadata_array_sol[i][0] == vault_metadata_array_exp[i][0]
+        assert vault_metadata_array_sol[i][1] == vault_metadata_array_exp[i][1]
+        assert vault_metadata_array_sol[i][2] == vault_metadata_array_exp[i][2]
+        assert (
+            D(vault_metadata_array_sol[i][3])
+            == scale(vault_metadata_array_exp[i][3]).approxed()
+        )
+        assert vault_metadata_array_sol[i][4] == vault_metadata_array_exp[i][4]
+        assert vault_metadata_array_sol[i][5] == vault_metadata_array_exp[i][5]
+        assert vault_metadata_array_sol[i][6] == vault_metadata_array_exp[i][6]
+        assert vault_metadata_array_sol[i][7] == vault_metadata_array_exp[i][7]
 
 
 # @given(bundle_metadata=st.tuples(vault_lists(vault_metadatas), global_metadatas))
