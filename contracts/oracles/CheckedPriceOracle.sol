@@ -33,15 +33,10 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     address[] public signedPriceAddresses;
     address[] public twapPriceAddresses;
 
-    constructor(
-        address _usdOracle,
-        address _relativeOracle,
-        address[] memory _signedPriceAddresses
-    ) {
+    constructor(address _usdOracle, address _relativeOracle) {
         usdOracle = IUSDPriceOracle(_usdOracle);
         relativeOracle = IRelativePriceOracle(_relativeOracle);
         relativeEpsilon = INITIAL_RELATIVE_EPSILON;
-        signedPriceAddresses = _signedPriceAddresses;
     }
 
     function setSignedPriceAddresses(address[] memory newSignedPriceAddresses)
@@ -193,35 +188,35 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         }
     }
 
-    function swap(
-        uint256[] memory array,
-        uint256 i,
-        uint256 j
-    ) internal pure {
-        (array[i], array[j]) = (array[j], array[i]);
+    function sort(uint256[] memory data) internal view returns (uint256[] memory) {
+        quickSort(data, int256(0), int256(data.length - 1));
+        return data;
     }
 
-    function sort(
-        uint256[] memory array,
-        uint256 begin,
-        uint256 end
-    ) internal pure {
-        if (begin < end) {
-            uint256 j = begin;
-            uint256 pivot = array[j];
-            for (uint256 i = begin + 1; i < end; i++) {
-                if (array[i] < pivot) {
-                    swap(array, i, j++);
-                }
+    function quickSort(
+        uint256[] memory arr,
+        int256 left,
+        int256 right
+    ) internal view {
+        int256 i = left;
+        int256 j = right;
+        if (i == j) return;
+        uint256 pivot = arr[uint256(left + (right - left) / 2)];
+        while (i <= j) {
+            while (arr[uint256(i)] < pivot) i++;
+            while (pivot < arr[uint256(j)]) j--;
+            if (i <= j) {
+                (arr[uint256(i)], arr[uint256(j)]) = (arr[uint256(j)], arr[uint256(i)]);
+                i++;
+                j--;
             }
-            swap(array, begin, j);
-            sort(array, begin, j);
-            sort(array, j + 1, end);
         }
+        if (left < j) quickSort(arr, left, j);
+        if (i < right) quickSort(arr, i, right);
     }
 
-    function median(uint256[] memory array) internal pure returns (uint256) {
-        sort(array, 0, array.length);
+    function median(uint256[] memory array) public view returns (uint256) {
+        sort(array);
         return
             array.length % 2 == 0
                 ? Math.average(array[array.length / 2 - 1], array[array.length / 2])
@@ -236,7 +231,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     /// @param twapPrices an array of Time Weighted Moving Average ETH/stablecoin prices
     function getTrueWETHPrice(uint256[] memory signedPrices, uint256[] memory twapPrices)
         internal
-        pure
+        view
         returns (uint256 trueWETHPrice)
     {
         uint256 medianizedTwap = medianizeTwaps(twapPrices);
@@ -251,6 +246,4 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         }
         trueWETHPrice = median(prices);
     }
-
-    // check that chainlink is within epsilon of median
 }

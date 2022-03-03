@@ -1,10 +1,14 @@
 from decimal import Decimal
+from statistics import median, median_high, median_low
 
+import hypothesis.strategies as st
 import pytest
+from brownie.test import given
 from brownie.test.managers.runner import RevertContextManager as reverts
 from tests.fixtures.mainnet_contracts import TokenAddresses
 from tests.support import error_codes
-from tests.support.utils import scale
+from tests.support.quantized_decimal import QuantizedDecimal as D
+from tests.support.utils import scale, to_decimal
 
 ETH_USD_PRICE = scale("2700")
 CRV_USD_PRICE = scale("3.5")
@@ -189,3 +193,16 @@ def test_get_on_chain_usd_prices(mainnet_checked_price_oracle):
     assert scale(1_000) <= weth_price <= scale(10_000)
     assert scale(20_000) <= wbtc_price <= scale(100_000)
     assert scale("0.99") <= usdc_price <= scale("1.01")
+
+
+@given(
+    values=st.lists(st.integers(min_value=0, max_value=1e30), min_size=15, max_size=100)
+)
+def test_median(local_checked_price_oracle, values):
+    median_sol = local_checked_price_oracle.median(values)
+    true_median = median(values)
+
+    if not median_sol == int(true_median):
+        assert median_sol == int(true_median) + 1
+    else:
+        assert median_sol == int(true_median)
