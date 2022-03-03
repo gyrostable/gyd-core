@@ -66,6 +66,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
                     continue;
                 }
 
+                // This is a TWAP
                 uint256 relativePrice = relativeOracle.getRelativePrice(
                     tokenAddresses[i],
                     tokenAddresses[j]
@@ -81,6 +82,11 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
             checked[i] = true;
         }
+
+        // keep the TWAPs that are used for ETH grounding in memory so we don't have to call again (ETH/USDC, ETH/USDT, ...), settable by gov which ones
+        // do the ETH grounding consistency check with these TWAPs
+        // also need to get the Coinbase signed price and OKEx signed price (or check if already on-chain recently enough), these are inputs to signedPrices
+        // ETH price is coming from Chainlink, want this already in memory as well
 
         return prices;
     }
@@ -106,6 +112,12 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
         relativeEpsilon = _relativeEpsilon;
     }
+
+    function ensurePriceGrounded(
+        uint256[] signedPrices,
+        uint256[] twaps,
+        uint256 price
+    ) {}
 
     function _ensurePriceConsistency(
         uint256 aUSDPrice,
