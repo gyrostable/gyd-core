@@ -18,6 +18,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     using SafeCast for uint256;
     using SafeCast for int256;
 
+    uint256 public constant MAX_ABSOLUTE_WETH_DEVIATION = 0.02e18;
     uint256 public constant INITIAL_RELATIVE_EPSILON = 0.02e18;
     uint256 public constant MAX_RELATIVE_EPSILON = 0.1e18;
 
@@ -29,15 +30,35 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     uint256 public relativeEpsilon;
 
-    constructor(address _usdOracle, address _relativeOracle) {
+    address[] public signedPriceAddresses;
+    address[] public twapPriceAddresses;
+
+    constructor(
+        address _usdOracle,
+        address _relativeOracle,
+        address[] memory _signedPriceAddresses
+    ) {
         usdOracle = IUSDPriceOracle(_usdOracle);
         relativeOracle = IRelativePriceOracle(_relativeOracle);
         relativeEpsilon = INITIAL_RELATIVE_EPSILON;
+        signedPriceAddresses = _signedPriceAddresses;
     }
 
+    function setSignedPriceAddresses(address[] memory newSignedPriceAddresses)
+        external
+        governanceOnly
+    {
+        signedPriceAddresses = newSignedPriceAddresses;
+    }
+
+    function setTwapPriceAddresses(address[] memory newTwapPriceAddresses) external governanceOnly {
+        twapPriceAddresses = newTwapPriceAddresses;
+    }
+
+    //NB this is expected to be queried for ALL asset prices in the reserve
     /// @inheritdoc IUSDBatchPriceOracle
     function getPricesUSD(address[] memory tokenAddresses)
-        external
+        public
         view
         override
         returns (uint256[] memory)
@@ -52,11 +73,18 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
             return prices;
         }
 
+        uint256 mainRootPrice;
+
         for (uint256 i = 0; i < length; i++) {
             prices[i] = usdOracle.getPriceUSD(tokenAddresses[i]);
+            if (tokenAddresses[i] == WETH_ADDRESS) {
+                mainRootPrice = prices[i];
+            }
         }
 
         bool[] memory checked = new bool[](length);
+
+        uint256[] memory twaps = new uint256[](twapPriceAddresses.length);
 
         for (uint256 i = 0; i < tokenAddresses.length - 1; i++) {
             if (checked[i]) {
@@ -74,6 +102,10 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
                     tokenAddresses[i],
                     tokenAddresses[j]
                 );
+
+                if (tokenAddresses[i] == WETH_ADDRESS) {
+                    twaps[i] = relativePrice;
+                }
                 _ensurePriceConsistency(prices[i], prices[j], relativePrice);
 
                 checked[j] = true;
@@ -86,10 +118,13 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
             checked[i] = true;
         }
 
-        // keep the TWAPs that are used for ETH grounding in memory so we don't have to call again (ETH/USDC, ETH/USDT, ...), settable by gov which ones
-        // do the ETH grounding consistency check with these TWAPs
-        // also need to get the Coinbase signed price and OKEx signed price (or check if already on-chain recently enough), these are inputs to signedPrices
-        // ETH price is coming from Chainlink, want this already in memory as well
+        uint256[] memory signedPrices = new uint256[](signedPriceAddresses.length);
+
+        for (uint256 i = 0; i < signedPriceAddresses.length; i++) {
+            signedPrices[i] = usdOracle.getPriceUSD(signedPriceAddresses[i]);
+        }
+
+        _ensureRootPriceGrounded(mainRootPrice, signedPrices, twaps);
 
         return prices;
     }
@@ -104,6 +139,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         uint256 priceBaseUSD = usdOracle.getPriceUSD(tokenAddress);
         uint256 priceComparisonTokenUSD = usdOracle.getPriceUSD(comparisonToken);
 
+        //TODO: do we need to ensure the individual feeds are ETH price grounded too? This is used in the reserve safety checker, for example.
         _ensurePriceConsistency(priceBaseUSD, priceComparisonTokenUSD, baseToComparisonPrice);
 
         return priceBaseUSD;
@@ -116,11 +152,15 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         relativeEpsilon = _relativeEpsilon;
     }
 
-    function ensurePriceGrounded(
-        uint256[] signedPrices,
-        uint256[] twaps,
-        uint256 price
-    ) {}
+    function _ensureRootPriceGrounded(
+        uint256 mainRootPrice,
+        uint256[] memory signedPrices,
+        uint256[] memory twaps
+    ) internal view {
+        uint256 trueWETH = getTrueWETHPrice(signedPrices, twaps);
+        uint256 absolutePriceDifference = mainRootPrice.absSub(trueWETH);
+        require(absolutePriceDifference <= MAX_ABSOLUTE_WETH_DEVIATION, Errors.STALE_PRICE);
+    }
 
     function _ensurePriceConsistency(
         uint256 aUSDPrice,
@@ -154,7 +194,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     }
 
     function swap(
-        int256[] memory array,
+        uint256[] memory array,
         uint256 i,
         uint256 j
     ) internal pure {
@@ -162,16 +202,16 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     }
 
     function sort(
-        int256[] memory array,
+        uint256[] memory array,
         uint256 begin,
         uint256 end
     ) internal pure {
         if (begin < end) {
             uint256 j = begin;
-            int256 pivot = array[j];
-            for (uint256 i = begin + 1; i < end; ++i) {
+            uint256 pivot = array[j];
+            for (uint256 i = begin + 1; i < end; i++) {
                 if (array[i] < pivot) {
-                    swap(array, i, ++j);
+                    swap(array, i, j++);
                 }
             }
             swap(array, begin, j);
@@ -180,12 +220,12 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         }
     }
 
-    function median(int256[] memory array, uint256 length) internal pure returns (int256) {
-        sort(array, 0, length);
+    function median(uint256[] memory array) internal pure returns (uint256) {
+        sort(array, 0, array.length);
         return
-            length % 2 == 0
-                ? Math.average(array[length / 2 - 1], array[length / 2])
-                : array[length / 2];
+            array.length % 2 == 0
+                ? Math.average(array[array.length / 2 - 1], array[array.length / 2])
+                : array[array.length / 2];
     }
 
     /// @notice this function provides an estimate of the true WETH price.
@@ -194,19 +234,19 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     /// 3. Compute the median of this array
     /// @param signedPrices an array of prices from trusted providers (e.g. Chainlink, Coinbase, OKEx ETH/USD price)
     /// @param twapPrices an array of Time Weighted Moving Average ETH/stablecoin prices
-    function calculateTrueWETHPrice(uint256[] memory signedPrices, uint256[] memory twapPrices)
+    function getTrueWETHPrice(uint256[] memory signedPrices, uint256[] memory twapPrices)
         internal
         pure
         returns (uint256 trueWETHPrice)
     {
         uint256 medianizedTwap = medianizeTwaps(twapPrices);
 
-        int256[] memory prices = new int256[](signedPrices.length + 1);
+        uint256[] memory prices = new uint256[](signedPrices.length + 1);
         for (uint256 i = 0; i < prices.length; i++) {
             if (i == prices.length - 1) {
-                prices[i] = int256(medianizedTwap);
+                prices[i] = medianizedTwap;
             } else {
-                prices[i] = int256(signedPrices[i]);
+                prices[i] = signedPrices[i];
             }
         }
         trueWETHPrice = median(prices);

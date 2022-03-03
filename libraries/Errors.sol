@@ -35,6 +35,7 @@ library Errors {
     string public constant NEGATIVE_PRICE = "42";
     string public constant INVALID_MESSAGE = "43";
     string public constant TOO_MUCH_VOLATILITY = "44";
+    string public constant WETH_ADDRESS_NOT_FIRST = "44";
 
     //Vault safety check related errors
     string public constant A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG = "51";
