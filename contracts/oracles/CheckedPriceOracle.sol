@@ -2,6 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/utils/math/Math.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
 import "../../interfaces/oracles/IUSDPriceOracle.sol";
 import "../../interfaces/oracles/IRelativePriceOracle.sol";
@@ -14,6 +15,8 @@ import "../../libraries/FixedPoint.sol";
 
 contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable {
     using FixedPoint for uint256;
+    using SafeCast for uint256;
+    using SafeCast for int256;
 
     uint256 public constant INITIAL_RELATIVE_EPSILON = 0.02e18;
     uint256 public constant MAX_RELATIVE_EPSILON = 0.1e18;
@@ -185,47 +188,29 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
                 : array[length / 2];
     }
 
-    // inputs: chainlink ETH/USD price, Coinbase ETH/USD price, OKEx ETH/USD price,  array of ETH/stablecoin TWAPS
-    // compute min(ETH/stablecoin TWAPs):
-    // min if there are only two, or the 2nd min if more than two
-    // compute median (coinbase, OKex, min-TWAP)
-    // check that chainlink is within epsilon of median
-    function calculateWETHPriceAnchor(uint256[] memory signedPrices, uint256[] memory twapPrices)
+    /// @notice this function provides an estimate of the true WETH price.
+    /// 1. Find the minimum TWAP price (or second minumum if >2 TWAP prices) from a given array.
+    /// 2. Add this to an array of signed prices
+    /// 3. Compute the median of this array
+    /// @param signedPrices an array of prices from trusted providers (e.g. Chainlink, Coinbase, OKEx ETH/USD price)
+    /// @param twapPrices an array of Time Weighted Moving Average ETH/stablecoin prices
+    function calculateTrueWETHPrice(uint256[] memory signedPrices, uint256[] memory twapPrices)
         internal
         pure
-        returns (uint256)
+        returns (uint256 trueWETHPrice)
     {
         uint256 medianizedTwap = medianizeTwaps(twapPrices);
+
         int256[] memory prices = new int256[](signedPrices.length + 1);
-        // fill in prices array with signedPrices and medianizedTwap, and safe casting to int
-        uint256 priceAnchor = median(prices);
-        return priceAnchor;
+        for (uint256 i = 0; i < prices.length; i++) {
+            if (i == prices.length - 1) {
+                prices[i] = int256(medianizedTwap);
+            } else {
+                prices[i] = int256(signedPrices[i]);
+            }
+        }
+        trueWETHPrice = median(prices);
     }
 
-    // function sort(uint256[] memory data) public returns (uint256[] memory) {
-    //     quickSort(data, int256(0), int256(data.length - 1));
-    //     return data;
-    // }
-
-    // function quickSort(
-    //     uint256[] memory arr,
-    //     int256 left,
-    //     int256 right
-    // ) internal {
-    //     int256 i = left;
-    //     int256 j = right;
-    //     if (i == j) return;
-    //     uint256 pivot = arr[uint256(left + (right - left) / 2)];
-    //     while (i <= j) {
-    //         while (arr[uint256(i)] < pivot) i++;
-    //         while (pivot < arr[uint256(j)]) j--;
-    //         if (i <= j) {
-    //             (arr[uint256(i)], arr[uint256(j)]) = (arr[uint256(j)], arr[uint256(i)]);
-    //             i++;
-    //             j--;
-    //         }
-    //     }
-    //     if (left < j) quickSort(arr, left, j);
-    //     if (i < right) quickSort(arr, i, right);
-    // }
+    // check that chainlink is within epsilon of median
 }
