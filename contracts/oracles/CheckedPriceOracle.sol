@@ -154,7 +154,10 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     ) internal view {
         uint256 trueWETH = getTrueWETHPrice(signedPrices, twaps);
         uint256 absolutePriceDifference = mainRootPrice.absSub(trueWETH);
-        require(absolutePriceDifference <= MAX_ABSOLUTE_WETH_DEVIATION, Errors.STALE_PRICE);
+        require(
+            absolutePriceDifference <= MAX_ABSOLUTE_WETH_DEVIATION,
+            Errors.ROOT_PRICE_NOT_GROUNDED
+        );
     }
 
     function _ensurePriceConsistency(
