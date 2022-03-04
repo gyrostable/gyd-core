@@ -37,6 +37,8 @@ library Errors {
     string public constant TOO_MUCH_VOLATILITY = "44";
     string public constant WETH_ADDRESS_NOT_FIRST = "44";
     string public constant ROOT_PRICE_NOT_GROUNDED = "45";
+    string public constant NOT_ENOUGH_TWAPS = "46";
+    string public constant ZERO_PRICE_TWAP = "47";
 
     //Vault safety check related errors
     string public constant A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG = "51";

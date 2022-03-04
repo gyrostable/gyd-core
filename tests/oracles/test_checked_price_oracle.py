@@ -2,6 +2,7 @@ from decimal import Decimal
 from statistics import median, median_high, median_low
 
 import hypothesis.strategies as st
+import numpy as np
 import pytest
 from brownie.test import given
 from brownie.test.managers.runner import RevertContextManager as reverts
@@ -206,3 +207,18 @@ def test_median(local_checked_price_oracle, values):
         assert median_sol == int(true_median) + 1
     else:
         assert median_sol == int(true_median)
+
+
+@given(
+    values=st.lists(st.integers(min_value=1, max_value=1e30), min_size=1, max_size=100)
+)
+def test_medianize_twaps(local_checked_price_oracle, values):
+    medianized = local_checked_price_oracle.medianizeTwaps(values)
+
+    array = np.array(values)
+    if len(array) == 2:
+        result = np.partition(array, 0)[0]
+    else:
+        result = np.partition(array, 1)[1]
+
+    assert medianized == result

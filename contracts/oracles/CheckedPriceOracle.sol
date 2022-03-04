@@ -172,19 +172,22 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         require(relativePriceDifference <= relativeEpsilon, Errors.STALE_PRICE);
     }
 
-    function medianizeTwaps(uint256[] memory twapPrices) internal pure returns (uint256) {
+    function medianizeTwaps(uint256[] memory twapPrices) public pure returns (uint256) {
         // min if there are two, or the 2nd min if more than two
+        require(twapPrices.length > 1, Errors.NOT_ENOUGH_TWAPS);
         uint256 min = twapPrices[0];
         uint256 secondMin = 2**256 - 1;
-        for (uint256 i = 0; i < twapPrices.length; i++) {
+        for (uint256 i = 1; i < twapPrices.length; i++) {
             if (twapPrices[i] < min) {
                 secondMin = min;
                 min = twapPrices[i];
-            } else if (twapPrices[i] < secondMin) {
+            } else if ((twapPrices[i] < secondMin)) {
                 secondMin = twapPrices[i];
             }
         }
-        if (twapPrices.length == 2) {
+        if (twapPrices.length == 1) {
+            return twapPrices[0];
+        } else if (twapPrices.length == 2) {
             return min;
         } else {
             return secondMin;
