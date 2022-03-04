@@ -199,8 +199,8 @@ def test_get_on_chain_usd_prices(mainnet_checked_price_oracle):
 @given(
     values=st.lists(st.integers(min_value=0, max_value=1e30), min_size=15, max_size=100)
 )
-def test_median(local_checked_price_oracle, values):
-    median_sol = local_checked_price_oracle.median(values)
+def test_median(testing_checked_price_oracle, values):
+    median_sol = testing_checked_price_oracle.median(values)
     true_median = median(values)
 
     if not median_sol == int(true_median):
@@ -212,11 +212,13 @@ def test_median(local_checked_price_oracle, values):
 @given(
     values=st.lists(st.integers(min_value=1, max_value=1e30), min_size=1, max_size=100)
 )
-def test_medianize_twaps(local_checked_price_oracle, values):
-    medianized = local_checked_price_oracle.medianizeTwaps(values)
+def test_medianize_twaps(testing_checked_price_oracle, values):
+    medianized = testing_checked_price_oracle.medianizeTwaps(values)
 
     array = np.array(values)
-    if len(array) == 2:
+    if len(values) == 1:
+        result = values[0]
+    elif len(array) == 2:
         result = np.partition(array, 0)[0]
     else:
         result = np.partition(array, 1)[1]

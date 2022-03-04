@@ -172,9 +172,9 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         require(relativePriceDifference <= relativeEpsilon, Errors.STALE_PRICE);
     }
 
-    function medianizeTwaps(uint256[] memory twapPrices) public pure returns (uint256) {
+    function _medianizeTwaps(uint256[] memory twapPrices) internal pure returns (uint256) {
         // min if there are two, or the 2nd min if more than two
-        require(twapPrices.length > 1, Errors.NOT_ENOUGH_TWAPS);
+        require(twapPrices.length > 0, Errors.NOT_ENOUGH_TWAPS);
         uint256 min = twapPrices[0];
         uint256 secondMin = 2**256 - 1;
         for (uint256 i = 1; i < twapPrices.length; i++) {
@@ -194,12 +194,12 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         }
     }
 
-    function sort(uint256[] memory data) internal view returns (uint256[] memory) {
-        quickSort(data, int256(0), int256(data.length - 1));
+    function _sort(uint256[] memory data) internal view returns (uint256[] memory) {
+        _quickSort(data, int256(0), int256(data.length - 1));
         return data;
     }
 
-    function quickSort(
+    function _quickSort(
         uint256[] memory arr,
         int256 left,
         int256 right
@@ -217,12 +217,12 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
                 j--;
             }
         }
-        if (left < j) quickSort(arr, left, j);
-        if (i < right) quickSort(arr, i, right);
+        if (left < j) _quickSort(arr, left, j);
+        if (i < right) _quickSort(arr, i, right);
     }
 
-    function median(uint256[] memory array) public view returns (uint256) {
-        sort(array);
+    function _median(uint256[] memory array) internal view returns (uint256) {
+        _sort(array);
         return
             array.length % 2 == 0
                 ? Math.average(array[array.length / 2 - 1], array[array.length / 2])
@@ -236,11 +236,11 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     /// @param signedPrices an array of prices from trusted providers (e.g. Chainlink, Coinbase, OKEx ETH/USD price)
     /// @param twapPrices an array of Time Weighted Moving Average ETH/stablecoin prices
     function getTrueWETHPrice(uint256[] memory signedPrices, uint256[] memory twapPrices)
-        internal
+        public
         view
         returns (uint256 trueWETHPrice)
     {
-        uint256 medianizedTwap = medianizeTwaps(twapPrices);
+        uint256 medianizedTwap = _medianizeTwaps(twapPrices);
 
         uint256[] memory prices = new uint256[](signedPrices.length + 1);
         for (uint256 i = 0; i < prices.length; i++) {
@@ -250,6 +250,6 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
                 prices[i] = signedPrices[i];
             }
         }
-        trueWETHPrice = median(prices);
+        trueWETHPrice = _median(prices);
     }
 }
