@@ -87,7 +87,6 @@ contract Motherboard is IMotherBoard, Governable {
             IERC20(vaultAmount.tokenAddress).safeTransfer(address(reserve), vaultAmount.amount);
         }
 
-        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
         uint256 usdValueIn = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
         uint256 gyroToMint = pamm().mint(usdValueIn, reserveUSDValue);
 
@@ -137,7 +136,6 @@ contract Motherboard is IMotherBoard, Governable {
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
-        uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
         uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
         mintedGYDAmount = pamm().computeMintAmount(usdValue, reserveUSDValue);
 
@@ -318,13 +316,11 @@ contract Motherboard is IMotherBoard, Governable {
         return (0, 0);
     }
 
-    function _createRedeemOrder(uint256 usdValueToRedeem, DataTypes.RedeemAsset[] calldata assets)
-        internal
-        view
-        returns (DataTypes.Order memory)
-    {
-        DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
-
+    function _createRedeemOrder(
+        uint256 usdValueToRedeem,
+        DataTypes.RedeemAsset[] calldata assets,
+        DataTypes.VaultInfo[] memory vaultsInfo
+    ) internal view returns (DataTypes.Order memory) {
         DataTypes.Order memory order = DataTypes.Order({
             mint: false,
             vaultsWithAmount: new DataTypes.VaultWithAmount[](vaultsInfo.length)
