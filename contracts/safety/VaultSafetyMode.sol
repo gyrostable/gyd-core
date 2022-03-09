@@ -46,7 +46,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     //TODO: gas optimize this
     function storeDirectionalFlowData(
         DataTypes.DirectionalFlowData[] memory directionalFlowData,
-        Order memory order,
+        DataTypes.Order memory order,
         address[] memory vaultAddresses
     ) private {
         if (order.mint) {
@@ -61,7 +61,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     }
 
     //TODO: gas optimize this. The parameters for this contract could also potentially be packed here.
-    function accessDirectionalFlowData(address[] memory vaultAddresses, Order memory order)
+    function accessDirectionalFlowData(
+        address[] memory vaultAddresses,
+        DataTypes.Order memory order
+    )
         private
         view
         returns (
@@ -85,7 +88,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     function initializeVaultFlowData(
         address[] memory vaultAddresses,
         uint256 currentBlockNumber,
-        Order memory order
+        DataTypes.Order memory order
     )
         internal
         view
@@ -150,7 +153,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return (directionalFlowData, allowTransaction, isSafetyModeActivated);
     }
 
-    function flowSafetyStateUpdater(Order memory order)
+    function flowSafetyStateUpdater(DataTypes.Order memory order)
         internal
         view
         returns (
@@ -206,7 +209,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     /// @notice Checks whether a mint operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function isMintSafe(Order memory order) external view returns (string memory) {
+    function isMintSafe(DataTypes.Order memory order) external view returns (string memory) {
         (string memory mintSafety, , ) = flowSafetyStateUpdater(order);
         return mintSafety;
     }
@@ -216,7 +219,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// This is only called when an actual mint is performed
     /// The implementation should store any relevant information for the mint
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function checkAndPersistMint(Order memory order) external returns (string memory) {
+    function checkAndPersistMint(DataTypes.Order memory order) external returns (string memory) {
         (
             string memory mintSafety,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
@@ -228,7 +231,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     /// @notice Checks whether a redeem operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function isRedeemSafe(Order memory order) external view returns (string memory) {
+    function isRedeemSafe(DataTypes.Order memory order) external view returns (string memory) {
         (string memory redeemSafety, , ) = flowSafetyStateUpdater(order);
         return redeemSafety;
     }
@@ -238,7 +241,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// This is only called when an actual redeem is performed
     /// The implementation should store any relevant information for the redeem
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function checkAndPersistRedeem(Order memory order) external returns (string memory) {
+    function checkAndPersistRedeem(DataTypes.Order memory order) external returns (string memory) {
         (
             string memory redeemSafety,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,

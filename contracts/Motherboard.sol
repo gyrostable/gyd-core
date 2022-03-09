@@ -67,7 +67,7 @@ contract Motherboard is IMotherBoard, Governable {
             .getVaultManager()
             .listVaults();
 
-        ISafetyCheck.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
+        DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
 
         string memory mintSafety = gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
 
@@ -112,7 +112,7 @@ contract Motherboard is IMotherBoard, Governable {
             .listVaults();
 
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveUSDValue);
-        ISafetyCheck.Order memory order = _createRedeemOrder(usdValueToRedeem, assets, vaultsInfo);
+        DataTypes.Order memory order = _createRedeemOrder(usdValueToRedeem, assets, vaultsInfo);
         gyroConfig.getRootSafetyCheck().checkAndPersistRedeem(order);
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         return _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
@@ -134,7 +134,7 @@ contract Motherboard is IMotherBoard, Governable {
         (DataTypes.VaultInfo[] memory vaultsInfo, uint256 reserveUSDValue) = gyroConfig
             .getVaultManager()
             .listVaults();
-        ISafetyCheck.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
+        DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
         uint256 mintFeeFraction = gyroConfig.getUint(ConfigKeys.MINT_FEE);
@@ -158,7 +158,7 @@ contract Motherboard is IMotherBoard, Governable {
             .getVaultManager()
             .listVaults();
         uint256 usdValueToRedeem = pamm().computeRedeemAmount(gydToRedeem, reserveUSDValue);
-        ISafetyCheck.Order memory order = _createRedeemOrder(usdValueToRedeem, assets, vaultsInfo);
+        DataTypes.Order memory order = _createRedeemOrder(usdValueToRedeem, assets, vaultsInfo);
         err = gyroConfig.getRootSafetyCheck().isRedeemSafe(order);
         if (bytes(err).length > 0) {
             return (outputAmounts, err);
