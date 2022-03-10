@@ -117,6 +117,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         DataTypes.VaultInfo[] memory vaultsInfo = gyroConfig.getVaultManager().listVaults();
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
+
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
