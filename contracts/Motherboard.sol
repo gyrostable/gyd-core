@@ -44,11 +44,20 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     IGyroConfig public immutable override gyroConfig;
 
+    event SafetyStatus(string err);
+
     constructor(IGyroConfig _gyroConfig) {
         gyroConfig = _gyroConfig;
         gydToken = _gyroConfig.getGYDToken();
         reserve = _gyroConfig.getReserve();
         gydToken.safeApprove(address(_gyroConfig.getFeeBank()), type(uint256).max);
+    }
+
+    function compareStrings(string memory a, string memory b) public pure returns (bool) {
+        if (bytes(a).length != bytes(b).length) {
+            return false;
+        }
+        return (keccak256(bytes(a)) == keccak256(bytes(b)));
     }
 
     /// @inheritdoc IMotherBoard
@@ -68,7 +77,9 @@ contract Motherboard is IMotherBoard, Governable {
 
         string memory err = gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
 
-        if (bytes(err).length > 0) {
+        if (compareStrings(err, Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
+            emit SafetyStatus(err);
+        } else if (bytes(err).length > 0) {
             revert(Errors.NOT_SAFE_TO_MINT);
         }
 
@@ -104,9 +115,12 @@ contract Motherboard is IMotherBoard, Governable {
         DataTypes.Order memory order = _createRedeemOrder(usdValueToRedeem, assets, vaultsInfo);
         string memory err = gyroConfig.getRootSafetyCheck().checkAndPersistRedeem(order);
 
-        if (bytes(err).length > 0) {
+        if (compareStrings(err, Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
+            emit SafetyStatus(err);
+        } else if (bytes(err).length > 0) {
             revert(Errors.NOT_SAFE_TO_MINT);
         }
+
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         return _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
     }
@@ -114,6 +128,7 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
         external
+        view
         override
         returns (uint256 mintedGYDAmount, string memory err)
     {
@@ -142,6 +157,7 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
         external
+        view
         override
         returns (uint256[] memory outputAmounts, string memory err)
     {

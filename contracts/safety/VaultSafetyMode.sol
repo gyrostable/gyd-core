@@ -19,8 +19,6 @@ import "../../libraries/Flow.sol";
 contract VaultSafetyMode is ISafetyCheck, Governable {
     using FixedPoint for uint256;
 
-    event SafetyStatus(string err);
-
     /// @notice Emmited when the motherboard is changed
     event MotherboardAddressChanged(address oldMotherboard, address newMotherboard);
 
@@ -177,6 +175,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     function flowSafetyStateUpdater(DataTypes.Order memory order)
         internal
+        view
         returns (
             string memory,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
@@ -218,8 +217,11 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         }
 
         if (!safetyModeOff) {
-            emit SafetyStatus(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED);
-            return ("", latestDirectionalFlowData, vaultAddresses);
+            return (
+                Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED,
+                latestDirectionalFlowData,
+                vaultAddresses
+            );
         }
 
         return ("", latestDirectionalFlowData, vaultAddresses);
@@ -227,7 +229,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     /// @notice Checks whether a mint operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function isMintSafe(DataTypes.Order memory order) external returns (string memory) {
+    function isMintSafe(DataTypes.Order memory order) external view returns (string memory) {
         (string memory mintSafety, , ) = flowSafetyStateUpdater(order);
         return mintSafety;
     }
@@ -252,7 +254,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     /// @notice Checks whether a redeem operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function isRedeemSafe(DataTypes.Order memory order) external returns (string memory) {
+    function isRedeemSafe(DataTypes.Order memory order) external view returns (string memory) {
         (string memory redeemSafety, , ) = flowSafetyStateUpdater(order);
         return redeemSafety;
     }
