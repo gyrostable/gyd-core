@@ -35,9 +35,6 @@ contract Motherboard is IMotherBoard, Governable {
     using ConfigHelpers for IGyroConfig;
     using AssetPricer for IUSDPriceOracle;
 
-    event MintSafety(string mintSafety);
-    event RedeemSafety(string mintSafety);
-
     /// @inheritdoc IMotherBoard
     IGYDToken public immutable override gydToken;
 
@@ -69,17 +66,10 @@ contract Motherboard is IMotherBoard, Governable {
 
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
 
-        string memory mintSafety = gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
+        string memory err = gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
 
-        //TODO: insert this logic into the other motherboard functions, possible abstract it.
-        if (
-            keccak256(bytes(mintSafety)) ==
-            keccak256(bytes(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED))
-        ) {
-            emit MintSafety(mintSafety);
-        } else if (keccak256(bytes(mintSafety)) != keccak256(bytes(""))) {
-            emit MintSafety(mintSafety);
-            revert(mintSafety);
+        if (bytes(err).length > 0) {
+            revert(Errors.NOT_SAFE_TO_MINT);
         }
 
         for (uint256 i = 0; i < assets.length; i++) {
@@ -112,7 +102,11 @@ contract Motherboard is IMotherBoard, Governable {
 
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveUSDValue);
         DataTypes.Order memory order = _createRedeemOrder(usdValueToRedeem, assets, vaultsInfo);
-        gyroConfig.getRootSafetyCheck().checkAndPersistRedeem(order);
+        string memory err = gyroConfig.getRootSafetyCheck().checkAndPersistRedeem(order);
+
+        if (bytes(err).length > 0) {
+            revert(Errors.NOT_SAFE_TO_MINT);
+        }
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         return _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
     }
@@ -120,7 +114,6 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
         external
-        view
         override
         returns (uint256 mintedGYDAmount, string memory err)
     {
@@ -149,7 +142,6 @@ contract Motherboard is IMotherBoard, Governable {
     /// @inheritdoc IMotherBoard
     function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
         external
-        view
         override
         returns (uint256[] memory outputAmounts, string memory err)
     {

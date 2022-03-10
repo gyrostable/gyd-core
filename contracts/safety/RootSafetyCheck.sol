@@ -54,7 +54,6 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     /// @inheritdoc ISafetyCheck
     function isMintSafe(DataTypes.Order memory order)
         external
-        view
         override
         returns (string memory err)
     {
@@ -70,7 +69,6 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     /// @inheritdoc ISafetyCheck
     function isRedeemSafe(DataTypes.Order memory order)
         external
-        view
         override
         returns (string memory err)
     {
