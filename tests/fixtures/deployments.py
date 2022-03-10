@@ -246,9 +246,6 @@ def set_data_for_mock_bal_vault(
     mock_balancer_vault,
     mock_balancer_pool,
     mock_balancer_pool_two,
-    mock_balancer_pool_three,
-    mock_balancer_pool_four,
-    mock_balancer_pool_five,
     dai,
     usdc,
 ):
