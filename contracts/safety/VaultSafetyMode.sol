@@ -27,7 +27,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @notice Emitted when entering safety mode
     event SafetyStatus(string err);
 
-    mapping(address => DataTypes.FlowData) public flowDataBidirectionalStored;
+    mapping(address => DataTypes.FlowData) public persistedFlowData;
     mapping(address => bool) public whitelist;
 
     uint256 public immutable safetyBlocksAutomatic;
@@ -128,13 +128,13 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
         if (order.mint) {
             for (uint256 i = 0; i < vaultAddresses.length; i++) {
-                directionalFlowData[i] = flowDataBidirectionalStored[vaultAddresses[i]].inFlow;
-                lastSeenBlock[i] = flowDataBidirectionalStored[vaultAddresses[i]].lastSeenBlock;
+                directionalFlowData[i] = persistedFlowData[vaultAddresses[i]].inFlow;
+                lastSeenBlock[i] = persistedFlowData[vaultAddresses[i]].lastSeenBlock;
             }
         } else {
             for (uint256 i = 0; i < vaultAddresses.length; i++) {
-                directionalFlowData[i] = flowDataBidirectionalStored[vaultAddresses[i]].outFlow;
-                lastSeenBlock[i] = flowDataBidirectionalStored[vaultAddresses[i]].lastSeenBlock;
+                directionalFlowData[i] = persistedFlowData[vaultAddresses[i]].outFlow;
+                lastSeenBlock[i] = persistedFlowData[vaultAddresses[i]].lastSeenBlock;
             }
         }
     }
@@ -371,7 +371,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 vaultsToProtect[i].direction == DataTypes.Direction.In ||
                 vaultsToProtect[i].direction == DataTypes.Direction.Both
             ) {
-                flowDataBidirectionalStored[vaultsToProtect[i].vaultAddress]
+                persistedFlowData[vaultsToProtect[i].vaultAddress]
                     .inFlow
                     .remainingSafetyBlocks = blocksToActivate;
             }
@@ -379,7 +379,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 vaultsToProtect[i].direction == DataTypes.Direction.Out ||
                 vaultsToProtect[i].direction == DataTypes.Direction.Both
             ) {
-                flowDataBidirectionalStored[vaultsToProtect[i].vaultAddress]
+                persistedFlowData[vaultsToProtect[i].vaultAddress]
                     .outFlow
                     .remainingSafetyBlocks = blocksToActivate;
             }
