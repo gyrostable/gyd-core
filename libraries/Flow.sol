@@ -17,7 +17,7 @@ library Flow {
             uint256 memoryParamRaised = memoryParam.intPowDown(blockDifference);
             updatedFlowHistory = flowHistory.mulDown(memoryParamRaised);
         } else if (lastSeenBlock == currentBlock) {
-            //TODO: add logic here
+            return flowHistory;
         }
     }
 }

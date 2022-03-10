@@ -21,6 +21,9 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     event SafetyStatus(string err);
 
+    /// @notice Emmited when the motherboard is changed
+    event MotherboardAddressChanged(address oldMotherboard, address newMotherboard);
+
     mapping(address => DataTypes.FlowData) public flowDataBidirectionalStored;
 
     uint256 public immutable safetyBlocksAutomatic;
@@ -28,9 +31,27 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     uint256 public constant THRESHOLD_BUFFER = 8e17;
 
-    constructor(uint256 _safetyBlocksAutomatic, uint256 _safetyBlocksGuardian) {
+    address public motherboardAddress;
+
+    constructor(
+        uint256 _safetyBlocksAutomatic,
+        uint256 _safetyBlocksGuardian,
+        address _motherboardAddress
+    ) {
         safetyBlocksAutomatic = _safetyBlocksAutomatic;
         safetyBlocksGuardian = _safetyBlocksGuardian;
+        motherboardAddress = _motherboardAddress;
+    }
+
+    function setMotherboardAddress(address _address) external governanceOnly {
+        address oldMotherboardAddress = motherboardAddress;
+        motherboardAddress = _address;
+        emit MotherboardAddressChanged(oldMotherboardAddress, _address);
+    }
+
+    modifier motherboardOnly() {
+        require(msg.sender == motherboardAddress, Errors.CALLER_NOT_MOTHERBOARD);
+        _;
     }
 
     function calculateRemainingBlocks(uint256 lastRemainingBlocks, uint256 blocksElapsed)
@@ -120,7 +141,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         }
     }
 
-    // TODO: emit events when a safety mode is activated
     function updateVaultFlowSafety(
         DataTypes.DirectionalFlowData memory directionalFlowData,
         uint256 proposedFlowChange,
@@ -212,12 +232,15 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return mintSafety;
     }
 
-    //TODO: ensure only callable by motherboard
     /// @notice Checks whether a mint operation is safe
     /// This is only called when an actual mint is performed
     /// The implementation should store any relevant information for the mint
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function checkAndPersistMint(DataTypes.Order memory order) external returns (string memory) {
+    function checkAndPersistMint(DataTypes.Order memory order)
+        external
+        motherboardOnly
+        returns (string memory)
+    {
         (
             string memory mintSafety,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
@@ -234,12 +257,15 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return redeemSafety;
     }
 
-    //TODO: ensure only callable by motherboard
     /// @notice Checks whether a redeem operation is safe
     /// This is only called when an actual redeem is performed
     /// The implementation should store any relevant information for the redeem
     /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function checkAndPersistRedeem(DataTypes.Order memory order) external returns (string memory) {
+    function checkAndPersistRedeem(DataTypes.Order memory order)
+        external
+        motherboardOnly
+        returns (string memory)
+    {
         (
             string memory redeemSafety,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
