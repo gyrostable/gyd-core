@@ -133,7 +133,9 @@ contract Motherboard is IMotherBoard, Governable {
         (DataTypes.VaultInfo[] memory vaultsInfo, uint256 reserveUSDValue) = gyroConfig
             .getVaultManager()
             .listVaults();
+
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(vaultAmounts, vaultsInfo);
+
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
         uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
