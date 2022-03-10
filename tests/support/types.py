@@ -80,3 +80,8 @@ class Order(NamedTuple):
     def from_tuple(cls, t) -> Order:
         vaults_with_amount = [VaultWithAmount.from_tuple(v) for v in t[0]]
         return cls(vaults_with_amount=vaults_with_amount, mint=t[1])
+
+
+class FeedMeta(NamedTuple):
+    min_diff_time: int
+    max_deviation: int

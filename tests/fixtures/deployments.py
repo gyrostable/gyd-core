@@ -4,6 +4,7 @@ from unittest.mock import Mock
 import pytest
 from brownie import accounts
 from tests.fixtures.mainnet_contracts import (
+    CHAINLINK_FEEDS,
     ChainlinkFeeds,
     TokenAddresses,
     UniswapPools,
@@ -163,16 +164,13 @@ def chainlink_price_oracle(ChainlinkPriceOracle, admin):
 
 @pytest.fixture
 def set_common_chainlink_feeds(admin, chainlink_price_oracle):
-    feeds = [
-        (TokenAddresses.ETH, ChainlinkFeeds.ETH_USD_FEED),
-        (TokenAddresses.WETH, ChainlinkFeeds.ETH_USD_FEED),
-        (TokenAddresses.DAI, ChainlinkFeeds.DAI_USD_FEED),
-        (TokenAddresses.WBTC, ChainlinkFeeds.WBTC_USD_FEED),
-        (TokenAddresses.CRV, ChainlinkFeeds.CRV_USD_FEED),
-        (TokenAddresses.USDC, ChainlinkFeeds.USDC_USD_FEED),
-    ]
-    for asset, feed in feeds:
+    for asset, feed in CHAINLINK_FEEDS:
         chainlink_price_oracle.setFeed(asset, feed, {"from": admin})
+
+
+@pytest.fixture(scope="module")
+def crash_protected_chainlink_oracle(CrashProtectedChainlinkPriceOracle, admin):
+    return admin.deploy(CrashProtectedChainlinkPriceOracle)
 
 
 @pytest.fixture(scope="module")

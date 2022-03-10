@@ -2,7 +2,11 @@ import time
 
 import brownie
 import pytest
-from tests.fixtures.mainnet_contracts import ChainlinkFeeds, TokenAddresses
+from tests.fixtures.mainnet_contracts import (
+    CHAINLINK_FEEDS,
+    ChainlinkFeeds,
+    TokenAddresses,
+)
 from tests.support import error_codes
 from tests.support.utils import scale
 
