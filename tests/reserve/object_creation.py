@@ -23,7 +23,7 @@ def vault_with_amount_helper(
 def vault_info_helper(
     price_generator, amount_generator, weight_generator, mock_vault_address
 ):
-    persisted_metadata = (price_generator, weight_generator)
+    persisted_metadata = (price_generator, weight_generator, 0, 0)
     vault_info = (
         mock_vault_address,
         price_generator,
@@ -105,7 +105,7 @@ def order_builder(
 
     for i in range(len(initial_prices)):
 
-        persisted_metadata = (initial_prices[i], initial_weights[i])
+        persisted_metadata = (initial_prices[i], initial_weights[i], 0, 0)
 
         vault_info = (
             mock_vaults[i].address,
