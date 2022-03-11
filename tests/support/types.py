@@ -54,6 +54,7 @@ class VaultInfo(NamedTuple):
     persisted_metadata: PersistedVaultMetadata
     reserve_balance: int
     current_weight: int
+    ideal_weight: int
 
     @classmethod
     def from_tuple(cls, t) -> VaultInfo:
