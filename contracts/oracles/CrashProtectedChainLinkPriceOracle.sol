@@ -30,8 +30,8 @@ contract CrashProtectedChainlinkPriceOracle is BaseChainlinkPriceOracle {
         (uint80 roundId, uint256 price, uint256 lastUpdate) = _getLatestRoundData(feed);
 
         FeedMeta memory meta = feedMetas[feed];
-        require(meta.minDiffTime > 0, Errors.INVALID_ARGUMENT);
 
+        // we look for the first update that happened at least `minDiffTime` ago
         int256 previousAnswer;
         uint256 previousUpdate;
         do {
@@ -57,6 +57,7 @@ contract CrashProtectedChainlinkPriceOracle is BaseChainlinkPriceOracle {
     ) public governanceOnly {
         address previousFeed = feeds[asset];
         require(feed != previousFeed, Errors.INVALID_ARGUMENT);
+        require(feedMeta.minDiffTime > 0, Errors.INVALID_ARGUMENT);
         feeds[asset] = feed;
         feedMetas[feed] = feedMeta;
         emit FeedUpdated(asset, previousFeed, feed, feedMeta);
