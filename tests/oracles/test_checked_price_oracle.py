@@ -210,13 +210,16 @@ def test_median(testing_checked_price_oracle, values):
 
 
 @given(
-    values=st.lists(st.integers(min_value=1, max_value=1e30), min_size=1, max_size=100)
+    values=st.lists(
+        st.integers(min_value=1, max_value=2**63 - 1), min_size=1, max_size=100
+    )
 )
 def test_medianize_twaps(testing_checked_price_oracle, values):
     medianized = testing_checked_price_oracle.medianizeTwaps(values)
 
-    array = np.array(values)
-    if len(values) == 1:
+    array = np.array(values, dtype=np.int64)
+    print("Array", array)
+    if len(array) == 1:
         result = values[0]
     elif len(array) == 2:
         result = np.partition(array, 0)[0]
