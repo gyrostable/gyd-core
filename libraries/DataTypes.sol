@@ -100,4 +100,9 @@ library DataTypes {
         VaultInfo vaultInfo;
         uint256 amount;
     }
+
+    struct ReserveState {
+        uint256 totalUSDValue;
+        VaultInfo[] vaults;
+    }
 }

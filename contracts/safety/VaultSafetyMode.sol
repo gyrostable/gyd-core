@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
-import "../../interfaces/IVaultManager.sol";
+import "../../interfaces/IReserveManager.sol";
 import "../../interfaces/IAssetRegistry.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../interfaces/balancer/IVault.sol";

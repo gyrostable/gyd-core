@@ -46,6 +46,8 @@ class JoinPoolRequest(NamedTuple):
 class PersistedVaultMetadata(NamedTuple):
     initial_price: int
     initial_weight: int
+    short_flow_memory: int
+    short_flow_threshold: int
 
 
 class VaultInfo(NamedTuple):

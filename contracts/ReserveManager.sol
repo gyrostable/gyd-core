@@ -6,13 +6,13 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/ConfigHelpers.sol";
 import "../libraries/ConfigKeys.sol";
-import "../interfaces/IVaultManager.sol";
+import "../interfaces/IReserveManager.sol";
 import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../interfaces/IVaultRegistry.sol";
 import "../interfaces/IGyroConfig.sol";
 import "./auth/Governable.sol";
 
-contract VaultManager is IVaultManager, Governable {
+contract ReserveManager is IReserveManager, Governable {
     using FixedPoint for uint256;
     using ConfigHelpers for IGyroConfig;
 
@@ -27,27 +27,28 @@ contract VaultManager is IVaultManager, Governable {
         priceOracle = _gyroConfig.getRootPriceOracle();
     }
 
-    /// @inheritdoc IVaultManager
-    function listVaults()
-        external
-        view
-        returns (DataTypes.VaultInfo[] memory, uint256 reserveUSDValue)
-    {
-        return listVaults(true, true, true, true);
+    /// @inheritdoc IReserveManager
+    function getReserveState() external view returns (DataTypes.ReserveState memory) {
+        ReserveStateOptions memory options = ReserveStateOptions({
+            includeMetadata: true,
+            includePrice: true,
+            includeCurrentWeight: true,
+            includeIdealWeight: true
+        });
+        return getReserveState(options);
     }
 
-    function listVaults(
-        bool includeMetadata,
-        bool includePrice,
-        bool includeCurrentWeight,
-        bool includeIdealWeight
-    ) public view returns (DataTypes.VaultInfo[] memory, uint256 reserveUSDValue) {
-        require(!includeCurrentWeight || includePrice, Errors.INVALID_ARGUMENT);
+    function getReserveState(ReserveStateOptions memory options)
+        public
+        view
+        returns (DataTypes.ReserveState memory)
+    {
+        require(!options.includeCurrentWeight || options.includePrice, Errors.INVALID_ARGUMENT);
 
         address[] memory vaultAddresses = vaultRegistry.listVaults();
 
         uint256[] memory prices = new uint256[](vaultAddresses.length);
-        if (includePrice) {
+        if (options.includePrice) {
             for (uint256 i = 0; i < vaultAddresses.length; i++) {
                 prices[i] = priceOracle.getPriceUSD(vaultAddresses[i]);
             }
@@ -57,14 +58,14 @@ contract VaultManager is IVaultManager, Governable {
         DataTypes.VaultInfo[] memory vaultsInfo = new DataTypes.VaultInfo[](length);
 
         for (uint256 i = 0; i < length; i++) {
-            uint256 price = includePrice ? prices[i] : 0;
+            uint256 price = options.includePrice ? prices[i] : 0;
 
             DataTypes.PersistedVaultMetadata memory persistedMetadata;
-            if (includeMetadata) {
+            if (options.includeMetadata) {
                 persistedMetadata = vaultRegistry.getVaultMetadata(vaultAddresses[i]);
             }
 
-            uint256 reserveBalance = includeCurrentWeight
+            uint256 reserveBalance = options.includeCurrentWeight
                 ? IERC20(vaultAddresses[i]).balanceOf(reserveAddress)
                 : 0;
 
@@ -78,7 +79,8 @@ contract VaultManager is IVaultManager, Governable {
             });
         }
 
-        if (includeCurrentWeight) {
+        uint256 reserveUSDValue = 0;
+        if (options.includeCurrentWeight) {
             uint256[] memory usdValues = new uint256[](length);
             for (uint256 i = 0; i < length; i++) {
                 uint256 usdValue = vaultsInfo[i].price.mulDown(vaultsInfo[i].reserveBalance);
@@ -92,7 +94,7 @@ contract VaultManager is IVaultManager, Governable {
             }
         }
 
-        if (includeIdealWeight) {
+        if (options.includeIdealWeight) {
             uint256 returnsSum = 0;
             uint256[] memory weightedReturns = new uint256[](length);
             for (uint256 i = 0; i < length; i++) {
@@ -106,18 +108,6 @@ contract VaultManager is IVaultManager, Governable {
             }
         }
 
-        return (vaultsInfo, reserveUSDValue);
-    }
-
-    /// @inheritdoc IVaultManager
-    function getPriceOracle() external view override returns (IUSDPriceOracle) {
-        return priceOracle;
-    }
-
-    /// @inheritdoc IVaultManager
-    function setPriceOracle(address _priceOracle) external override governanceOnly {
-        address currentOracle = address(priceOracle);
-        priceOracle = IUSDPriceOracle(_priceOracle);
-        emit NewPriceOracle(currentOracle, _priceOracle);
+        return DataTypes.ReserveState({vaults: vaultsInfo, totalUSDValue: reserveUSDValue});
     }
 }

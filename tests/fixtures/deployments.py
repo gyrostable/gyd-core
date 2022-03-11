@@ -21,13 +21,13 @@ def vault_registry(admin, VaultRegistry, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def vault_manager(admin, VaultManager, gyro_config, request):
+def reserve_manager(admin, ReserveManager, gyro_config, request):
     dependencies = ["reserve", "mock_price_oracle", "vault_registry"]
     for dep in dependencies:
         request.getfixturevalue(dep)
-    vault_manager = admin.deploy(VaultManager, gyro_config)
-    gyro_config.setAddress(config_keys.VAULT_MANAGER_ADDRESS, vault_manager)
-    return vault_manager
+    reserve_manager = admin.deploy(ReserveManager, gyro_config)
+    gyro_config.setAddress(config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager)
+    return reserve_manager
 
 
 @pytest.fixture(scope="module")
@@ -205,7 +205,7 @@ def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
         "lp_token_exchanger_registry",
         "mock_pamm",
         "mock_price_oracle",
-        "vault_manager",
+        "reserve_manager",
         "root_safety_check",
         "static_percentage_fee_handler",
     ]

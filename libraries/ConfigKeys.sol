@@ -12,6 +12,6 @@ library ConfigKeys {
     bytes32 internal constant ROOT_PRICE_ORACLE_ADDRESS = "ROOT_PRICE_ORACLE_ADDRESS";
     bytes32 internal constant ROOT_SAFETY_CHECK_ADDRESS = "ROOT_SAFETY_CHECK_ADDRESS";
     bytes32 internal constant VAULT_REGISTRY_ADDRESS = "VAULT_REGISTRY_ADDRESS";
-    bytes32 internal constant VAULT_MANAGER_ADDRESS = "VAULT_MANAGER_ADDRESS";
+    bytes32 internal constant RESERVE_MANAGER_ADDRESS = "RESERVE_MANAGER_ADDRESS";
     bytes32 internal constant FEE_HANDLER_ADDRESS = "FEE_HANDLER_ADDRESS";
 }
