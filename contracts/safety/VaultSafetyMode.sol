@@ -15,12 +15,17 @@ import "../../interfaces/ISafetyCheck.sol";
 import "../../interfaces/IVaultRegistry.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../libraries/Flow.sol";
+import "../../libraries/StringExtensions.sol";
 
 contract VaultSafetyMode is ISafetyCheck, Governable {
     using FixedPoint for uint256;
+    using StringExtensions for string;
 
     /// @notice Emmited when the motherboard is changed
     event MotherboardAddressChanged(address oldMotherboard, address newMotherboard);
+
+    /// @notice Emitted when entering safety mode
+    event SafetyStatus(string err);
 
     mapping(address => DataTypes.FlowData) public flowDataBidirectionalStored;
 
@@ -110,15 +115,11 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         address[] memory vaultAddresses,
         uint256 currentBlockNumber,
         DataTypes.Order memory order
-    )
-        internal
-        view
-        returns (
+    ) internal view returns (DataTypes.DirectionalFlowData[] memory) {
+        (
             DataTypes.DirectionalFlowData[] memory directionalFlowData,
             uint256[] memory lastSeenBlock
-        )
-    {
-        (directionalFlowData, lastSeenBlock) = accessDirectionalFlowData(vaultAddresses, order);
+        ) = accessDirectionalFlowData(vaultAddresses, order);
 
         for (uint256 i = 0; i < directionalFlowData.length; i++) {
             uint256 blocksElapsed = currentBlockNumber - lastSeenBlock[i];
@@ -134,9 +135,8 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 lastSeenBlock[i],
                 order.vaultsWithAmount[i].vaultInfo.persistedMetadata.shortFlowMemory
             );
-
-            // lastSeenBlock[i] = currentBlockNumber;
         }
+        return directionalFlowData;
     }
 
     function updateVaultFlowSafety(
@@ -188,7 +188,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             vaultAddresses[i] = order.vaultsWithAmount[i].vaultInfo.vault;
         }
 
-        (latestDirectionalFlowData, ) = initializeVaultFlowData(
+        latestDirectionalFlowData = initializeVaultFlowData(
             vaultAddresses,
             currentBlockNumber,
             order
@@ -244,12 +244,21 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         returns (string memory)
     {
         (
-            string memory mintSafety,
+            string memory err,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
             address[] memory vaultAddresses
         ) = flowSafetyStateUpdater(order);
+
+        if (bytes(err).length > 0) {
+            if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
+                emit SafetyStatus(err);
+            } else {
+                revert(Errors.NOT_SAFE_TO_MINT);
+            }
+        }
+
         storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
-        return mintSafety;
+        return err;
     }
 
     /// @notice Checks whether a redeem operation is safe
@@ -269,11 +278,20 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         returns (string memory)
     {
         (
-            string memory redeemSafety,
+            string memory err,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
             address[] memory vaultAddresses
         ) = flowSafetyStateUpdater(order);
+
+        if (bytes(err).length > 0) {
+            if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
+                emit SafetyStatus(err);
+            } else {
+                revert(Errors.NOT_SAFE_TO_REDEEM);
+            }
+        }
+
         storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
-        return redeemSafety;
+        return err;
     }
 }
