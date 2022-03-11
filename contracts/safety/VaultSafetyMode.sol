@@ -57,7 +57,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         _;
     }
 
-    function calculateRemainingBlocks(uint256 lastRemainingBlocks, uint256 blocksElapsed)
+    function _calculateRemainingBlocks(uint256 lastRemainingBlocks, uint256 blocksElapsed)
         internal
         pure
         returns (uint256)
@@ -70,11 +70,11 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     }
 
     //TODO: gas optimize this
-    function storeDirectionalFlowData(
+    function _storeDirectionalFlowData(
         DataTypes.DirectionalFlowData[] memory directionalFlowData,
         DataTypes.Order memory order,
         address[] memory vaultAddresses
-    ) private {
+    ) internal {
         if (order.mint) {
             for (uint256 i = 0; i < directionalFlowData.length; i++) {
                 flowDataBidirectionalStored[vaultAddresses[i]].inFlow = directionalFlowData[i];
@@ -87,11 +87,11 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     }
 
     //TODO: gas optimize this. The parameters for this contract could also potentially be packed here.
-    function accessDirectionalFlowData(
+    function _accessDirectionalFlowData(
         address[] memory vaultAddresses,
         DataTypes.Order memory order
     )
-        private
+        internal
         view
         returns (
             DataTypes.DirectionalFlowData[] memory directionalFlowData,
@@ -111,7 +111,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         }
     }
 
-    function initializeVaultFlowData(
+    function _initializeVaultFlowData(
         address[] memory vaultAddresses,
         uint256 currentBlockNumber,
         DataTypes.Order memory order
@@ -124,7 +124,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         for (uint256 i = 0; i < directionalFlowData.length; i++) {
             uint256 blocksElapsed = currentBlockNumber - lastSeenBlock[i];
 
-            directionalFlowData[i].remainingSafetyBlocks = calculateRemainingBlocks(
+            directionalFlowData[i].remainingSafetyBlocks = _calculateRemainingBlocks(
                 directionalFlowData[i].remainingSafetyBlocks,
                 blocksElapsed
             );
@@ -139,12 +139,12 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return directionalFlowData;
     }
 
-    function updateVaultFlowSafety(
+    function _updateVaultFlowSafety(
         DataTypes.DirectionalFlowData memory directionalFlowData,
         uint256 proposedFlowChange,
         uint256 shortFlowThreshold
     )
-        private
+        internal
         view
         returns (
             DataTypes.DirectionalFlowData memory,
@@ -173,7 +173,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return (directionalFlowData, allowTransaction, isSafetyModeActivated);
     }
 
-    function flowSafetyStateUpdater(DataTypes.Order memory order)
+    function _flowSafetyStateUpdater(DataTypes.Order memory order)
         internal
         view
         returns (
@@ -202,7 +202,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 latestDirectionalFlowData[i],
                 allowTransaction,
                 isSafetyModeActivated
-            ) = updateVaultFlowSafety(
+            ) = _updateVaultFlowSafety(
                 latestDirectionalFlowData[i],
                 order.vaultsWithAmount[i].amount,
                 order.vaultsWithAmount[i].vaultInfo.persistedMetadata.shortFlowThreshold
@@ -230,7 +230,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @notice Checks whether a mint operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
     function isMintSafe(DataTypes.Order memory order) external view returns (string memory) {
-        (string memory mintSafety, , ) = flowSafetyStateUpdater(order);
+        (string memory mintSafety, , ) = _flowSafetyStateUpdater(order);
         return mintSafety;
     }
 
@@ -264,7 +264,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @notice Checks whether a redeem operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
     function isRedeemSafe(DataTypes.Order memory order) external view returns (string memory) {
-        (string memory redeemSafety, , ) = flowSafetyStateUpdater(order);
+        (string memory redeemSafety, , ) = _flowSafetyStateUpdater(order);
         return redeemSafety;
     }
 
