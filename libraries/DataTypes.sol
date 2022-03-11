@@ -45,30 +45,35 @@ library DataTypes {
         PersistedVaultMetadata persistedMetadata;
         uint256 reserveBalance;
         uint256 currentWeight;
+        uint256 idealWeight;
     }
 
-    struct TokenProperties {
-        address oracleAddress;
-        string tokenSymbol;
-        uint16 tokenIndex;
-        bool isStablecoin;
+    struct VaultMetadata {
+        address vault;
+        uint256 idealWeight;
+        uint256 currentWeight;
+        uint256 resultingWeight;
+        uint256 price;
+        bool allStablecoinsOnPeg;
+        bool allTokenPricesLargeEnough;
+        bool vaultWithinEpsilon;
     }
 
-    struct PoolProperties {
-        bytes32 poolId;
-        address poolAddress;
-        uint256 initialPoolWeight;
-        uint256 initialPoolPrice;
+    struct Metadata {
+        VaultMetadata[] vaultMetadata;
+        bool allVaultsWithinEpsilon;
+        bool allStablecoinsAllVaultsOnPeg;
+        bool allVaultsUsingLargeEnoughPrices;
+        bool mint;
+    }
+
+    struct Order {
+        VaultWithAmount[] vaultsWithAmount;
+        bool mint;
     }
 
     struct VaultWithAmount {
         VaultInfo vaultInfo;
         uint256 amount;
-    }
-
-    /// @notice Represents a mint or redeem order
-    struct Order {
-        VaultWithAmount[] vaultsWithAmount;
-        bool mint;
     }
 }

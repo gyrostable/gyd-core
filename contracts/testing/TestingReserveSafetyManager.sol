@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.10;
 
-import "../ReserveSafetyManager.sol";
+import "../safety/ReserveSafetyManager.sol";
+import "../../libraries/DataTypes.sol";
 
 contract TestingReserveSafetyManager is ReserveSafetyManager {
     constructor(
@@ -31,51 +32,51 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
     function buildMetaData(DataTypes.Order memory order)
         external
         pure
-        returns (MetaData memory metaData)
+        returns (DataTypes.Metadata memory metaData)
     {
         return _buildMetaData(order);
     }
 
-    function calculateIdealWeights(DataTypes.VaultWithAmount[] memory vaultsWithAmount)
-        external
-        pure
-        returns (uint256[] memory)
-    {
-        return _calculateIdealWeights(vaultsWithAmount);
-    }
-
-    function updateMetaDataWithEpsilonStatus(MetaData memory metaData)
+    function updateMetaDataWithEpsilonStatus(DataTypes.Metadata memory metaData)
         external
         view
-        returns (MetaData memory)
+        returns (DataTypes.Metadata memory)
     {
         _updateMetaDataWithEpsilonStatus(metaData);
         return metaData;
     }
 
-    function updateVaultWithPriceSafety(VaultMetadata memory vaultData)
+    function updateVaultWithPriceSafety(DataTypes.VaultMetadata memory vaultData)
         external
         view
-        returns (VaultMetadata memory)
+        returns (DataTypes.VaultMetadata memory)
     {
         _updateVaultWithPriceSafety(vaultData);
         return vaultData;
     }
 
-    function updateMetadataWithPriceSafety(MetaData memory metaData)
+    function updateMetadataWithPriceSafety(DataTypes.Metadata memory metaData)
         external
         view
-        returns (MetaData memory)
+        returns (DataTypes.Metadata memory)
     {
         _updateMetadataWithPriceSafety(metaData);
         return metaData;
     }
 
-    function vaultWeightWithOffPegFalls(MetaData memory metaData) external pure returns (bool) {
+    function vaultWeightWithOffPegFalls(DataTypes.Metadata memory metaData)
+        external
+        pure
+        returns (bool)
+    {
         return _vaultWeightWithOffPegFalls(metaData);
     }
 
-    function safeToExecuteOutsideEpsilon(MetaData memory metaData) external pure returns (bool) {
+    function safeToExecuteOutsideEpsilon(DataTypes.Metadata memory metaData)
+        external
+        pure
+        returns (bool)
+    {
         return _safeToExecuteOutsideEpsilon(metaData);
     }
 }

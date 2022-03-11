@@ -16,7 +16,8 @@ interface IVaultManager {
     function listVaults(
         bool includeMetadata,
         bool includePrice,
-        bool includeCurrentWeight
+        bool includeCurrentWeight,
+        bool includeIdealWeight
     ) external view returns (DataTypes.VaultInfo[] memory);
 
     /// @notice Returns the current vault price oracle

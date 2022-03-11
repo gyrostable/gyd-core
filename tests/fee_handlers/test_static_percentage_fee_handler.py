@@ -3,6 +3,7 @@ from typing import Iterable, Tuple
 
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
+from tests.support import error_codes
 from tests.support.types import (
     Order,
     PersistedVaultMetadata,
@@ -10,7 +11,6 @@ from tests.support.types import (
     VaultWithAmount,
 )
 from tests.support.utils import scale
-from tests.support import error_codes
 
 VAULT_FEES = [
     (Decimal("0.05"), Decimal("0.08")),
@@ -28,6 +28,7 @@ def _create_order(vault_amounts: Iterable[Tuple[str, int]], mint: bool) -> Order
                 persisted_metadata=PersistedVaultMetadata(0, 0),
                 reserve_balance=0,
                 current_weight=0,
+                ideal_weight=0,
             ),
             amount=amount,
         )

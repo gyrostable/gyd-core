@@ -229,10 +229,7 @@ def pamm(TestingPAMMV1):
 
 @pytest.fixture(scope="module")
 def reserve_safety_manager(
-    admin,
-    TestingReserveSafetyManager,
-    mock_price_oracle,
-    asset_registry,
+    admin, TestingReserveSafetyManager, mock_price_oracle, asset_registry
 ):
     return admin.deploy(
         TestingReserveSafetyManager,
@@ -246,7 +243,11 @@ def reserve_safety_manager(
 
 @pytest.fixture(scope="module")
 def set_data_for_mock_bal_vault(
-    mock_balancer_vault, mock_balancer_pool, mock_balancer_pool_two, dai, usdc
+    mock_balancer_vault,
+    mock_balancer_pool,
+    mock_balancer_pool_two,
+    dai,
+    usdc,
 ):
     mock_balancer_vault.setCash(100000000000000000000000000)
     mock_balancer_vault.setPoolTokens(
@@ -278,6 +279,11 @@ def vault(admin, BaseVault, underlying):
 @pytest.fixture(scope="module")
 def usdc_vault(admin, BaseVault, usdc):
     return admin.deploy(BaseVault, usdc, "USDC Vault", "gUSDC")
+
+
+@pytest.fixture(scope="module")
+def mock_vaults(admin, MockGyroVault, dai):
+    return [admin.deploy(MockGyroVault, dai) for _ in range(constants.RESERVE_VAULTS)]
 
 
 # NOTE: this is a vault that contains only DAI as underlying
