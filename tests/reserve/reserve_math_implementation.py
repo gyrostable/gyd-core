@@ -50,7 +50,7 @@ def vault_weight_off_peg_falls(metadata) -> bool:
     for i in metadata[0]:
         if i[5]:
             continue
-        if (i[3] >= i[2]) and (metadata[4]):
+        if i[3] >= i[2]:
             return False
     return True
 
