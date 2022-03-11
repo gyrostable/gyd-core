@@ -95,11 +95,10 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         for (uint256 i; i < metaData.vaultMetadata.length; i++) {
             DataTypes.VaultMetadata memory vaultData = metaData.vaultMetadata[i];
 
-            if (vaultData.allStablecoinsOnPeg) {
-                continue;
-            }
-
-            if (vaultData.resultingWeight >= vaultData.currentWeight) {
+            if (
+                !vaultData.allStablecoinsOnPeg &&
+                vaultData.resultingWeight >= vaultData.currentWeight
+            ) {
                 return false;
             }
         }
@@ -275,15 +274,12 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             return Errors.TOKEN_PRICES_TOO_SMALL;
         }
 
-        if (metaData.allVaultsWithinEpsilon) {
-            if (metaData.allStablecoinsAllVaultsOnPeg) {
-                return "";
-            } else if (_vaultWeightWithOffPegFalls(metaData)) {
-                return "";
-            }
-        } else if (
-            _safeToExecuteOutsideEpsilon(metaData) && _vaultWeightWithOffPegFalls(metaData)
-        ) {
+        bool stableCoinsSafe = metaData.allStablecoinsAllVaultsOnPeg ||
+            _vaultWeightWithOffPegFalls(metaData);
+        bool epsilonSafe = metaData.allVaultsWithinEpsilon ||
+            _safeToExecuteOutsideEpsilon(metaData);
+
+        if (stableCoinsSafe && epsilonSafe) {
             return "";
         }
 
@@ -296,9 +292,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             return Errors.TRYING_TO_REDEEM_MORE_THAN_VAULT_CONTAINS;
         }
 
-        DataTypes.Metadata memory metaData;
-
-        metaData = _buildMetaData(order);
+        DataTypes.Metadata memory metaData = _buildMetaData(order);
 
         _updateMetadataWithPriceSafety(metaData);
         _updateMetaDataWithEpsilonStatus(metaData);
@@ -307,9 +301,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             return Errors.TOKEN_PRICES_TOO_SMALL;
         }
 
-        if (metaData.allVaultsWithinEpsilon) {
-            return "";
-        } else if (_safeToExecuteOutsideEpsilon(metaData)) {
+        if (metaData.allVaultsWithinEpsilon || _safeToExecuteOutsideEpsilon(metaData)) {
             return "";
         }
 
