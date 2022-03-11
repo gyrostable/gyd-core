@@ -24,3 +24,13 @@ class UniswapPools:
     USDC_ETH = "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8"
     ETH_CRV = "0x4c83A7f819A5c37D64B4c5A2f8238Ea082fA1f4e"
     WBTC_USDC = "0x99ac8cA7087fA4A2A1FB6357269965A2014ABc35"
+
+
+CHAINLINK_FEEDS = [
+    (TokenAddresses.ETH, ChainlinkFeeds.ETH_USD_FEED),
+    (TokenAddresses.WETH, ChainlinkFeeds.ETH_USD_FEED),
+    (TokenAddresses.DAI, ChainlinkFeeds.DAI_USD_FEED),
+    (TokenAddresses.WBTC, ChainlinkFeeds.WBTC_USD_FEED),
+    (TokenAddresses.CRV, ChainlinkFeeds.CRV_USD_FEED),
+    (TokenAddresses.USDC, ChainlinkFeeds.USDC_USD_FEED),
+]
