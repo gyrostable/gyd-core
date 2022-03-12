@@ -48,4 +48,5 @@ library Errors {
     string public constant VAULT_FLOW_TOO_HIGH = "60";
     string public constant OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED = "61";
     string public constant ORACLE_GUARDIAN_TIME_LIMIT = "62";
+    string public constant NOT_ENOUGH_FLOW_DATA = "63";
 }

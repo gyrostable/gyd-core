@@ -3,13 +3,25 @@ pragma solidity ^0.8.10;
 
 import "../safety/VaultSafetyMode.sol";
 import "../../libraries/DataTypes.sol";
+import "../../libraries/StringExtensions.sol";
 
 contract TestingVaultSafetyMode is VaultSafetyMode {
+    using FixedPoint for uint256;
+    using StringExtensions for string;
+
     constructor(
         uint256 _safetyBlocksAutomatic,
         uint256 _safetyBlocksGuardian,
-        address _motherboardAddress
-    ) VaultSafetyMode(_safetyBlocksAutomatic, _safetyBlocksGuardian, _motherboardAddress) {}
+        address _motherboardAddress,
+        address[] memory _vaultAddresses
+    )
+        VaultSafetyMode(
+            _safetyBlocksAutomatic,
+            _safetyBlocksGuardian,
+            _motherboardAddress,
+            _vaultAddresses
+        )
+    {}
 
     function calculateRemainingBlocks(uint256 lastRemainingBlocks, uint256 blocksElapsed)
         external
@@ -31,6 +43,14 @@ contract TestingVaultSafetyMode is VaultSafetyMode {
         )
     {
         return (_accessDirectionalFlowData(vaultAddresses, order));
+    }
+
+    function storeDirectionalFlowData(
+        DataTypes.DirectionalFlowData[] memory directionalFlowData,
+        DataTypes.Order memory order,
+        address[] memory vaultAddresses
+    ) external {
+        _storeDirectionalFlowData(directionalFlowData, order, vaultAddresses);
     }
 
     function initializeVaultFlowData(

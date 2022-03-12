@@ -397,7 +397,7 @@ def test_safe_to_execute_outside_epsilon(
             weight_generator,
             weight_generator,
         ),
-        min_size=1,
+        min_size=5,
         max_size=5,
     )
 )
@@ -516,7 +516,7 @@ def test_is_mint_safe_small_prices(
             weight_generator,
             weight_generator,
         ),
-        min_size=1,
+        min_size=5,
         max_size=5,
     )
 )
@@ -575,7 +575,7 @@ def test_is_mint_safe_off_peg(
             weight_generator,
             weight_generator,
         ),
-        min_size=1,
+        min_size=5,
         max_size=5,
     )
 )
@@ -634,7 +634,7 @@ def test_is_redeem_safe_normal(
             weight_generator,
             weight_generator,
         ),
-        min_size=1,
+        min_size=2,
         max_size=2,
     )
 )

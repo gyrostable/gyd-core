@@ -39,11 +39,25 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     constructor(
         uint256 _safetyBlocksAutomatic,
         uint256 _safetyBlocksGuardian,
-        address _motherboardAddress
+        address _motherboardAddress,
+        address[] memory _vaultAddresses
     ) {
         safetyBlocksAutomatic = _safetyBlocksAutomatic;
         safetyBlocksGuardian = _safetyBlocksGuardian;
         motherboardAddress = _motherboardAddress;
+        deploymentInitialization(_vaultAddresses);
+    }
+
+    function deploymentInitialization(address[] memory _vaultAddresses) internal {
+        for (uint256 i = 0; i < _vaultAddresses.length; i++) {
+            flowDataBidirectionalStored[_vaultAddresses[i]].inFlow.shortFlow = 0;
+            flowDataBidirectionalStored[_vaultAddresses[i]].inFlow.remainingSafetyBlocks = 0;
+
+            flowDataBidirectionalStored[_vaultAddresses[i]].outFlow.shortFlow = 0;
+            flowDataBidirectionalStored[_vaultAddresses[i]].outFlow.remainingSafetyBlocks = 0;
+
+            flowDataBidirectionalStored[_vaultAddresses[i]].lastSeenBlock = block.number;
+        }
     }
 
     function setMotherboardAddress(address _address) external governanceOnly {
@@ -75,6 +89,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         DataTypes.Order memory order,
         address[] memory vaultAddresses
     ) internal {
+        require(directionalFlowData.length == vaultAddresses.length, Errors.NOT_ENOUGH_FLOW_DATA);
         if (order.mint) {
             for (uint256 i = 0; i < directionalFlowData.length; i++) {
                 flowDataBidirectionalStored[vaultAddresses[i]].inFlow = directionalFlowData[i];
