@@ -119,7 +119,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         (
             DataTypes.DirectionalFlowData[] memory directionalFlowData,
             uint256[] memory lastSeenBlock
-        ) = accessDirectionalFlowData(vaultAddresses, order);
+        ) = _accessDirectionalFlowData(vaultAddresses, order);
 
         for (uint256 i = 0; i < directionalFlowData.length; i++) {
             uint256 blocksElapsed = currentBlockNumber - lastSeenBlock[i];
@@ -188,7 +188,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             vaultAddresses[i] = order.vaultsWithAmount[i].vaultInfo.vault;
         }
 
-        latestDirectionalFlowData = initializeVaultFlowData(
+        latestDirectionalFlowData = _initializeVaultFlowData(
             vaultAddresses,
             currentBlockNumber,
             order
@@ -257,7 +257,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             }
         }
 
-        storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
+        _storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
         return err;
     }
 
@@ -281,7 +281,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             string memory err,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
             address[] memory vaultAddresses
-        ) = flowSafetyStateUpdater(order);
+        ) = _flowSafetyStateUpdater(order);
 
         if (bytes(err).length > 0) {
             if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
@@ -291,7 +291,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             }
         }
 
-        storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
+        _storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
         return err;
     }
 }
