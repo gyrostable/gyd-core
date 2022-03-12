@@ -247,7 +247,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             string memory err,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
             address[] memory vaultAddresses
-        ) = flowSafetyStateUpdater(order);
+        ) = _flowSafetyStateUpdater(order);
 
         if (bytes(err).length > 0) {
             if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {

@@ -19,21 +19,12 @@ contract TestingVaultSafetyMode is VaultSafetyMode {
         return _calculateRemainingBlocks(lastRemainingBlocks, blocksElapsed);
     }
 
-    function storeDirectionalFlowData(
-        DataTypes.DirectionalFlowData[] memory directionalFlowData,
-        DataTypes.Order memory order,
-        address[] memory vaultAddresses
-    ) external returns (DataTypes.FlowData memory flowData) {
-        _storeDirectionalFlowData(directionalFlowData, order, vaultAddresses);
-        flowData = flowDataBidirectionalStored;
-        return flowData;
-    }
-
     function accessDirectionalFlowData(
         address[] memory vaultAddresses,
         DataTypes.Order memory order
     )
         external
+        view
         returns (
             DataTypes.DirectionalFlowData[] memory directionalFlowData,
             uint256[] memory lastSeenBlock
@@ -46,14 +37,7 @@ contract TestingVaultSafetyMode is VaultSafetyMode {
         address[] memory vaultAddresses,
         uint256 currentBlockNumber,
         DataTypes.Order memory order
-    )
-        external
-        view
-        returns (
-            DataTypes.DirectionalFlowData[] memory directionalFlowData,
-            uint256[] memory lastSeenBlock
-        )
-    {
+    ) external view returns (DataTypes.DirectionalFlowData[] memory directionalFlowData) {
         return _initializeVaultFlowData(vaultAddresses, currentBlockNumber, order);
     }
 
