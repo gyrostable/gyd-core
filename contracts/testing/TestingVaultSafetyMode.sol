@@ -48,17 +48,18 @@ contract TestingVaultSafetyMode is VaultSafetyMode {
     function storeDirectionalFlowData(
         DataTypes.DirectionalFlowData[] memory directionalFlowData,
         DataTypes.Order memory order,
-        address[] memory vaultAddresses
+        address[] memory vaultAddresses,
+        uint256 currentBlockNumber
     ) external {
-        _storeDirectionalFlowData(directionalFlowData, order, vaultAddresses);
+        _storeDirectionalFlowData(directionalFlowData, order, vaultAddresses, currentBlockNumber);
     }
 
-    function initializeVaultFlowData(
+    function fetchLatestDirectionalFlowData(
         address[] memory vaultAddresses,
         uint256 currentBlockNumber,
         DataTypes.Order memory order
     ) external view returns (DataTypes.DirectionalFlowData[] memory directionalFlowData) {
-        return _initializeVaultFlowData(vaultAddresses, currentBlockNumber, order);
+        return _fetchLatestDirectionalFlowData(vaultAddresses, currentBlockNumber, order);
     }
 
     function updateVaultFlowSafety(
@@ -83,7 +84,8 @@ contract TestingVaultSafetyMode is VaultSafetyMode {
         returns (
             string memory,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
-            address[] memory vaultAddresses
+            address[] memory vaultAddresses,
+            uint256 currentBlockNumber
         )
     {
         return _flowSafetyStateUpdater(order);

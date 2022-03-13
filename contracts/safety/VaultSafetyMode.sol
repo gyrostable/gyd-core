@@ -87,16 +87,25 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     function _storeDirectionalFlowData(
         DataTypes.DirectionalFlowData[] memory directionalFlowData,
         DataTypes.Order memory order,
-        address[] memory vaultAddresses
+        address[] memory vaultAddresses,
+        uint256 currentBlockNumber
     ) internal {
         require(directionalFlowData.length == vaultAddresses.length, Errors.NOT_ENOUGH_FLOW_DATA);
         if (order.mint) {
             for (uint256 i = 0; i < directionalFlowData.length; i++) {
                 flowDataBidirectionalStored[vaultAddresses[i]].inFlow = directionalFlowData[i];
+                if (order.vaultsWithAmount[i].amount > 0) {
+                    flowDataBidirectionalStored[vaultAddresses[i]]
+                        .lastSeenBlock = currentBlockNumber;
+                }
             }
         } else {
             for (uint256 i = 0; i < directionalFlowData.length; i++) {
                 flowDataBidirectionalStored[vaultAddresses[i]].outFlow = directionalFlowData[i];
+                if (order.vaultsWithAmount[i].amount > 0) {
+                    flowDataBidirectionalStored[vaultAddresses[i]]
+                        .lastSeenBlock = currentBlockNumber;
+                }
             }
         }
     }
@@ -113,6 +122,9 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             uint256[] memory lastSeenBlock
         )
     {
+        directionalFlowData = new DataTypes.DirectionalFlowData[](vaultAddresses.length);
+        lastSeenBlock = new uint256[](vaultAddresses.length);
+
         if (order.mint) {
             for (uint256 i = 0; i < vaultAddresses.length; i++) {
                 directionalFlowData[i] = flowDataBidirectionalStored[vaultAddresses[i]].inFlow;
@@ -126,7 +138,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         }
     }
 
-    function _initializeVaultFlowData(
+    function _fetchLatestDirectionalFlowData(
         address[] memory vaultAddresses,
         uint256 currentBlockNumber,
         DataTypes.Order memory order
@@ -194,16 +206,17 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         returns (
             string memory,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
-            address[] memory vaultAddresses
+            address[] memory vaultAddresses,
+            uint256 currentBlockNumber
         )
     {
-        uint256 currentBlockNumber = block.number;
+        currentBlockNumber = block.number;
 
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             vaultAddresses[i] = order.vaultsWithAmount[i].vaultInfo.vault;
         }
 
-        latestDirectionalFlowData = _initializeVaultFlowData(
+        latestDirectionalFlowData = _fetchLatestDirectionalFlowData(
             vaultAddresses,
             currentBlockNumber,
             order
@@ -227,7 +240,12 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 safetyModeOff = false;
             }
             if (!allowTransaction) {
-                return (Errors.VAULT_FLOW_TOO_HIGH, latestDirectionalFlowData, vaultAddresses);
+                return (
+                    Errors.VAULT_FLOW_TOO_HIGH,
+                    latestDirectionalFlowData,
+                    vaultAddresses,
+                    currentBlockNumber
+                );
             }
         }
 
@@ -235,17 +253,18 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             return (
                 Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED,
                 latestDirectionalFlowData,
-                vaultAddresses
+                vaultAddresses,
+                currentBlockNumber
             );
         }
 
-        return ("", latestDirectionalFlowData, vaultAddresses);
+        return ("", latestDirectionalFlowData, vaultAddresses, currentBlockNumber);
     }
 
     /// @notice Checks whether a mint operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
     function isMintSafe(DataTypes.Order memory order) external view returns (string memory) {
-        (string memory mintSafety, , ) = _flowSafetyStateUpdater(order);
+        (string memory mintSafety, , , ) = _flowSafetyStateUpdater(order);
         return mintSafety;
     }
 
@@ -261,7 +280,8 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         (
             string memory err,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
-            address[] memory vaultAddresses
+            address[] memory vaultAddresses,
+            uint256 currentBlockNumber
         ) = _flowSafetyStateUpdater(order);
 
         if (bytes(err).length > 0) {
@@ -272,14 +292,19 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             }
         }
 
-        _storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
+        _storeDirectionalFlowData(
+            latestDirectionalFlowData,
+            order,
+            vaultAddresses,
+            currentBlockNumber
+        );
         return err;
     }
 
     /// @notice Checks whether a redeem operation is safe
     /// @return empty string if it is safe, otherwise the reason why it is not safe
     function isRedeemSafe(DataTypes.Order memory order) external view returns (string memory) {
-        (string memory redeemSafety, , ) = _flowSafetyStateUpdater(order);
+        (string memory redeemSafety, , , ) = _flowSafetyStateUpdater(order);
         return redeemSafety;
     }
 
@@ -295,7 +320,8 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         (
             string memory err,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
-            address[] memory vaultAddresses
+            address[] memory vaultAddresses,
+            uint256 currentBlockNumber
         ) = _flowSafetyStateUpdater(order);
 
         if (bytes(err).length > 0) {
@@ -306,7 +332,12 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             }
         }
 
-        _storeDirectionalFlowData(latestDirectionalFlowData, order, vaultAddresses);
+        _storeDirectionalFlowData(
+            latestDirectionalFlowData,
+            order,
+            vaultAddresses,
+            currentBlockNumber
+        );
         return err;
     }
 }
