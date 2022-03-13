@@ -79,7 +79,7 @@ contract TestingVaultSafetyMode is VaultSafetyMode {
     }
 
     function flowSafetyStateUpdater(DataTypes.Order memory order)
-        internal
+        external
         view
         returns (
             string memory,

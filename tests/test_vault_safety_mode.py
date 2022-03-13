@@ -16,6 +16,7 @@ MAX_VAULTS = 10
 amount_generator = st.integers(
     min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000))
 )
+short_flow_memory_generator = st.integers(min_value=1, max_value=1000)
 price_generator = st.integers(
     min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000))
 )
@@ -126,7 +127,6 @@ def test_store_and_access_directional_flow_data_redeem(
     latest_data = vault_safety_mode.accessDirectionalFlowData(
         vault_addresses, redeem_order
     )
-    print(latest_data)
     assert latest_data[0][5] == directional_flow_data[5]
 
 
@@ -153,7 +153,6 @@ def test_fetch_latest_directional_flow_data(
     vault_addresses = [i.address for i in mock_vaults]
 
     directional_flow_data = build_directional_flow_data(vault_addresses)
-    print("Original flow data", directional_flow_data)
     vault_safety_mode.storeDirectionalFlowData(
         directional_flow_data, redeem_order, vault_addresses, 60
     )
@@ -203,3 +202,28 @@ def test_update_vault_flow_safety(
         directional_flow_data, proposed_flow_change, short_flow_threshold
     )
     assert result_sol == result_python
+
+
+@given(
+    order_bundle=st.lists(
+        st.tuples(
+            price_generator,
+            weight_generator,
+            amount_generator,
+            price_generator,
+            amount_generator,
+            weight_generator,
+            weight_generator,
+            short_flow_memory_generator,
+            amount_generator,
+        ),
+        min_size=constants.RESERVE_VAULTS,
+        max_size=constants.RESERVE_VAULTS,
+    ),
+)
+def test_flow_safety_state_updater(vault_safety_mode, order_bundle, mock_vaults):
+    redeem_order = object_creation.bundle_to_order_vary_persisted(
+        order_bundle, False, mock_vaults
+    )
+    response = vault_safety_mode.flowSafetyStateUpdater(redeem_order)
+    assert response[2] == [i.address for i in mock_vaults]

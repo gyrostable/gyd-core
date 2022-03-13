@@ -212,6 +212,11 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     {
         currentBlockNumber = block.number;
 
+        vaultAddresses = new address[](order.vaultsWithAmount.length);
+        latestDirectionalFlowData = new DataTypes.DirectionalFlowData[](
+            order.vaultsWithAmount.length
+        );
+
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             vaultAddresses[i] = order.vaultsWithAmount[i].vaultInfo.vault;
         }

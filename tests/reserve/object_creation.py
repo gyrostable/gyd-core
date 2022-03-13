@@ -105,7 +105,80 @@ def order_builder(
 
     for i in range(len(initial_prices)):
 
-        persisted_metadata = (initial_prices[i], initial_weights[i], 0, 0)
+        persisted_metadata = (
+            initial_prices[i],
+            initial_weights[i],
+            0,
+            0,
+        )
+
+        vault_info = (
+            mock_vaults[i].address,
+            current_vault_prices[i],
+            persisted_metadata,
+            reserve_balances[i],
+            current_weights[i],
+            ideal_weights[i],
+        )
+
+        vault = (vault_info, amounts[i])
+        vaults_with_amount.append(vault)
+
+    return [vaults_with_amount, mint]
+
+
+def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults):
+
+    (
+        initial_prices,
+        initial_weights,
+        reserve_balances,
+        current_vault_prices,
+        amounts,
+        current_weights,
+        ideal_weights,
+        short_flow_memory,
+        short_flow_threshold,
+    ) = [list(v) for v in zip(*order_bundle)]
+
+    return order_builder_vary_persisted(
+        mint,
+        initial_prices,
+        initial_weights,
+        reserve_balances,
+        current_vault_prices,
+        amounts,
+        current_weights,
+        ideal_weights,
+        mock_vaults,
+        short_flow_memory,
+        short_flow_threshold,
+    )
+
+
+def order_builder_vary_persisted(
+    mint,
+    initial_prices,
+    initial_weights,
+    reserve_balances,
+    current_vault_prices,
+    amounts,
+    current_weights,
+    ideal_weights,
+    mock_vaults,
+    short_flow_memory,
+    short_flow_threshold,
+):
+    vaults_with_amount = []
+
+    for i in range(len(initial_prices)):
+
+        persisted_metadata = (
+            initial_prices[i],
+            initial_weights[i],
+            short_flow_memory[i],
+            short_flow_threshold[i],
+        )
 
         vault_info = (
             mock_vaults[i].address,
