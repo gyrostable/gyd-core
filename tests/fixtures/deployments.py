@@ -301,13 +301,13 @@ def balancer_vault(interface):
     return interface.IVault(constants.BALANCER_VAULT_ADDRESS)
 
 
-@pytest.fixture(scope="module")
-def vault_safety_mode(admin, TestingVaultSafetyMode, motherboard, mock_vaults):
-    vault_addresses = [i.address for i in mock_vaults]
-    return admin.deploy(
-        TestingVaultSafetyMode,
-        constants.SAFETY_BLOCKS_AUTOMATIC,
-        constants.SAFETY_BLOCKS_GUARDIAN,
-        motherboard,
-        vault_addresses,
-    )
+# @pytest.fixture(scope="module")
+# def vault_safety_mode(admin, TestingVaultSafetyMode, motherboard, mock_vaults):
+#     vault_addresses = [i.address for i in mock_vaults]
+#     return admin.deploy(
+#         TestingVaultSafetyMode,
+#         constants.SAFETY_BLOCKS_AUTOMATIC,
+#         constants.SAFETY_BLOCKS_GUARDIAN,
+#         motherboard,
+#         vault_addresses,
+#     )
