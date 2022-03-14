@@ -4,6 +4,7 @@ from typing import Tuple
 
 import pytest
 from brownie.exceptions import VirtualMachineError
+from brownie.network.state import Chain
 from brownie.test import given
 from hypothesis import strategies as st
 from hypothesis.control import assume
@@ -20,6 +21,8 @@ from tests.support.constants import (
 from tests.support.dfuzzy import isclose, prec_input, prec_sanity_check
 from tests.support.quantized_decimal import QuantizedDecimal as QD
 from tests.support.utils import scale
+
+chain = Chain()
 
 
 def st_scaled_decimals(
@@ -272,23 +275,34 @@ def test_compute_reserve_value_gas(pamm, args, alpha_min):
 
 
 @given(st.data())
-def test_path_independence(admin, TestingPAMMV1, data: st.DataObject):
+def test_path_independence(
+    admin, TestingPAMMV1, TestingPAMMV1Path, data: st.DataObject
+):
     params = data.draw(st_params(), "params")
     ba, ya = data.draw(st_baya(params[2]), "ba, ya")
     x1 = data.draw(st_scaled_decimals(scale("0.001"), ya - scale("0.001")), "x1")
     x2 = data.draw(st_scaled_decimals(scale("0.001"), ya - x1), "x2")
-    run_path_independence_test(admin, TestingPAMMV1, x1, x2, ba, ya, params)
+    run_path_independence_test(
+        admin, TestingPAMMV1, TestingPAMMV1Path, x1, x2, ba, ya, params
+    )
 
 
 def run_path_independence_test(
-    admin, PAMM, x1: int, x2: int, ba: int, ya: int, params: Tuple[int, int, int, int]
+    admin,
+    PAMM,
+    PAMM_DOUBLE,
+    x1: int,
+    x2: int,
+    ba: int,
+    ya: int,
+    params: Tuple[int, int, int, int],
 ):
     assert x1 + x2 <= ya
 
     pamm = admin.deploy(PAMM, params)
     pamm.setState((D(0), ba, ya, D(0)))
 
-    pamm_2step = admin.deploy(PAMM, params)
+    pamm_2step = admin.deploy(PAMM_DOUBLE, params)
     pamm_2step.setState((D(0), ba, ya, D(0)))
 
     # NOTE: the current input generation is slightly problematic as it generates
@@ -297,14 +311,11 @@ def run_path_independence_test(
     # on valid inputs
     try:
         redeem_tx = pamm.redeem(x1 + x2, ba)
-        redeem1_tx = pamm_2step.redeem(x1, ba)
-        redeem2_tx = pamm_2step.redeem(x2, ba - redeem1_tx.value)
+        redeem_path_tx = pamm_2step.redeemTwice(x1, x2, ba)
     except VirtualMachineError as ex:
         if ex.revert_msg != "Integer overflow":  # type: ignore
             raise ex
-        # print(ex)
         return
-    # print("RUNNING PATH INDEPENDENCE TEST")
 
     (x, b, y, last_seen_block) = pamm.systemState()
     (x2, b2, y2, last_seen_block_2) = pamm_2step.systemState()
@@ -318,5 +329,5 @@ def run_path_independence_test(
     # as there might be some small differences because of root computations etc
     assert int(b) == pytest.approx(b2, abs=10**10)
     assert int(redeem_tx.return_value) == pytest.approx(
-        redeem1_tx.return_value + redeem2_tx.return_value, abs=10**10
+        redeem_path_tx.return_value, abs=10**10
     )
