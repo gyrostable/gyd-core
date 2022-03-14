@@ -11,7 +11,11 @@ contract BalancerPoolVault is BaseVault {
 
     IVault public immutable balancerVault;
 
+    /// @inheritdoc IGyroVault
+    Vaults.Type public immutable override vaultType;
+
     constructor(
+        Vaults.Type _vaultType,
         bytes32 _poolId,
         IVault _balancerVault,
         string memory name,
@@ -19,17 +23,13 @@ contract BalancerPoolVault is BaseVault {
     ) BaseVault(_getPoolAddress(_poolId), name, symbol) {
         poolId = _poolId;
         balancerVault = _balancerVault;
+        vaultType = _vaultType;
     }
 
     /// @inheritdoc IGyroVault
     function getTokens() external view override returns (IERC20[] memory) {
         (IERC20[] memory tokens, , ) = balancerVault.getPoolTokens(poolId);
         return tokens;
-    }
-
-    /// @inheritdoc IGyroVault
-    function vaultType() external pure override returns (VaultType) {
-        return VaultType.BALANCER;
     }
 
     function _getPoolAddress(bytes32 _poolId) internal pure returns (address) {

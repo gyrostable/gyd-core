@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "../../libraries/FixedPoint.sol";
-import "../../libraries/SignedFixedPoint.sol";
+import "../../../libraries/FixedPoint.sol";
+import "../../../libraries/SignedFixedPoint.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
-library GyroLPSharePricing {
+library BalancerLPSharePricing {
     using FixedPoint for uint256;
     using SignedFixedPoint for int256;
     using SafeCast for uint256;

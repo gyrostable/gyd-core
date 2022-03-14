@@ -9,6 +9,12 @@ library DataTypes {
         uint256 amount;
     }
 
+    /// @notice Contains a token and the price associated with it
+    struct PricedToken {
+        address tokenAddress;
+        uint256 price;
+    }
+
     /// @notice A route from/to a token to a vault
     /// This is used to determine in which vault the token should be deposited
     /// or from which vault it should be withdrawn
@@ -70,6 +76,7 @@ library DataTypes {
         uint256 reserveBalance;
         uint256 currentWeight;
         uint256 idealWeight;
+        PricedToken[] pricedTokens;
     }
 
     struct VaultMetadata {
