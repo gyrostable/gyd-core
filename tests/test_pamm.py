@@ -274,6 +274,7 @@ def test_compute_reserve_value_gas(pamm, args, alpha_min):
     pamm.computeReserveValueWithGas(args_final)
 
 
+@pytest.mark.skip()
 @given(st.data())
 def test_path_independence(
     admin, TestingPAMMV1, TestingPAMMV1Path, data: st.DataObject
