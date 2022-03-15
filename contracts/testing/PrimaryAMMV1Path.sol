@@ -3,20 +3,31 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "../libraries/LogExpMath.sol";
-import "../libraries/FixedPoint.sol";
-import "../libraries/Flow.sol";
-import "../interfaces/IPAMM.sol";
-import "./auth/Governable.sol";
+import "../../libraries/LogExpMath.sol";
+import "../../libraries/FixedPoint.sol";
+import "../../libraries/Flow.sol";
+import "../../interfaces/IPAMM.sol";
+import "./../auth/Governable.sol";
 
 /// @notice Implements the primary AMM pricing mechanism
-contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
+contract PrimaryAMMV1Path is Ownable, Governable {
     using LogExpMath for uint256;
     using FixedPoint for uint256;
 
     uint256 constant ONE = 1e18;
     uint256 constant TWO = 2e18;
     uint256 constant ANCHOR = ONE;
+
+    /// @notice this event is emitted when the system parameters are updated
+    event SystemParamsUpdated(uint64 alphaBar, uint64 xuBar, uint64 thetaBar, uint64 outflowMemory);
+
+    // NB gas optimization, don't need to use uint64
+    struct Params {
+        uint64 alphaBar; // ᾱ ∊ [0,1]
+        uint64 xuBar; // x̄_U ∊ [0,1]
+        uint64 thetaBar; // θ̄ ∊ [0,1]
+        uint64 outflowMemory; // this is [0,1]
+    }
 
     enum Region {
         CASE_i,
@@ -63,7 +74,6 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
         systemParams = params;
     }
 
-    /// @inheritdoc IPAMM
     function setSystemParams(Params memory params) external governanceOnly {
         systemParams = params;
         emit SystemParamsUpdated(
@@ -500,7 +510,7 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
     /// @notice Computes and records the USD value to redeem given an ammount of Gyro dollars
     // NB reserveValue does not need to be stored as part of state - could be passed around
     function redeem(uint256 gydAmount, uint256 reserveUSDValue)
-        external
+        internal
         onlyOwner
         returns (uint256)
     {

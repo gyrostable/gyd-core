@@ -4,11 +4,12 @@ pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import "../auth/Governable.sol";
+import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
 import "../../libraries/FixedPoint.sol";
-import "../../interfaces/IAssetRegistry.sol";
+import "../../interfaces/IReserveManager.sol";
 import "../../interfaces/oracles/IUSDPriceOracle.sol";
+import "../../interfaces/IAssetRegistry.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../interfaces/balancer/IVault.sol";
 import "../../libraries/Errors.sol";

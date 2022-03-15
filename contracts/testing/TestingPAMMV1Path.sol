@@ -2,12 +2,12 @@ pragma solidity ^0.8.4;
 
 // SPDX-License-Identifier: MIT
 
-import "../PrimaryAMMV1.sol";
+import "./PrimaryAMMV1Path.sol";
 
-contract TestingPAMMV1 is PrimaryAMMV1 {
+contract TestingPAMMV1Path is PrimaryAMMV1Path {
     using FixedPoint for uint256;
 
-    constructor(Params memory params) PrimaryAMMV1(params) {}
+    constructor(Params memory params) PrimaryAMMV1Path(params) {}
 
     function computeRegion(State calldata anchoredState) external view returns (Region) {
         DerivedParams memory derived = createDerivedParams(systemParams);
@@ -111,5 +111,14 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
 
     function setDecaySlopeLowerBound(uint64 alpha) external {
         systemParams.alphaBar = alpha;
+    }
+
+    function redeemTwice(
+        uint256 x1,
+        uint256 x2,
+        uint256 y
+    ) external returns (uint256) {
+        uint256 initialRedeem = redeem(x1, y);
+        return redeem(x2, y - initialRedeem);
     }
 }

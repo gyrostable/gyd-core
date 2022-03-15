@@ -43,7 +43,10 @@ library Errors {
     string public constant AMOUNT_AND_PRICE_LENGTH_DIFFER = "54";
     string public constant TOKEN_PRICES_TOO_SMALL = "55";
     string public constant TRYING_TO_REDEEM_MORE_THAN_VAULT_CONTAINS = "56";
+    string public constant CALLER_NOT_MOTHERBOARD = "57";
 
-    // Misc errors
-    string public constant NOT_IMPLEMENTED = "90";
+    string public constant VAULT_FLOW_TOO_HIGH = "60";
+    string public constant OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED = "61";
+    string public constant ORACLE_GUARDIAN_TIME_LIMIT = "62";
+    string public constant NOT_ENOUGH_FLOW_DATA = "63";
 }

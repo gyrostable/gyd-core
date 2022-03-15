@@ -21,13 +21,13 @@ def vault_registry(admin, VaultRegistry, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def vault_manager(admin, VaultManager, gyro_config, request):
+def reserve_manager(admin, ReserveManager, gyro_config, request):
     dependencies = ["reserve", "mock_price_oracle", "vault_registry"]
     for dep in dependencies:
         request.getfixturevalue(dep)
-    vault_manager = admin.deploy(VaultManager, gyro_config)
-    gyro_config.setAddress(config_keys.VAULT_MANAGER_ADDRESS, vault_manager)
-    return vault_manager
+    reserve_manager = admin.deploy(ReserveManager, gyro_config)
+    gyro_config.setAddress(config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager)
+    return reserve_manager
 
 
 @pytest.fixture(scope="module")
@@ -205,7 +205,7 @@ def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
         "lp_token_exchanger_registry",
         "mock_pamm",
         "mock_price_oracle",
-        "vault_manager",
+        "reserve_manager",
         "root_safety_check",
         "static_percentage_fee_handler",
     ]
@@ -220,7 +220,12 @@ def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
 @pytest.fixture(scope="module")
 def pamm(TestingPAMMV1):
     return TestingPAMMV1.deploy(
-        (constants.ALPHA_MIN_REL, constants.XU_MAX_REL, constants.THETA_FLOOR),
+        (
+            constants.ALPHA_MIN_REL,
+            constants.XU_MAX_REL,
+            constants.THETA_FLOOR,
+            constants.OUTFLOW_MEMORY,
+        ),
         {"from": accounts[0]},
     )
 
@@ -294,3 +299,15 @@ def dai_vault(admin, BaseVault, dai):
 @pytest.fixture(scope="module")
 def balancer_vault(interface):
     return interface.IVault(constants.BALANCER_VAULT_ADDRESS)
+
+
+@pytest.fixture(scope="module")
+def vault_safety_mode(admin, TestingVaultSafetyMode, motherboard, mock_vaults):
+    vault_addresses = [i.address for i in mock_vaults]
+    return admin.deploy(
+        TestingVaultSafetyMode,
+        constants.SAFETY_BLOCKS_AUTOMATIC,
+        constants.SAFETY_BLOCKS_GUARDIAN,
+        motherboard,
+        vault_addresses,
+    )

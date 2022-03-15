@@ -7,7 +7,7 @@ import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../interfaces/ISafetyCheck.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IVaultRegistry.sol";
-import "../interfaces/IVaultManager.sol";
+import "../interfaces/IReserveManager.sol";
 import "../interfaces/IFeeBank.sol";
 import "../interfaces/IReserve.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
@@ -28,8 +28,8 @@ library ConfigHelpers {
         return IVaultRegistry(gyroConfig.getAddress(ConfigKeys.VAULT_REGISTRY_ADDRESS));
     }
 
-    function getVaultManager(IGyroConfig gyroConfig) internal view returns (IVaultManager) {
-        return IVaultManager(gyroConfig.getAddress(ConfigKeys.VAULT_MANAGER_ADDRESS));
+    function getReserveManager(IGyroConfig gyroConfig) internal view returns (IReserveManager) {
+        return IReserveManager(gyroConfig.getAddress(ConfigKeys.RESERVE_MANAGER_ADDRESS));
     }
 
     function getFeeBank(IGyroConfig gyroConfig) internal view returns (IFeeBank) {

@@ -25,7 +25,7 @@ def _create_order(vault_amounts: Iterable[Tuple[str, int]], mint: bool) -> Order
             vault_info=VaultInfo(
                 vault=vault_address,
                 price=0,
-                persisted_metadata=PersistedVaultMetadata(0, 0),
+                persisted_metadata=PersistedVaultMetadata(0, 0, 0, 0),
                 reserve_balance=0,
                 current_weight=0,
                 ideal_weight=0,

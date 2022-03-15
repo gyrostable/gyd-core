@@ -57,7 +57,6 @@ interface IMotherBoard {
     /// @return err a non-empty error message in case an error would happen when minting
     function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
         external
-        view
         returns (uint256 mintedGYDAmount, string memory err);
 
     /// @notice Dry version of the `redeem` function
@@ -68,6 +67,5 @@ interface IMotherBoard {
     /// @return err a non-empty error message in case an error would happen when redeeming
     function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] memory assets)
         external
-        view
         returns (uint256[] memory outputAmounts, string memory err);
 }

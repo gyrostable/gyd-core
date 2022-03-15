@@ -6,10 +6,12 @@ from tests.support.utils import scale
 RAW_THETA_FLOOR = "0.6"
 RAW_XU_MAX_REL = "0.3"
 RAW_ALPHA_MIN_REL = "1"
+OUTFLOW_MEM = "1"
 
 THETA_FLOOR: Decimal = scale(RAW_THETA_FLOOR, 18)
 XU_MAX_REL: Decimal = scale(RAW_XU_MAX_REL, 18)  # Relative to ya. Scale by * ya.
 ALPHA_MIN_REL: Decimal = scale(RAW_ALPHA_MIN_REL, 18)  # Relative to ya. Scale by / ya.
+OUTFLOW_MEMORY: Decimal = scale(OUTFLOW_MEM, 18)
 
 UNSCALED_THETA_FLOOR = QuantizedDecimal(RAW_THETA_FLOOR)
 UNSCALED_XU_MAX_REL = QuantizedDecimal(RAW_XU_MAX_REL)
@@ -50,3 +52,6 @@ BALANCER_POOL_IDS = {
     "DAI_USDC_USDT": "0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063",
     "WBTC_WETH": "0xa6f548df93de924d73be7d25dc02554c6bd66db500020000000000000000000e",
 }
+
+SAFETY_BLOCKS_AUTOMATIC = 100
+SAFETY_BLOCKS_GUARDIAN = 200

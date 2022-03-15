@@ -36,6 +36,30 @@ library DataTypes {
     struct PersistedVaultMetadata {
         uint256 initialPrice;
         uint256 initialWeight;
+        uint256 shortFlowMemory;
+        uint256 shortFlowThreshold;
+    }
+
+    struct DirectionalFlowData {
+        uint256 shortFlow;
+        uint256 remainingSafetyBlocks;
+    }
+
+    struct FlowData {
+        uint256 lastSeenBlock;
+        DirectionalFlowData inFlow;
+        DirectionalFlowData outFlow;
+    }
+
+    enum Direction {
+        In,
+        Out,
+        Both
+    }
+
+    struct GuardedVaults {
+        address vaultAddress;
+        Direction direction;
     }
 
     /// @notice Vault with metadata
@@ -75,5 +99,10 @@ library DataTypes {
     struct VaultWithAmount {
         VaultInfo vaultInfo;
         uint256 amount;
+    }
+
+    struct ReserveState {
+        uint256 totalUSDValue;
+        VaultInfo[] vaults;
     }
 }

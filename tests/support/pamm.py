@@ -1,9 +1,9 @@
 from dataclasses import dataclass
+from enum import Enum
 from functools import cached_property
 from typing import Optional, Tuple, Union
-from enum import Enum
 
-from tests.support.dfuzzy import isle, isge, sqrt, prec_input
+from tests.support.dfuzzy import isge, isle, prec_input, sqrt
 from tests.support.quantized_decimal import QuantizedDecimal as D
 
 
@@ -85,7 +85,7 @@ class Params:
     @cached_property
     def ba_threshold_II_hl(self):  # ba^{h/l}
         denom = 2 * self.decay_slope_lower_bound
-        num = self.target_utilization_ceiling ** 2
+        num = self.target_utilization_ceiling**2
         return D(1) - num / denom  # type: ignore
 
     @cached_property
@@ -137,8 +137,8 @@ def compute_relative_reserve_for_xu(
     yz = ya - xu
     target_usage = 1 - params.target_reserve_ratio_floor
     if 1 - alpha * yz >= params.target_reserve_ratio_floor:
-        return ya - alpha / 2 * yz ** 2
-    return ya - target_usage * yz + target_usage ** 2 / (2 * alpha)
+        return ya - alpha / 2 * yz**2
+    return ya - target_usage * yz + target_usage**2 / (2 * alpha)
 
 
 def compute_lower_redemption_threshold(ba: D, ya: D, alpha: D, xu: D):
@@ -151,7 +151,7 @@ def compute_upper_redemption_threshold_unconstrained(
     ba: D, ya: D, alpha: D, theta: D
 ) -> D:
     delta = ya - ba
-    if alpha * delta <= theta ** 2 / 2:
+    if alpha * delta <= theta**2 / 2:
         return ya - sqrt(2 * delta / alpha)
     else:
         return ya - delta / theta - theta / (2 * alpha)
@@ -174,7 +174,7 @@ def compute_slope_unconstrained(ba: D, ya: D, theta_bar: D) -> D:
         return 2 * (1 - ra) / ya
     else:
         # TODO Highway to the rounding error danger zone if ba/ya ≈ theta_floor
-        return theta ** 2 / (2 * (ba - theta_bar * ya))
+        return theta**2 / (2 * (ba - theta_bar * ya))
 
 
 def compute_slope(ba: D, ya: D, theta_bar: D, alpha_bar: D) -> D:
@@ -277,6 +277,7 @@ def compute_region(
     """For testing. Compute the Region, which should also be detected by Pamm._compute_current_region().
 
     We return None iff we are below the floor (which doesn't have a region b/c it's caught early)"""
+    print("PARAMS", params)
     r = compute_region_ext(x, ba, ya, params, prec)
     if r == (None, None, "iii"):
         # Reserve ratio below floor
@@ -391,7 +392,7 @@ class Pamm:
 
         if region == Region.CASE_I_iii:
             lh = one - (one - xu_max) * used_ratio  # type: ignore
-            return lh + used_ratio ** 2 / (2 * alpha_min)
+            return lh + used_ratio**2 / (2 * alpha_min)
 
         if region == Region.CASE_II_H:
             delta = alpha_min * (used_ratio / alpha_min + scaled_supply / 2) ** 2 / 2
@@ -400,7 +401,7 @@ class Pamm:
         if region == Region.CASE_II_L:
             p = theta * (theta / (2 * alpha_min) + scaled_supply)
             d = (
-                theta ** 2
+                theta**2
                 * 2
                 / alpha_min
                 * (scaled_reserve - theta_floor * scaled_supply)
@@ -410,7 +411,7 @@ class Pamm:
         if region == Region.CASE_III_H:
             delta = (scaled_supply - scaled_reserve) / (
                 1
-                - (scaled_redemption ** 2)  # exploit that the scaled value of ya is 1.
+                - (scaled_redemption**2)  # exploit that the scaled value of ya is 1.
             )
             return one - delta
 
@@ -418,8 +419,8 @@ class Pamm:
             p = (scaled_supply - scaled_reserve + theta * one) / 2  # type: ignore
             q = (
                 scaled_supply - scaled_reserve
-            ) * theta * one + theta ** 2 * scaled_redemption ** 2 / 4
-            delta = p - sqrt(p ** 2 - q)
+            ) * theta * one + theta**2 * scaled_redemption**2 / 4
+            delta = p - sqrt(p**2 - q)
             return one - delta
 
         raise ValueError("unknown region")
@@ -470,11 +471,11 @@ class Pamm:
             # case II
             if self._is_in_second_subcase(scaled_reserve, scaled_redemption):
                 # case h
-                if scaled_supply - scaled_reserve <= alpha_min / 2 * scaled_supply ** 2:
+                if scaled_supply - scaled_reserve <= alpha_min / 2 * scaled_supply**2:
                     return Region.CASE_i
                 return Region.CASE_II_H
 
-            if scaled_reserve - theta_floor * scaled_supply >= theta ** 2 / (
+            if scaled_reserve - theta_floor * scaled_supply >= theta**2 / (
                 2 * alpha_min
             ):
                 return Region.CASE_i
