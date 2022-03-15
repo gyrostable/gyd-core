@@ -51,13 +51,13 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     function deploymentInitialization(address[] memory _vaultAddresses) internal {
         for (uint256 i = 0; i < _vaultAddresses.length; i++) {
-            flowDataBidirectionalStored[_vaultAddresses[i]].inFlow.shortFlow = 0;
-            flowDataBidirectionalStored[_vaultAddresses[i]].inFlow.remainingSafetyBlocks = 0;
+            persistedFlowData[_vaultAddresses[i]].inFlow.shortFlow = 0;
+            persistedFlowData[_vaultAddresses[i]].inFlow.remainingSafetyBlocks = 0;
 
-            flowDataBidirectionalStored[_vaultAddresses[i]].outFlow.shortFlow = 0;
-            flowDataBidirectionalStored[_vaultAddresses[i]].outFlow.remainingSafetyBlocks = 0;
+            persistedFlowData[_vaultAddresses[i]].outFlow.shortFlow = 0;
+            persistedFlowData[_vaultAddresses[i]].outFlow.remainingSafetyBlocks = 0;
 
-            flowDataBidirectionalStored[_vaultAddresses[i]].lastSeenBlock = block.number;
+            persistedFlowData[_vaultAddresses[i]].lastSeenBlock = block.number;
         }
     }
 
@@ -94,18 +94,16 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         require(directionalFlowData.length == vaultAddresses.length, Errors.NOT_ENOUGH_FLOW_DATA);
         if (order.mint) {
             for (uint256 i = 0; i < directionalFlowData.length; i++) {
-                flowDataBidirectionalStored[vaultAddresses[i]].inFlow = directionalFlowData[i];
+                persistedFlowData[vaultAddresses[i]].inFlow = directionalFlowData[i];
                 if (order.vaultsWithAmount[i].amount > 0) {
-                    flowDataBidirectionalStored[vaultAddresses[i]]
-                        .lastSeenBlock = currentBlockNumber;
+                    persistedFlowData[vaultAddresses[i]].lastSeenBlock = currentBlockNumber;
                 }
             }
         } else {
             for (uint256 i = 0; i < directionalFlowData.length; i++) {
-                flowDataBidirectionalStored[vaultAddresses[i]].outFlow = directionalFlowData[i];
+                persistedFlowData[vaultAddresses[i]].outFlow = directionalFlowData[i];
                 if (order.vaultsWithAmount[i].amount > 0) {
-                    flowDataBidirectionalStored[vaultAddresses[i]]
-                        .lastSeenBlock = currentBlockNumber;
+                    persistedFlowData[vaultAddresses[i]].lastSeenBlock = currentBlockNumber;
                 }
             }
         }

@@ -18,9 +18,6 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
     uint256 constant TWO = 2e18;
     uint256 constant ANCHOR = ONE;
 
-    /// @notice this event is emitted when the system parameters are updated
-    event SystemParamsUpdated(uint64 alphaBar, uint64 xuBar, uint64 thetaBar, uint64 outflowMemory);
-
     enum Region {
         CASE_i,
         CASE_I_ii,
