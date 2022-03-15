@@ -28,6 +28,7 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
         CASE_III_L
     }
 
+    // TODO: consider if reserve value actually needs to be stored?
     // NB: potential gas optimization by only storing redemptionLevel
     // NB: if lastSeenBlock is the same as the current block, then can bypass all of the Oracle
     // infrastructure, saving on gas costs
