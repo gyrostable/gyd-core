@@ -27,6 +27,9 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @notice Emitted when entering safety mode
     event SafetyStatus(string err);
 
+    /// TODO: is this how you think this should best be done?
+    event WhitelistChanged(string, address[]);
+
     mapping(address => DataTypes.FlowData) public persistedFlowData;
     mapping(address => bool) public whitelist;
 
@@ -345,12 +348,21 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return err;
     }
 
-    function addAddressToWhitelist(address _address) external governanceOnly {
-        whitelist[_address] = true;
+    function addAddressToWhitelist(address[] memory _addressesToAdd) external governanceOnly {
+        for (uint256 i = 0; i < _addressesToAdd.length; i++) {
+            whitelist[_addressesToAdd[i]] = true;
+        }
+        emit WhitelistChanged("Added", _addressesToAdd);
     }
 
-    function isOnWhitelist(address _address) public view returns (bool) {
-        return whitelist[_address];
+    function removeAddressFromWhitelist(address[] memory _addressesToRemove)
+        external
+        governanceOnly
+    {
+        for (uint256 i = 0; i < _addressesToRemove.length; i++) {
+            whitelist[_addressesToRemove[i]] = false;
+        }
+        emit WhitelistChanged("Removed", _addressesToRemove);
     }
 
     modifier isWhitelisted(address _address) {
