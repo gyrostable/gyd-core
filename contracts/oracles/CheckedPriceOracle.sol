@@ -3,10 +3,12 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../../interfaces/oracles/IUSDPriceOracle.sol";
 import "../../interfaces/oracles/IRelativePriceOracle.sol";
 import "../../interfaces/oracles/IUSDBatchPriceOracle.sol";
+import "../../libraries/EnumerableExtensions.sol";
 
 import "../auth/Governable.sol";
 
@@ -31,14 +33,16 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     uint256 public relativeEpsilon;
 
     address[] public signedPriceAddresses;
-    address[] public twapPriceAddresses;
+    address[] public quoteAssetsForPriceLevelTWAPS;
 
+    /// _usdOracle is for Chainlink
     constructor(address _usdOracle, address _relativeOracle) {
         usdOracle = IUSDPriceOracle(_usdOracle);
         relativeOracle = IRelativePriceOracle(_relativeOracle);
         relativeEpsilon = INITIAL_RELATIVE_EPSILON;
     }
 
+    /// This should be setting the contract addresses for the trusted Signed Price Oracles
     function setSignedPriceAddresses(address[] memory newSignedPriceAddresses)
         external
         governanceOnly
@@ -46,8 +50,59 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         signedPriceAddresses = newSignedPriceAddresses;
     }
 
-    function setTwapPriceAddresses(address[] memory newTwapPriceAddresses) external governanceOnly {
-        twapPriceAddresses = newTwapPriceAddresses;
+    function setQuoteAssetsForPriceLevelCheckTWAPs(address[] memory newTokenPairs)
+        external
+        governanceOnly
+    {
+        /// This list is going to be used for the twaps to be input into the price level checks.
+        /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT
+        quoteAssetsForPriceLevelTWAPS = newTokenPairs;
+    }
+
+    function batchRelativePriceCheck(
+        address[] memory tokenAddresses,
+        uint256 length,
+        uint256[] memory prices,
+        address[] memory twapsToSave /// This variable will be used to save the TWAPS for the price level
+    ) internal view returns (uint256[] memory) {
+        bool[] memory checked = new bool[](length);
+
+        uint256[] memory priceLevelTwaps = new uint256[](twapsToSave.length);
+
+        for (uint256 i = 0; i < tokenAddresses.length - 1; i++) {
+            if (checked[i]) {
+                continue;
+            }
+
+            bool couldCheck = false;
+            for (uint256 j = i + 1; j < tokenAddresses.length; j++) {
+                if (!relativeOracle.isPairSupported(tokenAddresses[i], tokenAddresses[j])) {
+                    continue;
+                }
+
+                // This is a TWAP
+                uint256 relativePrice = relativeOracle.getRelativePrice(
+                    tokenAddresses[i],
+                    tokenAddresses[j]
+                );
+
+                // if tokenAddresses[j] is a member of twapsToSave then store the relative price in the priceLevelTwapsarray
+                // if (tokenAddresses[i] == WETH_ADDRESS) && (tokenAddresses[j] is in twapsToSave) {
+                //     priceLevelTwaps[i] = relativePrice;
+                // }
+                _ensureRelativePriceConsistency(prices[i], prices[j], relativePrice);
+
+                checked[j] = true;
+                couldCheck = true;
+                break;
+            }
+
+            require(couldCheck, Errors.ASSET_NOT_SUPPORTED);
+
+            checked[i] = true;
+        }
+
+        return priceLevelTwaps;
     }
 
     //NB this is expected to be queried for ALL asset prices in the reserve
@@ -68,58 +123,37 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
             return prices;
         }
 
-        uint256 mainRootPrice;
+        /// Will start with this being the WETH/USD price, this can be modified later if desired.
+        uint256 priceLevel;
 
         for (uint256 i = 0; i < length; i++) {
             prices[i] = usdOracle.getPriceUSD(tokenAddresses[i]);
             if (tokenAddresses[i] == WETH_ADDRESS) {
-                mainRootPrice = prices[i];
+                priceLevel = prices[i];
             }
         }
 
-        bool[] memory checked = new bool[](length);
+        /// TODO: This is to avoid storage being read from each time. Is this necessary?
+        address[] memory quoteAssetsForPriceLevelTWAPSMemory = quoteAssetsForPriceLevelTWAPS;
 
-        uint256[] memory twaps = new uint256[](twapPriceAddresses.length);
-
-        for (uint256 i = 0; i < tokenAddresses.length - 1; i++) {
-            if (checked[i]) {
-                continue;
-            }
-
-            bool couldCheck = false;
-            for (uint256 j = i + 1; j < tokenAddresses.length; j++) {
-                if (!relativeOracle.isPairSupported(tokenAddresses[i], tokenAddresses[j])) {
-                    continue;
-                }
-
-                // This is a TWAP
-                uint256 relativePrice = relativeOracle.getRelativePrice(
-                    tokenAddresses[i],
-                    tokenAddresses[j]
-                );
-
-                if (tokenAddresses[i] == WETH_ADDRESS) {
-                    twaps[i] = relativePrice;
-                }
-                _ensurePriceConsistency(prices[i], prices[j], relativePrice);
-
-                checked[j] = true;
-                couldCheck = true;
-                break;
-            }
-
-            require(couldCheck, Errors.ASSET_NOT_SUPPORTED);
-
-            checked[i] = true;
-        }
+        uint256[] memory priceLevelTwaps = batchRelativePriceCheck(
+            tokenAddresses,
+            length,
+            prices,
+            quoteAssetsForPriceLevelTWAPSMemory
+        );
 
         uint256[] memory signedPrices = new uint256[](signedPriceAddresses.length);
 
         for (uint256 i = 0; i < signedPriceAddresses.length; i++) {
+            /// Ensure that given ETH/USD price from coinbase and the ETH/USD price from
+            /// OKex are the prices that get saved in this array
+            /// Q: will these prices be retrieved if just the contract address is provided?
+            /// Q: is this the right way to do this gas wise?
             signedPrices[i] = usdOracle.getPriceUSD(signedPriceAddresses[i]);
         }
 
-        _ensureRootPriceGrounded(mainRootPrice, signedPrices, twaps);
+        _checkPriceLevel(priceLevel, signedPrices, priceLevelTwaps);
 
         return prices;
     }
@@ -135,7 +169,11 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         uint256 priceComparisonTokenUSD = usdOracle.getPriceUSD(comparisonToken);
 
         //TODO: do we need to ensure the individual feeds are ETH price grounded too? This is used in the reserve safety checker, for example.
-        _ensurePriceConsistency(priceBaseUSD, priceComparisonTokenUSD, baseToComparisonPrice);
+        _ensureRelativePriceConsistency(
+            priceBaseUSD,
+            priceComparisonTokenUSD,
+            baseToComparisonPrice
+        );
 
         return priceBaseUSD;
     }
@@ -147,20 +185,20 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         relativeEpsilon = _relativeEpsilon;
     }
 
-    function _ensureRootPriceGrounded(
-        uint256 mainRootPrice,
+    function _checkPriceLevel(
+        uint256 priceLevel,
         uint256[] memory signedPrices,
-        uint256[] memory twaps
+        uint256[] memory priceLevelTwaps
     ) internal view {
-        uint256 trueWETH = getTrueWETHPrice(signedPrices, twaps);
-        uint256 absolutePriceDifference = mainRootPrice.absSub(trueWETH);
+        uint256 trueWETH = getRobustWETHPrice(signedPrices, priceLevelTwaps);
+        uint256 absolutePriceDifference = priceLevel.absSub(trueWETH);
         require(
             absolutePriceDifference <= MAX_ABSOLUTE_WETH_DEVIATION,
             Errors.ROOT_PRICE_NOT_GROUNDED
         );
     }
 
-    function _ensurePriceConsistency(
+    function _ensureRelativePriceConsistency(
         uint256 aUSDPrice,
         uint256 bUSDPrice,
         uint256 abPrice
@@ -172,7 +210,11 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         require(relativePriceDifference <= relativeEpsilon, Errors.STALE_PRICE);
     }
 
-    function _medianizeTwaps(uint256[] memory twapPrices) internal pure returns (uint256) {
+    function _medianizepriceLevelTwaps(uint256[] memory twapPrices)
+        internal
+        pure
+        returns (uint256)
+    {
         // min if there are two, or the 2nd min if more than two
         require(twapPrices.length > 0, Errors.NOT_ENOUGH_TWAPS);
         uint256 min = twapPrices[0];
@@ -235,12 +277,12 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     /// 3. Compute the median of this array
     /// @param signedPrices an array of prices from trusted providers (e.g. Chainlink, Coinbase, OKEx ETH/USD price)
     /// @param twapPrices an array of Time Weighted Moving Average ETH/stablecoin prices
-    function getTrueWETHPrice(uint256[] memory signedPrices, uint256[] memory twapPrices)
+    function getRobustWETHPrice(uint256[] memory signedPrices, uint256[] memory twapPrices)
         public
         view
         returns (uint256 trueWETHPrice)
     {
-        uint256 medianizedTwap = _medianizeTwaps(twapPrices);
+        uint256 medianizedTwap = _medianizepriceLevelTwaps(twapPrices);
 
         uint256[] memory prices = new uint256[](signedPrices.length + 1);
         for (uint256 i = 0; i < prices.length; i++) {
