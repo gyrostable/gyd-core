@@ -35,9 +35,6 @@ contract Motherboard is IMotherBoard, Governable {
     using ConfigHelpers for IGyroConfig;
     using AssetPricer for IUSDPriceOracle;
 
-    event MintSafety(string mintSafety);
-    event RedeemSafety(string mintSafety);
-
     /// @inheritdoc IMotherBoard
     IGYDToken public immutable override gydToken;
 
@@ -72,18 +69,7 @@ contract Motherboard is IMotherBoard, Governable {
             reserveState.vaults
         );
 
-        string memory mintSafety = gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
-
-        //TODO: insert this logic into the other motherboard functions, possible abstract it
-        if (
-            keccak256(bytes(mintSafety)) ==
-            keccak256(bytes(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED))
-        ) {
-            emit MintSafety(mintSafety);
-        } else if (keccak256(bytes(mintSafety)) != keccak256(bytes(""))) {
-            emit MintSafety(mintSafety);
-            revert(mintSafety);
-        }
+        gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
 
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.MonetaryAmount memory vaultAmount = vaultAmounts[i];
