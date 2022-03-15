@@ -274,7 +274,6 @@ def test_compute_reserve_value_gas(pamm, args, alpha_min):
     pamm.computeReserveValueWithGas(args_final)
 
 
-@pytest.mark.skip()
 @given(st.data())
 def test_path_independence(
     admin, TestingPAMMV1, TestingPAMMV1Path, data: st.DataObject
@@ -328,7 +327,11 @@ def run_path_independence_test(
     # These two are the actual meat (and they're also kinda equivalent):
     # values are scaled to 10^18 so we allow for some absolute error of 10^-8
     # as there might be some small differences because of root computations etc
-    assert int(b) == pytest.approx(b2, abs=10**10)
-    assert int(redeem_tx.return_value) == pytest.approx(
-        redeem_path_tx.return_value, abs=10**10
-    )
+    assert QD(b) == QD(b2).approxed(rel=D("1E-10"))
+
+    double_redeem = QD(redeem_path_tx.return_value)
+    assert QD(redeem_tx.return_value) == double_redeem.approxed(rel=D("1E-10"))
+
+    # Seems that changing the relative error may allow the test to pass.
+    # Mulup and divup are in the quantized decimal now, these could be accounting for a difference above 1e-14 relative.abs
+    # The other option is that it's the square root. Could use Josh's, which has 5e-18 absolute error. Would need to take this from the vaults repo.

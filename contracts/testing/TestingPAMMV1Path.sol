@@ -119,6 +119,6 @@ contract TestingPAMMV1Path is PrimaryAMMV1Path {
         uint256 y
     ) external returns (uint256) {
         uint256 initialRedeem = redeem(x1, y);
-        return redeem(x2, y - initialRedeem);
+        return initialRedeem + redeem(x2, y - initialRedeem);
     }
 }
