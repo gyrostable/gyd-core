@@ -45,14 +45,5 @@ interface IPAMM {
     function redeem(uint256 gydAmount, uint256 reserveUSDValue) external returns (uint256);
 
     /// @notice Allows for the system parameters to be updated
-<<<<<<< HEAD
     function setSystemParams(Params memory params) external;
-=======
-    function setSystemParams(
-        uint64 alphaBar,
-        uint64 xuBar,
-        uint64 thetaBar,
-        uint64 outflowMemory
-    ) external;
->>>>>>> 76ff380 (Updates to short term flow logging)
 }
