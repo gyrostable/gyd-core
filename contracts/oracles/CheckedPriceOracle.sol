@@ -23,7 +23,7 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
     using SafeCast for uint256;
     using SafeCast for int256;
 
-    uint256 public constant MAX_ABSOLUTE_WETH_DEVIATION = 0.02e18;
+    uint256 public constant MAX_ABSOLUTE_WETH_DEVIATION = 50e18;
     uint256 public constant INITIAL_RELATIVE_EPSILON = 0.02e18;
     uint256 public constant MAX_RELATIVE_EPSILON = 0.1e18;
 

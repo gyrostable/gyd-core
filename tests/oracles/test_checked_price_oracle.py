@@ -1,13 +1,16 @@
+import time
 from decimal import Decimal
 from statistics import median, median_high, median_low
 
 import hypothesis.strategies as st
 import numpy as np
 import pytest
+import requests
 from brownie.test import given
 from brownie.test.managers.runner import RevertContextManager as reverts
 from tests.fixtures.mainnet_contracts import TokenAddresses
 from tests.support import error_codes
+from tests.support.price_signing import make_message, sign_message
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.utils import scale, to_decimal
 
@@ -15,6 +18,51 @@ ETH_USD_PRICE = scale("2700")
 CRV_USD_PRICE = scale("3.5")
 USDC_USD_PRICE = scale("1.001")
 BTC_USD_PRICE = scale("37324")
+
+PRICE_DECIMALS = 6
+
+
+def get_eth_price():
+    r = requests.get(
+        "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+    )
+    return r.json()["ethereum"]["usd"]
+
+
+@pytest.fixture
+def initialize_mainnet_oracles(
+    mainnet_checked_price_oracle,
+    local_signer_price_oracle,
+    admin,
+    TestingTrustedSignerPriceOracle,
+    asset_registry,
+    price_signer,
+):
+    deployed_trusted_signer = admin.deploy(
+        TestingTrustedSignerPriceOracle, asset_registry, price_signer
+    )
+    timestamp = int(time.time())
+    unscaled_price = D(get_eth_price())
+    encoded_message = make_message(
+        "ETH", int(scale(unscaled_price, PRICE_DECIMALS)), timestamp
+    )
+    signature = sign_message(encoded_message, price_signer)
+
+    asset_registry.setAssetAddress("ETH", TokenAddresses.WETH, {"from": admin})
+
+    local_signer_price_oracle.postPrice(encoded_message, signature)
+
+    unscaled_price = unscaled_price * D("0.99")
+    encoded_message = make_message(
+        "ETH", int(scale(unscaled_price, PRICE_DECIMALS)), timestamp
+    )
+    signature = sign_message(encoded_message, price_signer)
+
+    deployed_trusted_signer.postPrice(encoded_message, signature)
+
+    mainnet_checked_price_oracle.addSignedPriceSource(local_signer_price_oracle)
+    mainnet_checked_price_oracle.addSignedPriceSource(deployed_trusted_signer)
+    mainnet_checked_price_oracle.addQuoteAssetsForPriceLevelTwap(TokenAddresses.USDC)
 
 
 @pytest.fixture
@@ -171,14 +219,11 @@ def test_get_prices_usd_large_deviation_multiple_assets(
 
 
 @pytest.mark.mainnetFork
-@pytest.mark.usefixtures("add_common_uniswap_pools", "set_common_chainlink_feeds")
-def test_get_on_chain_usd_price(mainnet_checked_price_oracle):
-    price = mainnet_checked_price_oracle.getPriceUSD(TokenAddresses.CRV)
-    assert scale(1) <= price <= scale(10)
-
-
-@pytest.mark.mainnetFork
-@pytest.mark.usefixtures("add_common_uniswap_pools", "set_common_chainlink_feeds")
+@pytest.mark.usefixtures(
+    "add_common_uniswap_pools",
+    "set_common_chainlink_feeds",
+    "initialize_mainnet_oracles",
+)
 def test_get_on_chain_usd_prices(mainnet_checked_price_oracle):
     prices = mainnet_checked_price_oracle.getPricesUSD(
         [
