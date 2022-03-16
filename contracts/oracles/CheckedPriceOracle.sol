@@ -15,7 +15,7 @@ import "../auth/Governable.sol";
 import "../../libraries/Errors.sol";
 import "../../libraries/FixedPoint.sol";
 
-contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable {
+contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableExtensions for EnumerableSet.AddressSet;
 
@@ -35,7 +35,6 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     uint256 public relativeEpsilon;
 
-    /// TODO: check this is how the USD Price oracle works, i.e., can use this to get ETH/USD from coinbase and OKex
     EnumerableSet.AddressSet internal trustedSignerPriceOracles;
 
     /// This list is going to be used for the twaps to be input into the price level checks.
@@ -87,18 +86,19 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
         uint256[] memory priceLevelTwaps = new uint256[](quoteAssetsForPriceLevelTWAPS.length());
 
+        uint256 k;
         for (uint256 i = 0; i < tokenAddresses.length - 1; i++) {
             if (checked[i]) {
                 continue;
             }
 
             bool couldCheck = false;
+
             for (uint256 j = i + 1; j < tokenAddresses.length; j++) {
                 if (!relativeOracle.isPairSupported(tokenAddresses[i], tokenAddresses[j])) {
                     continue;
                 }
 
-                // This is a TWAP
                 uint256 relativePrice = relativeOracle.getRelativePrice(
                     tokenAddresses[i],
                     tokenAddresses[j]
@@ -108,7 +108,8 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
                     (tokenAddresses[i] == WETH_ADDRESS) &&
                     (quoteAssetsForPriceLevelTWAPS.contains(tokenAddresses[j]))
                 ) {
-                    priceLevelTwaps[i] = relativePrice;
+                    priceLevelTwaps[k] = relativePrice;
+                    k++;
                 }
 
                 _ensureRelativePriceConsistency(prices[i], prices[j], relativePrice);
@@ -140,7 +141,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         uint256[] memory prices = new uint256[](length);
 
         if (tokenAddresses.length == 1) {
-            prices[0] = getPriceUSD(tokenAddresses[0]);
+            prices[0] = usdOracle.getPriceUSD(tokenAddresses[0]);
             return prices;
         }
 
@@ -154,14 +155,11 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
             }
         }
 
-        /// TODO: check that getRelativePrice will return the indended prices, e.g. ETH/USDT, ETH/USDC is what is desired.
         uint256[] memory priceLevelTwaps = batchRelativePriceCheck(tokenAddresses, length, prices);
 
         uint256 numberOfTrustedSignerOracles = trustedSignerPriceOracles.length();
         uint256[] memory signedPrices = new uint256[](numberOfTrustedSignerOracles);
 
-        /// TODO: Ensure that given ETH/USD price from coinbase and the ETH/USD price from OKex are the prices that get saved in this array. These sould be verified as valid in terms of price and time
-        /// TODO: is this the right way to do this gas wise?
         for (uint256 i = 0; i < numberOfTrustedSignerOracles; i++) {
             IUSDPriceOracle oracle = IUSDPriceOracle(trustedSignerPriceOracles.at(i));
             signedPrices[i] = oracle.getPriceUSD(WETH_ADDRESS);
@@ -170,26 +168,6 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         _checkPriceLevel(priceLevel, signedPrices, priceLevelTwaps);
 
         return prices;
-    }
-
-    /// @inheritdoc IUSDPriceOracle
-    function getPriceUSD(address tokenAddress) public view override returns (uint256) {
-        address comparisonToken = tokenAddress == WETH_ADDRESS ? USDC_ADDRESS : WETH_ADDRESS;
-        uint256 baseToComparisonPrice = relativeOracle.getRelativePrice(
-            tokenAddress,
-            comparisonToken
-        );
-        uint256 priceBaseUSD = usdOracle.getPriceUSD(tokenAddress);
-        uint256 priceComparisonTokenUSD = usdOracle.getPriceUSD(comparisonToken);
-
-        //TODO: do we need to ensure the individual feeds are ETH price grounded too? This is used in the reserve safety checker, for example.
-        _ensureRelativePriceConsistency(
-            priceBaseUSD,
-            priceComparisonTokenUSD,
-            baseToComparisonPrice
-        );
-
-        return priceBaseUSD;
     }
 
     function setRelativeMaxEpsilon(uint256 _relativeEpsilon) external governanceOnly {
@@ -291,18 +269,15 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         view
         returns (uint256)
     {
-        uint256 medianizedTwap;
+        uint256 minTWAP;
         if (twapPrices.length == 0) {
             return _median(signedPrices);
         } else {
-            medianizedTwap = _computeMinOrSecondMin(twapPrices);
+            minTWAP = _computeMinOrSecondMin(twapPrices);
             uint256[] memory prices = new uint256[](signedPrices.length + 1);
-            for (uint256 i = 0; i < prices.length; i++) {
-                if (i == prices.length - 1) {
-                    prices[i] = medianizedTwap;
-                } else {
-                    prices[i] = signedPrices[i];
-                }
+            prices[prices.length - 1] = minTWAP;
+            for (uint256 i = 0; i < prices.length - 1; i++) {
+                prices[i] = signedPrices[i];
             }
             return _median(prices);
         }
