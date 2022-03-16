@@ -352,7 +352,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         for (uint256 i = 0; i < _addressesToAdd.length; i++) {
             whitelist[_addressesToAdd[i]] = true;
         }
-        emit WhitelistChanged("Added", _addressesToAdd);
+        emit WhitelistChanged("Added addresses to whitelist", _addressesToAdd);
     }
 
     function removeAddressFromWhitelist(address[] memory _addressesToRemove)
@@ -362,7 +362,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         for (uint256 i = 0; i < _addressesToRemove.length; i++) {
             whitelist[_addressesToRemove[i]] = false;
         }
-        emit WhitelistChanged("Removed", _addressesToRemove);
+        emit WhitelistChanged("Removed addresses from whitelist", _addressesToRemove);
     }
 
     modifier isWhitelisted(address _address) {
