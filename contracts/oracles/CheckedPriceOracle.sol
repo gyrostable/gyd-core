@@ -35,7 +35,6 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     uint256 public relativeEpsilon;
 
-    /// This should be setting the contract addresses for the trusted Signed Price Oracles
     /// TODO: check this is how the USD Price oracle works, i.e., can use this to get ETH/USD from coinbase and OKex
     EnumerableSet.AddressSet internal trustedSignerPriceOracles;
 
@@ -161,10 +160,8 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         uint256 numberOfTrustedSignerOracles = trustedSignerPriceOracles.length();
         uint256[] memory signedPrices = new uint256[](numberOfTrustedSignerOracles);
 
-        /// Ensure that given ETH/USD price from coinbase and the ETH/USD price from
-        /// OKex are the prices that get saved in this array
-        /// Q: will these prices be retrieved if just the contract address is provided?
-        /// Q: is this the right way to do this gas wise?
+        /// TODO: Ensure that given ETH/USD price from coinbase and the ETH/USD price from OKex are the prices that get saved in this array
+        /// TODO: is this the right way to do this gas wise?
         for (uint256 i = 0; i < numberOfTrustedSignerOracles; i++) {
             IUSDPriceOracle oracle = IUSDPriceOracle(trustedSignerPriceOracles.at(i));
             signedPrices[i] = oracle.getPriceUSD(WETH_ADDRESS);
