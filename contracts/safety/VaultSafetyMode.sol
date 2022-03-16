@@ -16,6 +16,7 @@ import "../../interfaces/ISafetyCheck.sol";
 import "../../interfaces/IVaultRegistry.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../libraries/Flow.sol";
+import "../../libraries/Errors.sol";
 import "../../libraries/StringExtensions.sol";
 import "../../libraries/EnumerableExtensions.sol";
 
@@ -356,10 +357,8 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return err;
     }
 
-    function getWhitelist() external view returns (address[] memory whitelistedAddresses) {
-        for (uint256 i = 0; i < whitelist.length(); i++) {
-            whitelistedAddresses[i] = whitelist.at(i);
-        }
+    function getWhitelist() external view returns (address[] memory) {
+        return whitelist.toArray();
     }
 
     function addAddressToWhitelist(address _addressToAdd) external governanceOnly {
@@ -373,7 +372,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     }
 
     modifier isWhitelisted(address _address) {
-        require(whitelist.contains(_address), "Address not whitelisted");
+        require(whitelist.contains(_address), Errors.NOT_AUTHORIZED);
         _;
     }
 
