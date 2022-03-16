@@ -35,11 +35,19 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     uint256 public relativeEpsilon;
 
-    address[] public signedPriceAddresses;
+    /// This should be setting the contract addresses for the trusted Signed Price Oracles
+    /// TODO: check this is how the USD Price oracle works, i.e., can use this to get ETH/USD from coinbase and OKex
+    EnumerableSet.AddressSet internal trustedSignerPriceOracles;
 
+    /// This list is going to be used for the twaps to be input into the price level checks.
+    /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT
     EnumerableSet.AddressSet internal quoteAssetsForPriceLevelTWAPS;
 
-    event QuoteAssetForPriceLevelChanged(string, address _addedAddress);
+    event PriceLevelTWAPQuoteAssetAdded(address _addressToAdd);
+    event PriceLevelTWAPQuoteAssetRemoved(address _addressToRemove);
+
+    event TrustedSignerOracleAdded(address _addressToAdd);
+    event TrustedSignerOracleRemoved(address _addressToRemove);
 
     /// _usdOracle is for Chainlink
     constructor(address _usdOracle, address _relativeOracle) {
@@ -48,40 +56,27 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         relativeEpsilon = INITIAL_RELATIVE_EPSILON;
     }
 
-    /// This should be setting the contract addresses for the trusted Signed Price Oracles
-    function setSignedPriceAddresses(address[] memory newSignedPriceAddresses)
-        external
-        governanceOnly
-    {
-        signedPriceAddresses = newSignedPriceAddresses;
+    function addSignedPriceSource(address _signedAssetToAdd) external governanceOnly {
+        trustedSignerPriceOracles.add(_signedAssetToAdd);
+        emit TrustedSignerOracleAdded(_signedAssetToAdd);
     }
 
-    function setQuoteAssetsForPriceLevelCheckTWAPs(address[] memory _newQuoteAssets)
-        external
-        governanceOnly
-    {
-        /// This list is going to be used for the twaps to be input into the price level checks.
-        /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT
-        for (uint256 i = 0; i < _newQuoteAssets.length; i++) {
-            bool success = quoteAssetsForPriceLevelTWAPS.add(_newQuoteAssets[i]);
-            if (success) {
-                emit QuoteAssetForPriceLevelChanged("Quote asset added", _newQuoteAssets[i]);
-            }
-        }
+    function removeSignedPriceSource(address _signedAssetToRemove) external governanceOnly {
+        trustedSignerPriceOracles.remove(_signedAssetToRemove);
+        emit TrustedSignerOracleRemoved(_signedAssetToRemove);
     }
 
-    function removeQuoteAssetsForPriceLevelCheckTWAPs(address[] memory _quoteAssetsToRemove)
+    function addQuoteAssetsForPriceLevelTwap(address _quoteAssetToAdd) external governanceOnly {
+        quoteAssetsForPriceLevelTWAPS.add(_quoteAssetToAdd);
+        emit PriceLevelTWAPQuoteAssetAdded(_quoteAssetToAdd);
+    }
+
+    function removeQuoteAssetsForPriceLevelTwap(address _quoteAssetToRemove)
         external
         governanceOnly
     {
-        /// This list is going to be used for the twaps to be input into the price level checks.
-        /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT
-        for (uint256 i = 0; i < _quoteAssetsToRemove.length; i++) {
-            bool success = quoteAssetsForPriceLevelTWAPS.remove(_quoteAssetsToRemove[i]);
-            if (success) {
-                emit QuoteAssetForPriceLevelChanged("Quote asset removed", _quoteAssetsToRemove[i]);
-            }
-        }
+        quoteAssetsForPriceLevelTWAPS.remove(_quoteAssetToRemove);
+        emit PriceLevelTWAPQuoteAssetRemoved(_quoteAssetToRemove);
     }
 
     function batchRelativePriceCheck(
@@ -160,16 +155,19 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
             }
         }
 
+        /// TODO: check that getRelativePrice will return the indended prices, e.g. ETH/USDT, ETH/USDC is what is desired.
         uint256[] memory priceLevelTwaps = batchRelativePriceCheck(tokenAddresses, length, prices);
 
-        uint256[] memory signedPrices = new uint256[](signedPriceAddresses.length);
+        uint256 numberOfTrustedSignerOracles = trustedSignerPriceOracles.length();
+        uint256[] memory signedPrices = new uint256[](numberOfTrustedSignerOracles);
 
-        for (uint256 i = 0; i < signedPriceAddresses.length; i++) {
-            /// Ensure that given ETH/USD price from coinbase and the ETH/USD price from
-            /// OKex are the prices that get saved in this array
-            /// Q: will these prices be retrieved if just the contract address is provided?
-            /// Q: is this the right way to do this gas wise?
-            signedPrices[i] = usdOracle.getPriceUSD(signedPriceAddresses[i]);
+        /// Ensure that given ETH/USD price from coinbase and the ETH/USD price from
+        /// OKex are the prices that get saved in this array
+        /// Q: will these prices be retrieved if just the contract address is provided?
+        /// Q: is this the right way to do this gas wise?
+        for (uint256 i = 0; i < numberOfTrustedSignerOracles; i++) {
+            IUSDPriceOracle oracle = IUSDPriceOracle(trustedSignerPriceOracles.at(i));
+            signedPrices[i] = oracle.getPriceUSD(WETH_ADDRESS);
         }
 
         _checkPriceLevel(priceLevel, signedPrices, priceLevelTwaps);
