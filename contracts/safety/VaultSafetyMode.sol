@@ -3,6 +3,7 @@ pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
@@ -15,11 +16,17 @@ import "../../interfaces/ISafetyCheck.sol";
 import "../../interfaces/IVaultRegistry.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../libraries/Flow.sol";
+import "../../libraries/Errors.sol";
 import "../../libraries/StringExtensions.sol";
+import "../../libraries/EnumerableExtensions.sol";
 
 contract VaultSafetyMode is ISafetyCheck, Governable {
     using FixedPoint for uint256;
     using StringExtensions for string;
+    using EnumerableSet for EnumerableSet.AddressSet;
+    using EnumerableExtensions for EnumerableSet.AddressSet;
+
+    EnumerableSet.AddressSet internal whitelist;
 
     /// @notice Emmited when the motherboard is changed
     event MotherboardAddressChanged(address oldMotherboard, address newMotherboard);
@@ -27,7 +34,13 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @notice Emitted when entering safety mode
     event SafetyStatus(string err);
 
-    mapping(address => DataTypes.FlowData) public flowDataBidirectionalStored;
+    /// @notice Emitted when a whitelisted address protects a vault
+    event OracleGuardianActivated(address vaultAddress, uint256 durationOfProtectionInBlocks);
+
+    event AddedToWhitelist(address indexed account);
+    event RemovedFromWhitelist(address indexed account);
+
+    mapping(address => DataTypes.FlowData) public persistedFlowData;
 
     uint256 public immutable safetyBlocksAutomatic;
     uint256 public immutable safetyBlocksGuardian;
@@ -50,13 +63,13 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     function deploymentInitialization(address[] memory _vaultAddresses) internal {
         for (uint256 i = 0; i < _vaultAddresses.length; i++) {
-            flowDataBidirectionalStored[_vaultAddresses[i]].inFlow.shortFlow = 0;
-            flowDataBidirectionalStored[_vaultAddresses[i]].inFlow.remainingSafetyBlocks = 0;
+            persistedFlowData[_vaultAddresses[i]].inFlow.shortFlow = 0;
+            persistedFlowData[_vaultAddresses[i]].inFlow.remainingSafetyBlocks = 0;
 
-            flowDataBidirectionalStored[_vaultAddresses[i]].outFlow.shortFlow = 0;
-            flowDataBidirectionalStored[_vaultAddresses[i]].outFlow.remainingSafetyBlocks = 0;
+            persistedFlowData[_vaultAddresses[i]].outFlow.shortFlow = 0;
+            persistedFlowData[_vaultAddresses[i]].outFlow.remainingSafetyBlocks = 0;
 
-            flowDataBidirectionalStored[_vaultAddresses[i]].lastSeenBlock = block.number;
+            persistedFlowData[_vaultAddresses[i]].lastSeenBlock = block.number;
         }
     }
 
@@ -93,18 +106,16 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         require(directionalFlowData.length == vaultAddresses.length, Errors.NOT_ENOUGH_FLOW_DATA);
         if (order.mint) {
             for (uint256 i = 0; i < directionalFlowData.length; i++) {
-                flowDataBidirectionalStored[vaultAddresses[i]].inFlow = directionalFlowData[i];
+                persistedFlowData[vaultAddresses[i]].inFlow = directionalFlowData[i];
                 if (order.vaultsWithAmount[i].amount > 0) {
-                    flowDataBidirectionalStored[vaultAddresses[i]]
-                        .lastSeenBlock = currentBlockNumber;
+                    persistedFlowData[vaultAddresses[i]].lastSeenBlock = currentBlockNumber;
                 }
             }
         } else {
             for (uint256 i = 0; i < directionalFlowData.length; i++) {
-                flowDataBidirectionalStored[vaultAddresses[i]].outFlow = directionalFlowData[i];
+                persistedFlowData[vaultAddresses[i]].outFlow = directionalFlowData[i];
                 if (order.vaultsWithAmount[i].amount > 0) {
-                    flowDataBidirectionalStored[vaultAddresses[i]]
-                        .lastSeenBlock = currentBlockNumber;
+                    persistedFlowData[vaultAddresses[i]].lastSeenBlock = currentBlockNumber;
                 }
             }
         }
@@ -127,13 +138,13 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
         if (order.mint) {
             for (uint256 i = 0; i < vaultAddresses.length; i++) {
-                directionalFlowData[i] = flowDataBidirectionalStored[vaultAddresses[i]].inFlow;
-                lastSeenBlock[i] = flowDataBidirectionalStored[vaultAddresses[i]].lastSeenBlock;
+                directionalFlowData[i] = persistedFlowData[vaultAddresses[i]].inFlow;
+                lastSeenBlock[i] = persistedFlowData[vaultAddresses[i]].lastSeenBlock;
             }
         } else {
             for (uint256 i = 0; i < vaultAddresses.length; i++) {
-                directionalFlowData[i] = flowDataBidirectionalStored[vaultAddresses[i]].outFlow;
-                lastSeenBlock[i] = flowDataBidirectionalStored[vaultAddresses[i]].lastSeenBlock;
+                directionalFlowData[i] = persistedFlowData[vaultAddresses[i]].outFlow;
+                lastSeenBlock[i] = persistedFlowData[vaultAddresses[i]].lastSeenBlock;
             }
         }
     }
@@ -344,5 +355,50 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             currentBlockNumber
         );
         return err;
+    }
+
+    function getWhitelist() external view returns (address[] memory) {
+        return whitelist.toArray();
+    }
+
+    function addAddressToWhitelist(address _addressToAdd) external governanceOnly {
+        whitelist.add(_addressToAdd);
+        emit AddedToWhitelist(_addressToAdd);
+    }
+
+    function removeAddressFromWhitelist(address _addressToRemove) external governanceOnly {
+        whitelist.remove(_addressToRemove);
+        emit RemovedFromWhitelist(_addressToRemove);
+    }
+
+    modifier isWhitelisted(address _address) {
+        require(whitelist.contains(_address), Errors.NOT_AUTHORIZED);
+        _;
+    }
+
+    function activateOracleGuardian(
+        DataTypes.GuardedVaults memory vaultToProtect,
+        uint256 blocksToActivate
+    ) external isWhitelisted(msg.sender) {
+        require(blocksToActivate <= safetyBlocksGuardian, Errors.ORACLE_GUARDIAN_TIME_LIMIT);
+
+        if (
+            vaultToProtect.direction == DataTypes.Direction.In ||
+            vaultToProtect.direction == DataTypes.Direction.Both
+        ) {
+            persistedFlowData[vaultToProtect.vaultAddress]
+                .inFlow
+                .remainingSafetyBlocks = blocksToActivate;
+            emit OracleGuardianActivated(vaultToProtect.vaultAddress, blocksToActivate);
+        }
+        if (
+            vaultToProtect.direction == DataTypes.Direction.Out ||
+            vaultToProtect.direction == DataTypes.Direction.Both
+        ) {
+            persistedFlowData[vaultToProtect.vaultAddress]
+                .outFlow
+                .remainingSafetyBlocks = blocksToActivate;
+            emit OracleGuardianActivated(vaultToProtect.vaultAddress, blocksToActivate);
+        }
     }
 }
