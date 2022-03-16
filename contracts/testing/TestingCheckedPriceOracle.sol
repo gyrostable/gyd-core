@@ -13,11 +13,11 @@ contract TestingCheckedPriceOracle is CheckedPriceOracle {
         uint256[] memory signedPrices,
         uint256[] memory twaps
     ) external view {
-        return _ensureRootPriceGrounded(mainRootPrice, signedPrices, twaps);
+        return _checkPriceLevel(mainRootPrice, signedPrices, twaps);
     }
 
-    function medianizeTwaps(uint256[] memory twapPrices) external pure returns (uint256) {
-        return _medianizeTwaps(twapPrices);
+    function computeMinOrSecondMin(uint256[] memory twapPrices) external pure returns (uint256) {
+        return _computeMinOrSecondMin(twapPrices);
     }
 
     function median(uint256[] memory array) external view returns (uint256) {

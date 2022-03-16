@@ -16,6 +16,9 @@ import "../../libraries/Errors.sol";
 import "../../libraries/FixedPoint.sol";
 
 contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable {
+    using EnumerableSet for EnumerableSet.AddressSet;
+    using EnumerableExtensions for EnumerableSet.AddressSet;
+
     using FixedPoint for uint256;
     using SafeCast for uint256;
     using SafeCast for int256;
@@ -33,7 +36,10 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     uint256 public relativeEpsilon;
 
     address[] public signedPriceAddresses;
-    address[] public quoteAssetsForPriceLevelTWAPS;
+
+    EnumerableSet.AddressSet internal quoteAssetsForPriceLevelTWAPS;
+
+    event QuoteAssetForPriceLevelChanged(string, address _addedAddress);
 
     /// _usdOracle is for Chainlink
     constructor(address _usdOracle, address _relativeOracle) {
@@ -50,24 +56,42 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         signedPriceAddresses = newSignedPriceAddresses;
     }
 
-    function setQuoteAssetsForPriceLevelCheckTWAPs(address[] memory newTokenPairs)
+    function setQuoteAssetsForPriceLevelCheckTWAPs(address[] memory _newQuoteAssets)
         external
         governanceOnly
     {
         /// This list is going to be used for the twaps to be input into the price level checks.
         /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT
-        quoteAssetsForPriceLevelTWAPS = newTokenPairs;
+        for (uint256 i = 0; i < _newQuoteAssets.length; i++) {
+            bool success = quoteAssetsForPriceLevelTWAPS.add(_newQuoteAssets[i]);
+            if (success) {
+                emit QuoteAssetForPriceLevelChanged("Quote asset added", _newQuoteAssets[i]);
+            }
+        }
+    }
+
+    function removeQuoteAssetsForPriceLevelCheckTWAPs(address[] memory _quoteAssetsToRemove)
+        external
+        governanceOnly
+    {
+        /// This list is going to be used for the twaps to be input into the price level checks.
+        /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT
+        for (uint256 i = 0; i < _quoteAssetsToRemove.length; i++) {
+            bool success = quoteAssetsForPriceLevelTWAPS.remove(_quoteAssetsToRemove[i]);
+            if (success) {
+                emit QuoteAssetForPriceLevelChanged("Quote asset removed", _quoteAssetsToRemove[i]);
+            }
+        }
     }
 
     function batchRelativePriceCheck(
         address[] memory tokenAddresses,
         uint256 length,
-        uint256[] memory prices,
-        address[] memory twapsToSave /// This variable will be used to save the TWAPS for the price level
+        uint256[] memory prices
     ) internal view returns (uint256[] memory) {
         bool[] memory checked = new bool[](length);
 
-        uint256[] memory priceLevelTwaps = new uint256[](twapsToSave.length);
+        uint256[] memory priceLevelTwaps = new uint256[](quoteAssetsForPriceLevelTWAPS.length());
 
         for (uint256 i = 0; i < tokenAddresses.length - 1; i++) {
             if (checked[i]) {
@@ -86,10 +110,13 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
                     tokenAddresses[j]
                 );
 
-                // if tokenAddresses[j] is a member of twapsToSave then store the relative price in the priceLevelTwapsarray
-                // if (tokenAddresses[i] == WETH_ADDRESS) && (tokenAddresses[j] is in twapsToSave) {
-                //     priceLevelTwaps[i] = relativePrice;
-                // }
+                if (
+                    (tokenAddresses[i] == WETH_ADDRESS) &&
+                    (quoteAssetsForPriceLevelTWAPS.contains(tokenAddresses[j]))
+                ) {
+                    priceLevelTwaps[i] = relativePrice;
+                }
+
                 _ensureRelativePriceConsistency(prices[i], prices[j], relativePrice);
 
                 checked[j] = true;
@@ -133,15 +160,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
             }
         }
 
-        /// TODO: This is to avoid storage being read from each time. Is this necessary?
-        address[] memory quoteAssetsForPriceLevelTWAPSMemory = quoteAssetsForPriceLevelTWAPS;
-
-        uint256[] memory priceLevelTwaps = batchRelativePriceCheck(
-            tokenAddresses,
-            length,
-            prices,
-            quoteAssetsForPriceLevelTWAPSMemory
-        );
+        uint256[] memory priceLevelTwaps = batchRelativePriceCheck(tokenAddresses, length, prices);
 
         uint256[] memory signedPrices = new uint256[](signedPriceAddresses.length);
 
@@ -210,13 +229,8 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         require(relativePriceDifference <= relativeEpsilon, Errors.STALE_PRICE);
     }
 
-    function _medianizepriceLevelTwaps(uint256[] memory twapPrices)
-        internal
-        pure
-        returns (uint256)
-    {
+    function _computeMinOrSecondMin(uint256[] memory twapPrices) internal pure returns (uint256) {
         // min if there are two, or the 2nd min if more than two
-        require(twapPrices.length > 0, Errors.NOT_ENOUGH_TWAPS);
         uint256 min = twapPrices[0];
         uint256 secondMin = 2**256 - 1;
         for (uint256 i = 1; i < twapPrices.length; i++) {
@@ -280,18 +294,22 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     function getRobustWETHPrice(uint256[] memory signedPrices, uint256[] memory twapPrices)
         public
         view
-        returns (uint256 trueWETHPrice)
+        returns (uint256)
     {
-        uint256 medianizedTwap = _medianizepriceLevelTwaps(twapPrices);
-
-        uint256[] memory prices = new uint256[](signedPrices.length + 1);
-        for (uint256 i = 0; i < prices.length; i++) {
-            if (i == prices.length - 1) {
-                prices[i] = medianizedTwap;
-            } else {
-                prices[i] = signedPrices[i];
+        uint256 medianizedTwap;
+        if (twapPrices.length == 0) {
+            return _median(signedPrices);
+        } else {
+            medianizedTwap = _computeMinOrSecondMin(twapPrices);
+            uint256[] memory prices = new uint256[](signedPrices.length + 1);
+            for (uint256 i = 0; i < prices.length; i++) {
+                if (i == prices.length - 1) {
+                    prices[i] = medianizedTwap;
+                } else {
+                    prices[i] = signedPrices[i];
+                }
             }
+            return _median(prices);
         }
-        trueWETHPrice = _median(prices);
     }
 }

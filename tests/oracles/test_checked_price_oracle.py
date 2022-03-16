@@ -215,7 +215,7 @@ def test_median(testing_checked_price_oracle, values):
     )
 )
 def test_medianize_twaps(testing_checked_price_oracle, values):
-    medianized = testing_checked_price_oracle.medianizeTwaps(values)
+    medianized = testing_checked_price_oracle.computeMinOrSecondMin(values)
 
     array = np.array(values, dtype=np.int64)
     print("Array", array)
