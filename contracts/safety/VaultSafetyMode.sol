@@ -3,6 +3,7 @@ pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
@@ -16,10 +17,15 @@ import "../../interfaces/IVaultRegistry.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../libraries/Flow.sol";
 import "../../libraries/StringExtensions.sol";
+import "../../libraries/EnumerableExtensions.sol";
 
 contract VaultSafetyMode is ISafetyCheck, Governable {
     using FixedPoint for uint256;
     using StringExtensions for string;
+    using EnumerableSet for EnumerableSet.AddressSet;
+    using EnumerableExtensions for EnumerableSet.AddressSet;
+
+    EnumerableSet.AddressSet internal whitelist;
 
     /// @notice Emmited when the motherboard is changed
     event MotherboardAddressChanged(address oldMotherboard, address newMotherboard);
@@ -27,11 +33,13 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @notice Emitted when entering safety mode
     event SafetyStatus(string err);
 
-    /// TODO: is this how you think this should best be done?
-    event WhitelistChanged(string, address[]);
+    /// @notice Emitted when a whitelisted address protects a vault
+    event OracleGuardianActivated(address vaultAddress, uint256 durationOfProtectionInBlocks);
+
+    event AddedToWhitelist(address indexed account);
+    event RemovedFromWhitelist(address indexed account);
 
     mapping(address => DataTypes.FlowData) public persistedFlowData;
-    mapping(address => bool) public whitelist;
 
     uint256 public immutable safetyBlocksAutomatic;
     uint256 public immutable safetyBlocksGuardian;
@@ -348,51 +356,50 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return err;
     }
 
-    function addAddressToWhitelist(address[] memory _addressesToAdd) external governanceOnly {
-        for (uint256 i = 0; i < _addressesToAdd.length; i++) {
-            whitelist[_addressesToAdd[i]] = true;
+    function getWhitelist() external view returns (address[] memory whitelistedAddresses) {
+        for (uint256 i = 0; i < whitelist.length(); i++) {
+            whitelistedAddresses[i] = whitelist.at(i);
         }
-        emit WhitelistChanged("Added addresses to whitelist", _addressesToAdd);
     }
 
-    function removeAddressFromWhitelist(address[] memory _addressesToRemove)
-        external
-        governanceOnly
-    {
-        for (uint256 i = 0; i < _addressesToRemove.length; i++) {
-            whitelist[_addressesToRemove[i]] = false;
-        }
-        emit WhitelistChanged("Removed addresses from whitelist", _addressesToRemove);
+    function addAddressToWhitelist(address _addressToAdd) external governanceOnly {
+        whitelist.add(_addressToAdd);
+        emit AddedToWhitelist(_addressToAdd);
+    }
+
+    function removeAddressFromWhitelist(address _addressToRemove) external governanceOnly {
+        whitelist.remove(_addressToRemove);
+        emit RemovedFromWhitelist(_addressToRemove);
     }
 
     modifier isWhitelisted(address _address) {
-        require(whitelist[_address], "Address not whitelisted");
+        require(whitelist.contains(_address), "Address not whitelisted");
         _;
     }
 
     function activateOracleGuardian(
-        DataTypes.GuardedVaults[] memory vaultsToProtect,
+        DataTypes.GuardedVaults memory vaultToProtect,
         uint256 blocksToActivate
     ) external isWhitelisted(msg.sender) {
         require(blocksToActivate <= safetyBlocksGuardian, Errors.ORACLE_GUARDIAN_TIME_LIMIT);
 
-        for (uint256 i = 0; i < vaultsToProtect.length; i++) {
-            if (
-                vaultsToProtect[i].direction == DataTypes.Direction.In ||
-                vaultsToProtect[i].direction == DataTypes.Direction.Both
-            ) {
-                persistedFlowData[vaultsToProtect[i].vaultAddress]
-                    .inFlow
-                    .remainingSafetyBlocks = blocksToActivate;
-            }
-            if (
-                vaultsToProtect[i].direction == DataTypes.Direction.Out ||
-                vaultsToProtect[i].direction == DataTypes.Direction.Both
-            ) {
-                persistedFlowData[vaultsToProtect[i].vaultAddress]
-                    .outFlow
-                    .remainingSafetyBlocks = blocksToActivate;
-            }
+        if (
+            vaultToProtect.direction == DataTypes.Direction.In ||
+            vaultToProtect.direction == DataTypes.Direction.Both
+        ) {
+            persistedFlowData[vaultToProtect.vaultAddress]
+                .inFlow
+                .remainingSafetyBlocks = blocksToActivate;
+            emit OracleGuardianActivated(vaultToProtect.vaultAddress, blocksToActivate);
+        }
+        if (
+            vaultToProtect.direction == DataTypes.Direction.Out ||
+            vaultToProtect.direction == DataTypes.Direction.Both
+        ) {
+            persistedFlowData[vaultToProtect.vaultAddress]
+                .outFlow
+                .remainingSafetyBlocks = blocksToActivate;
+            emit OracleGuardianActivated(vaultToProtect.vaultAddress, blocksToActivate);
         }
     }
 }
