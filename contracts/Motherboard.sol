@@ -21,7 +21,6 @@ import "../libraries/ConfigHelpers.sol";
 import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/DecimalScale.sol";
-import "../libraries/AssetPricer.sol";
 
 import "./auth/Governable.sol";
 
@@ -33,7 +32,6 @@ contract Motherboard is IMotherBoard, Governable {
     using SafeERC20 for IERC20;
     using SafeERC20 for IGYDToken;
     using ConfigHelpers for IGyroConfig;
-    using AssetPricer for IUSDPriceOracle;
 
     /// @inheritdoc IMotherBoard
     IGYDToken public immutable override gydToken;
@@ -78,9 +76,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
 
-        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(
-            orderAfterFees.vaultsWithAmount
-        );
+        uint256 usdValue = _getBasketUSDValue(orderAfterFees);
         uint256 gyroToMint = pamm().mint(usdValue, reserveState.totalUSDValue);
 
         require(gyroToMint >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
@@ -139,7 +135,8 @@ contract Motherboard is IMotherBoard, Governable {
 
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
 
-        uint256 usdValue = gyroConfig.getRootPriceOracle().getBasketUSDValue(vaultAmounts);
+        DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
+        uint256 usdValue = _getBasketUSDValue(orderAfterFees);
         mintedGYDAmount = pamm().computeMintAmount(usdValue, reserveState.totalUSDValue);
 
         if (mintedGYDAmount < minReceivedAmount) {
@@ -306,19 +303,16 @@ contract Motherboard is IMotherBoard, Governable {
     }
 
     function _getAssetAmountAndValueRatioRedeem(
-        address vaultAddress,
+        DataTypes.VaultInfo memory vaultInfo,
         uint256 usdValueToRedeem,
         DataTypes.RedeemAsset[] calldata assets
-    ) internal view returns (uint256, uint256) {
+    ) internal pure returns (uint256, uint256) {
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.RedeemAsset memory redeemAsset = assets[i];
-            if (redeemAsset.originVault == vaultAddress) {
-                IGyroVault vault = IGyroVault(redeemAsset.originVault);
-                IUSDPriceOracle priceOracle = gyroConfig.getRootPriceOracle();
+            if (redeemAsset.originVault == vaultInfo.vault) {
                 uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(redeemAsset.valueRatio);
-                uint256 vaultTokenPrice = priceOracle.getPriceUSD(address(vault));
-                uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultTokenPrice);
-                uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vault.decimals());
+                uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultInfo.price);
+                uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vaultInfo.decimals);
 
                 return (scaledVaultTokenAmount, redeemAsset.valueRatio);
             }
@@ -330,7 +324,7 @@ contract Motherboard is IMotherBoard, Governable {
         uint256 usdValueToRedeem,
         DataTypes.RedeemAsset[] calldata assets,
         DataTypes.VaultInfo[] memory vaultsInfo
-    ) internal view returns (DataTypes.Order memory) {
+    ) internal pure returns (DataTypes.Order memory) {
         DataTypes.Order memory order = DataTypes.Order({
             mint: false,
             vaultsWithAmount: new DataTypes.VaultWithAmount[](vaultsInfo.length)
@@ -341,7 +335,7 @@ contract Motherboard is IMotherBoard, Governable {
         for (uint256 i = 0; i < vaultsInfo.length; i++) {
             DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
             (uint256 amount, uint256 valueRatio) = _getAssetAmountAndValueRatioRedeem(
-                vaultInfo.vault,
+                vaultInfo,
                 usdValueToRedeem,
                 assets
             );
@@ -465,6 +459,20 @@ contract Motherboard is IMotherBoard, Governable {
                         DataTypes.MonetaryAmount(asset.outputToken, lpTokenAmount)
                     );
             }
+        }
+    }
+
+    function _getBasketUSDValue(DataTypes.Order memory order)
+        internal
+        pure
+        returns (uint256 result)
+    {
+        for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
+            DataTypes.VaultWithAmount memory vaultWithAmount = order.vaultsWithAmount[i];
+            uint256 scaledAmount = vaultWithAmount.amount.scaleFrom(
+                vaultWithAmount.vaultInfo.decimals
+            );
+            result += scaledAmount.mulDown(vaultWithAmount.vaultInfo.price);
         }
     }
 }

@@ -21,13 +21,12 @@ contract ReserveManager is IReserveManager, Governable {
 
     IVaultRegistry public immutable vaultRegistry;
     address public immutable reserveAddress;
-
-    IBatchVaultPriceOracle internal priceOracle;
+    IGyroConfig public immutable gyroConfig;
 
     constructor(IGyroConfig _gyroConfig) {
         vaultRegistry = _gyroConfig.getVaultRegistry();
         reserveAddress = _gyroConfig.getAddress(ConfigKeys.RESERVE_ADDRESS);
-        // priceOracle = _gyroConfig.getRootPriceOracle();
+        gyroConfig = _gyroConfig;
     }
 
     /// @inheritdoc IReserveManager
@@ -76,6 +75,7 @@ contract ReserveManager is IReserveManager, Governable {
 
             vaultsInfo[i] = DataTypes.VaultInfo({
                 vault: vaultAddresses[i],
+                decimals: IERC20Metadata(vaultAddresses[i]).decimals(),
                 persistedMetadata: persistedMetadata,
                 reserveBalance: reserveBalance,
                 price: 0,
@@ -86,7 +86,7 @@ contract ReserveManager is IReserveManager, Governable {
         }
 
         if (options.includePrice) {
-            vaultsInfo = priceOracle.fetchPricesUSD(vaultsInfo);
+            vaultsInfo = gyroConfig.getRootPriceOracle().fetchPricesUSD(vaultsInfo);
         }
 
         uint256 reserveUSDValue = 0;

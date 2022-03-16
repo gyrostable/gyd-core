@@ -71,6 +71,7 @@ library DataTypes {
     /// @notice Vault with metadata
     struct VaultInfo {
         address vault;
+        uint8 decimals;
         uint256 price;
         PersistedVaultMetadata persistedMetadata;
         uint256 reserveBalance;

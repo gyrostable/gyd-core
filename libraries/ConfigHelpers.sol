@@ -3,7 +3,7 @@ pragma solidity ^0.8.4;
 
 import "./ConfigKeys.sol";
 
-import "../interfaces/oracles/IUSDPriceOracle.sol";
+import "../interfaces/oracles/IBatchVaultPriceOracle.sol";
 import "../interfaces/ISafetyCheck.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IVaultRegistry.sol";
@@ -16,8 +16,12 @@ import "../interfaces/IFeeHandler.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
 library ConfigHelpers {
-    function getRootPriceOracle(IGyroConfig gyroConfig) internal view returns (IUSDPriceOracle) {
-        return IUSDPriceOracle(gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS));
+    function getRootPriceOracle(IGyroConfig gyroConfig)
+        internal
+        view
+        returns (IBatchVaultPriceOracle)
+    {
+        return IBatchVaultPriceOracle(gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS));
     }
 
     function getRootSafetyCheck(IGyroConfig gyroConfig) internal view returns (ISafetyCheck) {
