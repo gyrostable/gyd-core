@@ -160,7 +160,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         uint256 numberOfTrustedSignerOracles = trustedSignerPriceOracles.length();
         uint256[] memory signedPrices = new uint256[](numberOfTrustedSignerOracles);
 
-        /// TODO: Ensure that given ETH/USD price from coinbase and the ETH/USD price from OKex are the prices that get saved in this array
+        /// TODO: Ensure that given ETH/USD price from coinbase and the ETH/USD price from OKex are the prices that get saved in this array. These sould be verified as valid in terms of price and time
         /// TODO: is this the right way to do this gas wise?
         for (uint256 i = 0; i < numberOfTrustedSignerOracles; i++) {
             IUSDPriceOracle oracle = IUSDPriceOracle(trustedSignerPriceOracles.at(i));
