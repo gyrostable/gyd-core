@@ -120,4 +120,33 @@ contract ReserveManager is IReserveManager, Governable {
 
         return DataTypes.ReserveState({vaults: vaultsInfo, totalUSDValue: reserveUSDValue});
     }
+
+    function registerVault(
+        address _addressOfVault,
+        uint256 initialWeight,
+        uint256 shortFlowMemory,
+        uint256 shortFlowThreshold
+    ) external {
+        ReserveStateOptions memory options = ReserveStateOptions({
+            includeMetadata: false,
+            includePrice: true,
+            includeCurrentWeight: false,
+            includeIdealWeight: false
+        });
+        DataTypes.ReserveState memory reserveState = getReserveState(options);
+        uint256 initialVaultPrice = 0;
+        for (uint256 i = 0; i < reserveState.vaults.length; i++) {
+            if (reserveState.vaults[i].vault == _addressOfVault) {
+                initialVaultPrice = reserveState.vaults[i].price;
+            }
+        }
+        DataTypes.PersistedVaultMetadata memory persistedVaultMetadata = DataTypes
+            .PersistedVaultMetadata({
+                initialPrice: initialVaultPrice,
+                initialWeight: initialWeight,
+                shortFlowMemory: shortFlowMemory,
+                shortFlowThreshold: shortFlowThreshold
+            });
+        vaultRegistry.registerVault(_addressOfVault, persistedVaultMetadata);
+    }
 }
