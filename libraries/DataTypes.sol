@@ -89,6 +89,7 @@ library DataTypes {
         bool allStablecoinsOnPeg;
         bool allTokenPricesLargeEnough;
         bool vaultWithinEpsilon;
+        PricedToken[] pricedTokens;
     }
 
     struct Metadata {

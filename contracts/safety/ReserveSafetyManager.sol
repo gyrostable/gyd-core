@@ -8,7 +8,6 @@ import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../interfaces/IReserveManager.sol";
-import "../../interfaces/oracles/IUSDPriceOracle.sol";
 import "../../interfaces/IAssetRegistry.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../interfaces/balancer/IVault.sol";
@@ -22,7 +21,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     uint256 public stablecoinMaxDeviation;
     uint256 public minTokenPrice;
 
-    IUSDPriceOracle internal priceOracle;
     IAssetRegistry internal assetRegistry;
 
     /// @notice a stablecoin should be equal to 1 USD
@@ -32,13 +30,11 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         uint256 _maxAllowedVaultDeviation,
         uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice,
-        IUSDPriceOracle _priceOracle,
         IAssetRegistry _assetRegistry
     ) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;
-        priceOracle = _priceOracle;
         assetRegistry = _assetRegistry;
     }
 
@@ -151,6 +147,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             metaData.vaultMetadata[i].idealWeight = vaultsWithAmount[i].vaultInfo.idealWeight;
             metaData.vaultMetadata[i].currentWeight = vaultsWithAmount[i].vaultInfo.currentWeight;
             metaData.vaultMetadata[i].price = vaultsWithAmount[i].vaultInfo.price;
+            metaData.vaultMetadata[i].pricedTokens = vaultsWithAmount[i].vaultInfo.pricedTokens;
             prices[i] = vaultsWithAmount[i].vaultInfo.price;
         }
 
@@ -190,13 +187,11 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         internal
         view
     {
-        IERC20[] memory tokens = IGyroVault(vaultMetadata.vault).getTokens();
-
         vaultMetadata.allStablecoinsOnPeg = true;
         vaultMetadata.allTokenPricesLargeEnough = false;
-        for (uint256 i = 0; i < tokens.length; i++) {
-            address tokenAddress = address(tokens[i]);
-            uint256 tokenPrice = priceOracle.getPriceUSD(tokenAddress);
+        for (uint256 i = 0; i < vaultMetadata.pricedTokens.length; i++) {
+            address tokenAddress = vaultMetadata.pricedTokens[i].tokenAddress;
+            uint256 tokenPrice = vaultMetadata.pricedTokens[i].price;
 
             if (assetRegistry.isAssetStable(tokenAddress)) {
                 vaultMetadata.allTokenPricesLargeEnough = true;

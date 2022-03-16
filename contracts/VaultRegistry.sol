@@ -9,7 +9,6 @@ import "../libraries/ConfigKeys.sol";
 import "../libraries/EnumerableExtensions.sol";
 
 import "../interfaces/IVaultRegistry.sol";
-import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../interfaces/IGyroConfig.sol";
 
 contract VaultRegistry is IVaultRegistry, Governable {
@@ -49,11 +48,9 @@ contract VaultRegistry is IVaultRegistry, Governable {
     {
         require(!vaultAddresses.contains(vault), Errors.VAULT_ALREADY_EXISTS);
         vaultAddresses.add(vault);
-        uint256 price = IUSDPriceOracle(gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS))
-            .getPriceUSD(vault);
         vaultsMetadata[vault] = DataTypes.PersistedVaultMetadata({
             initialWeight: initialVaultWeight,
-            initialPrice: price,
+            initialPrice: 0,
             shortFlowMemory: 0, //NB these need to be calibrated
             shortFlowThreshold: 0 //NB these need to be calibrated
         });
