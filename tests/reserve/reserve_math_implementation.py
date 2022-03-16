@@ -94,11 +94,11 @@ def build_metadata(order: List[Tuple], tokens: None) -> List[D]:
 
         if mint:
             resulting_amounts.append(
-                D(vault_with_amount[0][3]) + D(vault_with_amount[1])
+                D(vault_with_amount[0][4]) + D(vault_with_amount[1])
             )
         else:
             resulting_amounts.append(
-                D(vault_with_amount[0][3]) - D(vault_with_amount[1])
+                D(vault_with_amount[0][4]) - D(vault_with_amount[1])
             )
 
         prices.append(D(vault_with_amount[0][1]))
@@ -114,10 +114,10 @@ def build_metadata(order: List[Tuple], tokens: None) -> List[D]:
     for i, vault in enumerate(vaults_with_amount):
         vault_metadata = []
         vault_metadata.append(tokens[i])
+        vault_metadata.append(vault[0][6])
         vault_metadata.append(vault[0][5])
-        vault_metadata.append(vault[0][4])
         vault_metadata.append(scale(resulting_weights[i]))
-        vault_metadata.append(vault[0][1])
+        vault_metadata.append(vault[0][2])
         vault_metadata.append(False)
         vault_metadata.append(False)
         vault_metadata.append(False)
@@ -161,7 +161,7 @@ def is_mint_safe(order: List[Tuple], tokens, mock_price_oracle, asset_registry) 
 
 def is_redeem_feasible(order: List[Tuple]):
     for vaults_with_amount in order[0]:
-        if vaults_with_amount[0][3] < vaults_with_amount[1]:
+        if vaults_with_amount[0][4] < vaults_with_amount[1]:
             return False
     return True
 

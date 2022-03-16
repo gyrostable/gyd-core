@@ -114,11 +114,13 @@ def order_builder(
 
         vault_info = (
             mock_vaults[i].address,
+            18,
             current_vault_prices[i],
             persisted_metadata,
             reserve_balances[i],
             current_weights[i],
             ideal_weights[i],
+            [],
         )
 
         vault = (vault_info, amounts[i])
@@ -182,11 +184,13 @@ def order_builder_vary_persisted(
 
         vault_info = (
             mock_vaults[i].address,
+            18,
             current_vault_prices[i],
             persisted_metadata,
             reserve_balances[i],
             current_weights[i],
             ideal_weights[i],
+            [],
         )
 
         vault = (vault_info, amounts[i])
