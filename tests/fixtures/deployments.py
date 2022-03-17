@@ -309,3 +309,8 @@ def vault_safety_mode(admin, TestingVaultSafetyMode, motherboard, mock_vaults):
         motherboard,
         vault_addresses,
     )
+
+
+@pytest.fixture(scope="module")
+def testing_fixed_point(admin, TestingFixedPoint):
+    return admin.deploy(TestingFixedPoint)
