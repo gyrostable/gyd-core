@@ -149,7 +149,6 @@ library FixedPoint {
      */
     function intPowDown(uint256 base, uint256 exp) internal pure returns (uint256) {
         uint256 result = FixedPoint.ONE;
-
         while (exp > 0) {
             if (exp % 2 == 1) {
                 result = mulDown(result, base);
