@@ -5,6 +5,7 @@ import os
 import sys
 import time
 from base64 import b64decode, b64encode
+from typing import Tuple
 
 import eth_abi
 import requests
@@ -59,8 +60,17 @@ def fetch_prices():
         ["bytes32", "bytes32", "uint8"], bytes.fromhex(signature[2:])
     )
     signing_address = w3.eth.account.recoverHash(signed_hash, vrs=(v, r, s))
-    print(f"signed using: {signing_address}", file=sys.stderr)
     return result, signing_address
+
+
+def find_price(prices: dict, symbol: str = "ETH") -> Tuple[str, str]:
+    for i, message in enumerate(prices["messages"]):
+        _, _, message_symbol, _ = eth_abi.decode_abi(
+            ["string", "uint256", "string", "uint256"], bytes.fromhex(message[2:])
+        )
+        if symbol == message_symbol:
+            return message, prices["signatures"][i]
+    raise ValueError(f"{symbol} price not found")
 
 
 if __name__ == "__main__":

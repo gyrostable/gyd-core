@@ -1,5 +1,6 @@
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
+from tests.fixtures.mainnet_contracts import TokenAddresses
 
 from tests.support import error_codes
 from tests.support.quantized_decimal import QuantizedDecimal as D
@@ -272,11 +273,31 @@ def test_redeem_vault_underlying_with_fees(
 
 
 @pytest.mark.mainnetFork
-def test_simple_mint_bpt(motherboard, balancer_vault, alice, dai, weth, wbtc):
-    amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
-    join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
-    amounts = [
-        (wbtc.address, int(scale("0.005", 8))),
-        (weth.address, int(scale("0.05"))),
-    ]
-    join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WBTC_WETH"], amounts)
+def test_simple_mint_bpt(
+    full_motherboard,
+    balancer_vault,
+    alice,
+    dai,
+    weth,
+    wbtc,
+    coinbase_price_oracle,
+    full_checked_price_oracle,
+):
+    print(coinbase_price_oracle.getPriceUSD(TokenAddresses.WETH))
+    tx = full_checked_price_oracle.getPricesUSD.transact(
+        [
+            TokenAddresses.WETH,
+            TokenAddresses.USDC,
+            TokenAddresses.DAI,
+            TokenAddresses.USDT,
+            TokenAddresses.WBTC,
+        ]
+    )
+    print(tx.gas_used)
+    # amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
+    # join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
+    # amounts = [
+    #     (wbtc.address, int(scale("0.005", 8))),
+    #     (weth.address, int(scale("0.05"))),
+    # ]
+    # join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WBTC_WETH"], amounts)

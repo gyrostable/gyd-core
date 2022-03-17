@@ -1,6 +1,11 @@
 from brownie import ETH_ADDRESS
 
 
+def is_stable(asset):
+    stable_coins = ["DAI", "USDT", "USDC", "GUSD", "HUSD", "TUSD", "USDP", "LUSD"]
+    return asset in [getattr(TokenAddresses, v) for v in stable_coins]
+
+
 class TokenAddresses:
     ETH = ETH_ADDRESS
     DAI = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
@@ -25,12 +30,15 @@ class ChainlinkFeeds:
     WBTC_USD_FEED = "0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c"
     CRV_USD_FEED = "0xCd627aA160A6fA45Eb793D19Ef54f5062F20f33f"
     USDC_USD_FEED = "0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6"
+    USDT_USD_FEED = "0x3E7d1eAB13ad0104d2750B8863b489D65364e32D"
 
 
 class UniswapPools:
     USDC_ETH = "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8"
     ETH_CRV = "0x4c83A7f819A5c37D64B4c5A2f8238Ea082fA1f4e"
     WBTC_USDC = "0x99ac8cA7087fA4A2A1FB6357269965A2014ABc35"
+    DAI_ETH = "0x60594a405d53811d3BC4766596EFD80fd545A270"
+    USDT_ETH = "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36"
 
 
 CHAINLINK_FEEDS = [
@@ -40,4 +48,5 @@ CHAINLINK_FEEDS = [
     (TokenAddresses.WBTC, ChainlinkFeeds.WBTC_USD_FEED),
     (TokenAddresses.CRV, ChainlinkFeeds.CRV_USD_FEED),
     (TokenAddresses.USDC, ChainlinkFeeds.USDC_USD_FEED),
+    (TokenAddresses.USDT, ChainlinkFeeds.USDT_USD_FEED),
 ]

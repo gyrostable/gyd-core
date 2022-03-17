@@ -6,6 +6,7 @@ from brownie._config import CONFIG
 pytest_plugins = [
     "tests.fixtures.coins",
     "tests.fixtures.deployments",
+    "tests.fixtures.mainnet_initialization",
     "tests.fixtures.accounts",
 ]
 

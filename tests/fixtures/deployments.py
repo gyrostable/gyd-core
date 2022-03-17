@@ -1,9 +1,5 @@
-from collections import namedtuple
-from unittest.mock import Mock
-
 import pytest
 from brownie import accounts
-from tests.fixtures.mainnet_contracts import CHAINLINK_FEEDS, UniswapPools
 from tests.support import config_keys, constants
 from tests.support.utils import scale
 
@@ -146,22 +142,9 @@ def uniswap_v3_twap_oracle(admin, UniswapV3TwapOracle):
     return admin.deploy(UniswapV3TwapOracle)
 
 
-@pytest.fixture
-def add_common_uniswap_pools(admin, uniswap_v3_twap_oracle):
-    pools = [UniswapPools.ETH_CRV, UniswapPools.USDC_ETH, UniswapPools.WBTC_USDC]
-    for pool in pools:
-        uniswap_v3_twap_oracle.registerPool(pool, {"from": admin})
-
-
 @pytest.fixture(scope="module")
 def chainlink_price_oracle(ChainlinkPriceOracle, admin):
     return admin.deploy(ChainlinkPriceOracle)
-
-
-@pytest.fixture
-def set_common_chainlink_feeds(admin, chainlink_price_oracle):
-    for asset, feed in CHAINLINK_FEEDS:
-        chainlink_price_oracle.setFeed(asset, feed, {"from": admin})
 
 
 @pytest.fixture(scope="module")
