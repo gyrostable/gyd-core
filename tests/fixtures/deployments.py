@@ -179,6 +179,11 @@ def local_checked_price_oracle(admin, mock_price_oracle, CheckedPriceOracle):
 
 
 @pytest.fixture(scope="module")
+def testing_checked_price_oracle(admin, mock_price_oracle, TestingCheckedPriceOracle):
+    return admin.deploy(TestingCheckedPriceOracle, mock_price_oracle, mock_price_oracle)
+
+
+@pytest.fixture(scope="module")
 def mainnet_checked_price_oracle(
     admin, chainlink_price_oracle, uniswap_v3_twap_oracle, CheckedPriceOracle
 ):
