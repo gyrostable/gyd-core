@@ -1,3 +1,4 @@
+from hypothesis import settings
 import hypothesis.strategies as st
 import pytest
 from brownie.test import given
@@ -53,6 +54,7 @@ global_metadatas = st.tuples(
         st.tuples(amount_generator, price_generator), min_size=1
     )
 )
+@settings(max_examples=10)
 def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices):
     amounts, prices = [list(v) for v in zip(*amounts_and_prices)]
 
@@ -75,9 +77,11 @@ def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices)
     )
 )
 def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
-    reserve_safety_manager, bundle_metadata, mock_vaults
+    reserve_safety_manager, bundle_metadata, mock_vaults, mock_price_oracle
 ):
-    metadata = object_creation.bundle_to_metadata(bundle_metadata, mock_vaults)
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
 
     result_sol = reserve_safety_manager.vaultWeightWithOffPegFalls(metadata)
     result_exp = vault_weight_off_peg_falls(metadata)
@@ -100,9 +104,13 @@ def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
         max_size=10,
     )
 )
-def test_build_metadata(reserve_safety_manager, order_bundle, mock_vaults):
-
-    mint_order = object_creation.bundle_to_order(order_bundle, True, mock_vaults)
+@settings(max_examples=10)
+def test_build_metadata(
+    reserve_safety_manager, order_bundle, mock_vaults, mock_price_oracle
+):
+    mint_order = object_creation.bundle_to_order(
+        order_bundle, True, mock_vaults, mock_price_oracle
+    )
 
     metadata_sol = reserve_safety_manager.buildMetaData(mint_order)
     metadata_exp = build_metadata(mint_order, mock_vaults)
@@ -135,9 +143,11 @@ def test_build_metadata(reserve_safety_manager, order_bundle, mock_vaults):
     )
 )
 def test_update_metadata_with_epsilon_status(
-    reserve_safety_manager, bundle_metadata, mock_vaults
+    reserve_safety_manager, bundle_metadata, mock_vaults, mock_price_oracle
 ):
-    metadata = object_creation.bundle_to_metadata(bundle_metadata, mock_vaults)
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
 
     result_sol = reserve_safety_manager.updateMetaDataWithEpsilonStatus(metadata)
     result_exp = update_metadata_with_epsilon_status(metadata)
@@ -162,12 +172,15 @@ def test_update_vault_with_price_safety(
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
 
-    vault_metadata = (mock_vaults[0],) + bundle_vault_metadata
-
     mock_vaults[0].setTokens([usdc, dai])
 
     mock_price_oracle.setUSDPrice(dai, D("1e18"))
     mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+
+    ([vault_metadata], _) = object_creation.bundle_to_metadata(
+        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+    )
+
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
         vault_metadata
     )
@@ -177,6 +190,10 @@ def test_update_vault_with_price_safety(
 
     mock_price_oracle.setUSDPrice(dai, D("0.8e18"))
 
+    ([vault_metadata], _) = object_creation.bundle_to_metadata(
+        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+    )
+
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
         vault_metadata
     )
@@ -185,6 +202,10 @@ def test_update_vault_with_price_safety(
 
     mock_price_oracle.setUSDPrice(dai, D("0.95e18"))
 
+    ([vault_metadata], _) = object_creation.bundle_to_metadata(
+        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+    )
+
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
         vault_metadata
     )
@@ -192,6 +213,10 @@ def test_update_vault_with_price_safety(
     assert status_of_all_stablecoins == True
 
     mock_price_oracle.setUSDPrice(dai, D("0.94e18"))
+
+    ([vault_metadata], _) = object_creation.bundle_to_metadata(
+        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+    )
 
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
         vault_metadata
@@ -212,12 +237,15 @@ def test_update_vault_with_price_safety_tiny_prices(
 ):
     asset_registry.setAssetAddress("ABC", abc)
     asset_registry.setAssetAddress("SDT", sdt)
-
-    vault_metadata = (mock_vaults[0],) + bundle_vault_metadata
     mock_vaults[0].setTokens([sdt, abc])
 
     mock_price_oracle.setUSDPrice(abc, D("1e16"))
     mock_price_oracle.setUSDPrice(sdt, D("1e16"))
+
+    ([vault_metadata], _) = object_creation.bundle_to_metadata(
+        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+    )
+
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
         vault_metadata
     )
@@ -227,6 +255,10 @@ def test_update_vault_with_price_safety_tiny_prices(
 
     mock_price_oracle.setUSDPrice(abc, D("1e12"))
     mock_price_oracle.setUSDPrice(sdt, D("1e12"))
+
+    ([vault_metadata], _) = object_creation.bundle_to_metadata(
+        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+    )
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
         vault_metadata
     )
@@ -236,6 +268,10 @@ def test_update_vault_with_price_safety_tiny_prices(
 
     mock_price_oracle.setUSDPrice(abc, D("1e13"))
     mock_price_oracle.setUSDPrice(sdt, D("1e13"))
+
+    ([vault_metadata], _) = object_creation.bundle_to_metadata(
+        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+    )
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
         vault_metadata
     )
@@ -245,6 +281,10 @@ def test_update_vault_with_price_safety_tiny_prices(
 
     mock_price_oracle.setUSDPrice(abc, D("0.95e12"))
     mock_price_oracle.setUSDPrice(sdt, D("1e13"))
+
+    ([vault_metadata], _) = object_creation.bundle_to_metadata(
+        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+    )
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
         vault_metadata
     )
@@ -254,6 +294,9 @@ def test_update_vault_with_price_safety_tiny_prices(
 
     mock_price_oracle.setUSDPrice(abc, D("0.95e12"))
     mock_price_oracle.setUSDPrice(sdt, D("0.95e12"))
+    ([vault_metadata], _) = object_creation.bundle_to_metadata(
+        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+    )
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
         vault_metadata
     )
@@ -277,20 +320,19 @@ def test_update_metadata_with_price_safety_peg(
     mock_price_oracle,
     mock_vaults,
 ):
-    if not bundle_metadata:
-        return
-    metadata = object_creation.bundle_to_metadata(bundle_metadata, mock_vaults)
+    mock_vaults[0].setTokens([usdc, dai])
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
 
     asset_registry.setAssetAddress("DAI", dai)
     asset_registry.addStableAsset(dai, {"from": admin})
 
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
-
-    mock_vaults[0].setTokens([usdc, dai])
-
-    mock_price_oracle.setUSDPrice(dai, D("1e18"))
-    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
 
     updated_metadata = reserve_safety_manager.updateMetadataWithPriceSafety(metadata)
     onenotonpeg = False
@@ -304,6 +346,10 @@ def test_update_metadata_with_price_safety_peg(
         assert updated_metadata[2] == True
 
     mock_price_oracle.setUSDPrice(usdc, D("0.92e18"))
+
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
 
     updated_metadata = reserve_safety_manager.updateMetadataWithPriceSafety(metadata)
     onenotonpeg = False
@@ -331,16 +377,17 @@ def test_update_metadata_with_price_safety_tiny_prices(
     mock_price_oracle,
     mock_vaults,
 ):
-
-    metadata = object_creation.bundle_to_metadata(bundle_metadata, mock_vaults)
-
-    asset_registry.setAssetAddress("ABC", abc)
-    asset_registry.setAssetAddress("SDT", sdt)
-
     mock_price_oracle.setUSDPrice(abc, D("1e16"))
     mock_price_oracle.setUSDPrice(sdt, D("1e16"))
 
     mock_vaults[0].setTokens([abc, sdt])
+
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
+
+    asset_registry.setAssetAddress("ABC", abc)
+    asset_registry.setAssetAddress("SDT", sdt)
 
     updated_metadata = reserve_safety_manager.updateMetadataWithPriceSafety(metadata)
     onevaultpricestoosmall = False
@@ -355,6 +402,10 @@ def test_update_metadata_with_price_safety_tiny_prices(
 
     mock_price_oracle.setUSDPrice(sdt, D("1e12"))
     mock_price_oracle.setUSDPrice(abc, D("1e12"))
+
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
 
     updated_metadata = reserve_safety_manager.updateMetadataWithPriceSafety(metadata)
     onevaultpricestoosmall = False
@@ -374,10 +425,12 @@ def test_update_metadata_with_price_safety_tiny_prices(
     )
 )
 def test_safe_to_execute_outside_epsilon(
-    bundle_metadata, reserve_safety_manager, mock_vaults
+    bundle_metadata, reserve_safety_manager, mock_vaults, mock_price_oracle
 ):
 
-    metadata = object_creation.bundle_to_metadata(bundle_metadata, mock_vaults)
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
 
     result_exp = safe_to_execute_outside_epsilon(metadata)
 
@@ -413,8 +466,19 @@ def test_is_mint_safe_normal(
     mock_price_oracle,
     mock_vaults,
 ):
+    tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
 
-    mint_order = object_creation.bundle_to_order(order_bundle, True, mock_vaults)
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
+
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+    mock_price_oracle.setUSDPrice(abc, D("1e18"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e18"))
+
+    mint_order = object_creation.bundle_to_order(
+        order_bundle, True, mock_vaults, mock_price_oracle
+    )
 
     asset_registry.setAssetAddress("DAI", dai)
     asset_registry.addStableAsset(dai, {"from": admin})
@@ -426,16 +490,6 @@ def test_is_mint_safe_normal(
     asset_registry.addStableAsset(abc, {"from": admin})
 
     asset_registry.setAssetAddress("SDT", sdt)
-
-    tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
-
-    for i, token in enumerate(tokens):
-        mock_vaults[i].setTokens(token)
-
-    mock_price_oracle.setUSDPrice(dai, D("1e18"))
-    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
-    mock_price_oracle.setUSDPrice(abc, D("1e18"))
-    mock_price_oracle.setUSDPrice(sdt, D("1e18"))
 
     response = reserve_safety_manager.isMintSafe(mint_order)
 
@@ -473,8 +527,19 @@ def test_is_mint_safe_small_prices(
     mock_price_oracle,
     mock_vaults,
 ):
+    tokens = [[abc, sdt], [dai, usdc]]
 
-    mint_order = object_creation.bundle_to_order(order_bundle, True, mock_vaults)
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
+
+    mock_price_oracle.setUSDPrice(abc, D("1e11"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e11"))
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+
+    mint_order = object_creation.bundle_to_order(
+        order_bundle, True, mock_vaults, mock_price_oracle
+    )
 
     asset_registry.setAssetAddress("ABC", abc)
 
@@ -485,16 +550,6 @@ def test_is_mint_safe_small_prices(
 
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
-
-    tokens = [[abc, sdt], [dai, usdc]]
-
-    for i, token in enumerate(tokens):
-        mock_vaults[i].setTokens(token)
-
-    mock_price_oracle.setUSDPrice(abc, D("1e11"))
-    mock_price_oracle.setUSDPrice(sdt, D("1e11"))
-    mock_price_oracle.setUSDPrice(dai, D("1e18"))
-    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
 
     response = reserve_safety_manager.isMintSafe(mint_order)
 
@@ -532,7 +587,19 @@ def test_is_mint_safe_off_peg(
     mock_price_oracle,
     mock_vaults,
 ):
-    mint_order = object_creation.bundle_to_order(order_bundle, True, mock_vaults)
+    tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
+
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
+
+    mock_price_oracle.setUSDPrice(dai, D("0.8e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+    mock_price_oracle.setUSDPrice(abc, D("1e18"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e18"))
+
+    mint_order = object_creation.bundle_to_order(
+        order_bundle, True, mock_vaults, mock_price_oracle
+    )
 
     asset_registry.setAssetAddress("DAI", dai)
     asset_registry.addStableAsset(dai, {"from": admin})
@@ -544,16 +611,6 @@ def test_is_mint_safe_off_peg(
     asset_registry.addStableAsset(abc, {"from": admin})
 
     asset_registry.setAssetAddress("SDT", sdt)
-
-    tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
-
-    for i, token in enumerate(tokens):
-        mock_vaults[i].setTokens(token)
-
-    mock_price_oracle.setUSDPrice(dai, D("0.8e18"))
-    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
-    mock_price_oracle.setUSDPrice(abc, D("1e18"))
-    mock_price_oracle.setUSDPrice(sdt, D("1e18"))
 
     response = reserve_safety_manager.isMintSafe(mint_order)
 
@@ -591,7 +648,18 @@ def test_is_redeem_safe_normal(
     mock_vaults,
     order_bundle,
 ):
-    redeem_order = object_creation.bundle_to_order(order_bundle, False, mock_vaults)
+    tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
+
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+    mock_price_oracle.setUSDPrice(abc, D("1e18"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e18"))
+
+    redeem_order = object_creation.bundle_to_order(
+        order_bundle, False, mock_vaults, mock_price_oracle
+    )
 
     asset_registry.setAssetAddress("DAI", dai)
     asset_registry.addStableAsset(dai, {"from": admin})
@@ -603,16 +671,6 @@ def test_is_redeem_safe_normal(
     asset_registry.addStableAsset(abc, {"from": admin})
 
     asset_registry.setAssetAddress("SDT", sdt)
-
-    tokens = [[usdc, dai], [usdc, sdt], [sdt, dai], [abc, dai], [usdc, abc]]
-
-    for i, token in enumerate(tokens):
-        mock_vaults[i].setTokens(token)
-
-    mock_price_oracle.setUSDPrice(dai, D("1e18"))
-    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
-    mock_price_oracle.setUSDPrice(abc, D("1e18"))
-    mock_price_oracle.setUSDPrice(sdt, D("1e18"))
 
     response = reserve_safety_manager.isRedeemSafe(redeem_order)
 
@@ -650,7 +708,19 @@ def test_is_redeem_safe_small_prices(
     mock_price_oracle,
     mock_vaults,
 ):
-    redeem_order = object_creation.bundle_to_order(order_bundle, False, mock_vaults)
+    tokens = [[sdt, abc], [usdc, abc]]
+
+    for i, token in enumerate(tokens):
+        mock_vaults[i].setTokens(token)
+
+    mock_price_oracle.setUSDPrice(abc, D("1e11"))
+    mock_price_oracle.setUSDPrice(sdt, D("1e11"))
+    mock_price_oracle.setUSDPrice(dai, D("1e18"))
+    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
+
+    redeem_order = object_creation.bundle_to_order(
+        order_bundle, False, mock_vaults, mock_price_oracle
+    )
 
     asset_registry.setAssetAddress("ABC", abc)
 
@@ -661,16 +731,6 @@ def test_is_redeem_safe_small_prices(
 
     asset_registry.setAssetAddress("USDC", usdc)
     asset_registry.addStableAsset(usdc, {"from": admin})
-
-    tokens = [[sdt, abc], [usdc, abc]]
-
-    for i, token in enumerate(tokens):
-        mock_vaults[i].setTokens(token)
-
-    mock_price_oracle.setUSDPrice(abc, D("1e11"))
-    mock_price_oracle.setUSDPrice(sdt, D("1e11"))
-    mock_price_oracle.setUSDPrice(dai, D("1e18"))
-    mock_price_oracle.setUSDPrice(usdc, D("1e18"))
 
     response = reserve_safety_manager.isRedeemSafe(redeem_order)
 
