@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
+import "../libraries/Vaults.sol";
+
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 /// @notice A vault is one of the component of the reserve and has a one-to-one
@@ -9,13 +11,8 @@ import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 /// deposited in the vault
 /// A vault can be associated with a strategy to generate yield on the deposited funds
 interface IGyroVault is IERC20Metadata {
-    enum VaultType {
-        GENERIC,
-        BALANCER
-    }
-
-    /// @return The token associated with this vault
-    function vaultType() external view returns (VaultType);
+    /// @return The type of the vault
+    function vaultType() external view returns (Vaults.Type);
 
     /// @return The token associated with this vault
     /// This can be any type of token but will likely be an LP token in practice

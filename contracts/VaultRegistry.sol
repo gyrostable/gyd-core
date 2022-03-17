@@ -9,7 +9,6 @@ import "../libraries/ConfigKeys.sol";
 import "../libraries/EnumerableExtensions.sol";
 
 import "../interfaces/IVaultRegistry.sol";
-import "../interfaces/oracles/IUSDPriceOracle.sol";
 import "../interfaces/IGyroConfig.sol";
 
 contract VaultRegistry is IVaultRegistry, Governable {
@@ -17,13 +16,31 @@ contract VaultRegistry is IVaultRegistry, Governable {
     using EnumerableExtensions for EnumerableSet.AddressSet;
 
     IGyroConfig public immutable gyroConfig;
+    address public reserveManagerAddress;
 
     EnumerableSet.AddressSet internal vaultAddresses;
 
     mapping(address => DataTypes.PersistedVaultMetadata) internal vaultsMetadata;
 
+    /// @notice Emmited when the ReserveManager is changed
+    event ReserveManagerAddressChanged(
+        address oldReserveManagerAddress,
+        address newReserveManagerAddress
+    );
+
     constructor(IGyroConfig _gyroConfig) {
         gyroConfig = _gyroConfig;
+    }
+
+    function setReserveManagerAddress(address _address) external governanceOnly {
+        address oldReserveManagerAddress = reserveManagerAddress;
+        reserveManagerAddress = _address;
+        emit ReserveManagerAddressChanged(oldReserveManagerAddress, _address);
+    }
+
+    modifier reserveManagerOnly() {
+        require(msg.sender == reserveManagerAddress, Errors.CALLER_NOT_RESERVE_MANAGER);
+        _;
     }
 
     /// @inheritdoc IVaultRegistry
@@ -42,22 +59,20 @@ contract VaultRegistry is IVaultRegistry, Governable {
     }
 
     /// @inheritdoc IVaultRegistry
-    function registerVault(address vault, uint256 initialVaultWeight)
+    function registerVault(address vault, DataTypes.PersistedVaultMetadata memory persistedMetadata)
         external
         override
-        governanceOnly
+        reserveManagerOnly
     {
         require(!vaultAddresses.contains(vault), Errors.VAULT_ALREADY_EXISTS);
         vaultAddresses.add(vault);
-        uint256 price = IUSDPriceOracle(gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS))
-            .getPriceUSD(vault);
-        vaultsMetadata[vault] = DataTypes.PersistedVaultMetadata({
-            initialWeight: initialVaultWeight,
-            initialPrice: price,
-            shortFlowMemory: 0, //NB these need to be calibrated
-            shortFlowThreshold: 0 //NB these need to be calibrated
-        });
+        vaultsMetadata[vault] = persistedMetadata;
         emit VaultRegistered(vault);
+    }
+
+    function setInitialPrice(address vault, uint256 initialPrice) external reserveManagerOnly {
+        require(vaultAddresses.contains(vault), Errors.VAULT_NOT_FOUND);
+        vaultsMetadata[vault].initialPrice = initialPrice;
     }
 
     function updatePersistedVaultFlowParams(

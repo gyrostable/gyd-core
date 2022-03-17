@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 pragma experimental ABIEncoderV2;
 
-import "../oracles/LPSharePricing.sol";
+import "../oracles/balancer/BalancerLPSharePricing.sol";
 
 contract TestingLPSharePricing {
     function priceBptCPMM(
@@ -10,7 +10,11 @@ contract TestingLPSharePricing {
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) external pure returns (uint256 bptPrice) {
-        bptPrice = GyroLPSharePricing.priceBptCPMM(weights, invariantDivSupply, underlyingPrices);
+        bptPrice = BalancerLPSharePricing.priceBptCPMM(
+            weights,
+            invariantDivSupply,
+            underlyingPrices
+        );
     }
 
     function priceBptCPMMEqualWeights(
@@ -18,7 +22,7 @@ contract TestingLPSharePricing {
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) external pure returns (uint256 bptPrice) {
-        bptPrice = GyroLPSharePricing.priceBptCPMMEqualWeights(
+        bptPrice = BalancerLPSharePricing.priceBptCPMMEqualWeights(
             weight,
             invariantDivSupply,
             underlyingPrices
@@ -31,7 +35,7 @@ contract TestingLPSharePricing {
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) external pure returns (uint256 bptPrice) {
-        bptPrice = GyroLPSharePricing.priceBptCPMMv2(
+        bptPrice = BalancerLPSharePricing.priceBptCPMMv2(
             sqrtAlpha,
             sqrtBeta,
             invariantDivSupply,
@@ -44,7 +48,7 @@ contract TestingLPSharePricing {
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) external pure returns (uint256 bptPrice) {
-        bptPrice = GyroLPSharePricing.priceBptCPMMv3(
+        bptPrice = BalancerLPSharePricing.priceBptCPMMv3(
             cbrtAlpha,
             invariantDivSupply,
             underlyingPrices
@@ -52,12 +56,12 @@ contract TestingLPSharePricing {
     }
 
     function priceBptCEMM(
-        GyroLPSharePricing.CEMMParams memory params,
-        GyroLPSharePricing.CEMMDerivedParams memory derivedParams,
+        ICEMM.Params memory params,
+        ICEMM.DerivedParams memory derivedParams,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) external pure returns (uint256 bptPrice) {
-        bptPrice = GyroLPSharePricing.priceBptCEMM(
+        bptPrice = BalancerLPSharePricing.priceBptCEMM(
             params,
             derivedParams,
             invariantDivSupply,

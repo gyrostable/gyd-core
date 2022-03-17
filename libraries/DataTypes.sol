@@ -9,6 +9,12 @@ library DataTypes {
         uint256 amount;
     }
 
+    /// @notice Contains a token and the price associated with it
+    struct PricedToken {
+        address tokenAddress;
+        uint256 price;
+    }
+
     /// @notice A route from/to a token to a vault
     /// This is used to determine in which vault the token should be deposited
     /// or from which vault it should be withdrawn
@@ -65,11 +71,13 @@ library DataTypes {
     /// @notice Vault with metadata
     struct VaultInfo {
         address vault;
+        uint8 decimals;
         uint256 price;
         PersistedVaultMetadata persistedMetadata;
         uint256 reserveBalance;
         uint256 currentWeight;
         uint256 idealWeight;
+        PricedToken[] pricedTokens;
     }
 
     struct VaultMetadata {
@@ -81,6 +89,7 @@ library DataTypes {
         bool allStablecoinsOnPeg;
         bool allTokenPricesLargeEnough;
         bool vaultWithinEpsilon;
+        PricedToken[] pricedTokens;
     }
 
     struct Metadata {

@@ -28,8 +28,8 @@ contract BaseVault is IGyroVault, ERC20 {
     }
 
     /// @inheritdoc IGyroVault
-    function vaultType() external pure virtual override returns (VaultType) {
-        return VaultType.GENERIC;
+    function vaultType() external view virtual override returns (Vaults.Type) {
+        return Vaults.Type.GENERIC;
     }
 
     /// @inheritdoc IGyroVault

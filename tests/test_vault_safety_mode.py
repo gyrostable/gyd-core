@@ -1,4 +1,5 @@
 from random import randint
+from hypothesis import settings
 
 import hypothesis.strategies as st
 import pytest
@@ -59,13 +60,14 @@ def build_directional_flow_data(vault_addresses):
         max_size=constants.RESERVE_VAULTS,
     ),
 )
+@settings(max_examples=10)
 def test_store_and_access_directional_flow_data_mint(
-    vault_safety_mode,
-    order_bundle,
-    mock_vaults,
+    vault_safety_mode, order_bundle, mock_vaults, mock_price_oracle
 ):
 
-    mint_order = object_creation.bundle_to_order(order_bundle, True, mock_vaults)
+    mint_order = object_creation.bundle_to_order(
+        order_bundle, True, mock_vaults, mock_price_oracle
+    )
     vault_addresses = [i.address for i in mock_vaults]
     stored_data = vault_safety_mode.accessDirectionalFlowData(
         vault_addresses, mint_order
@@ -102,13 +104,14 @@ def test_store_and_access_directional_flow_data_mint(
         max_size=constants.RESERVE_VAULTS,
     ),
 )
+@settings(max_examples=10)
 def test_store_and_access_directional_flow_data_redeem(
-    vault_safety_mode,
-    order_bundle,
-    mock_vaults,
+    vault_safety_mode, order_bundle, mock_vaults, mock_price_oracle
 ):
 
-    redeem_order = object_creation.bundle_to_order(order_bundle, False, mock_vaults)
+    redeem_order = object_creation.bundle_to_order(
+        order_bundle, False, mock_vaults, mock_price_oracle
+    )
     vault_addresses = [i.address for i in mock_vaults]
     stored_data = vault_safety_mode.accessDirectionalFlowData(
         vault_addresses, redeem_order
@@ -145,11 +148,14 @@ def test_store_and_access_directional_flow_data_redeem(
         max_size=constants.RESERVE_VAULTS,
     ),
 )
+@settings(max_examples=10)
 def test_fetch_latest_directional_flow_data(
-    vault_safety_mode, order_bundle, mock_vaults
+    vault_safety_mode, order_bundle, mock_vaults, mock_price_oracle
 ):
 
-    redeem_order = object_creation.bundle_to_order(order_bundle, False, mock_vaults)
+    redeem_order = object_creation.bundle_to_order(
+        order_bundle, False, mock_vaults, mock_price_oracle
+    )
     vault_addresses = [i.address for i in mock_vaults]
 
     directional_flow_data = build_directional_flow_data(vault_addresses)
@@ -221,9 +227,11 @@ def test_update_vault_flow_safety(
         max_size=constants.RESERVE_VAULTS,
     ),
 )
-def test_flow_safety_state_updater(vault_safety_mode, order_bundle, mock_vaults):
+def test_flow_safety_state_updater(
+    vault_safety_mode, order_bundle, mock_vaults, mock_price_oracle
+):
     redeem_order = object_creation.bundle_to_order_vary_persisted(
-        order_bundle, False, mock_vaults
+        order_bundle, False, mock_vaults, mock_price_oracle
     )
     response = vault_safety_mode.flowSafetyStateUpdater(redeem_order)
     assert response[2] == [i.address for i in mock_vaults]

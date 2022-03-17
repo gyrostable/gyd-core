@@ -34,9 +34,14 @@ def vault_info_helper(
     return vault_info
 
 
-def bundle_to_metadata(metadata_bundle, mock_vaults):
-    vaults_metadata, global_metadata = metadata_bundle
-    vaults_metadata = [(mock_vaults[i],) + v for i, v in enumerate(vaults_metadata)]
+def bundle_to_metadata(metadata_bundle, mock_vaults, mock_price_oracle):
+    vaults_bundle, global_metadata = metadata_bundle
+    vaults_metadata = []
+    for i, v in enumerate(vaults_bundle):
+        tokens = mock_vaults[i].getTokens()
+        prices = mock_price_oracle.getPricesUSD(tokens)
+        token_with_prices = list(zip(tokens, prices))
+        vaults_metadata.append((mock_vaults[i],) + v + (token_with_prices,))
     return (vaults_metadata,) + global_metadata
 
 
@@ -65,7 +70,7 @@ def bundle_to_vault_info(bundle, mock_vaults):
     return vaults_info
 
 
-def bundle_to_order(order_bundle, mint, mock_vaults):
+def bundle_to_order(order_bundle, mint, mock_vaults, mock_price_oracle):
 
     (
         initial_prices,
@@ -87,6 +92,7 @@ def bundle_to_order(order_bundle, mint, mock_vaults):
         current_weights,
         ideal_weights,
         mock_vaults,
+        mock_price_oracle,
     )
 
 
@@ -100,6 +106,7 @@ def order_builder(
     current_weights,
     ideal_weights,
     mock_vaults,
+    mock_price_oracle,
 ):
     vaults_with_amount = []
 
@@ -111,14 +118,21 @@ def order_builder(
             0,
             0,
         )
+        vault = mock_vaults[i]
+
+        tokens = vault.getTokens()
+        prices = mock_price_oracle.getPricesUSD(tokens)
+        token_with_prices = list(zip(tokens, prices))
 
         vault_info = (
             mock_vaults[i].address,
+            18,
             current_vault_prices[i],
             persisted_metadata,
             reserve_balances[i],
             current_weights[i],
             ideal_weights[i],
+            token_with_prices,
         )
 
         vault = (vault_info, amounts[i])
@@ -127,7 +141,7 @@ def order_builder(
     return [vaults_with_amount, mint]
 
 
-def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults):
+def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults, mock_price_oracle):
 
     (
         initial_prices,
@@ -153,6 +167,7 @@ def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults):
         mock_vaults,
         short_flow_memory,
         short_flow_threshold,
+        mock_price_oracle,
     )
 
 
@@ -168,6 +183,7 @@ def order_builder_vary_persisted(
     mock_vaults,
     short_flow_memory,
     short_flow_threshold,
+    mock_price_oracle,
 ):
     vaults_with_amount = []
 
@@ -180,13 +196,19 @@ def order_builder_vary_persisted(
             short_flow_threshold[i],
         )
 
+        tokens = mock_vaults[i].getTokens()
+        prices = mock_price_oracle.getPricesUSD(tokens)
+        token_with_prices = list(zip(tokens, prices))
+
         vault_info = (
             mock_vaults[i].address,
+            18,
             current_vault_prices[i],
             persisted_metadata,
             reserve_balances[i],
             current_weights[i],
             ideal_weights[i],
+            token_with_prices,
         )
 
         vault = (vault_info, amounts[i])

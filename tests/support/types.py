@@ -50,18 +50,26 @@ class PersistedVaultMetadata(NamedTuple):
     short_flow_threshold: int
 
 
+class PricedToken(NamedTuple):
+    tokenAddress: str
+    price: int
+
+
 class VaultInfo(NamedTuple):
     vault: str
+    decimals: int
     price: int
     persisted_metadata: PersistedVaultMetadata
     reserve_balance: int
     current_weight: int
     ideal_weight: int
+    priced_tokens: List[PricedToken]
 
     @classmethod
     def from_tuple(cls, t) -> VaultInfo:
-        persisted_metadata = PersistedVaultMetadata(*t[2])
-        items = t[:2] + (persisted_metadata,) + t[3:]
+        persisted_metadata = PersistedVaultMetadata(*t[3])
+        priced_tokens = [PricedToken(*v) for v in t[-1]]
+        items = t[:3] + (persisted_metadata,) + t[4:-1] + (priced_tokens,)
         return cls(*items)
 
 

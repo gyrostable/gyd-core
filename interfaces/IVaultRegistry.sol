@@ -17,8 +17,11 @@ interface IVaultRegistry {
     function listVaults() external view returns (address[] memory);
 
     /// @notice Registers a new vault
-    function registerVault(address vault, uint256 initialVaultWeight) external;
+    function registerVault(address vault, DataTypes.PersistedVaultMetadata memory) external;
 
     /// @notice Deregister a vault
     function deregisterVault(address vault) external;
+
+    /// @notice sets the initial price of a vault
+    function setInitialPrice(address vault, uint256 initialPrice) external;
 }

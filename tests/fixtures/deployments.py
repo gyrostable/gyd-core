@@ -3,12 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 from brownie import accounts
-from tests.fixtures.mainnet_contracts import (
-    CHAINLINK_FEEDS,
-    ChainlinkFeeds,
-    TokenAddresses,
-    UniswapPools,
-)
+from tests.fixtures.mainnet_contracts import CHAINLINK_FEEDS, UniswapPools
 from tests.support import config_keys, constants
 from tests.support.utils import scale
 
@@ -21,12 +16,13 @@ def vault_registry(admin, VaultRegistry, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def reserve_manager(admin, ReserveManager, gyro_config, request):
-    dependencies = ["reserve", "mock_price_oracle", "vault_registry"]
+def reserve_manager(admin, ReserveManager, gyro_config, request, vault_registry):
+    dependencies = ["reserve", "mock_price_oracle"]
     for dep in dependencies:
         request.getfixturevalue(dep)
     reserve_manager = admin.deploy(ReserveManager, gyro_config)
     gyro_config.setAddress(config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager)
+    vault_registry.setReserveManagerAddress(reserve_manager, {"from": admin})
     return reserve_manager
 
 
@@ -236,15 +232,12 @@ def pamm(TestingPAMMV1):
 
 
 @pytest.fixture(scope="module")
-def reserve_safety_manager(
-    admin, TestingReserveSafetyManager, mock_price_oracle, asset_registry
-):
+def reserve_safety_manager(admin, TestingReserveSafetyManager, asset_registry):
     return admin.deploy(
         TestingReserveSafetyManager,
         constants.MAX_ALLOWED_VAULT_DEVIATION,
         constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
-        mock_price_oracle,
         asset_registry,
     )
 

@@ -9,7 +9,7 @@ from brownie.network.transaction import _step_compare
 
 def _format_tuple(info, meta, unscale):
     if unscale:
-        meta = round(meta / 10 ** 18, 3)
+        meta = round(meta / 10**18, 3)
     return f"{info} ({meta})"
 
 
