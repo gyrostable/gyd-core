@@ -21,4 +21,7 @@ interface IVaultRegistry {
 
     /// @notice Deregister a vault
     function deregisterVault(address vault) external;
+
+    /// @notice sets the initial price of a vault
+    function setInitialPrice(address vault, uint256 initialPrice) external;
 }

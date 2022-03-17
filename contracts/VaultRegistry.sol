@@ -28,9 +28,8 @@ contract VaultRegistry is IVaultRegistry, Governable {
         address newReserveManagerAddress
     );
 
-    constructor(IGyroConfig _gyroConfig, address _reserveManagerAddress) {
+    constructor(IGyroConfig _gyroConfig) {
         gyroConfig = _gyroConfig;
-        reserveManagerAddress = _reserveManagerAddress;
     }
 
     function setReserveManagerAddress(address _address) external governanceOnly {
@@ -39,7 +38,7 @@ contract VaultRegistry is IVaultRegistry, Governable {
         emit ReserveManagerAddressChanged(oldReserveManagerAddress, _address);
     }
 
-    modifier ReserveManagerOnly() {
+    modifier reserveManagerOnly() {
         require(msg.sender == reserveManagerAddress, Errors.CALLER_NOT_RESERVE_MANAGER);
         _;
     }
@@ -63,7 +62,7 @@ contract VaultRegistry is IVaultRegistry, Governable {
     function registerVault(address vault, DataTypes.PersistedVaultMetadata memory persistedMetadata)
         external
         override
-        ReserveManagerOnly
+        reserveManagerOnly
     {
         require(!vaultAddresses.contains(vault), Errors.VAULT_ALREADY_EXISTS);
         vaultAddresses.add(vault);
@@ -71,7 +70,7 @@ contract VaultRegistry is IVaultRegistry, Governable {
         emit VaultRegistered(vault);
     }
 
-    function setInitialPrice(address vault, uint256 initialPrice) external ReserveManagerOnly {
+    function setInitialPrice(address vault, uint256 initialPrice) external reserveManagerOnly {
         require(vaultAddresses.contains(vault), Errors.VAULT_NOT_FOUND);
         vaultsMetadata[vault].initialPrice = initialPrice;
     }

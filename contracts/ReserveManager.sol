@@ -126,13 +126,23 @@ contract ReserveManager is IReserveManager, Governable {
         uint256 initialWeight,
         uint256 shortFlowMemory,
         uint256 shortFlowThreshold
-    ) external {
+    ) external governanceOnly {
         ReserveStateOptions memory options = ReserveStateOptions({
             includeMetadata: false,
             includePrice: true,
             includeCurrentWeight: false,
             includeIdealWeight: false
         });
+        DataTypes.PersistedVaultMetadata memory persistedVaultMetadata = DataTypes
+            .PersistedVaultMetadata({
+                initialPrice: 0,
+                initialWeight: initialWeight,
+                shortFlowMemory: shortFlowMemory,
+                shortFlowThreshold: shortFlowThreshold
+            });
+
+        vaultRegistry.registerVault(_addressOfVault, persistedVaultMetadata);
+
         DataTypes.ReserveState memory reserveState = getReserveState(options);
         uint256 initialVaultPrice = 0;
         for (uint256 i = 0; i < reserveState.vaults.length; i++) {
@@ -140,13 +150,6 @@ contract ReserveManager is IReserveManager, Governable {
                 initialVaultPrice = reserveState.vaults[i].price;
             }
         }
-        DataTypes.PersistedVaultMetadata memory persistedVaultMetadata = DataTypes
-            .PersistedVaultMetadata({
-                initialPrice: initialVaultPrice,
-                initialWeight: initialWeight,
-                shortFlowMemory: shortFlowMemory,
-                shortFlowThreshold: shortFlowThreshold
-            });
-        vaultRegistry.registerVault(_addressOfVault, persistedVaultMetadata);
+        vaultRegistry.setInitialPrice(_addressOfVault, initialVaultPrice);
     }
 }

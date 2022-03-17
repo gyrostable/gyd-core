@@ -1,11 +1,11 @@
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
 
-from tests.support import config_keys, error_codes
+from tests.support import error_codes
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.constants import BALANCER_POOL_IDS
 from tests.support.types import MintAsset, RedeemAsset
-from tests.support.utils import format_to_bytes, join_pool, scale
+from tests.support.utils import join_pool, scale
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -23,14 +23,14 @@ def set_fees(static_percentage_fee_handler, usdc_vault, dai_vault):
 
 
 @pytest.fixture
-def register_usdc_vault(vault_registry, usdc_vault, admin):
-    vault_registry.registerVault(usdc_vault, scale(1), {"from": admin})
+def register_usdc_vault(reserve_manager, usdc_vault, admin):
+    reserve_manager.registerVault(usdc_vault, scale(1), 0, 0, {"from": admin})
 
 
 @pytest.fixture
-def register_usdc_and_dai_vaults(vault_registry, usdc_vault, dai_vault, admin):
-    vault_registry.registerVault(dai_vault, scale("0.6"), {"from": admin})
-    vault_registry.registerVault(usdc_vault, scale("0.4"), {"from": admin})
+def register_usdc_and_dai_vaults(reserve_manager, usdc_vault, dai_vault, admin):
+    reserve_manager.registerVault(dai_vault, scale("0.6"), 0, 0, {"from": admin})
+    reserve_manager.registerVault(usdc_vault, scale("0.4"), 0, 0, {"from": admin})
 
 
 @pytest.mark.usefixtures("register_usdc_vault")
