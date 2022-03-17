@@ -95,3 +95,18 @@ class Order(NamedTuple):
 class FeedMeta(NamedTuple):
     min_diff_time: int
     max_deviation: int
+
+
+class VaultType:
+    GENERIC = 0
+    BALANCER_CPMM = 1
+    BALANCER_CPMMV2 = 2
+    BALANCER_CPMMV3 = 3
+    BALANCER_CEMM = 4
+
+
+class VaultToDeploy(NamedTuple):
+    address: str
+    initial_weight: int
+    short_flow_memory: int
+    short_flow_threshold: int

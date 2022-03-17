@@ -38,10 +38,11 @@ library Arrays {
         }
         if (duplicatedCount == 0) return data;
         address[] memory deduped = new address[](data.length - duplicatedCount);
-        for ((uint256 i, uint256 j) = (1, 0); i < data.length; i++) {
-            if (data[i - 1] == data[i]) continue;
+        for ((uint256 i, uint256 j) = (0, 0); i < data.length; i++) {
+            if (i < data.length - 1 && data[i] == data[i + 1]) continue;
             deduped[j] = data[i];
+            j++;
         }
-        return data;
+        return deduped;
     }
 }

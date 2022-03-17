@@ -282,9 +282,9 @@ def test_simple_mint_bpt(
     wbtc,
     coinbase_price_oracle,
     full_checked_price_oracle,
+    mainnet_reserve_manager,
 ):
-    print(coinbase_price_oracle.getPriceUSD(TokenAddresses.WETH))
-    tx = full_checked_price_oracle.getPricesUSD.transact(
+    tx = full_checked_price_oracle.getPricesUSD(
         [
             TokenAddresses.WETH,
             TokenAddresses.USDC,
@@ -293,7 +293,7 @@ def test_simple_mint_bpt(
             TokenAddresses.WBTC,
         ]
     )
-    print(tx.gas_used)
+    print(mainnet_reserve_manager.getReserveState())
     # amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
     # join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
     # amounts = [

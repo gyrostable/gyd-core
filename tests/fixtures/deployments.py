@@ -12,6 +12,11 @@ def vault_registry(admin, VaultRegistry, gyro_config):
 
 
 @pytest.fixture(scope="module")
+def balancer_cpmm_price_oracle(BalancerCPMMPriceOracle, admin):
+    return admin.deploy(BalancerCPMMPriceOracle)
+
+
+@pytest.fixture(scope="module")
 def reserve_manager(admin, ReserveManager, gyro_config, request, vault_registry):
     dependencies = ["reserve", "mock_price_oracle"]
     for dep in dependencies:
@@ -268,6 +273,11 @@ def usdc_vault(admin, BaseVault, usdc):
 @pytest.fixture(scope="module")
 def mock_vaults(admin, MockGyroVault, dai):
     return [admin.deploy(MockGyroVault, dai) for _ in range(constants.RESERVE_VAULTS)]
+
+
+@pytest.fixture(scope="module")
+def batch_vault_price_oracle(admin, TestingBatchVaultPriceOracle, mock_price_oracle):
+    return admin.deploy(TestingBatchVaultPriceOracle, mock_price_oracle)
 
 
 # NOTE: this is a vault that contains only DAI as underlying
