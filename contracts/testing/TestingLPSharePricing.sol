@@ -56,8 +56,8 @@ contract TestingLPSharePricing {
     }
 
     function priceBptCEMM(
-        BalancerLPSharePricing.CEMMParams memory params,
-        BalancerLPSharePricing.CEMMDerivedParams memory derivedParams,
+        ICEMM.Params memory params,
+        ICEMM.DerivedParams memory derivedParams,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) external pure returns (uint256 bptPrice) {

@@ -6,9 +6,9 @@ import "./BaseBalancerPriceOracle.sol";
 
 import "../../../libraries/TypeConversion.sol";
 
-import "../../../interfaces/balancer/IWeightedPool.sol";
+import "../../../interfaces/balancer/ICEMM.sol";
 
-contract BalancerCPMMPriceOracle is BaseBalancerPriceOracle {
+contract BalancerCEMMPriceOracle is BaseBalancerPriceOracle {
     using TypeConversion for DataTypes.PricedToken[];
     using FixedPoint for uint256;
 
@@ -17,10 +17,13 @@ contract BalancerCPMMPriceOracle is BaseBalancerPriceOracle {
         IGyroVault vault,
         DataTypes.PricedToken[] memory underlyingPricedTokens
     ) public view override returns (uint256) {
-        IWeightedPool pool = IWeightedPool(vault.underlying());
+        ICEMM pool = ICEMM(vault.underlying());
+        (ICEMM.Params memory params, ICEMM.DerivedParams memory derivedParams) = pool
+            .getParameters();
         return
-            BalancerLPSharePricing.priceBptCPMM(
-                pool.getNormalizedWeights(),
+            BalancerLPSharePricing.priceBptCEMM(
+                params,
+                derivedParams,
                 getInvariantDivSupply(pool),
                 underlyingPricedTokens.pluckPrices()
             );

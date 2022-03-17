@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
+
 import "../../../libraries/FixedPoint.sol";
 import "../../../libraries/SignedFixedPoint.sol";
-import "@openzeppelin/contracts/utils/math/SafeCast.sol";
+
+import "../../../interfaces/balancer/ICEMM.sol";
 
 library BalancerLPSharePricing {
     using FixedPoint for uint256;
@@ -128,8 +131,8 @@ library BalancerLPSharePricing {
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
      *  This calculation is robust to price manipulation within the Balancer pool */
     function priceBptCEMM(
-        CEMMParams memory params,
-        CEMMDerivedParams memory derivedParams,
+        ICEMM.Params memory params,
+        ICEMM.DerivedParams memory derivedParams,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
@@ -154,10 +157,12 @@ library BalancerLPSharePricing {
                 mulAinv(params, derivedParams.tauBeta).y);
             bptPrice = (bP.mulDown(py)).toUint256().mulDown(invariantDivSupply);
         } else {
-            Vector2 memory vec = mulAinv(params, tau(params, pxIny));
+            ICEMM.Vector2 memory vec = mulAinv(params, tau(params, pxIny));
             vec.x = mulAinv(params, derivedParams.tauBeta).x - vec.x;
             vec.y = mulAinv(params, derivedParams.tauAlpha).y - vec.y;
-            bptPrice = scalarProdDown(Vector2(px, py), vec).toUint256().mulDown(invariantDivSupply);
+            bptPrice = scalarProdDown(ICEMM.Vector2(px, py), vec).toUint256().mulDown(
+                invariantDivSupply
+            );
         }
     }
 
@@ -165,26 +170,8 @@ library BalancerLPSharePricing {
     // The following functions and structs copied over from CEMM math library
     // Can't easily inherit because of different Solidity versions
 
-    struct CEMMParams {
-        int256 alpha;
-        int256 beta;
-        int256 c;
-        int256 s;
-        int256 lambda;
-    }
-
-    struct Vector2 {
-        int256 x;
-        int256 y;
-    }
-
-    struct CEMMDerivedParams {
-        Vector2 tauAlpha;
-        Vector2 tauBeta;
-    }
-
-    // Scalar product of Vector2 objects
-    function scalarProdDown(Vector2 memory t1, Vector2 memory t2)
+    // Scalar product of ICEMM.Vector2 objects
+    function scalarProdDown(ICEMM.Vector2 memory t1, ICEMM.Vector2 memory t2)
         internal
         pure
         returns (int256 ret)
@@ -194,10 +181,10 @@ library BalancerLPSharePricing {
 
     /** @dev Calculate A^{-1}t where A^{-1} is given in Section 2.2
      *  This is rotating and scaling the circle into the ellipse */
-    function mulAinv(CEMMParams memory params, Vector2 memory t)
+    function mulAinv(ICEMM.Params memory params, ICEMM.Vector2 memory t)
         internal
         pure
-        returns (Vector2 memory tp)
+        returns (ICEMM.Vector2 memory tp)
     {
         tp.x = params.c.mulDown(params.lambda).mulDown(t.x);
         tp.x = tp.x.add(params.s.mulDown(t.y));
@@ -207,10 +194,10 @@ library BalancerLPSharePricing {
 
     /** @dev Calculate A t where A is given in Section 2.2
      *  This is reversing rotation and scaling of the ellipse (mapping back to circle) */
-    function mulA(CEMMParams memory params, Vector2 memory tp)
+    function mulA(ICEMM.Params memory params, ICEMM.Vector2 memory tp)
         internal
         pure
-        returns (Vector2 memory t)
+        returns (ICEMM.Vector2 memory t)
     {
         t.x = params.c.divDown(params.lambda).mulDown(tp.x);
         t.x = t.x.sub(params.s.divDown(params.lambda).mulDown(tp.y));
@@ -220,21 +207,25 @@ library BalancerLPSharePricing {
 
     /** @dev Given price px on the transformed ellipse, get the untransformed price pxc on the circle
      *  px = price of asset x in terms of asset y */
-    function zeta(CEMMParams memory params, int256 px) internal pure returns (int256 pxc) {
-        Vector2 memory nd = mulA(params, Vector2(-SignedFixedPoint.ONE, px));
+    function zeta(ICEMM.Params memory params, int256 px) internal pure returns (int256 pxc) {
+        ICEMM.Vector2 memory nd = mulA(params, ICEMM.Vector2(-SignedFixedPoint.ONE, px));
         return -nd.y.divDown(nd.x);
     }
 
     /** @dev Given price px on the transformed ellipse, maps to the corresponding point on the untransformed normalized circle
      *  px = price of asset x in terms of asset y */
-    function tau(CEMMParams memory params, int256 px) internal pure returns (Vector2 memory tpp) {
+    function tau(ICEMM.Params memory params, int256 px)
+        internal
+        pure
+        returns (ICEMM.Vector2 memory tpp)
+    {
         return eta(zeta(params, px));
     }
 
     /** @dev Given price on a circle, gives the normalized corresponding point on the circle centered at the origin
      *  pxc = price of asset x in terms of asset y (measured on the circle)
      *  Notice that the eta function does not depend on Params */
-    function eta(int256 pxc) internal pure returns (Vector2 memory tpp) {
+    function eta(int256 pxc) internal pure returns (ICEMM.Vector2 memory tpp) {
         int256 z = FixedPoint
             .powDown(FixedPoint.ONE + (pxc.mulDown(pxc).toUint256()), ONEHALF)
             .toInt256();
@@ -242,7 +233,7 @@ library BalancerLPSharePricing {
     }
 
     /** @dev Calculates eta in more efficient way if the square root is known and input as second arg */
-    function eta(int256 pxc, int256 z) internal pure returns (Vector2 memory tpp) {
+    function eta(int256 pxc, int256 z) internal pure returns (ICEMM.Vector2 memory tpp) {
         tpp.x = pxc.divDown(z);
         tpp.y = SignedFixedPoint.ONE.divDown(z);
     }
