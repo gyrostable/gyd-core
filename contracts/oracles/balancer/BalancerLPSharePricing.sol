@@ -44,7 +44,8 @@ library BalancerLPSharePricing {
      *  @param weights = weights of underlying assets
      *  @param underlyingPrices = prices of underlying assets, in same order as weights
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool */
+     *  This calculation is robust to price manipulation within the Balancer pool
+     *  However, numerical imprecision may occur with extremely large or small prices */
     function priceBptTwoAssetCPMM(
         uint256[] memory weights,
         uint256 invariantDivSupply,
