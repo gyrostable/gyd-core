@@ -46,23 +46,27 @@ library DataTypes {
         uint256 shortFlowThreshold;
     }
 
+    /// @notice Directional (in or out) flow data for the vaults
     struct DirectionalFlowData {
         uint256 shortFlow;
         uint256 remainingSafetyBlocks;
     }
 
+    /// @notice Bidirectional vault flow data
     struct FlowData {
         uint256 lastSeenBlock;
         DirectionalFlowData inFlow;
         DirectionalFlowData outFlow;
     }
 
+    /// @notice Vault flow direction
     enum Direction {
         In,
         Out,
         Both
     }
 
+    /// @notice Vault address and direction for Oracle Guardian
     struct GuardedVaults {
         address vaultAddress;
         Direction direction;
@@ -80,6 +84,7 @@ library DataTypes {
         PricedToken[] pricedTokens;
     }
 
+    /// @notice Vault metadata
     struct VaultMetadata {
         address vault;
         uint256 idealWeight;
@@ -92,6 +97,7 @@ library DataTypes {
         PricedToken[] pricedTokens;
     }
 
+    /// @notice Metadata to contain vaults metadata
     struct Metadata {
         VaultMetadata[] vaultMetadata;
         bool allVaultsWithinEpsilon;
@@ -100,16 +106,19 @@ library DataTypes {
         bool mint;
     }
 
+    /// @notice Mint or redeem order struct
     struct Order {
         VaultWithAmount[] vaultsWithAmount;
         bool mint;
     }
 
+    /// @notice Vault info with associated amount for order operation
     struct VaultWithAmount {
         VaultInfo vaultInfo;
         uint256 amount;
     }
 
+    /// @notice state of the reserve (i.e., all the vaults)
     struct ReserveState {
         uint256 totalUSDValue;
         VaultInfo[] vaults;
