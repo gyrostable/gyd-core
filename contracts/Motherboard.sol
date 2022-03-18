@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IFeeHandler.sol";
-import "../interfaces/IMotherBoard.sol";
+import "../interfaces/IMotherboard.sol";
 import "../interfaces/IGyroVault.sol";
 import "../interfaces/ILPTokenExchangerRegistry.sol";
 import "../interfaces/ILPTokenExchanger.sol";
@@ -26,20 +26,20 @@ import "./auth/Governable.sol";
 
 /// @title MotherBoard is the central contract connecting the different pieces
 /// of the Gyro protocol
-contract Motherboard is IMotherBoard, Governable {
+contract Motherboard is IMotherboard, Governable {
     using FixedPoint for uint256;
     using DecimalScale for uint256;
     using SafeERC20 for IERC20;
     using SafeERC20 for IGYDToken;
     using ConfigHelpers for IGyroConfig;
 
-    /// @inheritdoc IMotherBoard
+    /// @inheritdoc IMotherboard
     IGYDToken public immutable override gydToken;
 
-    /// @inheritdoc IMotherBoard
+    /// @inheritdoc IMotherboard
     IReserve public immutable override reserve;
 
-    /// @inheritdoc IMotherBoard
+    /// @inheritdoc IMotherboard
     IGyroConfig public immutable override gyroConfig;
 
     constructor(IGyroConfig _gyroConfig) {
@@ -49,7 +49,7 @@ contract Motherboard is IMotherBoard, Governable {
         gydToken.safeApprove(address(_gyroConfig.getFeeBank()), type(uint256).max);
     }
 
-    /// @inheritdoc IMotherBoard
+    /// @inheritdoc IMotherboard
     function mint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
         external
         override
@@ -69,7 +69,7 @@ contract Motherboard is IMotherBoard, Governable {
 
         gyroConfig.getRootSafetyCheck().checkAndPersistMint(order);
 
-        for (uint256 i = 0; i < assets.length; i++) {
+        for (uint256 i = 0; i < vaultAmounts.length; i++) {
             DataTypes.MonetaryAmount memory vaultAmount = vaultAmounts[i];
             IERC20(vaultAmount.tokenAddress).safeTransfer(address(reserve), vaultAmount.amount);
         }
@@ -88,7 +88,7 @@ contract Motherboard is IMotherBoard, Governable {
         return gyroToMint;
     }
 
-    /// @inheritdoc IMotherBoard
+    /// @inheritdoc IMotherboard
     function redeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
         external
         override
@@ -111,7 +111,7 @@ contract Motherboard is IMotherBoard, Governable {
         return _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
     }
 
-    /// @inheritdoc IMotherBoard
+    /// @inheritdoc IMotherboard
     function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
         external
         view
@@ -144,7 +144,7 @@ contract Motherboard is IMotherBoard, Governable {
         }
     }
 
-    /// @inheritdoc IMotherBoard
+    /// @inheritdoc IMotherboard
     function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
         external
         view
@@ -172,7 +172,7 @@ contract Motherboard is IMotherBoard, Governable {
         return _computeRedeemOutputAmounts(assets, orderAfterFees);
     }
 
-    /// @inheritdoc IMotherBoard
+    /// @inheritdoc IMotherboard
     function pamm() public view override returns (IPAMM) {
         return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
     }
@@ -360,7 +360,7 @@ contract Motherboard is IMotherBoard, Governable {
         ILPTokenExchangerRegistry exchangerRegistry = gyroConfig.getExchangerRegistry();
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.RedeemAsset memory asset = assets[i];
-            uint256 vaultTokenAmount = order.vaultsWithAmount[i].amount;
+            uint256 vaultTokenAmount = _getRedeemAmount(order.vaultsWithAmount, asset.originVault);
             uint256 outputAmount = _convertRedeemOutputAsset(
                 asset,
                 vaultTokenAmount,
@@ -372,6 +372,20 @@ contract Motherboard is IMotherBoard, Governable {
 
             IERC20(asset.outputToken).safeTransfer(msg.sender, outputAmount);
         }
+    }
+
+    function _getRedeemAmount(DataTypes.VaultWithAmount[] memory vaultsWithAmount, address vault)
+        internal
+        pure
+        returns (uint256)
+    {
+        for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
+            DataTypes.VaultWithAmount memory vaultWithAmount = vaultsWithAmount[i];
+            if (vaultWithAmount.vaultInfo.vault == vault) {
+                return vaultWithAmount.amount;
+            }
+        }
+        return 0;
     }
 
     function _convertRedeemOutputAsset(
@@ -411,7 +425,7 @@ contract Motherboard is IMotherBoard, Governable {
         ILPTokenExchangerRegistry exchangerRegistry = gyroConfig.getExchangerRegistry();
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.RedeemAsset calldata asset = assets[i];
-            uint256 vaultTokenAmount = order.vaultsWithAmount[i].amount;
+            uint256 vaultTokenAmount = _getRedeemAmount(order.vaultsWithAmount, asset.originVault);
             uint256 outputAmount;
             (outputAmount, err) = _computeRedeemOutputAmount(
                 asset,
@@ -442,6 +456,11 @@ contract Motherboard is IMotherBoard, Governable {
         } else {
             // convert the vault token into its underlying LP token
             uint256 lpTokenAmount;
+
+            uint256 vaultTokenBalance = vault.balanceOf(address(reserve));
+            if (vaultTokenBalance < vaultTokenAmount) {
+                return (0, Errors.INSUFFICIENT_BALANCE);
+            }
             (lpTokenAmount, err) = vault.dryWithdraw(vaultTokenAmount, 0);
             if (bytes(err).length > 0) {
                 return (0, err);

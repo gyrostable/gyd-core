@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 import "./ConfigKeys.sol";
 
 import "../interfaces/oracles/IBatchVaultPriceOracle.sol";
+import "../interfaces/IMotherboard.sol";
 import "../interfaces/ISafetyCheck.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IVaultRegistry.sol";
@@ -59,5 +60,9 @@ library ConfigHelpers {
 
     function getFeeHandler(IGyroConfig gyroConfig) internal view returns (IFeeHandler) {
         return IFeeHandler(gyroConfig.getAddress(ConfigKeys.FEE_HANDLER_ADDRESS));
+    }
+
+    function getMotherboard(IGyroConfig gyroConfig) internal view returns (IMotherboard) {
+        return IMotherboard(gyroConfig.getAddress(ConfigKeys.MOTHERBOARD_ADDRESS));
     }
 }

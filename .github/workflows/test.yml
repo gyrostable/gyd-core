@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/setup
       - name: Run Unit Tests
-        run: brownie test --coverage -m 'not mainnetFork and not hypothesis' --failfast --hypothesis-seed 42
+        run: brownie test --coverage -m 'not mainnetFork and not hypothesis and not endToEnd' --failfast --hypothesis-seed 42
 
   property_test:
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/setup
       - name: Run Property Tests
-        run: brownie test --coverage -m 'not mainnetFork and hypothesis' --failfast --hypothesis-seed 42
+        run: brownie test --coverage -m 'not mainnetFork and hypothesis and not endToEnd' --failfast --hypothesis-seed 42
 
   integration_test:
     runs-on: ubuntu-latest
@@ -45,3 +45,14 @@ jobs:
       - uses: ./.github/actions/setup
       - name: Run Integration Tests
         run: brownie test -m mainnetFork --network mainnet-fork --failfast --hypothesis-seed 42
+
+  end_to_end_test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      WEB3_INFURA_PROJECT_ID: ${{ secrets.WEB3_INFURA_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+      - name: Run Integration Tests
+        run: brownie test -m endToEnd --network mainnet-fork --failfast --hypothesis-seed 42

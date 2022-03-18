@@ -1,6 +1,7 @@
 import pytest
 from brownie import accounts
 from tests.support import config_keys, constants
+from tests.support.types import PammParams
 from tests.support.utils import scale
 
 
@@ -43,7 +44,7 @@ def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry, gyro_config):
 
 @pytest.fixture(scope="module")
 def gyd_token(admin, GydToken, gyro_config):
-    gyd_token = admin.deploy(GydToken, "GYD Token", "GYD")
+    gyd_token = admin.deploy(GydToken, gyro_config, "GYD Token", "GYD")
     gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token)
     return gyd_token
 
@@ -188,7 +189,7 @@ def root_safety_check(admin, RootSafetyCheck, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
+def motherboard(admin, Motherboard, gyro_config, reserve, request):
     extra_dependencies = [
         "fee_bank",
         "lp_token_exchanger_registry",
@@ -197,23 +198,25 @@ def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
         "reserve_manager",
         "root_safety_check",
         "static_percentage_fee_handler",
+        "gyd_token",
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
     motherboard = admin.deploy(Motherboard, gyro_config)
-    gyd_token.grantRole(gyd_token.MINTER_ROLE(), motherboard, {"from": admin})
     reserve.addManager(motherboard, {"from": admin})
+    gyro_config.setAddress(config_keys.MOTHERBOARD_ADDRESS, motherboard)
     return motherboard
 
 
 @pytest.fixture(scope="module")
-def pamm(TestingPAMMV1):
+def pamm(TestingPAMMV1, gyro_config):
     return TestingPAMMV1.deploy(
-        (
-            constants.ALPHA_MIN_REL,
-            constants.XU_MAX_REL,
-            constants.THETA_FLOOR,
-            constants.OUTFLOW_MEMORY,
+        gyro_config,
+        PammParams(
+            int(constants.ALPHA_MIN_REL),
+            int(constants.XU_MAX_REL),
+            int(constants.THETA_FLOOR),
+            int(constants.OUTFLOW_MEMORY),
         ),
         {"from": accounts[0]},
     )
@@ -293,14 +296,13 @@ def balancer_vault(interface):
 
 
 @pytest.fixture(scope="module")
-def vault_safety_mode(admin, TestingVaultSafetyMode, motherboard, mock_vaults):
-    vault_addresses = [i.address for i in mock_vaults]
+def vault_safety_mode(admin, TestingVaultSafetyMode, request, gyro_config):
+    request.getfixturevalue("motherboard")
     return admin.deploy(
         TestingVaultSafetyMode,
         constants.SAFETY_BLOCKS_AUTOMATIC,
         constants.SAFETY_BLOCKS_GUARDIAN,
-        motherboard,
-        vault_addresses,
+        gyro_config,
     )
 
 

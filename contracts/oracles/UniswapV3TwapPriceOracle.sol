@@ -24,7 +24,7 @@ contract UniswapV3TwapOracle is IRelativePriceOracle, Governable {
 
     EnumerableMap.UintToAddressMap internal pools;
 
-    uint32 public constant DEFAULT_TIME_WINDOW_LENGTH_SECONDS_AGO = 7_200;
+    uint32 public constant DEFAULT_TIME_WINDOW_LENGTH_SECONDS_AGO = 3_600;
 
     uint32 public timeWindowLengthSeconds;
 

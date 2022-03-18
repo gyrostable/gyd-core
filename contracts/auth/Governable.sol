@@ -19,12 +19,9 @@ contract Governable is IGovernable {
 
     /// @notice Changes the governor
     /// can only be called by the current governor
-    function changeGovernor(address newGovernor) external override {
+    function changeGovernor(address newGovernor) external override governanceOnly {
         address currentCovernor = governor;
-        require(msg.sender == currentCovernor, Errors.NOT_AUTHORIZED);
-
         governor = newGovernor;
-
         emit GovernorChanged(currentCovernor, newGovernor);
     }
 }

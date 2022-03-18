@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
 import "../../interfaces/IReserveManager.sol";
+import "../../interfaces/IGyroConfig.sol";
 import "../../interfaces/IAssetRegistry.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../interfaces/balancer/IVault.sol";
@@ -19,12 +20,14 @@ import "../../libraries/Flow.sol";
 import "../../libraries/Errors.sol";
 import "../../libraries/StringExtensions.sol";
 import "../../libraries/EnumerableExtensions.sol";
+import "../../libraries/ConfigHelpers.sol";
 
 contract VaultSafetyMode is ISafetyCheck, Governable {
     using FixedPoint for uint256;
     using StringExtensions for string;
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableExtensions for EnumerableSet.AddressSet;
+    using ConfigHelpers for IGyroConfig;
 
     EnumerableSet.AddressSet internal whitelist;
 
@@ -42,45 +45,25 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     mapping(address => DataTypes.FlowData) public persistedFlowData;
 
+    IGyroConfig public immutable gyroConfig;
+
     uint256 public immutable safetyBlocksAutomatic;
     uint256 public immutable safetyBlocksGuardian;
 
     uint256 public constant THRESHOLD_BUFFER = 8e17;
 
-    address public motherboardAddress;
-
     constructor(
         uint256 _safetyBlocksAutomatic,
         uint256 _safetyBlocksGuardian,
-        address _motherboardAddress,
-        address[] memory _vaultAddresses
+        address _gyroConfig
     ) {
         safetyBlocksAutomatic = _safetyBlocksAutomatic;
         safetyBlocksGuardian = _safetyBlocksGuardian;
-        motherboardAddress = _motherboardAddress;
-        deploymentInitialization(_vaultAddresses);
-    }
-
-    function deploymentInitialization(address[] memory _vaultAddresses) internal {
-        for (uint256 i = 0; i < _vaultAddresses.length; i++) {
-            persistedFlowData[_vaultAddresses[i]].inFlow.shortFlow = 0;
-            persistedFlowData[_vaultAddresses[i]].inFlow.remainingSafetyBlocks = 0;
-
-            persistedFlowData[_vaultAddresses[i]].outFlow.shortFlow = 0;
-            persistedFlowData[_vaultAddresses[i]].outFlow.remainingSafetyBlocks = 0;
-
-            persistedFlowData[_vaultAddresses[i]].lastSeenBlock = block.number;
-        }
-    }
-
-    function setMotherboardAddress(address _address) external governanceOnly {
-        address oldMotherboardAddress = motherboardAddress;
-        motherboardAddress = _address;
-        emit MotherboardAddressChanged(oldMotherboardAddress, _address);
+        gyroConfig = IGyroConfig(_gyroConfig);
     }
 
     modifier motherboardOnly() {
-        require(msg.sender == motherboardAddress, Errors.CALLER_NOT_MOTHERBOARD);
+        require(msg.sender == address(gyroConfig.getMotherboard()), Errors.NOT_AUTHORIZED);
         _;
     }
 
@@ -136,15 +119,17 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         directionalFlowData = new DataTypes.DirectionalFlowData[](vaultAddresses.length);
         lastSeenBlock = new uint256[](vaultAddresses.length);
 
-        if (order.mint) {
-            for (uint256 i = 0; i < vaultAddresses.length; i++) {
-                directionalFlowData[i] = persistedFlowData[vaultAddresses[i]].inFlow;
-                lastSeenBlock[i] = persistedFlowData[vaultAddresses[i]].lastSeenBlock;
+        for (uint256 i = 0; i < vaultAddresses.length; i++) {
+            address vaultAddress = vaultAddresses[i];
+            uint256 lastBlock = persistedFlowData[vaultAddress].lastSeenBlock;
+            if (lastBlock == 0) {
+                lastBlock = IGyroVault(vaultAddress).deployedAt();
             }
-        } else {
-            for (uint256 i = 0; i < vaultAddresses.length; i++) {
-                directionalFlowData[i] = persistedFlowData[vaultAddresses[i]].outFlow;
-                lastSeenBlock[i] = persistedFlowData[vaultAddresses[i]].lastSeenBlock;
+            lastSeenBlock[i] = lastBlock;
+            if (order.mint) {
+                directionalFlowData[i] = persistedFlowData[vaultAddress].inFlow;
+            } else {
+                directionalFlowData[i] = persistedFlowData[vaultAddress].outFlow;
             }
         }
     }

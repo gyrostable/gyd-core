@@ -6,9 +6,9 @@ from tests.support.utils import scale
 
 
 def test_set_time_window_length_seconds(uniswap_v3_twap_oracle):
-    assert uniswap_v3_twap_oracle.timeWindowLengthSeconds() == 10_800
-    uniswap_v3_twap_oracle.setTimeWindowLengthSeconds(3600)
     assert uniswap_v3_twap_oracle.timeWindowLengthSeconds() == 3600
+    uniswap_v3_twap_oracle.setTimeWindowLengthSeconds(10_800)
+    assert uniswap_v3_twap_oracle.timeWindowLengthSeconds() == 10_800
 
 
 @pytest.mark.mainnetFork
@@ -51,6 +51,20 @@ def test_deregister_unregistered_pool(uniswap_v3_twap_oracle):
 
 
 @pytest.mark.mainnetFork
+def test_get_relative_price_with_seconds(uniswap_v3_twap_oracle):
+    uniswap_v3_twap_oracle.registerPool(UniswapPools.USDC_ETH)
+    usd_eth_price_two_hours = uniswap_v3_twap_oracle.getRelativePrice(
+        TokenAddresses.USDC, TokenAddresses.WETH
+    )
+    usd_eth_price_one_hour = uniswap_v3_twap_oracle.getRelativePrice(
+        TokenAddresses.USDC, TokenAddresses.WETH, 7200
+    )
+    assert usd_eth_price_two_hours != usd_eth_price_one_hour
+    # price change should be moderate
+    assert abs(1 - usd_eth_price_one_hour / usd_eth_price_two_hours) < 0.1
+
+
+@pytest.mark.mainnetFork
 @pytest.mark.usefixtures("add_common_uniswap_pools")
 def test_get_relative_price(uniswap_v3_twap_oracle):
     eth_usdc_price = uniswap_v3_twap_oracle.getRelativePrice(
@@ -71,17 +85,3 @@ def test_get_relative_price(uniswap_v3_twap_oracle):
     )
     assert scale(20_000) <= wbtc_usdc_price <= scale(100_000)
     assert usdc_wbtc_price == scale(1, 36) / wbtc_usdc_price
-
-
-@pytest.mark.mainnetFork
-def test_get_relative_price_with_seconds(uniswap_v3_twap_oracle):
-    uniswap_v3_twap_oracle.registerPool(UniswapPools.USDC_ETH)
-    usd_eth_price_two_hours = uniswap_v3_twap_oracle.getRelativePrice(
-        TokenAddresses.USDC, TokenAddresses.WETH
-    )
-    usd_eth_price_one_hour = uniswap_v3_twap_oracle.getRelativePrice(
-        TokenAddresses.USDC, TokenAddresses.WETH, 3600
-    )
-    assert usd_eth_price_two_hours != usd_eth_price_one_hour
-    # price change should be moderate
-    assert abs(1 - usd_eth_price_one_hour / usd_eth_price_two_hours) < 0.1

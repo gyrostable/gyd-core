@@ -47,5 +47,10 @@ BALANCER_POOL_IDS = {
     "WETH_USDC": "0x96646936b91d6b9d7d0c47c496afbf3d6ec7b6f8000200000000000000000019",
 }
 
+
+def address_from_pool_id(pool_id):
+    return pool_id[:42]
+
+
 SAFETY_BLOCKS_AUTOMATIC = 100
 SAFETY_BLOCKS_GUARDIAN = 200

@@ -7,7 +7,9 @@ import "../PrimaryAMMV1.sol";
 contract TestingPAMMV1 is PrimaryAMMV1 {
     using FixedPoint for uint256;
 
-    constructor(Params memory params) PrimaryAMMV1(params) {}
+    uint256 internal _gyroSupply;
+
+    constructor(address gyroConfig, Params memory params) PrimaryAMMV1(gyroConfig, params) {}
 
     function computeRegion(State calldata anchoredState) external view returns (Region) {
         DerivedParams memory derived = createDerivedParams(systemParams);
@@ -22,8 +24,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         State memory state = State({
             redemptionLevel: anchoredState.redemptionLevel,
             reserveValue: b,
-            totalGyroSupply: y,
-            lastSeenBlock: 0
+            totalGyroSupply: y
         });
 
         return computeReserveValueRegion(state, systemParams, derived);
@@ -42,8 +43,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         State memory state = State({
             redemptionLevel: anchoredState.redemptionLevel,
             reserveValue: b,
-            totalGyroSupply: y,
-            lastSeenBlock: 0
+            totalGyroSupply: y
         });
         return computeAnchoredReserveValue(state, params, derived);
     }
@@ -102,7 +102,8 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
     }
 
     function setState(State calldata newState) external {
-        systemState = newState;
+        redemptionLevel = newState.redemptionLevel;
+        _gyroSupply = newState.totalGyroSupply;
     }
 
     function setParams(Params calldata newParams) external {
@@ -111,5 +112,18 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
 
     function setDecaySlopeLowerBound(uint64 alpha) external {
         systemParams.alphaBar = alpha;
+    }
+
+    function redeemTwice(
+        uint256 x1,
+        uint256 x2,
+        uint256 y
+    ) external returns (uint256 initialRedeem, uint256 secondaryRedeem) {
+        initialRedeem = redeem(x1, y);
+        secondaryRedeem = redeem(x2, y - initialRedeem);
+    }
+
+    function _getGyroSupply() internal view override returns (uint256) {
+        return _gyroSupply;
     }
 }

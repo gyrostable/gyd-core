@@ -9,9 +9,9 @@ import "./IPAMM.sol";
 import "./IGyroVaultRouter.sol";
 import "./IFeeBank.sol";
 
-/// @title IMotherBoard is the central contract connecting the different pieces
+/// @title IMotherboard is the central contract connecting the different pieces
 /// of the Gyro protocol
-interface IMotherBoard {
+interface IMotherboard {
     /// @dev The GYD token is not upgradable so this will always return the same value
     /// @return the address of the GYD token
     function gydToken() external view returns (IGYDToken);

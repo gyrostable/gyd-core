@@ -16,8 +16,11 @@ contract MockGyroVault is IGyroVault, ERC20 {
     address internal _underlying;
     IERC20[] internal _tokens;
 
+    uint256 public immutable deployedAt;
+
     constructor(address underlying_) ERC20("Vault", "VLT") {
         _underlying = underlying_;
+        deployedAt = block.number;
     }
 
     function vaultType() external pure override returns (Vaults.Type) {

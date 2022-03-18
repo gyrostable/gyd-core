@@ -19,6 +19,7 @@ interface IPAMM {
 
     /// @notice Quotes the amount of GYD to mint for the given USD amount
     /// @param usdAmount the USD value to add to the reserve
+    /// @param reserveUSDValue the current USD value of the reserve
     /// @return the amount of GYD to mint
     function computeMintAmount(uint256 usdAmount, uint256 reserveUSDValue)
         external
