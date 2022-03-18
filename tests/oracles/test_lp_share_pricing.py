@@ -227,7 +227,7 @@ def gen_params(draw):
     phi = phi_degrees / 360 * 2 * pi
     s = sin(phi)
     c = cos(phi)
-    lam = draw(qdecimals("1", "10"))
+    lam = draw(qdecimals("1", "10000"))
     alpha = draw(qdecimals("0.05", "0.995"))
     beta = draw(qdecimals("1.005", "20.0"))
     price_peg = draw(qdecimals("0.05", "20.0"))
