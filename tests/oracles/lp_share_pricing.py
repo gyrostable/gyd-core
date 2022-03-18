@@ -28,6 +28,16 @@ def price_bpt_CPMM(
     return prod
 
 
+def price_bpt_two_asset_CPMM(
+    weights: Iterable[D], invariant_div_supply: D, underlying_prices: Iterable[D]
+) -> D:
+    second_term = (
+        underlying_prices[0] * (weights[1]) / (weights[0] * underlying_prices[1])
+    ) ** weights[0]
+    third_term = underlying_prices[1] / weights[1]
+    return invariant_div_supply * second_term * third_term
+
+
 def price_bpt_CPMM_equal_weights(
     weight: D, invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:

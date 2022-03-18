@@ -40,6 +40,40 @@ library BalancerLPSharePricing {
         }
     }
 
+    /** @dev Efficiently calculates the value of Balancer pool tokens (BPT) for two asset pools with constant product invariant
+     *  @param weights = weights of underlying assets
+     *  @param underlyingPrices = prices of underlying assets, in same order as weights
+     *  @param invariantDivSupply = value of the pool invariant / supply of BPT
+     *  This calculation is robust to price manipulation within the Balancer pool */
+    function priceBptTwoAssetCPMM(
+        uint256[] memory weights,
+        uint256 invariantDivSupply,
+        uint256[] memory underlyingPrices
+    ) internal pure returns (uint256 bptPrice) {
+        /**********************************************************************************************
+        //                        L                                 w_0                           //
+        //            bptPrice = --- ((p_0 (w_1) / (w_0)(p_1) )^   )  (p_1 / (w_1))       //
+        //                        S                                                               //
+        **********************************************************************************************/
+        // firstTerm is invariantDivSupply
+
+        (uint256 i, uint256 j) = weights[1].mulDown(underlyingPrices[0]) >
+            weights[0].mulDown(underlyingPrices[1])
+            ? (1, 0)
+            : (0, 1);
+
+        uint256 secondTerm = FixedPoint.powDown(
+            underlyingPrices[i].mulDown(weights[j]).divDown(
+                weights[i].mulDown(underlyingPrices[j])
+            ),
+            weights[i]
+        );
+
+        uint256 thirdTerm = underlyingPrices[j].divDown(weights[j]);
+
+        bptPrice = invariantDivSupply.mulDown(secondTerm).mulDown(thirdTerm);
+    }
+
     /** @dev Calculates value of BPT for constant product invariant with equal weights
      *  Compared to general CPMM, everything can be grouped into one fractional power to save gas
      *  Note: loss of precision arises when multiple prices are too low (e.g., < 1e-5). This pricing formula

@@ -39,17 +39,19 @@ def check_weights_invalid(weights: Iterable[D]):
 @given(
     invariant_div_supply=st.decimals(min_value="0.5", max_value="100000000", places=4),
     weight=weights_strategy,
-    underlying_prices=st.tuples(price_strategy, price_strategy),
+    underlying_prices=st.tuples(
+        price_strategy_less_extreme, price_strategy_less_extreme
+    ),
 )
 def test_price_bpt_cpmm_2(
     gyro_lp_price_testing, weight, invariant_div_supply, underlying_prices
 ):
     weights = (weight, D(1) - weight)
-    bpt_price_sol = gyro_lp_price_testing.priceBptCPMM(
+    bpt_price_sol = gyro_lp_price_testing.priceBptTwoAssetCPMM(
         scale(weights), scale(invariant_div_supply), scale(underlying_prices)
     )
 
-    bpt_price = math_implementation.price_bpt_CPMM(
+    bpt_price = math_implementation.price_bpt_two_asset_CPMM(
         weights, invariant_div_supply, underlying_prices
     )
 

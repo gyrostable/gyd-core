@@ -17,6 +17,18 @@ contract TestingLPSharePricing {
         );
     }
 
+    function priceBptTwoAssetCPMM(
+        uint256[] memory weights,
+        uint256 invariantDivSupply,
+        uint256[] memory underlyingPrices
+    ) external pure returns (uint256 bptPrice) {
+        bptPrice = BalancerLPSharePricing.priceBptTwoAssetCPMM(
+            weights,
+            invariantDivSupply,
+            underlyingPrices
+        );
+    }
+
     function priceBptCPMMEqualWeights(
         uint256 weight,
         uint256 invariantDivSupply,
