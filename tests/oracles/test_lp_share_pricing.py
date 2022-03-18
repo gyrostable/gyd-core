@@ -288,4 +288,4 @@ def test_price_bpt_cemm(
         mparams, mderived, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-10"))
