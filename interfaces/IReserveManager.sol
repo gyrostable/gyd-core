@@ -20,6 +20,9 @@ interface IReserveManager {
     function getReserveState() external view returns (DataTypes.ReserveState memory);
 
     /// @notice Returns a list of vaults with requested metadata
+    /// @param options allows the caller to specify what they want to be included in
+    /// the returned reserve state. If no options are passed, the full reserve state
+    /// is returned.
     function getReserveState(ReserveStateOptions memory options)
         external
         view
