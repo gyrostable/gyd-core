@@ -14,9 +14,9 @@ from requests.auth import AuthBase
 
 BASE_URL = "https://api.exchange.coinbase.com"
 REQUEST_PATH = "/oracle"
-API_KEY = os.environ["COINBASE_API_KEY"]
-API_SECRET = os.environ["COINBASE_API_SECRET"]
-API_PASSPHRASE = os.environ["COINBASE_API_PASSPHRASE"]
+API_KEY = os.environ.get("COINBASE_API_KEY")
+API_SECRET = os.environ.get("COINBASE_API_SECRET")
+API_PASSPHRASE = os.environ.get("COINBASE_API_PASSPHRASE")
 API_VERSION = "2022-01-26"
 
 
