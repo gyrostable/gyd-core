@@ -43,6 +43,10 @@ class CoinbaseWalletAuth(AuthBase):
 
 
 def fetch_prices():
+    assert (
+        API_KEY is not None and API_SECRET is not None and API_PASSPHRASE is not None
+    ), "API_KEY, API_SECRET and API_PASSPHRASE must be set"
+
     auth = CoinbaseWalletAuth(API_KEY, API_SECRET)
 
     r = requests.get(BASE_URL + "/oracle", auth=auth)

@@ -53,15 +53,15 @@ def test_deregister_unregistered_pool(uniswap_v3_twap_oracle):
 @pytest.mark.mainnetFork
 def test_get_relative_price_with_seconds(uniswap_v3_twap_oracle):
     uniswap_v3_twap_oracle.registerPool(UniswapPools.USDC_ETH)
-    usd_eth_price_two_hours = uniswap_v3_twap_oracle.getRelativePrice(
-        TokenAddresses.USDC, TokenAddresses.WETH
+    usd_eth_price_5_minutes = uniswap_v3_twap_oracle.getRelativePrice(
+        TokenAddresses.USDC, TokenAddresses.WETH, 300
     )
-    usd_eth_price_one_hour = uniswap_v3_twap_oracle.getRelativePrice(
+    usd_eth_price_two_hours = uniswap_v3_twap_oracle.getRelativePrice(
         TokenAddresses.USDC, TokenAddresses.WETH, 7200
     )
-    assert usd_eth_price_two_hours != usd_eth_price_one_hour
+    assert usd_eth_price_two_hours != usd_eth_price_5_minutes
     # price change should be moderate
-    assert abs(1 - usd_eth_price_one_hour / usd_eth_price_two_hours) < 0.1
+    assert abs(1 - usd_eth_price_5_minutes / usd_eth_price_two_hours) < 0.1
 
 
 @pytest.mark.mainnetFork
