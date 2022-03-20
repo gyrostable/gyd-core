@@ -5,7 +5,7 @@ import "./DataTypes.sol";
 
 library TypeConversion {
     function pluckPrices(DataTypes.PricedToken[] memory pricedTokens)
-        public
+        internal
         pure
         returns (uint256[] memory)
     {

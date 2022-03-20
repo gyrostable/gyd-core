@@ -27,7 +27,6 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
     uint256 public constant INITIAL_RELATIVE_EPSILON = 0.02e18;
     uint256 public constant MAX_RELATIVE_EPSILON = 0.1e18;
 
-    address public constant USDC_ADDRESS = address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     address public constant WETH_ADDRESS = address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
 
     IUSDPriceOracle public usdOracle;
@@ -69,6 +68,10 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
         emit PriceLevelTWAPQuoteAssetAdded(_quoteAssetToAdd);
     }
 
+    function listQuoteAssetsForPriceLevelTwap() external view returns (address[] memory) {
+        return quoteAssetsForPriceLevelTWAPS.toArray();
+    }
+
     function removeQuoteAssetsForPriceLevelTwap(address _quoteAssetToRemove)
         external
         governanceOnly
@@ -94,8 +97,10 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
 
             bool couldCheck = false;
 
-            for (uint256 j = i + 1; j < tokenAddresses.length; j++) {
-                if (!relativeOracle.isPairSupported(tokenAddresses[i], tokenAddresses[j])) {
+            for (uint256 j = 0; j < tokenAddresses.length; j++) {
+                if (
+                    i == j || !relativeOracle.isPairSupported(tokenAddresses[i], tokenAddresses[j])
+                ) {
                     continue;
                 }
 
@@ -105,10 +110,16 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
                 );
 
                 if (
-                    (tokenAddresses[i] == WETH_ADDRESS) &&
-                    (quoteAssetsForPriceLevelTWAPS.contains(tokenAddresses[j]))
+                    tokenAddresses[i] == WETH_ADDRESS &&
+                    quoteAssetsForPriceLevelTWAPS.contains(tokenAddresses[j])
                 ) {
                     priceLevelTwaps[k] = relativePrice;
+                    k++;
+                } else if (
+                    tokenAddresses[j] == WETH_ADDRESS &&
+                    quoteAssetsForPriceLevelTWAPS.contains(tokenAddresses[i])
+                ) {
+                    priceLevelTwaps[k] = FixedPoint.ONE.divDown(relativePrice);
                     k++;
                 }
 
@@ -124,7 +135,12 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
             checked[i] = true;
         }
 
-        return priceLevelTwaps;
+        uint256[] memory foundTwaps = new uint256[](k);
+        for (uint256 i = 0; i < k; i++) {
+            foundTwaps[i] = priceLevelTwaps[i];
+        }
+
+        return foundTwaps;
     }
 
     //NB this is expected to be queried for ALL asset prices in the reserve
@@ -136,14 +152,9 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
         returns (uint256[] memory)
     {
         uint256 length = tokenAddresses.length;
-        require(length > 0, Errors.INVALID_ARGUMENT);
+        require(length > 1, Errors.INVALID_ARGUMENT);
 
         uint256[] memory prices = new uint256[](length);
-
-        if (tokenAddresses.length == 1) {
-            prices[0] = usdOracle.getPriceUSD(tokenAddresses[0]);
-            return prices;
-        }
 
         /// Will start with this being the WETH/USD price, this can be modified later if desired.
         uint256 priceLevel;

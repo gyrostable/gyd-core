@@ -17,6 +17,9 @@ contract BaseVault is IGyroVault, ERC20 {
     address public immutable override underlying;
 
     /// @inheritdoc IGyroVault
+    uint256 public immutable override deployedAt;
+
+    /// @inheritdoc IGyroVault
     address public override strategy;
 
     constructor(
@@ -25,6 +28,7 @@ contract BaseVault is IGyroVault, ERC20 {
         string memory symbol
     ) ERC20(name, symbol) {
         underlying = _underlying;
+        deployedAt = block.number;
     }
 
     /// @inheritdoc IGyroVault

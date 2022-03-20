@@ -48,6 +48,7 @@ contract ReserveManager is IReserveManager, Governable {
         require(!options.includeCurrentWeight || options.includePrice, Errors.INVALID_ARGUMENT);
 
         address[] memory vaultAddresses = vaultRegistry.listVaults();
+        require(vaultAddresses.length > 0, Errors.INVALID_ARGUMENT);
 
         uint256 length = vaultAddresses.length;
         DataTypes.VaultInfo[] memory vaultsInfo = new DataTypes.VaultInfo[](length);

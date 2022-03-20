@@ -5,6 +5,7 @@ import os
 import sys
 import time
 from base64 import b64decode, b64encode
+from typing import Tuple
 
 import eth_abi
 import requests
@@ -13,9 +14,9 @@ from requests.auth import AuthBase
 
 BASE_URL = "https://api.exchange.coinbase.com"
 REQUEST_PATH = "/oracle"
-API_KEY = os.environ["COINBASE_API_KEY"]
-API_SECRET = os.environ["COINBASE_API_SECRET"]
-API_PASSPHRASE = os.environ["COINBASE_API_PASSPHRASE"]
+API_KEY = os.environ.get("COINBASE_API_KEY")
+API_SECRET = os.environ.get("COINBASE_API_SECRET")
+API_PASSPHRASE = os.environ.get("COINBASE_API_PASSPHRASE")
 API_VERSION = "2022-01-26"
 
 
@@ -42,6 +43,10 @@ class CoinbaseWalletAuth(AuthBase):
 
 
 def fetch_prices():
+    assert (
+        API_KEY is not None and API_SECRET is not None and API_PASSPHRASE is not None
+    ), "API_KEY, API_SECRET and API_PASSPHRASE must be set"
+
     auth = CoinbaseWalletAuth(API_KEY, API_SECRET)
 
     r = requests.get(BASE_URL + "/oracle", auth=auth)
@@ -59,8 +64,17 @@ def fetch_prices():
         ["bytes32", "bytes32", "uint8"], bytes.fromhex(signature[2:])
     )
     signing_address = w3.eth.account.recoverHash(signed_hash, vrs=(v, r, s))
-    print(f"signed using: {signing_address}", file=sys.stderr)
     return result, signing_address
+
+
+def find_price(prices: dict, symbol: str = "ETH") -> Tuple[str, str]:
+    for i, message in enumerate(prices["messages"]):
+        _, _, message_symbol, _ = eth_abi.decode_abi(
+            ["string", "uint256", "string", "uint256"], bytes.fromhex(message[2:])
+        )
+        if symbol == message_symbol:
+            return message, prices["signatures"][i]
+    raise ValueError(f"{symbol} price not found")
 
 
 if __name__ == "__main__":

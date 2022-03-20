@@ -1,10 +1,19 @@
+from typing import List
+from pyparsing import Or
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
+from tests.fixtures.mainnet_contracts import TokenAddresses
 
-from tests.support import error_codes
+from tests.support import config_keys, error_codes
 from tests.support.quantized_decimal import QuantizedDecimal as D
-from tests.support.constants import BALANCER_POOL_IDS
-from tests.support.types import MintAsset, RedeemAsset
+from tests.support.constants import BALANCER_POOL_IDS, address_from_pool_id
+from tests.support.types import (
+    MintAsset,
+    Order,
+    RedeemAsset,
+    VaultToDeploy,
+    VaultWithAmount,
+)
 from tests.support.utils import join_pool, scale
 
 
@@ -271,8 +280,38 @@ def test_redeem_vault_underlying_with_fees(
     assert usdc_vault.balanceOf(reserve) == usdc_amount - output_amount
 
 
-@pytest.mark.mainnetFork
-def test_simple_mint_bpt(motherboard, balancer_vault, alice, dai, weth, wbtc):
+@pytest.fixture
+def make_bpt_mint_asset(mainnet_vaults, interface, alice, full_motherboard):
+    def _make_mint_asset(pool_name):
+        pool = address_from_pool_id(BALANCER_POOL_IDS[pool_name])
+        vault = [v for v in mainnet_vaults if v.pool == pool][0]
+        balance = interface.ERC20(pool).balanceOf(alice)
+        interface.ERC20(pool).approve(full_motherboard, balance, {"from": alice})
+        return MintAsset(pool, balance, vault.address)
+
+    return _make_mint_asset
+
+
+@pytest.fixture
+def make_bpt_redeem_asset(mainnet_vaults):
+    def _make_redeem_asset(pool_name, min_amount, ratio):
+        pool = address_from_pool_id(BALANCER_POOL_IDS[pool_name])
+        vault = [v for v in mainnet_vaults if v.pool == pool][0]
+        return RedeemAsset(pool, min_amount, ratio, vault.address)
+
+    return _make_redeem_asset
+
+
+@pytest.mark.endToEnd
+def test_simple_mint_bpt(
+    full_motherboard,
+    balancer_vault,
+    alice,
+    dai,
+    weth,
+    wbtc,
+    make_bpt_mint_asset,
+):
     amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
     amounts = [
@@ -280,3 +319,69 @@ def test_simple_mint_bpt(motherboard, balancer_vault, alice, dai, weth, wbtc):
         (weth.address, int(scale("0.05"))),
     ]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WBTC_WETH"], amounts)
+
+    mint_assets = [make_bpt_mint_asset("WETH_DAI"), make_bpt_mint_asset("WBTC_WETH")]
+
+    amount, error = full_motherboard.dryMint(mint_assets, 300, {"from": alice})
+    assert error == ""
+    assert scale(300) <= amount <= scale(500)
+
+    tx = full_motherboard.mint(mint_assets, 400, {"from": alice})
+    assert abs(tx.return_value - amount) <= scale(10)
+
+
+@pytest.mark.endToEnd
+def test_simple_redeem_bpt(
+    full_motherboard,
+    balancer_vault,
+    alice,
+    dai,
+    weth,
+    wbtc,
+    make_bpt_mint_asset,
+    make_bpt_redeem_asset,
+    mainnet_pamm,
+    mainnet_reserve_manager,
+):
+    print("starting test")
+    amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
+    join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
+    amounts = [
+        (wbtc.address, int(scale("0.005", 8))),
+        (weth.address, int(scale("0.05"))),
+    ]
+    join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WBTC_WETH"], amounts)
+
+    mint_assets = [make_bpt_mint_asset("WETH_DAI"), make_bpt_mint_asset("WBTC_WETH")]
+
+    print("minting with", mint_assets)
+
+    tx = full_motherboard.mint(mint_assets, scale("300"), {"from": alice})
+    print(f"minted {tx.return_value} GYD")
+
+    redeem_assets = [
+        make_bpt_redeem_asset("WETH_DAI", scale("0.1"), scale("0.2")),
+        make_bpt_redeem_asset("WBTC_WETH", scale("0.008"), scale("0.8")),
+    ]
+
+    gyro_to_redeem = tx.return_value // 2
+
+    reserve_usd_value, vaults = mainnet_reserve_manager.getReserveState()
+    print(
+        "pamm value",
+        mainnet_pamm.computeRedeemAmount(gyro_to_redeem, reserve_usd_value),
+    )
+    print("vaults", vaults)
+
+    print("redeeming with", redeem_assets)
+
+    output_amounts, err = full_motherboard.dryRedeem(gyro_to_redeem, redeem_assets)
+    print("output amounts", output_amounts)
+    assert err == ""
+    assert output_amounts[0] >= redeem_assets[0].minOutputAmount
+    assert output_amounts[1] >= redeem_assets[1].minOutputAmount
+
+    tx = full_motherboard.redeem(gyro_to_redeem, redeem_assets, {"from": alice})
+    assert tx.return_value[0] >= redeem_assets[0].minOutputAmount
+    assert tx.return_value[1] >= redeem_assets[1].minOutputAmount
+    print(tx.gas_used)

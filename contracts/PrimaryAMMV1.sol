@@ -3,20 +3,32 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+import "../interfaces/IPAMM.sol";
+import "../interfaces/IGyroConfig.sol";
+
 import "../libraries/LogExpMath.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/Flow.sol";
-import "../interfaces/IPAMM.sol";
+import "../libraries/ConfigHelpers.sol";
+
 import "./auth/Governable.sol";
 
 /// @notice Implements the primary AMM pricing mechanism
-contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
+contract PrimaryAMMV1 is IPAMM, Governable {
     using LogExpMath for uint256;
     using FixedPoint for uint256;
+    using ConfigHelpers for IGyroConfig;
 
-    uint256 constant ONE = 1e18;
-    uint256 constant TWO = 2e18;
-    uint256 constant ANCHOR = ONE;
+    IGyroConfig public immutable gyroConfig;
+
+    uint256 internal constant ONE = 1e18;
+    uint256 internal constant TWO = 2e18;
+    uint256 internal constant ANCHOR = ONE;
+
+    modifier onlyMotherboard() {
+        require(msg.sender == address(gyroConfig.getMotherboard()), Errors.NOT_AUTHORIZED);
+        _;
+    }
 
     enum Region {
         CASE_i,
@@ -28,16 +40,10 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
         CASE_III_L
     }
 
-    // TODO: consider if reserve value actually needs to be stored?
-    // NB: potential gas optimization by only storing redemptionLevel
-    // NB: if lastSeenBlock is the same as the current block, then can bypass all of the Oracle
-    // infrastructure, saving on gas costs
-    // NB: don't need many decimals for the outflow paramters, can optimize gas by packing these together
     struct State {
         uint256 redemptionLevel; // x
         uint256 reserveValue; // b
         uint256 totalGyroSupply; // y
-        uint256 lastSeenBlock;
     }
 
     struct DerivedParams {
@@ -56,11 +62,15 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
     /// @notice parameters of the primary AMM
     Params public systemParams;
 
-    /// @notice current state of the primary AMM
-    State public systemState;
+    /// @notice current redemption level of the primary AMM
+    uint256 public redemptionLevel;
 
-    /// @notice Initializes the PAAM with the given system parameters
-    constructor(Params memory params) {
+    /// @notice the last block at which a redemption occured
+    uint256 public lastRedemptionBlock;
+
+    /// @notice Initializes the PAMM with the given system parameters
+    constructor(address _gyroConfig, Params memory params) {
+        gyroConfig = IGyroConfig(_gyroConfig);
         systemParams = params;
     }
 
@@ -461,10 +471,7 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
     }
 
     /// @notice Records and returns the USD value to mint given an ammount of Gyro dollars
-    function mint(uint256 usdAmount, uint256) external onlyOwner returns (uint256) {
-        State storage state = systemState;
-        state.totalGyroSupply += usdAmount;
-        state.reserveValue += usdAmount;
+    function mint(uint256 usdAmount, uint256) external view onlyMotherboard returns (uint256) {
         return usdAmount;
     }
 
@@ -486,23 +493,24 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
         view
         returns (State memory currentState)
     {
-        currentState = systemState;
-        currentState.reserveValue = reserveUSDValue;
-        uint256 currentBlock = block.number;
-        currentState.redemptionLevel = Flow.updateFlow(
-            currentState.redemptionLevel,
-            currentBlock,
-            currentState.lastSeenBlock,
-            params.outflowMemory
-        );
-        currentState.lastSeenBlock = currentBlock;
+        return
+            State({
+                reserveValue: reserveUSDValue,
+                redemptionLevel: Flow.updateFlow(
+                    redemptionLevel,
+                    block.number,
+                    lastRedemptionBlock,
+                    params.outflowMemory
+                ),
+                totalGyroSupply: _getGyroSupply()
+            });
     }
 
     /// @notice Computes and records the USD value to redeem given an ammount of Gyro dollars
     // NB reserveValue does not need to be stored as part of state - could be passed around
     function redeem(uint256 gydAmount, uint256 reserveUSDValue)
-        external
-        onlyOwner
+        public
+        onlyMotherboard
         returns (uint256)
     {
         if (gydAmount == 0) return 0;
@@ -510,10 +518,14 @@ contract PrimaryAMMV1 is IPAMM, Ownable, Governable {
         State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
         DerivedParams memory derived = createDerivedParams(params);
         uint256 redeemAmount = computeRedeemAmount(currentState, params, derived, gydAmount);
-        currentState.redemptionLevel += gydAmount;
-        currentState.totalGyroSupply -= gydAmount;
-        currentState.reserveValue -= redeemAmount;
-        systemState = currentState;
+
+        redemptionLevel += gydAmount;
+        lastRedemptionBlock = block.number;
+
         return redeemAmount;
+    }
+
+    function _getGyroSupply() internal view virtual returns (uint256) {
+        return gyroConfig.getGYDToken().totalSupply();
     }
 }

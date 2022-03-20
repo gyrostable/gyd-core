@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
+import "../auth/Governable.sol";
+
 import "../../libraries/DataTypes.sol";
 import "../../libraries/Arrays.sol";
 import "../../libraries/Vaults.sol";
@@ -9,7 +11,7 @@ import "../../interfaces/oracles/IUSDBatchPriceOracle.sol";
 import "../../interfaces/oracles/IVaultPriceOracle.sol";
 import "../../interfaces/oracles/IBatchVaultPriceOracle.sol";
 
-contract BatchVaultPriceOracle is IBatchVaultPriceOracle {
+contract BatchVaultPriceOracle is IBatchVaultPriceOracle, Governable {
     using Arrays for address[];
 
     IUSDBatchPriceOracle public batchPriceOracle;
@@ -18,6 +20,14 @@ contract BatchVaultPriceOracle is IBatchVaultPriceOracle {
 
     constructor(IUSDBatchPriceOracle _batchPriceOracle) {
         batchPriceOracle = _batchPriceOracle;
+    }
+
+    function registerVaultPriceOracle(Vaults.Type vaultType, IVaultPriceOracle priceOracle)
+        external
+        governanceOnly
+    {
+        vaultPriceOracles[vaultType] = priceOracle;
+        emit VaultPriceOracleChanged(vaultType, address(priceOracle));
     }
 
     function fetchPricesUSD(DataTypes.VaultInfo[] memory vaultsInfo)

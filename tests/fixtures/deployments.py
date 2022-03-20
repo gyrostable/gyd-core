@@ -1,10 +1,7 @@
-from collections import namedtuple
-from unittest.mock import Mock
-
 import pytest
 from brownie import accounts
-from tests.fixtures.mainnet_contracts import CHAINLINK_FEEDS, UniswapPools
 from tests.support import config_keys, constants
+from tests.support.types import PammParams
 from tests.support.utils import scale
 
 
@@ -13,6 +10,11 @@ def vault_registry(admin, VaultRegistry, gyro_config):
     vault_registry = admin.deploy(VaultRegistry, gyro_config)
     gyro_config.setAddress(config_keys.VAULT_REGISTRY_ADDRESS, vault_registry)
     return vault_registry
+
+
+@pytest.fixture(scope="module")
+def balancer_cpmm_price_oracle(BalancerCPMMPriceOracle, admin):
+    return admin.deploy(BalancerCPMMPriceOracle)
 
 
 @pytest.fixture(scope="module")
@@ -42,7 +44,7 @@ def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry, gyro_config):
 
 @pytest.fixture(scope="module")
 def gyd_token(admin, GydToken, gyro_config):
-    gyd_token = admin.deploy(GydToken, "GYD Token", "GYD")
+    gyd_token = admin.deploy(GydToken, gyro_config, "GYD Token", "GYD")
     gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token)
     return gyd_token
 
@@ -146,22 +148,9 @@ def uniswap_v3_twap_oracle(admin, UniswapV3TwapOracle):
     return admin.deploy(UniswapV3TwapOracle)
 
 
-@pytest.fixture
-def add_common_uniswap_pools(admin, uniswap_v3_twap_oracle):
-    pools = [UniswapPools.ETH_CRV, UniswapPools.USDC_ETH, UniswapPools.WBTC_USDC]
-    for pool in pools:
-        uniswap_v3_twap_oracle.registerPool(pool, {"from": admin})
-
-
 @pytest.fixture(scope="module")
 def chainlink_price_oracle(ChainlinkPriceOracle, admin):
     return admin.deploy(ChainlinkPriceOracle)
-
-
-@pytest.fixture
-def set_common_chainlink_feeds(admin, chainlink_price_oracle):
-    for asset, feed in CHAINLINK_FEEDS:
-        chainlink_price_oracle.setFeed(asset, feed, {"from": admin})
 
 
 @pytest.fixture(scope="module")
@@ -200,7 +189,7 @@ def root_safety_check(admin, RootSafetyCheck, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
+def motherboard(admin, Motherboard, gyro_config, reserve, request):
     extra_dependencies = [
         "fee_bank",
         "lp_token_exchanger_registry",
@@ -209,23 +198,25 @@ def motherboard(admin, Motherboard, gyro_config, reserve, gyd_token, request):
         "reserve_manager",
         "root_safety_check",
         "static_percentage_fee_handler",
+        "gyd_token",
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
     motherboard = admin.deploy(Motherboard, gyro_config)
-    gyd_token.grantRole(gyd_token.MINTER_ROLE(), motherboard, {"from": admin})
     reserve.addManager(motherboard, {"from": admin})
+    gyro_config.setAddress(config_keys.MOTHERBOARD_ADDRESS, motherboard)
     return motherboard
 
 
 @pytest.fixture(scope="module")
-def pamm(TestingPAMMV1):
+def pamm(TestingPAMMV1, gyro_config):
     return TestingPAMMV1.deploy(
-        (
-            constants.ALPHA_MIN_REL,
-            constants.XU_MAX_REL,
-            constants.THETA_FLOOR,
-            constants.OUTFLOW_MEMORY,
+        gyro_config,
+        PammParams(
+            int(constants.ALPHA_MIN_REL),
+            int(constants.XU_MAX_REL),
+            int(constants.THETA_FLOOR),
+            int(constants.OUTFLOW_MEMORY),
         ),
         {"from": accounts[0]},
     )
@@ -287,6 +278,11 @@ def mock_vaults(admin, MockGyroVault, dai):
     return [admin.deploy(MockGyroVault, dai) for _ in range(constants.RESERVE_VAULTS)]
 
 
+@pytest.fixture(scope="module")
+def batch_vault_price_oracle(admin, TestingBatchVaultPriceOracle, mock_price_oracle):
+    return admin.deploy(TestingBatchVaultPriceOracle, mock_price_oracle)
+
+
 # NOTE: this is a vault that contains only DAI as underlying
 # this is for testing purposes only
 @pytest.fixture(scope="module")
@@ -300,14 +296,13 @@ def balancer_vault(interface):
 
 
 @pytest.fixture(scope="module")
-def vault_safety_mode(admin, TestingVaultSafetyMode, motherboard, mock_vaults):
-    vault_addresses = [i.address for i in mock_vaults]
+def vault_safety_mode(admin, TestingVaultSafetyMode, request, gyro_config):
+    request.getfixturevalue("motherboard")
     return admin.deploy(
         TestingVaultSafetyMode,
         constants.SAFETY_BLOCKS_AUTOMATIC,
         constants.SAFETY_BLOCKS_GUARDIAN,
-        motherboard,
-        vault_addresses,
+        gyro_config,
     )
 
 

@@ -73,4 +73,7 @@ interface IGyroVault is IERC20Metadata {
     /// This will be used through governance
     /// @param strategyAddress the address of the strategy contract that should follow the `IStrategy` interface
     function setStrategy(address strategyAddress) external;
+
+    /// @return the block at which the vault has been deployed
+    function deployedAt() external view returns (uint256);
 }

@@ -8,6 +8,7 @@ from brownie.network.state import Chain
 from brownie.test import given
 from hypothesis import strategies as st
 from hypothesis.control import assume
+from tests.support import config_keys
 
 import tests.support.pamm as pypamm
 from tests.support.constants import (
@@ -228,7 +229,6 @@ def test_compute_region(pamm, args, alpha_min):
     expected = pypamm.compute_region(*qd_args(args), pyparams)  # type: ignore
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
     args_final = scale_args(args)
-    args_final = (*args_final, D("0"))
     computed_region = pamm.computeRegion(args_final)
     assert computed_region == expected.value
 
@@ -260,7 +260,6 @@ def test_compute_reserve_value(pamm, args, alpha_min):
 
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
     args_final = scale_args(args)
-    args_final = (*args_final, D("0"))
 
     computed_reserve = pamm.computeReserveValue(args_final)
     assert computed_reserve == scale(expected)
@@ -270,27 +269,24 @@ def test_compute_reserve_value(pamm, args, alpha_min):
 def test_compute_reserve_value_gas(pamm, args, alpha_min):
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
     args_final = scale_args(args)
-    args_final = args_final = (*args_final, D("0"))
     pamm.computeReserveValueWithGas(args_final)
 
 
 @given(st.data())
-def test_path_independence(
-    admin, TestingPAMMV1, TestingPAMMV1Path, data: st.DataObject
-):
+def test_path_independence(admin, gyro_config, TestingPAMMV1, data: st.DataObject):
     params = data.draw(st_params(), "params")
     ba, ya = data.draw(st_baya(params[2]), "ba, ya")
     x1 = data.draw(st_scaled_decimals(scale("0.001"), ya - scale("0.001")), "x1")
     x2 = data.draw(st_scaled_decimals(scale("0.001"), ya - x1), "x2")
     run_path_independence_test(
-        admin, TestingPAMMV1, TestingPAMMV1Path, x1, x2, ba, ya, params
+        admin, gyro_config, TestingPAMMV1, x1, x2, ba, ya, params
     )
 
 
 def run_path_independence_test(
     admin,
+    gyro_config,
     PAMM,
-    PAMM_DOUBLE,
     x1: int,
     x2: int,
     ba: int,
@@ -299,11 +295,13 @@ def run_path_independence_test(
 ):
     assert x1 + x2 <= ya
 
-    pamm = admin.deploy(PAMM, params)
-    pamm.setState((D(0), ba, ya, D(0)))
+    gyro_config.setAddress(config_keys.MOTHERBOARD_ADDRESS, admin, {"from": admin})
 
-    pamm_2step = admin.deploy(PAMM_DOUBLE, params)
-    pamm_2step.setState((D(0), ba, ya, D(0)))
+    pamm = admin.deploy(PAMM, gyro_config, params)
+    pamm.setState((D(0), ba, ya))
+
+    pamm_2step = admin.deploy(PAMM, gyro_config, params)
+    pamm_2step.setState((D(0), ba, ya))
 
     # NOTE: the current input generation is slightly problematic as it generates
     # inputs that are not valid and result in integer overflows/underflow
@@ -317,18 +315,15 @@ def run_path_independence_test(
             raise ex
         return
 
-    (x, b, y, last_seen_block) = pamm.systemState()
-    (x2, b2, y2, last_seen_block_2) = pamm_2step.systemState()
+    x = pamm.redemptionLevel()
+    x2 = pamm_2step.redemptionLevel()
 
-    # First two are trivial / sanity checks
+    # trivial / sanity checks
     assert x == x2
-    assert y == y2
 
-    # These two are the actual meat (and they're also kinda equivalent):
+    # These is are the actual meat
     # values are scaled to 10^18 so we allow for some absolute error of 10^-8
     # as there might be some small differences because of root computations etc
-    # assert QD(b) == QD(b2).approxed(rel=D("1E-4"))
-    assert QD(b) == QD(b2).approxed(abs=D("1E10"))
 
     first_redeem = QD(redeem_path_tx.return_value[0])
     second_redeem = QD(redeem_path_tx.return_value[1])

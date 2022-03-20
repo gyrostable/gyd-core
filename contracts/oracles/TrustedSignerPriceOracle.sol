@@ -10,7 +10,7 @@ contract TrustedSignerPriceOracle is IUSDPriceOracle {
     uint8 public constant PRICE_DECIMALS = 6;
 
     /// @notice we throw an error if the price is older than `MAX_LAG` seconds
-    uint256 public constant MAX_LAG = 900;
+    uint256 public constant MAX_LAG = 3600;
 
     /// @notice this event is emitted when the price of `asset` is updated
     event PriceUpdated(address indexed asset, uint256 price, uint256 timestamp);

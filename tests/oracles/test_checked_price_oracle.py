@@ -142,19 +142,6 @@ def test_get_prices_no_assets(local_checked_price_oracle):
 
 
 @pytest.mark.usefixtures("set_dummy_usd_prices", "initialize_local_oracle")
-def test_get_prices_usd_no_deviation_one_asset(
-    local_checked_price_oracle, mock_price_oracle
-):
-    mock_price_oracle.setRelativePrice(
-        TokenAddresses.CRV, TokenAddresses.WETH, scale(CRV_USD_PRICE / ETH_USD_PRICE)
-    )
-
-    usd_prices = local_checked_price_oracle.getPricesUSD([TokenAddresses.CRV])
-
-    assert usd_prices == [CRV_USD_PRICE]
-
-
-@pytest.mark.usefixtures("set_dummy_usd_prices", "initialize_local_oracle")
 def test_get_prices_usd_multiple_assets_no_reference_point(
     local_checked_price_oracle, mock_price_oracle
 ):
