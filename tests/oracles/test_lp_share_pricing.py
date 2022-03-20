@@ -1,18 +1,19 @@
 import functools
 from decimal import Decimal
-from math import pi, sin, cos
+from math import cos, pi, sin
 from pickle import FALSE
-from typing import Tuple, Iterable
+from typing import Iterable, Tuple
 
 import hypothesis.strategies as st
 from _pytest.python_api import ApproxDecimal
-from brownie.test import given
 from brownie import reverts
+from brownie.test import given
 from hypothesis import assume, settings
-import lp_share_pricing as math_implementation
-from tests.support.utils_pools import scale, to_decimal, qdecimals
-from tests.support.types import *
 from tests.support.quantized_decimal import QuantizedDecimal as D
+from tests.support.types import *
+from tests.support.utils_pools import qdecimals, scale, to_decimal
+
+import lp_share_pricing as math_implementation
 
 billion_balance_strategy = st.integers(min_value=0, max_value=1_000_000_000)
 weights_strategy = st.decimals(min_value="0.05", max_value="0.95")
@@ -229,7 +230,7 @@ def gen_params(draw):
     phi = phi_degrees / 360 * 2 * pi
     s = sin(phi)
     c = cos(phi)
-    lam = draw(qdecimals("1", "10000"))
+    lam = draw(qdecimals("1", "100"))
     alpha = draw(qdecimals("0.05", "0.995"))
     beta = draw(qdecimals("1.005", "20.0"))
     price_peg = draw(qdecimals("0.05", "20.0"))
