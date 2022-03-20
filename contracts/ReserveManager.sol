@@ -99,6 +99,7 @@ contract ReserveManager is IReserveManager, Governable {
                 reserveUSDValue += usdValue;
             }
             for (uint256 i = 0; i < length; i++) {
+                /// Only zero at initialization
                 vaultsInfo[i].currentWeight = reserveUSDValue == 0
                     ? vaultsInfo[i].persistedMetadata.initialWeight
                     : usdValues[i].divDown(reserveUSDValue);
