@@ -67,6 +67,14 @@ contract TestingLPSharePricing {
         );
     }
 
+    function relativeEquilibriumPricesCPMMv3(
+        uint256 alpha,
+        uint256 pXZ,
+        uint256 pYZ
+    ) external pure returns (uint256, uint256) {
+        return BalancerLPSharePricing.relativeEquilibriumPricesCPMMv3(alpha, pXZ, pYZ);
+    }
+
     function priceBptCEMM(
         ICEMM.Params memory params,
         ICEMM.DerivedParams memory derivedParams,

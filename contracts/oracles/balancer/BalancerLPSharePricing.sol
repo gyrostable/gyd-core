@@ -186,8 +186,7 @@ library BalancerLPSharePricing {
         // SOMEDAY this should be reviewed so that we round in a way most favorable to us I guess?
         uint256 alphaInv = FixedPoint.ONE.divDown(alpha);
         {
-            uint256 thresholdX = pYZ.divDown(pXZ.mulDown(pXZ));
-            if (thresholdX < alpha) {
+            if (pYZ < alpha.mulDown(pXZ).mulDown(pXZ)) {
                 if (pYZ < alpha) return (FixedPoint.ONE, alpha);
                 else if (pYZ > alphaInv) return (alphaInv, alphaInv);
                 else {
@@ -197,10 +196,9 @@ library BalancerLPSharePricing {
             }
         }
         {
-            uint256 thresholdY = pXZ.divDown(pYZ.mulDown(pYZ));
-            if (thresholdY < alpha) {
+            if (pXZ < alpha.mulDown(pYZ).mulDown(pYZ)) {
                 if (pXZ < alpha) return (alpha, FixedPoint.ONE);
-                else if (thresholdY > alphaInv) return (alphaInv, alphaInv);
+                else if (pXZ > alphaInv) return (alphaInv, alphaInv);
                 else {
                     uint256 pYPool = alphaInv.mulDown(pXZ).powDown(ONEHALF);
                     return (pXZ, pYPool);
@@ -208,15 +206,13 @@ library BalancerLPSharePricing {
             }
         }
         {
-            uint256 thresholdXY = pXZ.mulDown(pYZ);
-            if (thresholdXY < alpha) {
-                uint256 pXY = pXZ.divDown(pYZ);
-                if (pXY < alpha) return (alpha, FixedPoint.ONE);
-                else if (pXY > alphaInv) return (FixedPoint.ONE, alpha);
+            if (pXZ.mulDown(pYZ) < alpha) {
+                if (pXZ < alpha.mulDown(pYZ)) return (alpha, FixedPoint.ONE);
+                else if (pXZ > alphaInv.mulDown(pYZ)) return (FixedPoint.ONE, alpha);
                 else {
-                    // TODO SOMEDAY sqrtAlpha could be made immutable in the pool and passed as a parameter.
+                    // SOMEDAY Gas optimization: sqrtAlpha could be made immutable in the pool and passed as a parameter.
                     uint256 sqrtAlpha = alpha.powDown(ONEHALF);
-                    uint256 sqrtPXY = pXY.powDown(ONEHALF);
+                    uint256 sqrtPXY = pXZ.divDown(pYZ).powDown(ONEHALF);
                     return (sqrtAlpha.mulDown(sqrtPXY), sqrtAlpha.divDown(sqrtPXY));
                 }
             }
