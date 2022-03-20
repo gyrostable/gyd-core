@@ -130,7 +130,7 @@ def eta(pxc: D) -> tuple[D, D]:
 
 def relativeEquilibriumPricesCPMMV3(alpha: D, pXZ: D, pYZ: D) -> tuple[D, D]:
     # Comparisons are re-ordered vs. the write-up to increase precision.
-    beta = D(1)/alpha
+    beta = D(1) / alpha
     if pYZ < alpha * (pXZ**2):
         if pYZ < alpha:
             return D(1), alpha
@@ -155,7 +155,10 @@ def relativeEquilibriumPricesCPMMV3(alpha: D, pXZ: D, pYZ: D) -> tuple[D, D]:
     else:
         return pXZ, pYZ
 
-def price_bpt_CPMMV3(root3Alpha: D, invariant_div_supply: D, underlying_prices: Iterable[D]) -> D:
+
+def price_bpt_CPMMV3(
+    root3Alpha: D, invariant_div_supply: D, underlying_prices: Iterable[D]
+) -> D:
     alpha = root3Alpha**3
 
     # Relative external (actual) prices
@@ -165,12 +168,13 @@ def price_bpt_CPMMV3(root3Alpha: D, invariant_div_supply: D, underlying_prices: 
     # Relative prices of a pool that is arbitrage-free with the external market
     pXZPool, pYZPool = relativeEquilibriumPricesCPMMV3(alpha, pXZ, pYZ)
 
-    gamma = (pXZPool * pYZPool) ** (D(1)/3)
+    gamma = (pXZPool * pYZPool) ** (D(1) / 3)
 
     # Absolute prices (short notation)
     px, py, pz = underlying_prices
 
-    value_factor = gamma * (px / pXZPool + py / pYZPool + pz) -\
-                   root3Alpha * (px + py + pz)
+    value_factor = gamma * (px / pXZPool + py / pYZPool + pz) - root3Alpha * (
+        px + py + pz
+    )
 
     return invariant_div_supply * value_factor
