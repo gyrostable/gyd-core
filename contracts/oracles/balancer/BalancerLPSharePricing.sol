@@ -185,40 +185,32 @@ library BalancerLPSharePricing {
         // NOTE: Rounding directions are less critical here b/c all functions are continuous and we don't take any roots where the radicand can become negative.
         // SOMEDAY this should be reviewed so that we round in a way most favorable to us I guess?
         uint256 alphaInv = FixedPoint.ONE.divDown(alpha);
-        {
-            if (pYZ < alpha.mulDown(pXZ).mulDown(pXZ)) {
-                if (pYZ < alpha) return (FixedPoint.ONE, alpha);
-                else if (pYZ > alphaInv) return (alphaInv, alphaInv);
-                else {
-                    uint256 pXPool = alphaInv.mulDown(pYZ).powDown(ONEHALF);
-                    return (pXPool, pYZ);
-                }
+        if (pYZ < alpha.mulDown(pXZ).mulDown(pXZ)) {
+            if (pYZ < alpha) return (FixedPoint.ONE, alpha);
+            else if (pYZ > alphaInv) return (alphaInv, alphaInv);
+            else {
+                uint256 pXPool = alphaInv.mulDown(pYZ).powDown(ONEHALF);
+                return (pXPool, pYZ);
             }
-        }
-        {
-            if (pXZ < alpha.mulDown(pYZ).mulDown(pYZ)) {
-                if (pXZ < alpha) return (alpha, FixedPoint.ONE);
-                else if (pXZ > alphaInv) return (alphaInv, alphaInv);
-                else {
-                    uint256 pYPool = alphaInv.mulDown(pXZ).powDown(ONEHALF);
-                    return (pXZ, pYPool);
-                }
+        } else if (pXZ < alpha.mulDown(pYZ).mulDown(pYZ)) {
+            if (pXZ < alpha) return (alpha, FixedPoint.ONE);
+            else if (pXZ > alphaInv) return (alphaInv, alphaInv);
+            else {
+                uint256 pYPool = alphaInv.mulDown(pXZ).powDown(ONEHALF);
+                return (pXZ, pYPool);
             }
-        }
-        {
-            if (pXZ.mulDown(pYZ) < alpha) {
-                if (pXZ < alpha.mulDown(pYZ)) return (alpha, FixedPoint.ONE);
-                else if (pXZ > alphaInv.mulDown(pYZ)) return (FixedPoint.ONE, alpha);
-                else {
-                    // SOMEDAY Gas optimization: sqrtAlpha could be made immutable in the pool and passed as a parameter.
-                    uint256 sqrtAlpha = alpha.powDown(ONEHALF);
-                    uint256 sqrtPXY = pXZ.divDown(pYZ).powDown(ONEHALF);
-                    return (sqrtAlpha.mulDown(sqrtPXY), sqrtAlpha.divDown(sqrtPXY));
-                }
+        } else if (pXZ.mulDown(pYZ) < alpha) {
+            if (pXZ < alpha.mulDown(pYZ)) return (alpha, FixedPoint.ONE);
+            else if (pXZ > alphaInv.mulDown(pYZ)) return (FixedPoint.ONE, alpha);
+            else {
+                // SOMEDAY Gas optimization: sqrtAlpha could be made immutable in the pool and passed as a parameter.
+                uint256 sqrtAlpha = alpha.powDown(ONEHALF);
+                uint256 sqrtPXY = pXZ.divDown(pYZ).powDown(ONEHALF);
+                return (sqrtAlpha.mulDown(sqrtPXY), sqrtAlpha.divDown(sqrtPXY));
             }
+        } else {
+            return (pXZ, pYZ);
         }
-
-        return (pXZ, pYZ);
     }
 
     /** @dev Calculates the value of BPT for constant ellipse (CEMM) pools of two assets
