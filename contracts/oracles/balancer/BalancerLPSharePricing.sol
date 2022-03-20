@@ -139,6 +139,7 @@ library BalancerLPSharePricing {
      *  virtual reserves are chosen such that alpha = lower price bound and 1/alpha = upper price bound
      *  @param cbrtAlpha = cube root of alpha (lower price bound)
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
+     *  @param underlyingPrices = array of three prices for the
      *  This calculation is robust to price manipulation within the Balancer pool.
      *  The calculation includes a kind of no-arbitrage equilibrium computation, see the Gyroscope Oracles document, p. 7. */
     function priceBptCPMMv3(
@@ -146,6 +147,7 @@ library BalancerLPSharePricing {
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
+        require(underlyingPrices.length == 3, Errors.INVALID_ARGUMENT);
         uint256 pXZPool;
         uint256 pYZPool;
         {
