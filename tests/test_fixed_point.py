@@ -15,4 +15,4 @@ def test_int_pow_down(testing_fixed_point, numbers):
     result = testing_fixed_point.intPowDownTest(numbers[0], numbers[1])
     descaled_number = numbers[0] / 10**18
     expected_result = descaled_number ** numbers[1]
-    assert D(result) == scale(D(expected_result)).approxed()
+    assert D(result) == scale(D(expected_result)).approxed(abs=D("1E10"))
