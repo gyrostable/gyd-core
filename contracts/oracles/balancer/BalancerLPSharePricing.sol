@@ -40,6 +40,43 @@ library BalancerLPSharePricing {
         }
     }
 
+    /** @dev Efficiently calculates the value of Balancer pool tokens (BPT) for two asset pools with constant product invariant
+     *  @param weights = weights of underlying assets
+     *  @param underlyingPrices = prices of underlying assets, in same order as weights
+     *  @param invariantDivSupply = value of the pool invariant / supply of BPT
+     *  This calculation is robust to price manipulation within the Balancer pool
+     *  However, numerical imprecision may occur with extremely large or small prices */
+    function priceBptTwoAssetCPMM(
+        uint256[] memory weights,
+        uint256 invariantDivSupply,
+        uint256[] memory underlyingPrices
+    ) internal pure returns (uint256 bptPrice) {
+        /**********************************************************************************************
+        //                        L                        w_0                                       //
+        //            bptPrice = --- (  w_1 p_0 / w_0 p_1 )^   (p_1 / w_1)                           //
+        //                        S                                                                  //
+        **********************************************************************************************/
+        // firstTerm is invariantDivSupply
+
+        require(weights.length == 2, Errors.INVALID_NUMBER_WEIGHTS);
+
+        (uint256 i, uint256 j) = weights[1].mulDown(underlyingPrices[0]) >
+            weights[0].mulDown(underlyingPrices[1])
+            ? (1, 0)
+            : (0, 1);
+
+        uint256 secondTerm = FixedPoint.powDown(
+            underlyingPrices[i].mulDown(weights[j]).divDown(
+                weights[i].mulDown(underlyingPrices[j])
+            ),
+            weights[i]
+        );
+
+        uint256 thirdTerm = underlyingPrices[j].divDown(weights[j]);
+
+        bptPrice = invariantDivSupply.mulDown(secondTerm).mulDown(thirdTerm);
+    }
+
     /** @dev Calculates value of BPT for constant product invariant with equal weights
      *  Compared to general CPMM, everything can be grouped into one fractional power to save gas
      *  Note: loss of precision arises when multiple prices are too low (e.g., < 1e-5). This pricing formula
@@ -181,28 +218,28 @@ library BalancerLPSharePricing {
 
     /** @dev Calculate A^{-1}t where A^{-1} is given in Section 2.2
      *  This is rotating and scaling the circle into the ellipse */
+
     function mulAinv(ICEMM.Params memory params, ICEMM.Vector2 memory t)
         internal
         pure
         returns (ICEMM.Vector2 memory tp)
     {
-        tp.x = params.c.mulDown(params.lambda).mulDown(t.x);
-        tp.x = tp.x.add(params.s.mulDown(t.y));
-        tp.y = (-params.s).mulDown(params.lambda).mulDown(t.x);
-        tp.y = tp.y.add(params.c.mulDown(t.y));
+        tp.x = t.x.mulDown(params.lambda).mulDown(params.c) + t.y.mulDown(params.s);
+        tp.y = -t.x.mulDown(params.lambda).mulDown(params.s) + t.y.mulDown(params.c);
     }
 
     /** @dev Calculate A t where A is given in Section 2.2
      *  This is reversing rotation and scaling of the ellipse (mapping back to circle) */
+
     function mulA(ICEMM.Params memory params, ICEMM.Vector2 memory tp)
         internal
         pure
         returns (ICEMM.Vector2 memory t)
     {
-        t.x = params.c.divDown(params.lambda).mulDown(tp.x);
-        t.x = t.x.sub(params.s.divDown(params.lambda).mulDown(tp.y));
-        t.y = params.s.mulDown(tp.x);
-        t.y = t.y.add(params.c.mulDown(tp.y));
+        t.x = params.c.mulDown(tp.x).divDown(params.lambda).sub(
+            params.s.mulDown(tp.y).divDown(params.lambda)
+        );
+        t.y = params.s.mulDown(tp.x).add(params.c.mulDown(tp.y));
     }
 
     /** @dev Given price px on the transformed ellipse, get the untransformed price pxc on the circle

@@ -28,13 +28,23 @@ def price_bpt_CPMM(
     return prod
 
 
+def price_bpt_two_asset_CPMM(
+    weights: Iterable[D], invariant_div_supply: D, underlying_prices: Iterable[D]
+) -> D:
+    second_term = (
+        underlying_prices[0] * (weights[1]) / (weights[0] * underlying_prices[1])
+    ) ** weights[0]
+    third_term = underlying_prices[1] / weights[1]
+    return invariant_div_supply * second_term * third_term
+
+
 def price_bpt_CPMM_equal_weights(
     weight: D, invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:
     prod = D("1")
     for i in range(len(underlying_prices)):
         prod = prod * underlying_prices[i] / weight
-    prod = prod ** weight
+    prod = prod**weight
     return prod * invariant_div_supply
 
 
@@ -42,9 +52,9 @@ def price_bpt_CPMMv2(
     sqrt_alpha: D, sqrt_beta: D, invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:
     px, py = (underlying_prices[0], underlying_prices[1])
-    if px / py <= sqrt_alpha ** 2:
+    if px / py <= sqrt_alpha**2:
         return invariant_div_supply * px * (D(1) / sqrt_alpha - D(1) / sqrt_beta)
-    elif px / py >= sqrt_beta ** 2:
+    elif px / py >= sqrt_beta**2:
         return invariant_div_supply * py * (sqrt_beta - sqrt_alpha)
     else:
         term = 2 * D(px * py) ** D(1 / 2) - px / sqrt_beta - py * sqrt_alpha
@@ -91,14 +101,14 @@ def scalar_prod(t1: tuple[D, D], t2: tuple[D, D]) -> D:
 
 
 def mul_Ainv(params: CEMM_params, t: tuple[D, D]) -> tuple[D, D]:
-    vecx = params.c * params.lam * t[0] + params.s * t[1]
-    vecy = -params.s * params.lam * t[0] + params.c * t[1]
+    vecx = t[0] * params.lam * params.c + t[1] * params.s
+    vecy = -t[0] * params.lam * params.s + t[1] * params.c
     return (vecx, vecy)
 
 
 def mul_A(params: CEMM_params, tp: tuple[D, D]) -> tuple[D, D]:
-    vecx = params.c / params.lam * tp[0] - params.s / params.lam * tp[1]
-    vecy = params.s * tp[0] + params.c * tp[1]
+    vecx = params.c * tp[0] / params.lam - (params.s * tp[1] / params.lam)
+    vecy = params.s * tp[0] + (params.c * tp[1])
     return (vecx, vecy)
 
 
@@ -112,7 +122,7 @@ def tau(params: CEMM_params, px: D) -> tuple[D, D]:
 
 
 def eta(pxc: D) -> tuple[D, D]:
-    z = D(1 + pxc ** 2) ** D(1 / 2)
+    z = D(1 + pxc**2) ** D(1 / 2)
     vecx = pxc / z
     vecy = D(1) / z
     return (vecx, vecy)
