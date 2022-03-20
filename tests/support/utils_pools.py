@@ -30,11 +30,11 @@ def to_decimal(x):
 
 
 def scale_scalar(x: DecimalLike, decimals: int = 18) -> QuantizedDecimal:
-    return (to_decimal(x) * 10 ** decimals).floor()
+    return (to_decimal(x) * 10**decimals).floor()
 
 
 def unscale_scalar(x: DecimalLike, decimals: int = 18) -> QuantizedDecimal:
-    return to_decimal(x) / 10 ** decimals
+    return to_decimal(x) / 10**decimals
 
 
 @overload

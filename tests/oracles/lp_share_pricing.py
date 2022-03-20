@@ -126,3 +126,55 @@ def eta(pxc: D) -> tuple[D, D]:
     vecx = pxc / z
     vecy = D(1) / z
     return (vecx, vecy)
+
+
+def relativeEquilibriumPricesCPMMV3(alpha: D, pXZ: D, pYZ: D) -> tuple[D, D]:
+    # Comparisons are re-ordered vs. the write-up to increase precision.
+    beta = D(1) / alpha
+    if pYZ < alpha * (pXZ**2):
+        if pYZ < alpha:
+            return D(1), alpha
+        elif pYZ > beta:
+            return beta, beta
+        else:
+            return (beta * pYZ).sqrt(), pYZ
+    elif pXZ < alpha * (pYZ**2):
+        if pXZ < alpha:
+            return alpha, D(1)
+        elif pXZ > beta:
+            return beta, beta
+        else:
+            return pXZ, (beta * pXZ).sqrt()
+    elif pXZ * pYZ < alpha:
+        if pXZ < alpha * pYZ:
+            return alpha, D(1)
+        elif pXZ > beta * pYZ:
+            return D(1), alpha
+        else:
+            return (alpha * pXZ / pYZ).sqrt(), (alpha * pYZ / pXZ).sqrt()
+    else:
+        return pXZ, pYZ
+
+
+def price_bpt_CPMMV3(
+    root3Alpha: D, invariant_div_supply: D, underlying_prices: Iterable[D]
+) -> D:
+    alpha = root3Alpha**3
+
+    # Relative external (actual) prices
+    pXZ = underlying_prices[0] / underlying_prices[2]
+    pYZ = underlying_prices[1] / underlying_prices[2]
+
+    # Relative prices of a pool that is arbitrage-free with the external market
+    pXZPool, pYZPool = relativeEquilibriumPricesCPMMV3(alpha, pXZ, pYZ)
+
+    gamma = (pXZPool * pYZPool) ** (D(1) / 3)
+
+    # Absolute prices (short notation)
+    px, py, pz = underlying_prices
+
+    value_factor = gamma * (px / pXZPool + py / pYZPool + pz) - root3Alpha * (
+        px + py + pz
+    )
+
+    return invariant_div_supply * value_factor

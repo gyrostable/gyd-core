@@ -8,16 +8,19 @@ import hypothesis.strategies as st
 from _pytest.python_api import ApproxDecimal
 from brownie import reverts
 from brownie.test import given
-from hypothesis import assume, settings
+from hypothesis import assume, note, settings
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.types import *
-from tests.support.utils_pools import qdecimals, scale, to_decimal
+from tests.support.utils_pools import qdecimals, scale, to_decimal, unscale
 
 import lp_share_pricing as math_implementation
 
+MIN_PRICE = "1e-6"
+MAX_PRICE = "1e6"
+
 billion_balance_strategy = st.integers(min_value=0, max_value=1_000_000_000)
 weights_strategy = st.decimals(min_value="0.05", max_value="0.95")
-price_strategy = st.decimals(min_value="1e-6", max_value="1e6")
+price_strategy = st.decimals(min_value=MIN_PRICE, max_value=MAX_PRICE)
 price_strategy_less_extreme = st.decimals(min_value="1e-4", max_value="1e6")
 
 
@@ -215,6 +218,119 @@ def test_price_bpt_cpmmv2(
     )
 
     assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+
+
+######################################################################
+### Test the CPMMv3
+
+ROOT_ALPHA_MAX = "0.99996666555"
+ROOT_ALPHA_MIN = "0.2"
+
+
+def gen_root3Alpha():
+    return qdecimals(min_value=ROOT_ALPHA_MIN, max_value=ROOT_ALPHA_MAX, places=4)
+
+
+def gen_three_prices(min_price=MIN_PRICE, max_price=MAX_PRICE):
+    return st.tuples(*([qdecimals(min_price, max_price)] * 3))
+
+
+# Consistency check equilibrium prices
+@settings(max_examples=200)
+@given(
+    root3Alpha=gen_root3Alpha(),
+    underlying_prices=gen_three_prices("1e-4", "1e4"),
+)
+def test_python_equilibrium_prices_CPMMV3(root3Alpha, underlying_prices):
+    alpha = root3Alpha**3
+
+    px, py, pz = underlying_prices
+    pxz = px / pz
+    pyz = py / pz
+
+    pxzPool, pyzPool = math_implementation.relativeEquilibriumPricesCPMMV3(
+        alpha, pxz, pyz
+    )
+
+    note(f"alpha = {alpha!r}")
+    note(f"pxz     = {pxz!r}")
+    note(f"pyz     = {pyz!r}")
+    note(f"pxzPool = {pxzPool!r}")
+    note(f"pyzPool = {pyzPool!r}")
+
+    prec = dict(abs=D("1e-6"), rel=D("1e-6"))
+
+    # Test no-arbitrage conditions.
+    # Note that "x > y.approxed()" is defined as "x is significantly greater than y".
+    if pyzPool / pxzPool**2 > alpha.approxed(**prec):
+        assert pxzPool >= pxz.approxed(**prec)
+        assert pxzPool / pyzPool >= (pxz / pyz).approxed(**prec)
+    if pxzPool / pyzPool**2 > alpha.approxed(**prec):
+        assert pyzPool >= pyz.approxed(**prec)
+        assert pxzPool / pyzPool <= (pxz / pyz).approxed(**prec)
+    if pxzPool * pyzPool > alpha.approxed(**prec):
+        assert pxzPool <= pxz.approxed(**prec)
+        assert pyzPool <= pyz.approxed(**prec)
+
+
+@given(
+    root3Alpha=gen_root3Alpha(),
+    underlying_prices=gen_three_prices("1e-4", "1e4"),
+)
+def test_equilibrium_prices_match_CPMMV3(
+    root3Alpha, underlying_prices, gyro_lp_price_testing
+):
+    alpha = root3Alpha**3
+
+    px, py, pz = underlying_prices
+    pxz = px / pz
+    pyz = py / pz
+
+    pxzPool_math, pyzPool_math = math_implementation.relativeEquilibriumPricesCPMMV3(
+        alpha, pxz, pyz
+    )
+
+    pxzPool_sol, pyzPool_sol = unscale(
+        gyro_lp_price_testing.relativeEquilibriumPricesCPMMv3(
+            scale(alpha), scale(pxz), scale(pyz)
+        )
+    )
+
+    note(f"alpha = {alpha!r}")
+    note(f"pxz          = {pxz!r}")
+    note(f"pyz          = {pyz!r}")
+    note(f"pxzPool_math = {pxzPool_math!r}")
+    note(f"pxzPool_sol  = {pxzPool_sol!r}")
+    note(f"pyzPool_math = {pyzPool_math!r}")
+    note(f"pyzPool_sol  = {pyzPool_sol!r}")
+
+    prec = dict(abs=D("1e-12"), rel=D("1e-12"))
+    assert pxzPool_sol == pxzPool_math.approxed(**prec)
+    assert pyzPool_sol == pyzPool_math.approxed(**prec)
+
+
+@given(
+    root3Alpha=gen_root3Alpha(),
+    invariant_div_supply=qdecimals(min_value="0.5", max_value="100000000", places=4),
+    underlying_prices=gen_three_prices("1e-4", "1e4"),
+)
+def test_price_bpt_match_CPMMV3(
+    root3Alpha, invariant_div_supply, underlying_prices, gyro_lp_price_testing
+):
+    bpt_price_math = math_implementation.price_bpt_CPMMV3(
+        root3Alpha, invariant_div_supply, underlying_prices
+    )
+
+    bpt_price_sol = unscale(
+        gyro_lp_price_testing.priceBptCPMMv3(
+            scale(root3Alpha), scale(invariant_div_supply), scale(underlying_prices)
+        )
+    )
+
+    note(f"bpt_price_math = {bpt_price_math!r}")
+    note(f"bpt_price_sol  = {bpt_price_sol!r}")
+
+    assert bpt_price_sol == bpt_price_math.approxed(abs=D("1e-6"), rel=D("1e-6"))
 
 
 ######################################################################
