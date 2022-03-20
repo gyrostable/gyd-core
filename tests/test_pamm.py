@@ -331,7 +331,7 @@ def run_path_independence_test(
     total_redeem = first_redeem + second_redeem
     print(QD(total_redeem))
     print(QD(redeem_tx.return_value))
-    # assert QD(redeem_tx.return_value) == total_redeem.approxed(rel=D("1E2"))
+    assert QD(redeem_tx.return_value) == total_redeem.approxed(rel=D("1E2"))
 
     # Mulup and divup are in the quantized decimal now, these could be accounting for a difference above 1e-14 relative.abs
     # The other option is that it's the square root. Could use Josh's, which has 5e-18 absolute error. Would need to take this from the vaults repo.
