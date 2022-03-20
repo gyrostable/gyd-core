@@ -13,20 +13,25 @@ from typing import Any, Optional, Union
 
 import pytest
 
-DECIMAL_PRECISION = 18
 # v Total number of decimal places. This matches uint256, to the degree possible (max uint256 ≈ 1.16e+77).
 MAX_PREC_VALUE = 78
-
-QUANTIZED_EXP = decimal.Decimal(1) / decimal.Decimal(10 ** DECIMAL_PRECISION)
-
-# 1.000000... multiplier to increase the precision to the required level by multiplying
-DECIMAL_MULT = QUANTIZED_EXP * decimal.Decimal(10 ** DECIMAL_PRECISION)
 
 # Workaround a brownie issue:
 # - In Brownie, prec is already set to 78 and you can't set it. (through vyper for some reason)
 # - Outside brownie, prec is lower than that and you should set it.
 if decimal.getcontext().prec != MAX_PREC_VALUE:
     decimal.getcontext().prec = MAX_PREC_VALUE
+
+
+def set_decimals(ndecimals: int):
+    global DECIMAL_PRECISION, DECIMAL_MULT, QUANTIZED_EXP
+    DECIMAL_PRECISION = ndecimals
+    QUANTIZED_EXP = decimal.Decimal(1) / decimal.Decimal(10**DECIMAL_PRECISION)
+    # 1.000000... multiplier to increase the precision to the required level by multiplying
+    DECIMAL_MULT = QUANTIZED_EXP * decimal.Decimal(10**DECIMAL_PRECISION)
+
+
+set_decimals(18)
 
 
 @total_ordering
@@ -115,12 +120,35 @@ class QuantizedDecimal:
             )
         return self.quantize_to_lower_precision() != other
 
-    def __lt__(self, other: DecimalLike):
+    # Comparison operators are such that we can write a >= b.approxed(). Note that this relationship is not transitive,
+    # as is '=='.
+    # a > b.approxed() means (not a <= b.approxed()), i.e., a is significantly greater than b.
+
+    def __le__(self, other: DecimalLike):
         if isinstance(other, QuantizedDecimal):
             return (
-                self.quantize_to_lower_precision() < other.quantize_to_lower_precision()
+                self.quantize_to_lower_precision()
+                <= other.quantize_to_lower_precision()
             )
-        return self < QuantizedDecimal(other)
+        if isinstance(other, ApproxDecimal):
+            return self < other.expected or self == other
+        return self <= QuantizedDecimal(other)
+
+    def __ge__(self, other: DecimalLike):
+        if isinstance(other, QuantizedDecimal):
+            return (
+                self.quantize_to_lower_precision()
+                >= other.quantize_to_lower_precision()
+            )
+        if isinstance(other, ApproxDecimal):
+            return self > other.expected or self == other
+        return self >= QuantizedDecimal(other)
+
+    def __lt__(self, other):
+        return not self >= other
+
+    def __gt__(self, other):
+        return not self <= other
 
     def __hash__(self):
         return hash(self._value)
@@ -157,6 +185,14 @@ class QuantizedDecimal:
         context.rounding = decimal.ROUND_UP
         return QuantizedDecimal(self._value / self._get_value(other), context=context)
 
+    # mul_down and div_down are the defaults but we put them here for consistency so that one can quickly swap out one for the other.
+
+    def mul_down(self, other: DecimalLike):
+        return self * other
+
+    def div_down(self, other: DecimalLike):
+        return self / other
+
     @classmethod
     def from_float(cls, value: float) -> QuantizedDecimal:
         return cls(value)
@@ -175,8 +211,27 @@ class QuantizedDecimal:
     def __str__(self):
         return str(self._value)
 
+    def __format__(self, format_spec: str):
+        # This fixes a bug where .approxed() cannot be displayed when tolerances are given in QuantizedDecimal (as they should be!).
+        if format_spec.endswith("e"):
+            return format(float(self), format_spec)
+        else:
+            return format(self._value, format_spec)
+
     def approxed(self, **kwargs):
         return pytest.approx(self.raw, **kwargs)
+
+
+# The following is LEGACY code. In new code just write a >= b.approxed()
+# Sry monkey patching...
+from _pytest.python_api import ApproxDecimal
+
+ApproxDecimal.__le__ = (
+    lambda self, other: self.expected <= other.expected or self == other
+)
+ApproxDecimal.__ge__ = (
+    lambda self, other: self.expected >= other.expected or self == other
+)
 
 
 DecimalLike = Union[int, str, decimal.Decimal, QuantizedDecimal]

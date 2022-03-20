@@ -40,6 +40,43 @@ library BalancerLPSharePricing {
         }
     }
 
+    /** @dev Efficiently calculates the value of Balancer pool tokens (BPT) for two asset pools with constant product invariant
+     *  @param weights = weights of underlying assets
+     *  @param underlyingPrices = prices of underlying assets, in same order as weights
+     *  @param invariantDivSupply = value of the pool invariant / supply of BPT
+     *  This calculation is robust to price manipulation within the Balancer pool
+     *  However, numerical imprecision may occur with extremely large or small prices */
+    function priceBptTwoAssetCPMM(
+        uint256[] memory weights,
+        uint256 invariantDivSupply,
+        uint256[] memory underlyingPrices
+    ) internal pure returns (uint256 bptPrice) {
+        /**********************************************************************************************
+        //                        L                        w_0                                       //
+        //            bptPrice = --- (  w_1 p_0 / w_0 p_1 )^   (p_1 / w_1)                           //
+        //                        S                                                                  //
+        **********************************************************************************************/
+        // firstTerm is invariantDivSupply
+
+        require(weights.length == 2, Errors.INVALID_NUMBER_WEIGHTS);
+
+        (uint256 i, uint256 j) = weights[1].mulDown(underlyingPrices[0]) >
+            weights[0].mulDown(underlyingPrices[1])
+            ? (1, 0)
+            : (0, 1);
+
+        uint256 secondTerm = FixedPoint.powDown(
+            underlyingPrices[i].mulDown(weights[j]).divDown(
+                weights[i].mulDown(underlyingPrices[j])
+            ),
+            weights[i]
+        );
+
+        uint256 thirdTerm = underlyingPrices[j].divDown(weights[j]);
+
+        bptPrice = invariantDivSupply.mulDown(secondTerm).mulDown(thirdTerm);
+    }
+
     /** @dev Calculates value of BPT for constant product invariant with equal weights
      *  Compared to general CPMM, everything can be grouped into one fractional power to save gas
      *  Note: loss of precision arises when multiple prices are too low (e.g., < 1e-5). This pricing formula
@@ -102,27 +139,80 @@ library BalancerLPSharePricing {
      *  virtual reserves are chosen such that alpha = lower price bound and 1/alpha = upper price bound
      *  @param cbrtAlpha = cube root of alpha (lower price bound)
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool */
+     *  @param underlyingPrices = array of three prices for the
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  The calculation includes a kind of no-arbitrage equilibrium computation, see the Gyroscope Oracles document, p. 7. */
     function priceBptCPMMv3(
         uint256 cbrtAlpha,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
-        /**********************************************************************************************
-        //                 L                     1/3                            1/3     //
-        //     bptPrice = ---  ( 3 (p_x p_y p_z)^     - (p_x + p_y + p_z) alpha^    )   //
-        //                 S                                                            //
-        **********************************************************************************************/
-        uint256 cbrtPxPyPz = underlyingPrices[0].mulDown(underlyingPrices[1]).mulDown(
-            underlyingPrices[2]
-        );
-        cbrtPxPyPz = FixedPoint.powDown(cbrtPxPyPz, FixedPoint.ONE / 3);
-        bptPrice = 3 * FixedPoint.ONE.mulDown(cbrtPxPyPz);
-        uint256 term = (underlyingPrices[0] + underlyingPrices[1] + underlyingPrices[2]).mulUp(
-            cbrtAlpha
-        );
+        require(underlyingPrices.length == 3, Errors.INVALID_ARGUMENT);
+        uint256 pXZPool;
+        uint256 pYZPool;
+        {
+            uint256 alpha = cbrtAlpha.mulDown(cbrtAlpha).mulDown(cbrtAlpha);
+            uint256 pXZ = underlyingPrices[0].divDown(underlyingPrices[2]);
+            uint256 pYZ = underlyingPrices[1].divDown(underlyingPrices[2]);
+            (pXZPool, pYZPool) = relativeEquilibriumPricesCPMMv3(alpha, pXZ, pYZ);
+        }
+
+        uint256 cbrtPxzPyzPool = pXZPool.mulDown(pYZPool);
+        cbrtPxzPyzPool = FixedPoint.powDown(cbrtPxzPyzPool, FixedPoint.ONE / 3);
+
+        // term = helper variable that will be re-used below to avoid stack-too-deep.
+        uint256 term = underlyingPrices[0].divDown(pXZPool);
+        term += underlyingPrices[1].divDown(pYZPool);
+        term += underlyingPrices[2];
+
+        bptPrice = cbrtPxzPyzPool.mulDown(term);
+
+        term = (underlyingPrices[0] + underlyingPrices[1] + underlyingPrices[2]).mulUp(cbrtAlpha);
         bptPrice = bptPrice - term;
         bptPrice = bptPrice.mulDown(invariantDivSupply);
+    }
+
+    /** @dev Compute the unique price vector of a CPMMv pool that is in equilibrium with an external market with the given relative prices.
+        See Gyroscope Oracles document, Section 4.3.
+        @param alpha = lower price bound
+        @param pXZ = relative price of asset x denoted in units of z of the external market
+        @param pYZ = relative price of asset y denoted in units of z of the external market
+        @return relative prices of x and y, respectively, denoted in units of z, of a pool in equilibrium with (pXZ, pYZ).
+     */
+    function relativeEquilibriumPricesCPMMv3(
+        uint256 alpha,
+        uint256 pXZ,
+        uint256 pYZ
+    ) internal pure returns (uint256, uint256) {
+        // NOTE: Rounding directions are less critical here b/c all functions are continuous and we don't take any roots where the radicand can become negative.
+        // SOMEDAY this should be reviewed so that we round in a way most favorable to us I guess?
+        uint256 alphaInv = FixedPoint.ONE.divDown(alpha);
+        if (pYZ < alpha.mulDown(pXZ).mulDown(pXZ)) {
+            if (pYZ < alpha) return (FixedPoint.ONE, alpha);
+            else if (pYZ > alphaInv) return (alphaInv, alphaInv);
+            else {
+                uint256 pXPool = alphaInv.mulDown(pYZ).powDown(ONEHALF);
+                return (pXPool, pYZ);
+            }
+        } else if (pXZ < alpha.mulDown(pYZ).mulDown(pYZ)) {
+            if (pXZ < alpha) return (alpha, FixedPoint.ONE);
+            else if (pXZ > alphaInv) return (alphaInv, alphaInv);
+            else {
+                uint256 pYPool = alphaInv.mulDown(pXZ).powDown(ONEHALF);
+                return (pXZ, pYPool);
+            }
+        } else if (pXZ.mulDown(pYZ) < alpha) {
+            if (pXZ < alpha.mulDown(pYZ)) return (alpha, FixedPoint.ONE);
+            else if (pXZ > alphaInv.mulDown(pYZ)) return (FixedPoint.ONE, alpha);
+            else {
+                // SOMEDAY Gas optimization: sqrtAlpha could be made immutable in the pool and passed as a parameter.
+                uint256 sqrtAlpha = alpha.powDown(ONEHALF);
+                uint256 sqrtPXY = pXZ.divDown(pYZ).powDown(ONEHALF);
+                return (sqrtAlpha.mulDown(sqrtPXY), sqrtAlpha.divDown(sqrtPXY));
+            }
+        } else {
+            return (pXZ, pYZ);
+        }
     }
 
     /** @dev Calculates the value of BPT for constant ellipse (CEMM) pools of two assets
@@ -176,33 +266,33 @@ library BalancerLPSharePricing {
         pure
         returns (int256 ret)
     {
-        ret = t1.x.mulDown(t2.x).add(t1.y.mulDown(t2.y));
+        ret = t1.x.mulDown(t2.x) + t1.y.mulDown(t2.y);
     }
 
     /** @dev Calculate A^{-1}t where A^{-1} is given in Section 2.2
      *  This is rotating and scaling the circle into the ellipse */
+
     function mulAinv(ICEMM.Params memory params, ICEMM.Vector2 memory t)
         internal
         pure
         returns (ICEMM.Vector2 memory tp)
     {
-        tp.x = params.c.mulDown(params.lambda).mulDown(t.x);
-        tp.x = tp.x.add(params.s.mulDown(t.y));
-        tp.y = (-params.s).mulDown(params.lambda).mulDown(t.x);
-        tp.y = tp.y.add(params.c.mulDown(t.y));
+        tp.x = t.x.mulDown(params.lambda).mulDown(params.c) + t.y.mulDown(params.s);
+        tp.y = -t.x.mulDown(params.lambda).mulDown(params.s) + t.y.mulDown(params.c);
     }
 
     /** @dev Calculate A t where A is given in Section 2.2
      *  This is reversing rotation and scaling of the ellipse (mapping back to circle) */
+
     function mulA(ICEMM.Params memory params, ICEMM.Vector2 memory tp)
         internal
         pure
         returns (ICEMM.Vector2 memory t)
     {
-        t.x = params.c.divDown(params.lambda).mulDown(tp.x);
-        t.x = t.x.sub(params.s.divDown(params.lambda).mulDown(tp.y));
-        t.y = params.s.mulDown(tp.x);
-        t.y = t.y.add(params.c.mulDown(tp.y));
+        t.x =
+            params.c.mulDown(tp.x).divDown(params.lambda) -
+            params.s.mulDown(tp.y).divDown(params.lambda);
+        t.y = params.s.mulDown(tp.x) + params.c.mulDown(tp.y);
     }
 
     /** @dev Given price px on the transformed ellipse, get the untransformed price pxc on the circle

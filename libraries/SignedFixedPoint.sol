@@ -29,24 +29,6 @@ library SignedFixedPoint {
     // Minimum base for the power function when the exponent is 'free' (larger than ONE).
     int256 internal constant MIN_POW_BASE_FREE_EXPONENT = 0.7e18;
 
-    function add(int256 a, int256 b) internal pure returns (int256) {
-        // Fixed Point addition is the same as regular checked addition
-
-        int256 c = a + b;
-        require(b >= 0 ? c >= a : c < a, Errors.ADD_OVERFLOW);
-        return c;
-    }
-
-    function sub(int256 a, int256 b) internal pure returns (int256) {
-        // Fixed Point addition is the same as regular checked addition
-
-        int256 c = a - b;
-        require(b <= 0 ? c >= a : c < a, Errors.SUB_OVERFLOW);
-        return c;
-    }
-
-    // TODO do we also want the other two rounding directions (+ 4 functions then)? Do we want it instead?
-
     /// @dev This rounds towards 0, i.e., down *in absolute value*!
     function mulDown(int256 a, int256 b) internal pure returns (int256) {
         int256 product = a * b;

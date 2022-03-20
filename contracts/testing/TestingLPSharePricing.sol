@@ -17,6 +17,18 @@ contract TestingLPSharePricing {
         );
     }
 
+    function priceBptTwoAssetCPMM(
+        uint256[] memory weights,
+        uint256 invariantDivSupply,
+        uint256[] memory underlyingPrices
+    ) external pure returns (uint256 bptPrice) {
+        bptPrice = BalancerLPSharePricing.priceBptTwoAssetCPMM(
+            weights,
+            invariantDivSupply,
+            underlyingPrices
+        );
+    }
+
     function priceBptCPMMEqualWeights(
         uint256 weight,
         uint256 invariantDivSupply,
@@ -53,6 +65,14 @@ contract TestingLPSharePricing {
             invariantDivSupply,
             underlyingPrices
         );
+    }
+
+    function relativeEquilibriumPricesCPMMv3(
+        uint256 alpha,
+        uint256 pXZ,
+        uint256 pYZ
+    ) external pure returns (uint256, uint256) {
+        return BalancerLPSharePricing.relativeEquilibriumPricesCPMMv3(alpha, pXZ, pYZ);
     }
 
     function priceBptCEMM(
