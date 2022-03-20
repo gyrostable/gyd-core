@@ -52,11 +52,13 @@ library BalancerLPSharePricing {
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
         /**********************************************************************************************
-        //                        L                                 w_0                           //
-        //            bptPrice = --- ((p_0 (w_1) / (w_0)(p_1) )^   )  (p_1 / (w_1))       //
-        //                        S                                                               //
+        //                        L                        w_0                                       //
+        //            bptPrice = --- (  w_1 p_0 / w_0 p_1 )^   (p_1 / w_1)                           //
+        //                        S                                                                  //
         **********************************************************************************************/
         // firstTerm is invariantDivSupply
+
+        require(weights.length == 2, Errors.INVALID_NUMBER_WEIGHTS);
 
         (uint256 i, uint256 j) = weights[1].mulDown(underlyingPrices[0]) >
             weights[0].mulDown(underlyingPrices[1])
