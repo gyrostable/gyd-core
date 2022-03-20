@@ -7,6 +7,7 @@ from typing import Iterable, Tuple
 import hypothesis.strategies as st
 from _pytest.python_api import ApproxDecimal
 from brownie import reverts
+from brownie.test import given
 from hypothesis import assume, note, settings
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.types import *
