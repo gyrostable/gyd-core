@@ -42,7 +42,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
         override
         returns (string memory err)
     {
-        uint256 length = 0;
+        uint256 length = _checks.length();
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).checkAndPersistMint(order);
             if (bytes(err).length > 0) {
@@ -58,7 +58,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
         override
         returns (string memory err)
     {
-        uint256 length = 0;
+        uint256 length = _checks.length();
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).isMintSafe(order);
             if (bytes(err).length > 0) {
@@ -74,7 +74,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
         override
         returns (string memory err)
     {
-        uint256 length = 0;
+        uint256 length = _checks.length();
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).isRedeemSafe(order);
             if (bytes(err).length > 0) {
@@ -89,7 +89,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
         override
         returns (string memory err)
     {
-        uint256 length = 0;
+        uint256 length = _checks.length();
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).checkAndPersistRedeem(order);
             if (bytes(err).length > 0) {
