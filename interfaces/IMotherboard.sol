@@ -6,7 +6,6 @@ import "./ILPTokenExchangerRegistry.sol";
 import "./IGYDToken.sol";
 import "./IReserve.sol";
 import "./IPAMM.sol";
-import "./IGyroVaultRouter.sol";
 import "./IFeeBank.sol";
 
 /// @title IMotherboard is the central contract connecting the different pieces
