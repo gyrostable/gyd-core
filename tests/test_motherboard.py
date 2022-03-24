@@ -310,23 +310,31 @@ def test_simple_mint_bpt(
     dai,
     weth,
     wbtc,
+    usdc,
     make_bpt_mint_asset,
 ):
     amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
     amounts = [
-        (wbtc.address, int(scale("0.005", 8))),
-        (weth.address, int(scale("0.05"))),
+        (wbtc.address, int(scale("0.0002", 8))),
+        (weth.address, int(scale("0.002"))),
     ]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WBTC_WETH"], amounts)
 
-    mint_assets = [make_bpt_mint_asset("WETH_DAI"), make_bpt_mint_asset("WBTC_WETH")]
+    amounts = [(weth.address, int(scale("0.01"))), (usdc.address, int(scale(35, 6)))]
+    join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_USDC"], amounts)
 
-    amount, error = full_motherboard.dryMint(mint_assets, 300, {"from": alice})
+    mint_assets = [
+        make_bpt_mint_asset("WETH_DAI"),
+        make_bpt_mint_asset("WBTC_WETH"),
+        make_bpt_mint_asset("WETH_USDC"),
+    ]
+
+    amount, error = full_motherboard.dryMint(mint_assets, scale(140), {"from": alice})
     assert error == ""
-    assert scale(300) <= amount <= scale(500)
+    assert scale(140) <= amount <= scale(180)
 
-    tx = full_motherboard.mint(mint_assets, 400, {"from": alice})
+    tx = full_motherboard.mint(mint_assets, scale(140), {"from": alice})
     assert abs(tx.return_value - amount) <= scale(10)
 
 
@@ -338,30 +346,41 @@ def test_simple_redeem_bpt(
     dai,
     weth,
     wbtc,
+    usdc,
     make_bpt_mint_asset,
     make_bpt_redeem_asset,
     mainnet_pamm,
     mainnet_reserve_manager,
 ):
     print("starting test")
+
     amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
     amounts = [
-        (wbtc.address, int(scale("0.005", 8))),
-        (weth.address, int(scale("0.05"))),
+        (wbtc.address, int(scale("0.0002", 8))),
+        (weth.address, int(scale("0.002"))),
     ]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WBTC_WETH"], amounts)
 
-    mint_assets = [make_bpt_mint_asset("WETH_DAI"), make_bpt_mint_asset("WBTC_WETH")]
+    amounts = [(weth.address, int(scale("0.01"))), (usdc.address, int(scale(35, 6)))]
+    join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_USDC"], amounts)
+
+    mint_assets = [
+        make_bpt_mint_asset("WETH_DAI"),
+        make_bpt_mint_asset("WBTC_WETH"),
+        make_bpt_mint_asset("WETH_USDC"),
+    ]
 
     print("minting with", mint_assets)
 
-    tx = full_motherboard.mint(mint_assets, scale("300"), {"from": alice})
+    tx = full_motherboard.mint(mint_assets, scale("140"), {"from": alice})
+
     print(f"minted {tx.return_value} GYD")
 
     redeem_assets = [
-        make_bpt_redeem_asset("WETH_DAI", scale("0.1"), scale("0.2")),
-        make_bpt_redeem_asset("WBTC_WETH", scale("0.008"), scale("0.8")),
+        make_bpt_redeem_asset("WETH_DAI", scale("0.05"), scale("0.5")),
+        make_bpt_redeem_asset("WETH_USDC", scale("0.05"), scale("0.4")),
+        make_bpt_redeem_asset("WBTC_WETH", scale("0.0001"), scale("0.1")),
     ]
 
     gyro_to_redeem = tx.return_value // 2

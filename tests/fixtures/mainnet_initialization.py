@@ -240,7 +240,7 @@ def mainnet_vault_safety_mode(admin, VaultSafetyMode, gyro_config):
 def mainnet_reserve_safety_manager(admin, ReserveSafetyManager, mainnet_asset_registry):
     return admin.deploy(
         ReserveSafetyManager,
-        constants.MAX_ALLOWED_VAULT_DEVIATION,
+        scale("0.2"),  # large deviation to avoid failing test because of price changes
         constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
         mainnet_asset_registry,

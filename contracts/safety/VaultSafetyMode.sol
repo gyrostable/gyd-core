@@ -62,8 +62,8 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         gyroConfig = IGyroConfig(_gyroConfig);
     }
 
-    modifier motherboardOnly() {
-        require(msg.sender == address(gyroConfig.getMotherboard()), Errors.NOT_AUTHORIZED);
+    modifier rootSafetyCheckOnly() {
+        require(msg.sender == address(gyroConfig.getRootSafetyCheck()), Errors.NOT_AUTHORIZED);
         _;
     }
 
@@ -275,7 +275,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @return empty string if it is safe, otherwise the reason why it is not safe
     function checkAndPersistMint(DataTypes.Order memory order)
         external
-        motherboardOnly
+        rootSafetyCheckOnly
         returns (string memory)
     {
         (
@@ -315,7 +315,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @return empty string if it is safe, otherwise the reason why it is not safe
     function checkAndPersistRedeem(DataTypes.Order memory order)
         external
-        motherboardOnly
+        rootSafetyCheckOnly
         returns (string memory)
     {
         (

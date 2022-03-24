@@ -64,11 +64,6 @@ def reserve(admin, Reserve, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def mock_vault_router(admin, MockVaultRouter):
-    return admin.deploy(MockVaultRouter)
-
-
-@pytest.fixture(scope="module")
 def mock_balancer_pool(admin, MockBalancerPool):
     return admin.deploy(MockBalancerPool, constants.BALANCER_POOL_ID)
 
@@ -81,11 +76,6 @@ def mock_balancer_pool_two(admin, MockBalancerPool):
 @pytest.fixture(scope="module")
 def mock_balancer_vault(admin, MockBalVault):
     return admin.deploy(MockBalVault)
-
-
-@pytest.fixture(scope="module")
-def mock_lp_token_exchanger(admin, MockLPTokenExchanger):
-    return admin.deploy(MockLPTokenExchanger)
 
 
 @pytest.fixture(scope="module")
@@ -183,7 +173,7 @@ def mainnet_checked_price_oracle(
 
 @pytest.fixture(scope="module")
 def root_safety_check(admin, RootSafetyCheck, gyro_config):
-    safety_check = admin.deploy(RootSafetyCheck)
+    safety_check = admin.deploy(RootSafetyCheck, gyro_config)
     gyro_config.setAddress(config_keys.ROOT_SAFETY_CHECK_ADDRESS, safety_check)
     return safety_check
 

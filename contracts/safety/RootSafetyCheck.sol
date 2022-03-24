@@ -4,20 +4,34 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../../interfaces/ISafetyCheck.sol";
+import "../../interfaces/IGyroConfig.sol";
 
 import "../../libraries/EnumerableExtensions.sol";
 import "../../libraries/Errors.sol";
+import "../../libraries/ConfigHelpers.sol";
 
 import "../auth/Governable.sol";
 
 contract RootSafetyCheck is ISafetyCheck, Governable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableExtensions for EnumerableSet.AddressSet;
+    using ConfigHelpers for IGyroConfig;
 
     event CheckAdded(address indexed check);
     event CheckRemoved(address indexed check);
 
     EnumerableSet.AddressSet internal _checks;
+
+    IGyroConfig public immutable gyroConfig;
+
+    modifier motherboardOnly() {
+        require(msg.sender == address(gyroConfig.getMotherboard()), Errors.NOT_AUTHORIZED);
+        _;
+    }
+
+    constructor(IGyroConfig _gyroConfig) {
+        gyroConfig = _gyroConfig;
+    }
 
     /// @return all the checks registered
     function getChecks() public view returns (address[] memory) {
@@ -40,9 +54,10 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     function checkAndPersistMint(DataTypes.Order memory order)
         external
         override
+        motherboardOnly
         returns (string memory err)
     {
-        uint256 length = 0;
+        uint256 length = _checks.length();
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).checkAndPersistMint(order);
             if (bytes(err).length > 0) {
@@ -58,7 +73,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
         override
         returns (string memory err)
     {
-        uint256 length = 0;
+        uint256 length = _checks.length();
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).isMintSafe(order);
             if (bytes(err).length > 0) {
@@ -74,7 +89,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
         override
         returns (string memory err)
     {
-        uint256 length = 0;
+        uint256 length = _checks.length();
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).isRedeemSafe(order);
             if (bytes(err).length > 0) {
@@ -87,9 +102,10 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     function checkAndPersistRedeem(DataTypes.Order memory order)
         external
         override
+        motherboardOnly
         returns (string memory err)
     {
-        uint256 length = 0;
+        uint256 length = _checks.length();
         for (uint256 i = 0; i < length; i++) {
             err = ISafetyCheck(_checks.at(i)).checkAndPersistRedeem(order);
             if (bytes(err).length > 0) {
