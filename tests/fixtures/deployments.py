@@ -173,7 +173,7 @@ def mainnet_checked_price_oracle(
 
 @pytest.fixture(scope="module")
 def root_safety_check(admin, RootSafetyCheck, gyro_config):
-    safety_check = admin.deploy(RootSafetyCheck)
+    safety_check = admin.deploy(RootSafetyCheck, gyro_config)
     gyro_config.setAddress(config_keys.ROOT_SAFETY_CHECK_ADDRESS, safety_check)
     return safety_check
 

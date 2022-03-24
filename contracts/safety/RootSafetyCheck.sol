@@ -4,20 +4,34 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../../interfaces/ISafetyCheck.sol";
+import "../../interfaces/IGyroConfig.sol";
 
 import "../../libraries/EnumerableExtensions.sol";
 import "../../libraries/Errors.sol";
+import "../../libraries/ConfigHelpers.sol";
 
 import "../auth/Governable.sol";
 
 contract RootSafetyCheck is ISafetyCheck, Governable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableExtensions for EnumerableSet.AddressSet;
+    using ConfigHelpers for IGyroConfig;
 
     event CheckAdded(address indexed check);
     event CheckRemoved(address indexed check);
 
     EnumerableSet.AddressSet internal _checks;
+
+    IGyroConfig public immutable gyroConfig;
+
+    modifier motherboardOnly() {
+        require(msg.sender == address(gyroConfig.getMotherboard()), Errors.NOT_AUTHORIZED);
+        _;
+    }
+
+    constructor(IGyroConfig _gyroConfig) {
+        gyroConfig = _gyroConfig;
+    }
 
     /// @return all the checks registered
     function getChecks() public view returns (address[] memory) {
@@ -40,6 +54,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     function checkAndPersistMint(DataTypes.Order memory order)
         external
         override
+        motherboardOnly
         returns (string memory err)
     {
         uint256 length = _checks.length();
@@ -87,6 +102,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     function checkAndPersistRedeem(DataTypes.Order memory order)
         external
         override
+        motherboardOnly
         returns (string memory err)
     {
         uint256 length = _checks.length();
