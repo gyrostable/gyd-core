@@ -51,22 +51,6 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistMint(DataTypes.Order memory order)
-        external
-        override
-        motherboardOnly
-        returns (string memory err)
-    {
-        uint256 length = _checks.length();
-        for (uint256 i = 0; i < length; i++) {
-            err = ISafetyCheck(_checks.at(i)).checkAndPersistMint(order);
-            if (bytes(err).length > 0) {
-                break;
-            }
-        }
-    }
-
-    /// @inheritdoc ISafetyCheck
     function isMintSafe(DataTypes.Order memory order)
         external
         view
@@ -99,18 +83,18 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistRedeem(DataTypes.Order memory order)
-        external
-        override
-        motherboardOnly
-        returns (string memory err)
-    {
+    function checkAndPersistMint(DataTypes.Order memory order) external override motherboardOnly {
         uint256 length = _checks.length();
         for (uint256 i = 0; i < length; i++) {
-            err = ISafetyCheck(_checks.at(i)).checkAndPersistRedeem(order);
-            if (bytes(err).length > 0) {
-                break;
-            }
+            ISafetyCheck(_checks.at(i)).checkAndPersistMint(order);
+        }
+    }
+
+    /// @inheritdoc ISafetyCheck
+    function checkAndPersistRedeem(DataTypes.Order memory order) external override motherboardOnly {
+        uint256 length = _checks.length();
+        for (uint256 i = 0; i < length; i++) {
+            ISafetyCheck(_checks.at(i)).checkAndPersistRedeem(order);
         }
     }
 }

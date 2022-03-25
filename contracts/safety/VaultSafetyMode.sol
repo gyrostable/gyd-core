@@ -269,15 +269,8 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         return mintSafety;
     }
 
-    /// @notice Checks whether a mint operation is safe
-    /// This is only called when an actual mint is performed
-    /// The implementation should store any relevant information for the mint
-    /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function checkAndPersistMint(DataTypes.Order memory order)
-        external
-        rootSafetyCheckOnly
-        returns (string memory)
-    {
+    /// @inheritdoc ISafetyCheck
+    function checkAndPersistMint(DataTypes.Order memory order) external rootSafetyCheckOnly {
         (
             string memory err,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
@@ -288,6 +281,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         if (bytes(err).length > 0) {
             if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
                 emit SafetyStatus(err);
+                err = "";
             } else {
                 revert(Errors.NOT_SAFE_TO_MINT);
             }
@@ -299,7 +293,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             vaultAddresses,
             currentBlockNumber
         );
-        return err;
+        require(bytes(err).length == 0, err);
     }
 
     /// @notice Checks whether a redeem operation is safe
@@ -312,12 +306,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @notice Checks whether a redeem operation is safe
     /// This is only called when an actual redeem is performed
     /// The implementation should store any relevant information for the redeem
-    /// @return empty string if it is safe, otherwise the reason why it is not safe
-    function checkAndPersistRedeem(DataTypes.Order memory order)
-        external
-        rootSafetyCheckOnly
-        returns (string memory)
-    {
+    function checkAndPersistRedeem(DataTypes.Order memory order) external rootSafetyCheckOnly {
         (
             string memory err,
             DataTypes.DirectionalFlowData[] memory latestDirectionalFlowData,
@@ -328,6 +317,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         if (bytes(err).length > 0) {
             if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
                 emit SafetyStatus(err);
+                err = "";
             } else {
                 revert(Errors.NOT_SAFE_TO_REDEEM);
             }
@@ -339,7 +329,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             vaultAddresses,
             currentBlockNumber
         );
-        return err;
+        require(bytes(err).length == 0, err);
     }
 
     function getWhitelist() external view returns (address[] memory) {
