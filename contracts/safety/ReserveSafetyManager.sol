@@ -305,20 +305,14 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistMint(DataTypes.Order memory order)
-        external
-        view
-        returns (string memory)
-    {
-        return isMintSafe(order);
+    function checkAndPersistMint(DataTypes.Order memory order) external view {
+        string memory err = isMintSafe(order);
+        require(bytes(err).length == 0, err);
     }
 
     /// @inheritdoc ISafetyCheck
-    function checkAndPersistRedeem(DataTypes.Order memory order)
-        external
-        view
-        returns (string memory)
-    {
-        return isRedeemSafe(order);
+    function checkAndPersistRedeem(DataTypes.Order memory order) external view {
+        string memory err = isRedeemSafe(order);
+        require(bytes(err).length == 0, err);
     }
 }
