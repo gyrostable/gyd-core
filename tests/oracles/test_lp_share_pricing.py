@@ -71,8 +71,7 @@ def test_price_bpt_cpmm_3(
     gyro_lp_price_testing, rand, invariant_div_supply, underlying_prices
 ):
     weights = tuple(get_uniform_samples(list(rand)))
-    if check_weights_invalid(weights):
-        return
+    assume(not check_weights_invalid(weights))
 
     bpt_price_sol = gyro_lp_price_testing.priceBptCPMM(
         scale(weights), scale(invariant_div_supply), scale(underlying_prices)
@@ -96,8 +95,7 @@ def test_price_bpt_cpmm_4(
     gyro_lp_price_testing, rand, invariant_div_supply, underlying_prices
 ):
     weights = tuple(get_uniform_samples(list(rand)))
-    if check_weights_invalid(weights):
-        return
+    assume(not check_weights_invalid(weights))
 
     bpt_price_sol = gyro_lp_price_testing.priceBptCPMM(
         scale(weights), scale(invariant_div_supply), scale(underlying_prices)
@@ -203,8 +201,7 @@ def test_price_bpt_cpmmv2(
     invariant_div_supply,
     underlying_prices,
 ):
-    if faulty_params_cpmmv2(sqrt_alpha, sqrt_beta):
-        return
+    assume(not faulty_params_cpmmv2(sqrt_alpha, sqrt_beta))
 
     bpt_price_sol = gyro_lp_price_testing.priceBptCPMMv2(
         scale(sqrt_alpha),
@@ -383,8 +380,7 @@ def test_price_bpt_cemm(
     invariant_div_supply,
     underlying_prices,
 ):
-    if faulty_params_cemm(params):
-        return
+    assume(not faulty_params_cemm(params))
 
     derived = mk_derived_params(params)
 

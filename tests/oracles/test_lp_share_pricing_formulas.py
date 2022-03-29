@@ -96,8 +96,7 @@ def test_compare_price_bpt_cpmm_3(gyro_lp_price_testing, rand, params):
     supply = params[1]
 
     weights = tuple(get_uniform_samples(list(rand)))
-    if check_weights_invalid(weights):
-        return
+    assume(not check_weights_invalid(weights))
 
     invariant = (
         D(balances[0]) ** weights[0]
@@ -135,8 +134,7 @@ def test_compare_price_bpt_cpmm_4(gyro_lp_price_testing, rand, params):
     supply = params[1]
 
     weights = tuple(get_uniform_samples(list(rand)))
-    if check_weights_invalid(weights):
-        return
+    assume(not check_weights_invalid(weights))
 
     invariant = (
         D(balances[0]) ** weights[0]
@@ -288,10 +286,8 @@ def test_compare_price_bpt_cpmmv2(
     balances = params[0]
     supply = params[1]
 
-    if faulty_params_cpmmv2(sqrt_alpha, sqrt_beta):
-        return
+    assume(not faulty_params_cpmmv2(sqrt_alpha, sqrt_beta))
 
-    print(gyro_2_math_implementation)
     invariant = gyro_2_math_implementation.calculateInvariant(
         balances, D(sqrt_alpha), D(sqrt_beta)
     )
@@ -307,7 +303,7 @@ def test_compare_price_bpt_cpmmv2(
 
     # Let the second asset be the numeraire
     underlying_prices = [
-        D(balances[1] + virtual_parameter_1 / balances[0] + virtual_parameter_0),
+        (D(balances[1] + virtual_parameter_1) / (balances[0] + virtual_parameter_0)),
         D(1),
     ]
 
@@ -414,8 +410,7 @@ def test_compare_price_bpt_cemm(
 
     underlying_prices = [calculate_price_cemm(params, balances), D(1)]
 
-    if faulty_params_cemm(params):
-        return
+    assume(not faulty_params_cemm(params))
 
     derived = mk_derived_params(params)
 
