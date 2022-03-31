@@ -71,10 +71,39 @@ elif [ -d "build/deployments/$CHAIN_ID" ]; then
     exit 1
 fi
 
-
 brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py initialize
+brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_motherboard.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_lp_token_exchanger_registry.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py set_feeds
 brownie run --network $NETWORK_ID scripts/deployment/deploy_uniswap_twap_price_oracle.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_uniswap_twap_price_oracle.py add_pools
+if [ "$LIVE" = "true" ]; then
+    brownie run --network $NETWORK_ID scripts/deployment/deploy_uniswap_twap_price_oracle.py add_pools
+fi
+
+# oracles
+brownie run --network $NETWORK_ID scripts/deployment/deploy_coinbase_oracle.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_checked_price_oracle.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_checked_price_oracle.py initialize
+brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cpmm
+brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cpmm_v2
+brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cpmm_v3
+brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cemm
+brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py 
+brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py initialize
+
+# safety checks
+brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py root
+brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py vault_safety_mode
+brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py reserve_safety_manager
+brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py register
+
+# vaults
+brownie run --network $NETWORK_ID scripts/deployment/deploy_static_percentage_fee_handler.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vaults.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vaults.py set_fees

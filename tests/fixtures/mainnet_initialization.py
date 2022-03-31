@@ -8,8 +8,9 @@ from tests.fixtures.mainnet_contracts import (
 )
 from tests.support import config_keys, constants
 from tests.support.retrieve_coinbase_prices import fetch_prices, find_price
-from tests.support.types import PammParams, VaultToDeploy, VaultType
+from tests.support.types import DeployedVault, PammParams, VaultToDeploy, VaultType
 from tests.support.utils import scale
+from scripts.config import vaults
 
 OUTFLOW_MEMORY = 999993123563518195
 
@@ -36,7 +37,7 @@ def mainnet_reserve_manager(
     gyro_config,
     request,
     vault_registry,
-    mainnet_vaults: List[VaultToDeploy],
+    mainnet_vaults: List[DeployedVault],
 ):
     dependencies = [
         "set_mainnet_fees",
@@ -53,9 +54,9 @@ def mainnet_reserve_manager(
     for vault in mainnet_vaults:
         reserve_manager.registerVault(
             vault.address,
-            vault.initial_weight,
-            vault.short_flow_memory,
-            vault.short_flow_threshold,
+            vault.vault_to_deploy.initial_weight,
+            vault.vault_to_deploy.short_flow_memory,
+            vault.vault_to_deploy.short_flow_threshold,
             {"from": admin},
         )
 
@@ -85,70 +86,33 @@ def set_common_chainlink_feeds(
 
 
 @pytest.fixture(scope="module")
-def set_mainnet_fees(mainnet_vaults, static_percentage_fee_handler, admin):
+def set_mainnet_fees(
+    mainnet_vaults: List[DeployedVault], static_percentage_fee_handler, admin
+):
     for vault in mainnet_vaults:
         static_percentage_fee_handler.setVaultFees(
-            vault.address, vault.mint_fee, vault.redeem_fee, {"from": admin}
+            vault.address,
+            vault.vault_to_deploy.mint_fee,
+            vault.vault_to_deploy.redeem_fee,
+            {"from": admin},
         )
 
 
 @pytest.fixture(scope="module")
 def mainnet_vaults(BalancerPoolVault, admin, balancer_vault):
     return [
-        VaultToDeploy(
-            pool=constants.address_from_pool_id(
-                constants.BALANCER_POOL_IDS["WETH_DAI"]
-            ),
+        DeployedVault(
             address=admin.deploy(
                 BalancerPoolVault,
-                VaultType.BALANCER_CPMM,
+                vault_to_deploy.vault_type,
                 constants.BALANCER_POOL_IDS["WETH_DAI"],
                 balancer_vault,
-                "Balancer CPMM WETH-DAI",
-                "BAL-CPMM-WETH-DAI",
+                vault_to_deploy.name,
+                vault_to_deploy.symbol,
             ).address,
-            initial_weight=int(scale("0.5")),
-            short_flow_memory=OUTFLOW_MEMORY,
-            short_flow_threshold=int(scale(1_000_000)),
-            mint_fee=int(scale("0.005")),
-            redeem_fee=int(scale("0.01")),
-        ),
-        VaultToDeploy(
-            pool=constants.address_from_pool_id(
-                constants.BALANCER_POOL_IDS["WETH_USDC"]
-            ),
-            address=admin.deploy(
-                BalancerPoolVault,
-                VaultType.BALANCER_CPMM,
-                constants.BALANCER_POOL_IDS["WETH_USDC"],
-                balancer_vault,
-                "Balancer CPMM WETH-USDC",
-                "BAL-CPMM-WETH-USDC",
-            ).address,
-            initial_weight=int(scale("0.4")),
-            short_flow_memory=OUTFLOW_MEMORY,
-            short_flow_threshold=int(scale(1_000_000)),
-            mint_fee=int(scale("0.002")),
-            redeem_fee=int(scale("0.005")),
-        ),
-        VaultToDeploy(
-            pool=constants.address_from_pool_id(
-                constants.BALANCER_POOL_IDS["WBTC_WETH"]
-            ),
-            address=admin.deploy(
-                BalancerPoolVault,
-                VaultType.BALANCER_CPMM,
-                constants.BALANCER_POOL_IDS["WBTC_WETH"],
-                balancer_vault,
-                "Balancer CPMM WBTC-WETH",
-                "BAL-CPMM-WBTC-WETH",
-            ).address,
-            initial_weight=int(scale("0.1")),
-            short_flow_memory=OUTFLOW_MEMORY,
-            short_flow_threshold=int(scale(1_000_000)),
-            mint_fee=int(scale("0.004")),
-            redeem_fee=int(scale("0.015")),
-        ),
+            vault_to_deploy=vault_to_deploy,
+        )
+        for vault_to_deploy in vaults[1]
     ]
 
 

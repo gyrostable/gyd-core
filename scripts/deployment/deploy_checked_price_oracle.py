@@ -21,7 +21,7 @@ def initialize(coinbase_price_oracle, checked_price_oracle):
 
 
 @with_gas_usage
-@as_singleton(TrustedSignerPriceOracle)
+@as_singleton(CheckedPriceOracle)
 @with_deployed(UniswapV3TwapOracle)
 @with_deployed(CrashProtectedChainlinkPriceOracle)
 def main(crash_protected_chainlink_oracle, uniswap_v3_twap_oracle):

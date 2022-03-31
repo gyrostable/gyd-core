@@ -106,13 +106,20 @@ class VaultType:
 
 
 class VaultToDeploy(NamedTuple):
-    pool: str
-    address: str
+    pool_id: str
+    vault_type: int
+    name: str
+    symbol: str
     initial_weight: int
     short_flow_memory: int
     short_flow_threshold: int
     mint_fee: int
     redeem_fee: int
+
+
+class DeployedVault(NamedTuple):
+    address: str
+    vault_to_deploy: VaultToDeploy
 
 
 class PammParams(NamedTuple):

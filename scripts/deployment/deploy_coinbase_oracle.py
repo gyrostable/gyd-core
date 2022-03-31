@@ -5,7 +5,6 @@ from tests.support.retrieve_coinbase_prices import fetch_prices, find_price
 
 
 @with_gas_usage
-@as_singleton(TrustedSignerPriceOracle)
 @with_deployed(AssetRegistry)
 def main(asset_registry):
     deployer = get_deployer()

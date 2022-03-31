@@ -1,4 +1,4 @@
-from brownie import GyroConfig, Reserve  # type: ignore
+from brownie import FeeBank, GyroConfig  # type: ignore
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -10,11 +10,15 @@ from tests.support import config_keys
 
 
 @with_gas_usage
-@as_singleton(Reserve)
+@as_singleton(FeeBank)
 @with_deployed(GyroConfig)
 def main(gyro_config):
     deployer = get_deployer()
-    reserve = deployer.deploy(Reserve, **make_tx_params())
+
+    fee_bank = deployer.deploy(
+        FeeBank,
+        **make_tx_params(),
+    )
     gyro_config.setAddress(
-        config_keys.RESERVE_ADDRESS, reserve, {"from": deployer, **make_tx_params()}
+        config_keys.FEE_BANK_ADDRESS, fee_bank, {"from": deployer, **make_tx_params()}
     )

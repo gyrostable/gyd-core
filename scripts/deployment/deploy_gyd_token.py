@@ -1,4 +1,4 @@
-from brownie import GyroConfig, Reserve  # type: ignore
+from brownie import GydToken, GyroConfig  # type: ignore
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -10,11 +10,14 @@ from tests.support import config_keys
 
 
 @with_gas_usage
-@as_singleton(Reserve)
+@as_singleton(GydToken)
 @with_deployed(GyroConfig)
 def main(gyro_config):
     deployer = get_deployer()
-    reserve = deployer.deploy(Reserve, **make_tx_params())
+
+    gyd_token = deployer.deploy(
+        GydToken, gyro_config, "GYD Token", "GYD", **make_tx_params()
+    )
     gyro_config.setAddress(
-        config_keys.RESERVE_ADDRESS, reserve, {"from": deployer, **make_tx_params()}
+        config_keys.GYD_TOKEN_ADDRESS, gyd_token, {"from": deployer, **make_tx_params()}
     )
