@@ -335,7 +335,9 @@ def test_simple_mint_bpt(
     assert scale(140) <= amount <= scale(180)
 
     tx = full_motherboard.mint(mint_assets, scale(140), {"from": alice})
-    assert abs(tx.return_value - amount) <= scale(10)
+    # last transfer is the transfer from motherboard to user
+    value = tx.events["Transfer"][-1]["value"]
+    assert abs(value - amount) <= scale(10)
 
 
 @pytest.mark.endToEnd
@@ -351,6 +353,7 @@ def test_simple_redeem_bpt(
     make_bpt_redeem_asset,
     mainnet_pamm,
     mainnet_reserve_manager,
+    interface,
 ):
     print("starting test")
 
@@ -374,8 +377,9 @@ def test_simple_redeem_bpt(
     print("minting with", mint_assets)
 
     tx = full_motherboard.mint(mint_assets, scale("140"), {"from": alice})
+    value = tx.events["Transfer"][-1]["value"]
 
-    print(f"minted {tx.return_value} GYD")
+    print(f"minted {value} GYD")
 
     redeem_assets = [
         make_bpt_redeem_asset("WETH_DAI", scale("0.05"), scale("0.5")),
@@ -383,7 +387,7 @@ def test_simple_redeem_bpt(
         make_bpt_redeem_asset("WBTC_WETH", scale("0.0001"), scale("0.1")),
     ]
 
-    gyro_to_redeem = tx.return_value // 2
+    gyro_to_redeem = value // 2
 
     reserve_usd_value, vaults = mainnet_reserve_manager.getReserveState()
     print(
@@ -400,7 +404,10 @@ def test_simple_redeem_bpt(
     assert output_amounts[0] >= redeem_assets[0].minOutputAmount
     assert output_amounts[1] >= redeem_assets[1].minOutputAmount
 
+    tokens = [interface.ERC20(a.outputToken) for a in redeem_assets]
+
+    previous_balances = [t.balanceOf(alice) for t in tokens]
     tx = full_motherboard.redeem(gyro_to_redeem, redeem_assets, {"from": alice})
-    assert tx.return_value[0] >= redeem_assets[0].minOutputAmount
-    assert tx.return_value[1] >= redeem_assets[1].minOutputAmount
-    print(tx.gas_used)
+    new_balances = [t.balanceOf(alice) for t in tokens]
+    for pb, nb, asset in zip(previous_balances, new_balances, redeem_assets):
+        assert nb >= pb + asset.minOutputAmount
