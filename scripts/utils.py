@@ -63,6 +63,8 @@ def get_deployer():
         return find_account(MAINNET_DEPLOYER_ADDRESS)
     if chain_id == 1:  # mainnet
         return get_clef_account(MAINNET_DEPLOYER_ADDRESS)
+    if chain_id == 137:  # polygon
+        return accounts.load("polygon-master")
     if chain_id == 42:  # kovan
         return cast(
             LocalAccount, accounts.load("kovan-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore

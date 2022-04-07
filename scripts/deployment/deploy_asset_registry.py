@@ -1,8 +1,6 @@
 from brownie import AssetRegistry  # type: ignore
 from scripts.utils import as_singleton, get_deployer, with_deployed, with_gas_usage
 from tests.fixtures.mainnet_contracts import TokenAddresses
-from tests.support.constants import COINBASE_SIGNING_ADDRESS
-from tests.support.retrieve_coinbase_prices import fetch_prices, find_price
 
 
 @with_gas_usage
