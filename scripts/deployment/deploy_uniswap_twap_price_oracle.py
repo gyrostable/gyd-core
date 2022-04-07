@@ -7,17 +7,13 @@ from scripts.utils import (
     with_deployed,
     with_gas_usage,
 )
-from tests.fixtures.mainnet_contracts import CHAINLINK_FEEDS, UniswapPools, is_stable
-from tests.support.utils import scale
+from tests.fixtures.mainnet_contracts import UniswapPools
 
 
 @with_deployed(UniswapV3TwapOracle)
 def add_pools(uniswap_v3_twap_oracle):
     deployer = get_deployer()
-    pools = [
-        getattr(UniswapPools, v) for v in dir(UniswapPools) if not v.startswith("_")
-    ]
-    for pool in pools:
+    for pool in UniswapPools.all_pools():
         uniswap_v3_twap_oracle.registerPool(
             pool, {"from": deployer, **make_tx_params()}
         )

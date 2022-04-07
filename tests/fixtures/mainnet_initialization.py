@@ -1,7 +1,8 @@
 from typing import List
+from brownie import ZERO_ADDRESS
 import pytest
 from tests.fixtures.mainnet_contracts import (
-    CHAINLINK_FEEDS,
+    get_chainlink_feeds,
     TokenAddresses,
     UniswapPools,
     is_stable,
@@ -65,10 +66,7 @@ def mainnet_reserve_manager(
 
 @pytest.fixture(scope="module")
 def add_common_uniswap_pools(admin, uniswap_v3_twap_oracle):
-    pools = [
-        getattr(UniswapPools, v) for v in dir(UniswapPools) if not v.startswith("_")
-    ]
-    for pool in pools:
+    for pool in UniswapPools.all_pools():
         uniswap_v3_twap_oracle.registerPool(pool, {"from": admin})
 
 
@@ -76,7 +74,7 @@ def add_common_uniswap_pools(admin, uniswap_v3_twap_oracle):
 def set_common_chainlink_feeds(
     admin, chainlink_price_oracle, crash_protected_chainlink_oracle
 ):
-    for asset, feed in CHAINLINK_FEEDS:
+    for asset, feed in get_chainlink_feeds():
         chainlink_price_oracle.setFeed(asset, feed, {"from": admin})
         min_diff_time = 3_600
         max_deviation = scale("0.01" if is_stable(asset) else "0.05")

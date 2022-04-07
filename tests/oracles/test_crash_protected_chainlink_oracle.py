@@ -4,7 +4,7 @@ import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
 
 from tests.fixtures.mainnet_contracts import (
-    CHAINLINK_FEEDS,
+    get_chainlink_feeds,
     ChainlinkFeeds,
     TokenAddresses,
 )
@@ -38,7 +38,7 @@ def eth_feed(admin, MockChainlinkFeed, crash_protected_chainlink_oracle, current
 
 @pytest.fixture
 def set_mainnet_feeds(admin, crash_protected_chainlink_oracle):
-    for token, feed in CHAINLINK_FEEDS:
+    for token, feed in get_chainlink_feeds():
         crash_protected_chainlink_oracle.setFeed(
             token,
             feed,
