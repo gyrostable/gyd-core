@@ -22,6 +22,9 @@ import "./Errors.sol";
 /* solhint-disable private-vars-leading-underscore */
 
 /// @dev Signed fixed point operations based on Balancer's FixedPoint library.
+/// Note: The standard `{mul,div}{Up,Down}()` functions do *not* round up or down, respectively,
+/// in a signed fashion (like ceil and floor operations), but *in absolute value*, i.e.,
+/// towards 0. This is useful in some applications.
 library SignedFixedPoint {
     int256 internal constant ONE = 1e18; // 18 decimal places
     int256 internal constant MAX_POW_RELATIVE_ERROR = 10000; // 10^(-14)
@@ -68,6 +71,12 @@ library SignedFixedPoint {
     /// @dev Rounds away from 0, i.e., up in absolute value.
     function divUp(int256 a, int256 b) internal pure returns (int256) {
         require(b != 0, Errors.ZERO_DIVISION);
+
+        if (b < 0) {
+            // Required so the below is correct.
+            b = -b;
+            a = -a;
+        }
 
         if (a == 0) {
             return 0;
