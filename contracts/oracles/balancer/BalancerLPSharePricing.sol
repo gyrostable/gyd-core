@@ -237,15 +237,15 @@ library BalancerLPSharePricing {
         //      bptPrice = L/S * p_y (e_y A^{-1} tau(alpha) - e_y A^{-1} tau(beta) )                 //
         **********************************************************************************************/
         (int256 px, int256 py) = (underlyingPrices[0].toInt256(), underlyingPrices[1].toInt256());
-        int256 pxIny = px.divDown(py);
+        int256 pxIny = px.divDownMag(py);
         if (pxIny < params.alpha) {
             int256 bP = (mulAinv(params, derivedParams.tauBeta).x -
                 mulAinv(params, derivedParams.tauAlpha).x);
-            bptPrice = (bP.mulDown(px)).toUint256().mulDown(invariantDivSupply);
+            bptPrice = (bP.mulDownMag(px)).toUint256().mulDown(invariantDivSupply);
         } else if (pxIny > params.beta) {
             int256 bP = (mulAinv(params, derivedParams.tauAlpha).y -
                 mulAinv(params, derivedParams.tauBeta).y);
-            bptPrice = (bP.mulDown(py)).toUint256().mulDown(invariantDivSupply);
+            bptPrice = (bP.mulDownMag(py)).toUint256().mulDown(invariantDivSupply);
         } else {
             ICEMM.Vector2 memory vec = mulAinv(params, tau(params, pxIny));
             vec.x = mulAinv(params, derivedParams.tauBeta).x - vec.x;
@@ -266,7 +266,7 @@ library BalancerLPSharePricing {
         pure
         returns (int256 ret)
     {
-        ret = t1.x.mulDown(t2.x) + t1.y.mulDown(t2.y);
+        ret = t1.x.mulDownMag(t2.x) + t1.y.mulDownMag(t2.y);
     }
 
     /** @dev Calculate A^{-1}t where A^{-1} is given in Section 2.2
@@ -277,8 +277,8 @@ library BalancerLPSharePricing {
         pure
         returns (ICEMM.Vector2 memory tp)
     {
-        tp.x = t.x.mulDown(params.lambda).mulDown(params.c) + t.y.mulDown(params.s);
-        tp.y = -t.x.mulDown(params.lambda).mulDown(params.s) + t.y.mulDown(params.c);
+        tp.x = t.x.mulDownMag(params.lambda).mulDownMag(params.c) + t.y.mulDownMag(params.s);
+        tp.y = -t.x.mulDownMag(params.lambda).mulDownMag(params.s) + t.y.mulDownMag(params.c);
     }
 
     /** @dev Calculate A t where A is given in Section 2.2
@@ -290,16 +290,16 @@ library BalancerLPSharePricing {
         returns (ICEMM.Vector2 memory t)
     {
         t.x =
-            params.c.mulDown(tp.x).divDown(params.lambda) -
-            params.s.mulDown(tp.y).divDown(params.lambda);
-        t.y = params.s.mulDown(tp.x) + params.c.mulDown(tp.y);
+            params.c.mulDownMag(tp.x).divDownMag(params.lambda) -
+            params.s.mulDownMag(tp.y).divDownMag(params.lambda);
+        t.y = params.s.mulDownMag(tp.x) + params.c.mulDownMag(tp.y);
     }
 
     /** @dev Given price px on the transformed ellipse, get the untransformed price pxc on the circle
      *  px = price of asset x in terms of asset y */
     function zeta(ICEMM.Params memory params, int256 px) internal pure returns (int256 pxc) {
         ICEMM.Vector2 memory nd = mulA(params, ICEMM.Vector2(-SignedFixedPoint.ONE, px));
-        return -nd.y.divDown(nd.x);
+        return -nd.y.divDownMag(nd.x);
     }
 
     /** @dev Given price px on the transformed ellipse, maps to the corresponding point on the untransformed normalized circle
@@ -317,14 +317,14 @@ library BalancerLPSharePricing {
      *  Notice that the eta function does not depend on Params */
     function eta(int256 pxc) internal pure returns (ICEMM.Vector2 memory tpp) {
         int256 z = FixedPoint
-            .powDown(FixedPoint.ONE + (pxc.mulDown(pxc).toUint256()), ONEHALF)
+            .powDown(FixedPoint.ONE + (pxc.mulDownMag(pxc).toUint256()), ONEHALF)
             .toInt256();
         tpp = eta(pxc, z);
     }
 
     /** @dev Calculates eta in more efficient way if the square root is known and input as second arg */
     function eta(int256 pxc, int256 z) internal pure returns (ICEMM.Vector2 memory tpp) {
-        tpp.x = pxc.divDown(z);
-        tpp.y = SignedFixedPoint.ONE.divDown(z);
+        tpp.x = pxc.divDownMag(z);
+        tpp.y = SignedFixedPoint.ONE.divDownMag(z);
     }
 }
