@@ -18,17 +18,17 @@ from tests.support.utils import join_pool, scale
 
 
 @pytest.fixture(scope="module", autouse=True)
-def set_mock_oracle_prices(mock_price_oracle, usdc, usdc_vault, dai, dai_vault):
-    mock_price_oracle.setUSDPrice(usdc, scale(1))
-    mock_price_oracle.setUSDPrice(usdc_vault, scale(1))
-    mock_price_oracle.setUSDPrice(dai, scale(1))
-    mock_price_oracle.setUSDPrice(dai_vault, scale(1))
+def set_mock_oracle_prices(mock_price_oracle, usdc, usdc_vault, dai, dai_vault, admin):
+    mock_price_oracle.setUSDPrice(usdc, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(usdc_vault, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(1), {"from": admin})
 
 
 @pytest.fixture(scope="module", autouse=True)
-def set_fees(static_percentage_fee_handler, usdc_vault, dai_vault):
-    static_percentage_fee_handler.setVaultFees(usdc_vault, 0, 0)
-    static_percentage_fee_handler.setVaultFees(dai_vault, 0, 0)
+def set_fees(static_percentage_fee_handler, usdc_vault, dai_vault, admin):
+    static_percentage_fee_handler.setVaultFees(usdc_vault, 0, 0, {"from": admin})
+    static_percentage_fee_handler.setVaultFees(dai_vault, 0, 0, {"from": admin})
 
 
 @pytest.fixture
@@ -316,7 +316,7 @@ def test_simple_mint_bpt(
     amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
     amounts = [
-        (wbtc.address, int(scale("0.0002", 8))),
+        (wbtc.address, int(scale("0.0003", 8))),
         (weth.address, int(scale("0.002"))),
     ]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WBTC_WETH"], amounts)
@@ -330,11 +330,11 @@ def test_simple_mint_bpt(
         make_bpt_mint_asset("WETH_USDC"),
     ]
 
-    amount, error = full_motherboard.dryMint(mint_assets, scale(140), {"from": alice})
+    amount, error = full_motherboard.dryMint(mint_assets, scale(60), {"from": alice})
     assert error == ""
-    assert scale(140) <= amount <= scale(180)
+    assert scale(60) <= amount <= scale(180)
 
-    tx = full_motherboard.mint(mint_assets, scale(140), {"from": alice})
+    tx = full_motherboard.mint(mint_assets, scale(60), {"from": alice})
     # last transfer is the transfer from motherboard to user
     value = tx.events["Transfer"][-1]["value"]
     assert abs(value - amount) <= scale(10)
@@ -360,7 +360,7 @@ def test_simple_redeem_bpt(
     amounts = [(weth.address, int(scale("0.01"))), (dai.address, int(scale(50)))]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WETH_DAI"], amounts)
     amounts = [
-        (wbtc.address, int(scale("0.0002", 8))),
+        (wbtc.address, int(scale("0.0003", 8))),
         (weth.address, int(scale("0.002"))),
     ]
     join_pool(alice, balancer_vault, BALANCER_POOL_IDS["WBTC_WETH"], amounts)
@@ -376,7 +376,7 @@ def test_simple_redeem_bpt(
 
     print("minting with", mint_assets)
 
-    tx = full_motherboard.mint(mint_assets, scale("140"), {"from": alice})
+    tx = full_motherboard.mint(mint_assets, scale("60"), {"from": alice})
     value = tx.events["Transfer"][-1]["value"]
 
     print(f"minted {value} GYD")

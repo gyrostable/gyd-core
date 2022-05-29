@@ -8,7 +8,9 @@ from tests.support.utils import scale
 @pytest.fixture(scope="module")
 def vault_registry(admin, VaultRegistry, gyro_config):
     vault_registry = admin.deploy(VaultRegistry, gyro_config)
-    gyro_config.setAddress(config_keys.VAULT_REGISTRY_ADDRESS, vault_registry)
+    gyro_config.setAddress(
+        config_keys.VAULT_REGISTRY_ADDRESS, vault_registry, {"from": admin}
+    )
     return vault_registry
 
 
@@ -23,7 +25,9 @@ def reserve_manager(admin, ReserveManager, gyro_config, request, vault_registry)
     for dep in dependencies:
         request.getfixturevalue(dep)
     reserve_manager = admin.deploy(ReserveManager, gyro_config)
-    gyro_config.setAddress(config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager)
+    gyro_config.setAddress(
+        config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager, {"from": admin}
+    )
     vault_registry.setReserveManagerAddress(reserve_manager, {"from": admin})
     return reserve_manager
 
@@ -31,35 +35,39 @@ def reserve_manager(admin, ReserveManager, gyro_config, request, vault_registry)
 @pytest.fixture(scope="module")
 def static_percentage_fee_handler(StaticPercentageFeeHandler, admin, gyro_config):
     fee_handler = admin.deploy(StaticPercentageFeeHandler)
-    gyro_config.setAddress(config_keys.FEE_HANDLER_ADDRESS, fee_handler)
+    gyro_config.setAddress(
+        config_keys.FEE_HANDLER_ADDRESS, fee_handler, {"from": admin}
+    )
     return fee_handler
 
 
 @pytest.fixture(scope="module")
 def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry, gyro_config):
     exchanger_registry = admin.deploy(LPTokenExchangerRegistry)
-    gyro_config.setAddress(config_keys.EXCHANGER_REGISTRY_ADDRESS, exchanger_registry)
+    gyro_config.setAddress(
+        config_keys.EXCHANGER_REGISTRY_ADDRESS, exchanger_registry, {"from": admin}
+    )
     return exchanger_registry
 
 
 @pytest.fixture(scope="module")
 def gyd_token(admin, GydToken, gyro_config):
     gyd_token = admin.deploy(GydToken, gyro_config, "GYD Token", "GYD")
-    gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token)
+    gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token, {"from": admin})
     return gyd_token
 
 
 @pytest.fixture(scope="module")
 def fee_bank(admin, FeeBank, gyro_config):
     fee_bank = admin.deploy(FeeBank)
-    gyro_config.setAddress(config_keys.FEE_BANK_ADDRESS, fee_bank)
+    gyro_config.setAddress(config_keys.FEE_BANK_ADDRESS, fee_bank, {"from": admin})
     return fee_bank
 
 
 @pytest.fixture(scope="module")
 def reserve(admin, Reserve, gyro_config):
     reserve = admin.deploy(Reserve)
-    gyro_config.setAddress(config_keys.RESERVE_ADDRESS, reserve)
+    gyro_config.setAddress(config_keys.RESERVE_ADDRESS, reserve, {"from": admin})
     return reserve
 
 
@@ -101,14 +109,16 @@ def lp_token(Token):
 @pytest.fixture(scope="module")
 def mock_pamm(admin, MockPAMM, gyro_config):
     pamm = admin.deploy(MockPAMM)
-    gyro_config.setAddress(config_keys.PAMM_ADDRESS, pamm)
+    gyro_config.setAddress(config_keys.PAMM_ADDRESS, pamm, {"from": admin})
     return pamm
 
 
 @pytest.fixture(scope="module")
 def mock_price_oracle(admin, MockPriceOracle, gyro_config):
     mock_price_oracle = admin.deploy(MockPriceOracle)
-    gyro_config.setAddress(config_keys.ROOT_PRICE_ORACLE_ADDRESS, mock_price_oracle)
+    gyro_config.setAddress(
+        config_keys.ROOT_PRICE_ORACLE_ADDRESS, mock_price_oracle, {"from": admin}
+    )
     return mock_price_oracle
 
 
@@ -174,7 +184,9 @@ def mainnet_checked_price_oracle(
 @pytest.fixture(scope="module")
 def root_safety_check(admin, RootSafetyCheck, gyro_config):
     safety_check = admin.deploy(RootSafetyCheck, gyro_config)
-    gyro_config.setAddress(config_keys.ROOT_SAFETY_CHECK_ADDRESS, safety_check)
+    gyro_config.setAddress(
+        config_keys.ROOT_SAFETY_CHECK_ADDRESS, safety_check, {"from": admin}
+    )
     return safety_check
 
 
@@ -194,7 +206,9 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
         request.getfixturevalue(dep)
     motherboard = admin.deploy(Motherboard, gyro_config)
     reserve.addManager(motherboard, {"from": admin})
-    gyro_config.setAddress(config_keys.MOTHERBOARD_ADDRESS, motherboard)
+    gyro_config.setAddress(
+        config_keys.MOTHERBOARD_ADDRESS, motherboard, {"from": admin}
+    )
     return motherboard
 
 

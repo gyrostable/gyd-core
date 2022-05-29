@@ -45,7 +45,9 @@ def mainnet_reserve_manager(
     for dep in dependencies:
         request.getfixturevalue(dep)
     reserve_manager = admin.deploy(ReserveManager, gyro_config)
-    gyro_config.setAddress(config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager)
+    gyro_config.setAddress(
+        config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager, {"from": admin}
+    )
     vault_registry.setReserveManagerAddress(reserve_manager, {"from": admin})
     for vault in mainnet_vaults:
         reserve_manager.registerVault(
@@ -53,6 +55,7 @@ def mainnet_reserve_manager(
             vault.initial_weight,
             vault.short_flow_memory,
             vault.short_flow_threshold,
+            {"from": admin},
         )
 
     return reserve_manager
@@ -222,7 +225,7 @@ def mainnet_pamm(admin, PrimaryAMMV1, gyro_config):
             outflow_memory=OUTFLOW_MEMORY,
         ),
     )
-    gyro_config.setAddress(config_keys.PAMM_ADDRESS, pamm)
+    gyro_config.setAddress(config_keys.PAMM_ADDRESS, pamm, {"from": admin})
     return pamm
 
 
@@ -265,7 +268,9 @@ def uninitialized_motherboard(admin, Motherboard, request, gyro_config, reserve)
         request.getfixturevalue(dep)
     motherboard = admin.deploy(Motherboard, gyro_config)
     reserve.addManager(motherboard, {"from": admin})
-    gyro_config.setAddress(config_keys.MOTHERBOARD_ADDRESS, motherboard)
+    gyro_config.setAddress(
+        config_keys.MOTHERBOARD_ADDRESS, motherboard, {"from": admin}
+    )
     return motherboard
 
 
