@@ -81,9 +81,7 @@ contract Motherboard is IMotherboard, Governable {
 
         require(gyroToMint >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
 
-        gydToken.mint(address(this), gyroToMint);
-
-        gydToken.safeTransfer(msg.sender, gyroToMint);
+        gydToken.mint(msg.sender, gyroToMint);
 
         return gyroToMint;
     }
