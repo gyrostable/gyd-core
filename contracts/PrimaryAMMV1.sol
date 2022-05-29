@@ -77,6 +77,11 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     /// @inheritdoc IPAMM
     function setSystemParams(Params memory params) external governanceOnly {
         systemParams = params;
+
+        // NOTE: this is not strictly needed but ensures that the given
+        // parameters allow to compute the derived parameters without underflowing
+        createDerivedParams(params);
+
         emit SystemParamsUpdated(
             params.alphaBar,
             params.xuBar,
