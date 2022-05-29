@@ -92,7 +92,7 @@ library DataTypes {
         uint256 resultingWeight;
         uint256 price;
         bool allStablecoinsOnPeg;
-        bool allTokenPricesLargeEnough;
+        bool atLeastOnePriceLargeEnough;
         bool vaultWithinEpsilon;
         PricedToken[] pricedTokens;
     }

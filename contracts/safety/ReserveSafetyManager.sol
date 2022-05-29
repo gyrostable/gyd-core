@@ -188,18 +188,18 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         view
     {
         vaultMetadata.allStablecoinsOnPeg = true;
-        vaultMetadata.allTokenPricesLargeEnough = false;
+        vaultMetadata.atLeastOnePriceLargeEnough = false;
         for (uint256 i = 0; i < vaultMetadata.pricedTokens.length; i++) {
             address tokenAddress = vaultMetadata.pricedTokens[i].tokenAddress;
             uint256 tokenPrice = vaultMetadata.pricedTokens[i].price;
 
             if (assetRegistry.isAssetStable(tokenAddress)) {
-                vaultMetadata.allTokenPricesLargeEnough = true;
+                vaultMetadata.atLeastOnePriceLargeEnough = true;
                 if (tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
                     vaultMetadata.allStablecoinsOnPeg = false;
                 }
             } else if (tokenPrice >= minTokenPrice) {
-                vaultMetadata.allTokenPricesLargeEnough = true;
+                vaultMetadata.atLeastOnePriceLargeEnough = true;
             }
         }
     }
@@ -216,7 +216,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             if (!vaultData.allStablecoinsOnPeg) {
                 metaData.allStablecoinsAllVaultsOnPeg = false;
             }
-            if (!vaultData.allTokenPricesLargeEnough) {
+            if (!vaultData.atLeastOnePriceLargeEnough) {
                 metaData.allVaultsUsingLargeEnoughPrices = false;
             }
         }
