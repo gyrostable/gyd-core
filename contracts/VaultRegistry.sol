@@ -75,6 +75,7 @@ contract VaultRegistry is IVaultRegistry, Governable {
 
     function setInitialPrice(address vault, uint256 initialPrice) external reserveManagerOnly {
         require(vaultAddresses.contains(vault), Errors.VAULT_NOT_FOUND);
+        require(vaultsMetadata[vault].initialPrice == 0, Errors.INVALID_ARGUMENT);
         vaultsMetadata[vault].initialPrice = initialPrice;
     }
 
