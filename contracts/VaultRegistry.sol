@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./auth/Governable.sol";
 
 import "../libraries/ConfigKeys.sol";
+import "../libraries/ConfigHelpers.sol";
 import "../libraries/EnumerableExtensions.sol";
 
 import "../interfaces/IVaultRegistry.sol";
@@ -14,6 +15,7 @@ import "../interfaces/IGyroConfig.sol";
 contract VaultRegistry is IVaultRegistry, Governable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableExtensions for EnumerableSet.AddressSet;
+    using ConfigHelpers for IGyroConfig;
 
     IGyroConfig public immutable gyroConfig;
     address public reserveManagerAddress;
@@ -65,6 +67,7 @@ contract VaultRegistry is IVaultRegistry, Governable {
         reserveManagerOnly
     {
         require(!vaultAddresses.contains(vault), Errors.VAULT_ALREADY_EXISTS);
+        require(gyroConfig.getFeeHandler().isVaultSupported(vault), Errors.VAULT_NOT_FOUND);
         vaultAddresses.add(vault);
         vaultsMetadata[vault] = persistedMetadata;
         emit VaultRegistered(vault);

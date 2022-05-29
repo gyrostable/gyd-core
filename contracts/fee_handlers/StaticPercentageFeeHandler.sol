@@ -36,9 +36,15 @@ contract StaticPercentageFeeHandler is IFeeHandler, Governable {
     }
 
     /// @inheritdoc IFeeHandler
+    function isVaultSupported(address vaultAddress) external view override returns (bool) {
+        return vaultFees[vaultAddress].exists;
+    }
+
+    /// @inheritdoc IFeeHandler
     function applyFees(DataTypes.Order memory order)
         external
         view
+        override
         returns (DataTypes.Order memory)
     {
         DataTypes.VaultWithAmount[] memory vaultsWithAmount = new DataTypes.VaultWithAmount[](
