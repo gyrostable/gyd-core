@@ -225,7 +225,12 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             params.alphaBar
         );
 
-        derived.xlThresholdIIIHL = computeXl(derived.baThresholdIIIHL, ONE, params.alphaBar, 0);
+        derived.xlThresholdIIIHL = computeXl(
+            derived.baThresholdIIIHL,
+            ONE,
+            derived.alphaThresholdIIIHL,
+            0
+        );
 
         return derived;
     }
