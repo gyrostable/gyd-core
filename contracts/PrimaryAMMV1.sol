@@ -311,7 +311,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
                 ONE,
                 derived.alphaThresholdIIIHL,
                 0,
-                derived.xlThresholdIIHL
+                derived.xlThresholdIIIHL
             );
     }
 
