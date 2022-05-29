@@ -275,11 +275,12 @@ contract Motherboard is IMotherboard, Governable {
         pure
         returns (uint256)
     {
+        uint256 total = 0;
         for (uint256 i = 0; i < amounts.length; i++) {
             DataTypes.MonetaryAmount memory vaultAmount = amounts[i];
-            if (vaultAmount.tokenAddress == vault) return vaultAmount.amount;
+            if (vaultAmount.tokenAddress == vault) total += vaultAmount.amount;
         }
-        return 0;
+        return total;
     }
 
     function _monetaryAmountsToMintOrder(
