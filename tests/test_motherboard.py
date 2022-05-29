@@ -1,20 +1,12 @@
-from typing import List
-from pyparsing import Or
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
-from tests.fixtures.mainnet_contracts import TokenAddresses
 
-from tests.support import config_keys, error_codes
-from tests.support.quantized_decimal import QuantizedDecimal as D
+from tests.support import error_codes
+from tests.support.balancer import join_pool
 from tests.support.constants import BALANCER_POOL_IDS, address_from_pool_id
-from tests.support.types import (
-    MintAsset,
-    Order,
-    RedeemAsset,
-    VaultToDeploy,
-    VaultWithAmount,
-)
-from tests.support.utils import join_pool, scale
+from tests.support.quantized_decimal import QuantizedDecimal as D
+from tests.support.types import MintAsset, RedeemAsset
+from tests.support.utils import scale
 
 
 @pytest.fixture(scope="module", autouse=True)
