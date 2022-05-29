@@ -266,7 +266,7 @@ contract Motherboard is IMotherboard, Governable {
             );
         }
 
-        IERC20(lpTokenAddress).safeApprove(address(vault), lpTokenAmount);
+        IERC20(lpTokenAddress).safeIncreaseAllowance(address(vault), lpTokenAmount);
         return vault.deposit(lpTokenAmount, 0);
     }
 
