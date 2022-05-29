@@ -32,7 +32,6 @@ contract BalancerPoolRegistry is IBalancerPoolRegistry, Governable {
     {
         bytes32[] storage poolIdsforToken = poolIdRegistry[underlyingTokenAddress];
         poolIdsforToken.push(poolId);
-        poolIdRegistry[underlyingTokenAddress] = poolIdsforToken;
         emit PoolIDRegistered(underlyingTokenAddress, poolId);
     }
 
