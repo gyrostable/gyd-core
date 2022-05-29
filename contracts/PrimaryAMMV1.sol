@@ -538,7 +538,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         DerivedParams memory derived = createDerivedParams(params);
         uint256 redeemAmount = computeRedeemAmount(currentState, params, derived, gydAmount);
 
-        redemptionLevel += gydAmount;
+        redemptionLevel = currentState.redemptionLevel + gydAmount;
         lastRedemptionBlock = block.number;
 
         return redeemAmount;
