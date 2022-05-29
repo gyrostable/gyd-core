@@ -91,6 +91,7 @@ contract VaultRegistry is IVaultRegistry, Governable {
     function deregisterVault(address vault) external override governanceOnly {
         require(vaultAddresses.contains(vault), Errors.VAULT_NOT_FOUND);
         vaultAddresses.remove(vault);
+        delete vaultsMetadata[vault];
         emit VaultDeregistered(vault);
     }
 }
