@@ -9,22 +9,6 @@ interface IReserveManager {
     event NewVaultWeightManager(address indexed oldManager, address indexed newManager);
     event NewPriceOracle(address indexed oldOracle, address indexed newOracle);
 
-    struct ReserveStateOptions {
-        bool includeMetadata;
-        bool includePrice;
-        bool includeCurrentWeight;
-        bool includeIdealWeight;
-    }
-
-    /// @notice Returns a list of vaults without including any metadata
+    /// @notice Returns a list of vaults including metadata such as price and weights
     function getReserveState() external view returns (DataTypes.ReserveState memory);
-
-    /// @notice Returns a list of vaults with requested metadata
-    /// @param options allows the caller to specify what they want to be included in
-    /// the returned reserve state. If no options are passed, the full reserve state
-    /// is returned.
-    function getReserveState(ReserveStateOptions memory options)
-        external
-        view
-        returns (DataTypes.ReserveState memory);
 }
