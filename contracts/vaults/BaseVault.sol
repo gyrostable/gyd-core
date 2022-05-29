@@ -58,7 +58,7 @@ contract BaseVault is IGyroVault, ERC20 {
     function exchangeRate() public view override returns (uint256) {
         uint256 totalUnderlying_ = totalUnderlying();
         uint256 totalSupply = totalSupply();
-        if (totalSupply == 0 || totalUnderlying_ == 0) {
+        if (totalSupply == 0) {
             return FixedPoint.ONE;
         }
 
