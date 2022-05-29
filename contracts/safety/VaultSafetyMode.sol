@@ -31,9 +31,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     EnumerableSet.AddressSet internal whitelist;
 
-    /// @notice Emmited when the motherboard is changed
-    event MotherboardAddressChanged(address oldMotherboard, address newMotherboard);
-
     /// @notice Emitted when entering safety mode
     event SafetyStatus(string err);
 
