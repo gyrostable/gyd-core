@@ -56,13 +56,7 @@ contract BaseVault is IGyroVault, ERC20 {
 
     /// @inheritdoc IGyroVault
     function exchangeRate() public view override returns (uint256) {
-        uint256 totalUnderlying_ = totalUnderlying();
-        uint256 totalSupply = totalSupply();
-        if (totalSupply == 0) {
-            return FixedPoint.ONE;
-        }
-
-        return totalUnderlying_.divDown(totalSupply);
+        return _exchangeRate(false);
     }
 
     /// @inheritdoc IGyroVault
@@ -80,7 +74,7 @@ contract BaseVault is IGyroVault, ERC20 {
         uint256 underlyingAmount,
         uint256 minVaultTokensOut
     ) public override returns (uint256 vaultTokensMinted) {
-        uint256 rate = exchangeRate();
+        uint256 rate = _exchangeRate(true);
 
         IERC20(underlying).safeTransferFrom(msg.sender, address(this), underlyingAmount);
 
@@ -99,7 +93,7 @@ contract BaseVault is IGyroVault, ERC20 {
         override
         returns (uint256 vaultTokensMinted, string memory err)
     {
-        uint256 rate = exchangeRate();
+        uint256 rate = _exchangeRate(true);
         vaultTokensMinted = underlyingAmount.divDown(rate);
         if (vaultTokensMinted < minVaultTokensOut) {
             err = Errors.TOO_MUCH_SLIPPAGE;
@@ -142,5 +136,18 @@ contract BaseVault is IGyroVault, ERC20 {
     /// @inheritdoc IGyroVault
     function setStrategy(address strategyAddress) external override {
         strategy = strategyAddress;
+    }
+
+    function _exchangeRate(bool overAproximate) internal view returns (uint256) {
+        uint256 totalUnderlying_ = totalUnderlying();
+        uint256 totalSupply = totalSupply();
+        if (totalSupply == 0) {
+            return FixedPoint.ONE;
+        }
+
+        return
+            overAproximate
+                ? totalUnderlying_.divUp(totalSupply)
+                : totalUnderlying_.divDown(totalSupply);
     }
 }
