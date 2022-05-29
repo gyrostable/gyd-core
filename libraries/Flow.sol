@@ -20,5 +20,6 @@ library Flow {
         } else if (lastSeenBlock == currentBlock) {
             return flowHistory;
         }
+        revert(Errors.INVALID_ARGUMENT);
     }
 }
