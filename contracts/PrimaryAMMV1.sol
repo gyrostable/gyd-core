@@ -452,22 +452,23 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         DerivedParams memory derived,
         uint256 amount
     ) internal pure returns (uint256) {
-        uint256 nav = state.reserveValue.divDown(state.totalGyroSupply);
-
-        if (nav >= ONE) {
-            return amount;
-        }
-
-        if (nav <= params.thetaBar) {
-            return nav.mulDown(amount);
-        }
-
         State memory anchoredState;
         uint256 ya = state.totalGyroSupply + state.redemptionLevel;
 
         anchoredState.redemptionLevel = state.redemptionLevel.divDown(ya);
         anchoredState.reserveValue = state.reserveValue.divDown(ya);
         anchoredState.totalGyroSupply = state.totalGyroSupply.divDown(ya);
+
+        uint256 anchoredNav = anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply);
+
+        if (anchoredNav >= ONE) {
+            return amount;
+        }
+
+        if (anchoredNav <= params.thetaBar) {
+            uint256 nav = state.reserveValue.divDown(state.totalGyroSupply);
+            return nav.mulDown(amount);
+        }
 
         uint256 anchoredReserveValue = computeAnchoredReserveValue(anchoredState, params, derived);
         uint256 reserveValue = anchoredReserveValue.mulDown(ya);
