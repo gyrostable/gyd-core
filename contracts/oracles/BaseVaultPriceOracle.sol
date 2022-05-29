@@ -15,7 +15,7 @@ abstract contract BaseVaultPriceOracle is IVaultPriceOracle {
         returns (uint256)
     {
         uint256 poolTokenPriceUSD = getPoolTokenPriceUSD(vault, underlyingPricedTokens);
-        return poolTokenPriceUSD.divDown(vault.exchangeRate());
+        return poolTokenPriceUSD.mulDown(vault.exchangeRate());
     }
 
     /// @notice returns the price of the underlying pool token (e.g. BPT token)
