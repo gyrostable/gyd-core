@@ -132,15 +132,20 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 ba,
         uint256 ya,
         uint256 alpha,
-        uint256 xu
+        uint256 xu,
+        bool ignoreUnderflow
     ) internal pure returns (uint256) {
         if (ba >= ya) {
             return ya;
         }
         uint256 left = (ya - xu).squareUp();
         uint256 right = (TWO * (ya - ba)) / alpha;
-        uint256 rh = left > right ? (left - right).sqrt() : 0;
-        return ya - rh;
+        if (left >= right) {
+            return ya - (left - right).sqrt();
+        } else {
+            require(ignoreUnderflow, Errors.SUB_OVERFLOW);
+            return ya;
+        }
     }
 
     /// @dev Proposition 4 (section 3) of the paper
@@ -191,13 +196,15 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             derived.baThresholdRegionI,
             ONE,
             params.alphaBar,
-            params.xuBar
+            params.xuBar,
+            true
         );
         derived.xlThresholdAtThresholdII = computeXl(
             derived.baThresholdRegionII,
             ONE,
             params.alphaBar,
-            0
+            0,
+            true
         );
 
         uint256 theta = ONE - params.thetaBar;
@@ -214,7 +221,8 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             derived.baThresholdIIHL,
             ONE,
             params.alphaBar,
-            derived.xuThresholdIIHL
+            derived.xuThresholdIIHL,
+            true
         );
 
         derived.baThresholdIIIHL = (ONE + params.thetaBar) / 2;
@@ -229,7 +237,8 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             derived.baThresholdIIIHL,
             ONE,
             derived.alphaThresholdIIIHL,
-            0
+            0,
+            true
         );
 
         return derived;
@@ -243,7 +252,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     ) internal pure returns (uint256) {
         uint256 alpha = computeAlphaHat(ba, ya, params.thetaBar, params.alphaBar);
         uint256 xu = computeXuHat(ba, ya, alpha, params.xuBar, ONE - params.thetaBar);
-        uint256 xl = computeXl(ba, ya, alpha, xu);
+        uint256 xl = computeXl(ba, ya, alpha, xu, false);
         return computeReserveFixedParams(x, ba, ya, alpha, xu, xl);
     }
 
