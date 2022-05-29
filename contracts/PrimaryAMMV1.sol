@@ -161,9 +161,11 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 xu;
         if (alpha.mulDown(delta) <= theta**2 / TWO) {
             uint256 rh = ((TWO * delta) / alpha);
-            xu = rh > ya.squareUp() ? 0 : ya - rh.sqrt();
+            uint256 rhSqrt = rh.sqrt();
+            xu = rhSqrt >= ya ? 0 : ya - rhSqrt;
         } else {
-            xu = ya - delta.divDown(theta) - theta.divDown(2 * alpha);
+            uint256 subtracted = delta.divDown(theta) + theta.divDown(2 * alpha);
+            xu = subtracted >= ya ? 0 : ya - subtracted;
         }
 
         return xu.min(xuMax);
