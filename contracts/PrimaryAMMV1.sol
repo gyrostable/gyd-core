@@ -135,9 +135,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 xu,
         bool ignoreUnderflow
     ) internal pure returns (uint256) {
-        if (ba >= ya) {
-            return ya;
-        }
+        require(ba < ya, Errors.INVALID_ARGUMENT);
         uint256 left = (ya - xu).squareUp();
         uint256 right = (TWO * (ya - ba)) / alpha;
         if (left >= right) {
