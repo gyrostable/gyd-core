@@ -86,13 +86,19 @@ contract ReserveManager is IReserveManager, Governable {
         uint256 returnsSum = 0;
         uint256[] memory weightedReturns = new uint256[](length);
         for (uint256 i = 0; i < length; i++) {
-            weightedReturns[i] = (vaultsInfo[i].price)
-                .divDown(vaultsInfo[i].persistedMetadata.initialPrice)
-                .mulDown(vaultsInfo[i].persistedMetadata.initialWeight);
+            uint256 initialPrice = vaultsInfo[i].persistedMetadata.initialPrice;
+            if (initialPrice == 0) continue;
+            weightedReturns[i] = vaultsInfo[i].price.divDown(initialPrice).mulDown(
+                vaultsInfo[i].persistedMetadata.initialWeight
+            );
             returnsSum += weightedReturns[i];
         }
-        for (uint256 i = 0; i < length; i++) {
-            vaultsInfo[i].idealWeight = weightedReturns[i].divDown(returnsSum);
+
+        // only 0 at initialization
+        if (returnsSum > 0) {
+            for (uint256 i = 0; i < length; i++) {
+                vaultsInfo[i].idealWeight = weightedReturns[i].divDown(returnsSum);
+            }
         }
 
         return DataTypes.ReserveState({vaults: vaultsInfo, totalUSDValue: reserveUSDValue});
