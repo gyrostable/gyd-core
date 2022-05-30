@@ -68,12 +68,11 @@ abstract contract BalancerExchanger is ILPTokenExchanger {
         override
         returns (uint256)
     {
-        bool tokenTransferred = IERC20(underlyingMonetaryAmount.tokenAddress).transferFrom(
+        IERC20(underlyingMonetaryAmount.tokenAddress).safeTransferFrom(
             msg.sender,
             address(this),
             underlyingMonetaryAmount.amount
         );
-        require(tokenTransferred, "failed to transfer tokens from user to token exchanger");
 
         bytes32 poolId = getChosenBalancerPool(underlyingMonetaryAmount);
 
