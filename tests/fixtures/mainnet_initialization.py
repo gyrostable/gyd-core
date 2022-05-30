@@ -39,6 +39,7 @@ def mainnet_reserve_manager(
     mainnet_vaults: List[VaultToDeploy],
 ):
     dependencies = [
+        "set_mainnet_fees",
         "reserve",
         "mainnet_batch_vault_price_oracle",
     ]
@@ -284,7 +285,6 @@ def full_motherboard(uninitialized_motherboard, request):
         "mainnet_reserve_manager",
         "mainnet_pamm",
         "initialize_safety_checks",
-        "set_mainnet_fees",
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
