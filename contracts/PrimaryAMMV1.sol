@@ -93,7 +93,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     /// Helpers to compute various parameters
 
     /// @dev Proposition 3 (section 3) of the paper
-    function computeAlphaHat(
+    function computeAlpha(
         uint256 ba,
         uint256 ya,
         uint256 thetaBar,
@@ -152,7 +152,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     /// @dev Proposition 4 (section 3) of the paper
-    function computeXuHat(
+    function computeXu(
         uint256 ba,
         uint256 ya,
         uint256 alpha,
@@ -215,7 +215,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 theta = ONE - params.thetaBar;
         derived.baThresholdIIHL = ONE - (theta**2) / (2 * params.alphaBar);
 
-        derived.xuThresholdIIHL = computeXuHat(
+        derived.xuThresholdIIHL = computeXu(
             derived.baThresholdIIHL,
             ONE,
             params.alphaBar,
@@ -231,7 +231,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         );
 
         derived.baThresholdIIIHL = (ONE + params.thetaBar) / 2;
-        derived.alphaThresholdIIIHL = computeAlphaHat(
+        derived.alphaThresholdIIIHL = computeAlpha(
             derived.baThresholdIIIHL,
             ONE,
             params.thetaBar,
@@ -255,8 +255,8 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 ya,
         Params memory params
     ) internal pure returns (uint256) {
-        uint256 alpha = computeAlphaHat(ba, ya, params.thetaBar, params.alphaBar);
-        uint256 xu = computeXuHat(ba, ya, alpha, params.xuBar, ONE - params.thetaBar);
+        uint256 alpha = computeAlpha(ba, ya, params.thetaBar, params.alphaBar);
+        uint256 xu = computeXu(ba, ya, alpha, params.xuBar, ONE - params.thetaBar);
         uint256 xl = computeXl(ba, ya, alpha, xu, false);
         return computeReserveFixedParams(x, ba, ya, alpha, xu, xl);
     }

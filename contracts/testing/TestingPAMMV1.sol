@@ -83,7 +83,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 thetaFloor,
         uint256 alphaMin
     ) external pure returns (uint256) {
-        return computeAlphaHat(ba, ya, thetaFloor, alphaMin);
+        return computeAlpha(ba, ya, thetaFloor, alphaMin);
     }
 
     function testComputeUpperRedemptionThreshold(
@@ -94,7 +94,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 targetUtilizationCeiling
     ) external pure returns (uint256) {
         return
-            computeXuHat(ba, ya, alpha, stableRedeemThresholdUpperBound, targetUtilizationCeiling);
+            computeXu(ba, ya, alpha, stableRedeemThresholdUpperBound, targetUtilizationCeiling);
     }
 
     function computeDerivedParams() external view returns (DerivedParams memory) {
