@@ -11,18 +11,18 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
 
     constructor(address gyroConfig, Params memory params) PrimaryAMMV1(gyroConfig, params) {}
 
-    function computeRegion(State calldata anchoredState) external view returns (Region) {
+    function computeRegion(State calldata normalizedState) external view returns (Region) {
         DerivedParams memory derived = createDerivedParams(systemParams);
 
         uint256 b = computeReserve(
-            anchoredState.redemptionLevel,
-            anchoredState.reserveValue,
-            anchoredState.totalGyroSupply,
+            normalizedState.redemptionLevel,
+            normalizedState.reserveValue,
+            normalizedState.totalGyroSupply,
             systemParams
         );
-        uint256 y = anchoredState.totalGyroSupply - anchoredState.redemptionLevel;
+        uint256 y = normalizedState.totalGyroSupply - normalizedState.redemptionLevel;
         State memory state = State({
-            redemptionLevel: anchoredState.redemptionLevel,
+            redemptionLevel: normalizedState.redemptionLevel,
             reserveValue: b,
             totalGyroSupply: y
         });
@@ -30,31 +30,31 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         return computeReserveValueRegion(state, systemParams, derived);
     }
 
-    function computeReserveValue(State calldata anchoredState) public view returns (uint256) {
+    function computeReserveValue(State calldata normalizedState) public view returns (uint256) {
         Params memory params = systemParams;
         DerivedParams memory derived = createDerivedParams(systemParams);
         uint256 b = computeReserve(
-            anchoredState.redemptionLevel,
-            anchoredState.reserveValue,
-            anchoredState.totalGyroSupply,
+            normalizedState.redemptionLevel,
+            normalizedState.reserveValue,
+            normalizedState.totalGyroSupply,
             systemParams
         );
-        uint256 y = anchoredState.totalGyroSupply - anchoredState.redemptionLevel;
+        uint256 y = normalizedState.totalGyroSupply - normalizedState.redemptionLevel;
         State memory state = State({
-            redemptionLevel: anchoredState.redemptionLevel,
+            redemptionLevel: normalizedState.redemptionLevel,
             reserveValue: b,
             totalGyroSupply: y
         });
-        return computeAnchoredReserveValue(state, params, derived);
+        return computeNormalizedReserveValue(state, params, derived);
     }
 
     // NOTE: needs to not be pure to be able to get transaction information from the frontend
-    function computeReserveValueWithGas(State calldata anchoredState)
+    function computeReserveValueWithGas(State calldata normalizedState)
         external
         view
         returns (uint256)
     {
-        return computeReserveValue(anchoredState);
+        return computeReserveValue(normalizedState);
     }
 
     function testComputeFixedReserve(
@@ -93,8 +93,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 stableRedeemThresholdUpperBound,
         uint256 targetUtilizationCeiling
     ) external pure returns (uint256) {
-        return
-            computeXu(ba, ya, alpha, stableRedeemThresholdUpperBound, targetUtilizationCeiling);
+        return computeXu(ba, ya, alpha, stableRedeemThresholdUpperBound, targetUtilizationCeiling);
     }
 
     function computeDerivedParams() external view returns (DerivedParams memory) {
