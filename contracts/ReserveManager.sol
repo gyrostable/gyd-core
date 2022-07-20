@@ -30,23 +30,7 @@ contract ReserveManager is IReserveManager, Governable {
     }
 
     /// @inheritdoc IReserveManager
-    function getReserveState() external view returns (DataTypes.ReserveState memory) {
-        ReserveStateOptions memory options = ReserveStateOptions({
-            includeMetadata: true,
-            includePrice: true,
-            includeCurrentWeight: true,
-            includeIdealWeight: true
-        });
-        return getReserveState(options);
-    }
-
-    function getReserveState(ReserveStateOptions memory options)
-        public
-        view
-        returns (DataTypes.ReserveState memory)
-    {
-        require(!options.includeCurrentWeight || options.includePrice, Errors.INVALID_ARGUMENT);
-
+    function getReserveState() public view returns (DataTypes.ReserveState memory) {
         address[] memory vaultAddresses = vaultRegistry.listVaults();
         require(vaultAddresses.length > 0, Errors.INVALID_ARGUMENT);
 
@@ -55,13 +39,9 @@ contract ReserveManager is IReserveManager, Governable {
 
         for (uint256 i = 0; i < length; i++) {
             DataTypes.PersistedVaultMetadata memory persistedMetadata;
-            if (options.includeMetadata) {
-                persistedMetadata = vaultRegistry.getVaultMetadata(vaultAddresses[i]);
-            }
+            persistedMetadata = vaultRegistry.getVaultMetadata(vaultAddresses[i]);
 
-            uint256 reserveBalance = options.includeCurrentWeight
-                ? IERC20(vaultAddresses[i]).balanceOf(reserveAddress)
-                : 0;
+            uint256 reserveBalance = IERC20(vaultAddresses[i]).balanceOf(reserveAddress);
 
             IERC20[] memory tokens = IGyroVault(vaultAddresses[i]).getTokens();
             DataTypes.PricedToken[] memory pricedTokens = new DataTypes.PricedToken[](
@@ -86,35 +66,36 @@ contract ReserveManager is IReserveManager, Governable {
             });
         }
 
-        if (options.includePrice) {
-            vaultsInfo = gyroConfig.getRootPriceOracle().fetchPricesUSD(vaultsInfo);
-        }
+        vaultsInfo = gyroConfig.getRootPriceOracle().fetchPricesUSD(vaultsInfo);
 
         uint256 reserveUSDValue = 0;
-        if (options.includeCurrentWeight) {
-            uint256[] memory usdValues = new uint256[](length);
-            for (uint256 i = 0; i < length; i++) {
-                uint256 usdValue = vaultsInfo[i].price.mulDown(vaultsInfo[i].reserveBalance);
-                usdValues[i] = usdValue;
-                reserveUSDValue += usdValue;
-            }
-            for (uint256 i = 0; i < length; i++) {
-                /// Only zero at initialization
-                vaultsInfo[i].currentWeight = reserveUSDValue == 0
-                    ? vaultsInfo[i].persistedMetadata.initialWeight
-                    : usdValues[i].divDown(reserveUSDValue);
-            }
+        uint256[] memory usdValues = new uint256[](length);
+
+        for (uint256 i = 0; i < length; i++) {
+            uint256 usdValue = vaultsInfo[i].price.mulDown(vaultsInfo[i].reserveBalance);
+            usdValues[i] = usdValue;
+            reserveUSDValue += usdValue;
+        }
+        for (uint256 i = 0; i < length; i++) {
+            /// Only zero at initialization
+            vaultsInfo[i].currentWeight = reserveUSDValue == 0
+                ? vaultsInfo[i].persistedMetadata.initialWeight
+                : usdValues[i].divDown(reserveUSDValue);
         }
 
-        if (options.includeIdealWeight) {
-            uint256 returnsSum = 0;
-            uint256[] memory weightedReturns = new uint256[](length);
-            for (uint256 i = 0; i < length; i++) {
-                weightedReturns[i] = (vaultsInfo[i].price)
-                    .divDown(vaultsInfo[i].persistedMetadata.initialPrice)
-                    .mulDown(vaultsInfo[i].persistedMetadata.initialWeight);
-                returnsSum += weightedReturns[i];
-            }
+        uint256 returnsSum = 0;
+        uint256[] memory weightedReturns = new uint256[](length);
+        for (uint256 i = 0; i < length; i++) {
+            uint256 initialPrice = vaultsInfo[i].persistedMetadata.initialPrice;
+            if (initialPrice == 0) continue;
+            weightedReturns[i] = vaultsInfo[i].price.divDown(initialPrice).mulDown(
+                vaultsInfo[i].persistedMetadata.initialWeight
+            );
+            returnsSum += weightedReturns[i];
+        }
+
+        // only 0 at initialization
+        if (returnsSum > 0) {
             for (uint256 i = 0; i < length; i++) {
                 vaultsInfo[i].idealWeight = weightedReturns[i].divDown(returnsSum);
             }
@@ -129,12 +110,6 @@ contract ReserveManager is IReserveManager, Governable {
         uint256 shortFlowMemory,
         uint256 shortFlowThreshold
     ) external governanceOnly {
-        ReserveStateOptions memory options = ReserveStateOptions({
-            includeMetadata: false,
-            includePrice: true,
-            includeCurrentWeight: false,
-            includeIdealWeight: false
-        });
         DataTypes.PersistedVaultMetadata memory persistedVaultMetadata = DataTypes
             .PersistedVaultMetadata({
                 initialPrice: 0,
@@ -145,7 +120,7 @@ contract ReserveManager is IReserveManager, Governable {
 
         vaultRegistry.registerVault(_addressOfVault, persistedVaultMetadata);
 
-        DataTypes.ReserveState memory reserveState = getReserveState(options);
+        DataTypes.ReserveState memory reserveState = getReserveState();
         uint256 initialVaultPrice = 0;
         for (uint256 i = 0; i < reserveState.vaults.length; i++) {
             if (reserveState.vaults[i].vault == _addressOfVault) {

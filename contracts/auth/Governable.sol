@@ -6,6 +6,7 @@ import "../../interfaces/IGovernable.sol";
 
 contract Governable is IGovernable {
     address public override governor;
+    address public override pendingGovernor;
 
     constructor() {
         governor = msg.sender;
@@ -17,11 +18,18 @@ contract Governable is IGovernable {
         _;
     }
 
-    /// @notice Changes the governor
-    /// can only be called by the current governor
+    /// @inheritdoc IGovernable
     function changeGovernor(address newGovernor) external override governanceOnly {
-        address currentCovernor = governor;
-        governor = newGovernor;
-        emit GovernorChanged(currentCovernor, newGovernor);
+        pendingGovernor = newGovernor;
+        emit GovernorChangeRequested(newGovernor);
+    }
+
+    /// @inheritdoc IGovernable
+    function acceptGovernance() external override {
+        require(msg.sender == pendingGovernor, Errors.NOT_AUTHORIZED);
+        address currentGovernor = governor;
+        governor = pendingGovernor;
+        pendingGovernor = address(0);
+        emit GovernorChanged(currentGovernor, msg.sender);
     }
 }

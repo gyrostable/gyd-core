@@ -6,6 +6,8 @@ import "./auth/Governable.sol";
 import "../libraries/Errors.sol";
 
 contract LPTokenExchangerRegistry is ILPTokenExchangerRegistry, Governable {
+    event ExchangerUpdated(address oldExchanger, address newExchanger);
+
     mapping(address => address) internal tokenExchangers;
 
     /// @inheritdoc ILPTokenExchangerRegistry
@@ -21,11 +23,17 @@ contract LPTokenExchangerRegistry is ILPTokenExchangerRegistry, Governable {
         override
         governanceOnly
     {
+        address previousExchanger = tokenExchangers[lpToken];
+        require(previousExchanger == address(0), Errors.INVALID_ARGUMENT);
         tokenExchangers[lpToken] = lpTokenExchanger;
+        emit ExchangerUpdated(previousExchanger, lpTokenExchanger);
     }
 
     /// @inheritdoc ILPTokenExchangerRegistry
     function deregisterTokenExchanger(address lpToken) external override governanceOnly {
+        address previousExchanger = tokenExchangers[lpToken];
+        require(previousExchanger != address(0), Errors.INVALID_ARGUMENT);
         delete tokenExchangers[lpToken];
+        emit ExchangerUpdated(previousExchanger, address(0));
     }
 }
