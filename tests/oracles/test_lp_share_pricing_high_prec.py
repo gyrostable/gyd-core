@@ -1,4 +1,3 @@
-import functools
 from decimal import Decimal
 from math import cos, pi, sin
 from pickle import FALSE
@@ -12,8 +11,10 @@ from hypothesis import assume, note, settings
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.types import *
 from tests.support.utils_pools import qdecimals, scale, to_decimal, unscale
+from tests.support.quantized_decimal_convd import convd
 
-import lp_share_pricing as math_implementation
+
+import lp_share_pricing_high_prec as math_implementation
 
 MIN_PRICE = "1e-6"
 MAX_PRICE = "1e6"
@@ -56,10 +57,12 @@ def test_price_bpt_cpmm_2(
     )
 
     bpt_price = math_implementation.price_bpt_two_asset_CPMM(
-        weights, invariant_div_supply, underlying_prices
+        weights,
+        invariant_div_supply,
+        underlying_prices,
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-6"))
 
 
 @given(
@@ -81,7 +84,7 @@ def test_price_bpt_cpmm_3(
         weights, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-11"))
 
 
 @given(
@@ -105,7 +108,7 @@ def test_price_bpt_cpmm_4(
         weights, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-11"))
 
 
 ######################################################################
@@ -126,7 +129,7 @@ def test_price_bpt_cpmm_equal_weights_2(
         weight, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-7"))
 
 
 @given(
@@ -149,7 +152,7 @@ def test_price_bpt_cpmm_equal_weights_3(
         weight, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-8"))
 
 
 @given(
@@ -173,7 +176,7 @@ def test_price_bpt_cpmm_equal_weights_4(
         weight, invariant_div_supply, underlying_prices
     )
 
-    assert int(bpt_price_sol) == scale(bpt_price).approxed(rel=D("10") ** -4)
+    assert int(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-5"))
 
 
 ######################################################################
@@ -214,7 +217,7 @@ def test_price_bpt_cpmmv2(
         sqrt_alpha, sqrt_beta, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-5"))
 
 
 ######################################################################
@@ -327,7 +330,8 @@ def test_price_bpt_match_CPMMV3(
     note(f"bpt_price_math = {bpt_price_math!r}")
     note(f"bpt_price_sol  = {bpt_price_sol!r}")
 
-    assert bpt_price_sol == bpt_price_math.approxed(abs=D("1e-6"), rel=D("1e-6"))
+    # ASSERT STATEMENT FAILS FOR HIGH PRECISION IMPLEMENTATION
+    assert bpt_price_sol == bpt_price_math.approxed()
 
 
 ######################################################################
@@ -403,4 +407,4 @@ def test_price_bpt_cemm(
         mparams, mderived, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-10"))
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-8"))
