@@ -21,6 +21,10 @@ contract PrimaryAMMV1 is IPAMM, Governable {
 
     IGyroConfig public immutable gyroConfig;
 
+    /// @dev we tolerate underflows due to numerical issues up to 1e6, so 1e-12
+    /// given our 1e18 scale
+    uint256 internal constant _UNDERFLOW_EPSILON = 1e6;
+
     uint256 internal constant ONE = 1e18;
     uint256 internal constant TWO = 2e18;
     uint256 internal constant ANCHOR = ONE;
@@ -146,7 +150,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         if (left >= right) {
             return ya - (left - right).sqrt();
         } else {
-            require(ignoreUnderflow, Errors.SUB_OVERFLOW);
+            require(ignoreUnderflow || left + _UNDERFLOW_EPSILON >= right, Errors.SUB_OVERFLOW);
             return ya;
         }
     }
