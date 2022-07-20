@@ -11,7 +11,6 @@ import "../interfaces/IVaultRegistry.sol";
 import "../interfaces/IReserveManager.sol";
 import "../interfaces/IFeeBank.sol";
 import "../interfaces/IReserve.sol";
-import "../interfaces/ILPTokenExchangerRegistry.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
 
@@ -47,15 +46,6 @@ library ConfigHelpers {
 
     function getGYDToken(IGyroConfig gyroConfig) internal view returns (IGYDToken) {
         return IGYDToken(gyroConfig.getAddress(ConfigKeys.GYD_TOKEN_ADDRESS));
-    }
-
-    function getExchangerRegistry(IGyroConfig gyroConfig)
-        internal
-        view
-        returns (ILPTokenExchangerRegistry)
-    {
-        return
-            ILPTokenExchangerRegistry(gyroConfig.getAddress(ConfigKeys.EXCHANGER_REGISTRY_ADDRESS));
     }
 
     function getFeeHandler(IGyroConfig gyroConfig) internal view returns (IFeeHandler) {

@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/IMotherboard.sol";
 import "../interfaces/IGyroVault.sol";
-import "../interfaces/ILPTokenExchangerRegistry.sol";
 import "../interfaces/ILPTokenExchanger.sol";
 import "../interfaces/IPAMM.sol";
 import "../interfaces/IGyroConfig.sol";
@@ -181,11 +180,10 @@ contract Motherboard is IMotherboard, Governable {
         returns (DataTypes.MonetaryAmount[] memory vaultAmounts, string memory err)
     {
         vaultAmounts = new DataTypes.MonetaryAmount[](assets.length);
-        ILPTokenExchangerRegistry exchangerRegistry = gyroConfig.getExchangerRegistry();
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.MintAsset calldata asset = assets[i];
             uint256 vaultTokenAmount;
-            (vaultTokenAmount, err) = _computeVaultTokensForAsset(asset, exchangerRegistry);
+            (vaultTokenAmount, err) = _computeVaultTokensForAsset(asset);
             if (bytes(err).length > 0) {
                 return (vaultAmounts, err);
             }
@@ -196,29 +194,20 @@ contract Motherboard is IMotherboard, Governable {
         }
     }
 
-    function _computeVaultTokensForAsset(
-        DataTypes.MintAsset calldata asset,
-        ILPTokenExchangerRegistry exchangerRegistry
-    ) internal view returns (uint256, string memory err) {
+    function _computeVaultTokensForAsset(DataTypes.MintAsset calldata asset)
+        internal
+        view
+        returns (uint256, string memory err)
+    {
         if (asset.inputToken == asset.destinationVault) {
             return (asset.inputAmount, "");
         } else {
             IGyroVault vault = IGyroVault(asset.destinationVault);
-            address lpTokenAddress = vault.underlying();
-            uint256 lpTokenAmount;
-            if (asset.inputToken == lpTokenAddress) {
-                lpTokenAmount = asset.inputAmount;
+            if (asset.inputToken == vault.underlying()) {
+                return vault.dryDeposit(asset.inputAmount, 0);
             } else {
-                ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
-                (lpTokenAmount, err) = exchanger.dryDeposit(
-                    DataTypes.MonetaryAmount(asset.inputToken, asset.inputAmount)
-                );
-                if (bytes(err).length > 0) {
-                    return (0, err);
-                }
+                return (0, Errors.INVALID_ARGUMENT);
             }
-
-            return vault.dryDeposit(lpTokenAmount, 0);
         }
     }
 
@@ -230,21 +219,20 @@ contract Motherboard is IMotherboard, Governable {
             assets.length
         );
 
-        ILPTokenExchangerRegistry exchangerRegistry = gyroConfig.getExchangerRegistry();
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.MintAsset calldata asset = assets[i];
             vaultAmounts[i] = DataTypes.MonetaryAmount({
                 tokenAddress: asset.destinationVault,
-                amount: _convertMintInputAssetToVaultToken(asset, exchangerRegistry)
+                amount: _convertMintInputAssetToVaultToken(asset)
             });
         }
         return vaultAmounts;
     }
 
-    function _convertMintInputAssetToVaultToken(
-        DataTypes.MintAsset calldata asset,
-        ILPTokenExchangerRegistry exchangerRegistry
-    ) internal returns (uint256) {
+    function _convertMintInputAssetToVaultToken(DataTypes.MintAsset calldata asset)
+        internal
+        returns (uint256)
+    {
         IGyroVault vault = IGyroVault(asset.destinationVault);
 
         IERC20(asset.inputToken).safeTransferFrom(msg.sender, address(this), asset.inputAmount);
@@ -253,19 +241,11 @@ contract Motherboard is IMotherboard, Governable {
             return asset.inputAmount;
         }
 
-        uint256 lpTokenAmount;
         address lpTokenAddress = vault.underlying();
-        if (asset.inputToken == lpTokenAddress) {
-            lpTokenAmount = asset.inputAmount;
-        } else {
-            ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
-            lpTokenAmount = exchanger.deposit(
-                DataTypes.MonetaryAmount(asset.inputToken, asset.inputAmount)
-            );
-        }
+        require(asset.inputToken == lpTokenAddress, Errors.INVALID_ARGUMENT);
 
-        IERC20(lpTokenAddress).safeIncreaseAllowance(address(vault), lpTokenAmount);
-        return vault.deposit(lpTokenAmount, 0);
+        IERC20(lpTokenAddress).safeIncreaseAllowance(address(vault), asset.inputAmount);
+        return vault.deposit(asset.inputAmount, 0);
     }
 
     function _getAssetAmountMint(address vault, DataTypes.MonetaryAmount[] memory amounts)
@@ -356,15 +336,10 @@ contract Motherboard is IMotherboard, Governable {
         DataTypes.Order memory order
     ) internal returns (uint256[] memory outputAmounts) {
         outputAmounts = new uint256[](assets.length);
-        ILPTokenExchangerRegistry exchangerRegistry = gyroConfig.getExchangerRegistry();
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.RedeemAsset memory asset = assets[i];
             uint256 vaultTokenAmount = _getRedeemAmount(order.vaultsWithAmount, asset.originVault);
-            uint256 outputAmount = _convertRedeemOutputAsset(
-                asset,
-                vaultTokenAmount,
-                exchangerRegistry
-            );
+            uint256 outputAmount = _convertRedeemOutputAsset(asset, vaultTokenAmount);
             // ensure we received enough tokens and transfer them to the user
             require(outputAmount >= asset.minOutputAmount, Errors.TOO_MUCH_SLIPPAGE);
             outputAmounts[i] = outputAmount;
@@ -387,11 +362,10 @@ contract Motherboard is IMotherboard, Governable {
         return 0;
     }
 
-    function _convertRedeemOutputAsset(
-        DataTypes.RedeemAsset memory asset,
-        uint256 vaultTokenAmount,
-        ILPTokenExchangerRegistry exchangerRegistry
-    ) internal returns (uint256) {
+    function _convertRedeemOutputAsset(DataTypes.RedeemAsset memory asset, uint256 vaultTokenAmount)
+        internal
+        returns (uint256)
+    {
         IGyroVault vault = IGyroVault(asset.originVault);
         // withdraw the amount of vault tokens from the reserve
         reserve.withdrawToken(address(vault), vaultTokenAmount);
@@ -400,19 +374,9 @@ contract Motherboard is IMotherboard, Governable {
         if (asset.outputToken == address(vault)) {
             return vaultTokenAmount;
         } else {
-            // convert the vault token into its underlying LP token
-            uint256 lpTokenAmount = vault.withdraw(vaultTokenAmount, 0);
-
-            address lpTokenAddress = vault.underlying();
-            // nothing more to do if the user wants the underlying LP token
-            if (asset.outputToken == lpTokenAddress) {
-                return lpTokenAmount;
-            } else {
-                // otherwise, convert the LP token into the desired output token
-                ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
-                return
-                    exchanger.withdraw(DataTypes.MonetaryAmount(asset.outputToken, lpTokenAmount));
-            }
+            // otherwise, convert the vault token into its underlying LP token
+            require(asset.outputToken == vault.underlying(), Errors.INVALID_ARGUMENT);
+            return vault.withdraw(vaultTokenAmount, 0);
         }
     }
 
@@ -421,16 +385,11 @@ contract Motherboard is IMotherboard, Governable {
         DataTypes.Order memory order
     ) internal view returns (uint256[] memory outputAmounts, string memory err) {
         outputAmounts = new uint256[](assets.length);
-        ILPTokenExchangerRegistry exchangerRegistry = gyroConfig.getExchangerRegistry();
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.RedeemAsset calldata asset = assets[i];
             uint256 vaultTokenAmount = _getRedeemAmount(order.vaultsWithAmount, asset.originVault);
             uint256 outputAmount;
-            (outputAmount, err) = _computeRedeemOutputAmount(
-                asset,
-                vaultTokenAmount,
-                exchangerRegistry
-            );
+            (outputAmount, err) = _computeRedeemOutputAmount(asset, vaultTokenAmount);
             if (bytes(err).length > 0) {
                 return (outputAmounts, err);
             }
@@ -444,40 +403,27 @@ contract Motherboard is IMotherboard, Governable {
 
     function _computeRedeemOutputAmount(
         DataTypes.RedeemAsset calldata asset,
-        uint256 vaultTokenAmount,
-        ILPTokenExchangerRegistry exchangerRegistry
+        uint256 vaultTokenAmount
     ) internal view returns (uint256 outputAmount, string memory err) {
         IGyroVault vault = IGyroVault(asset.originVault);
 
         // nothing to do if the user wants the vault token
         if (asset.outputToken == address(vault)) {
             return (vaultTokenAmount, "");
-        } else {
-            // convert the vault token into its underlying LP token
-            uint256 lpTokenAmount;
-
-            uint256 vaultTokenBalance = vault.balanceOf(address(reserve));
-            if (vaultTokenBalance < vaultTokenAmount) {
-                return (0, Errors.INSUFFICIENT_BALANCE);
-            }
-            (lpTokenAmount, err) = vault.dryWithdraw(vaultTokenAmount, 0);
-            if (bytes(err).length > 0) {
-                return (0, err);
-            }
-
-            address lpTokenAddress = vault.underlying();
-            // nothing more to do if the user wants the underlying LP token
-            if (asset.outputToken == lpTokenAddress) {
-                return (lpTokenAmount, "");
-            } else {
-                // otherwise, convert the LP token into the desired output token
-                ILPTokenExchanger exchanger = exchangerRegistry.getTokenExchanger(lpTokenAddress);
-                return
-                    exchanger.dryWithdraw(
-                        DataTypes.MonetaryAmount(asset.outputToken, lpTokenAmount)
-                    );
-            }
         }
+
+        // otherwise, we need the outputToken to be the underlying LP token
+        // and to convert the vault token into the underlying LP token
+        if (asset.outputToken != vault.underlying()) {
+            return (0, Errors.INVALID_ARGUMENT);
+        }
+
+        uint256 vaultTokenBalance = vault.balanceOf(address(reserve));
+        if (vaultTokenBalance < vaultTokenAmount) {
+            return (0, Errors.INSUFFICIENT_BALANCE);
+        }
+
+        return vault.dryWithdraw(vaultTokenAmount, 0);
     }
 
     function _getBasketUSDValue(DataTypes.Order memory order)

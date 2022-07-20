@@ -240,7 +240,6 @@ def uninitialized_motherboard(admin, Motherboard, request, gyro_config, reserve)
 @pytest.fixture(scope="module")
 def full_motherboard(uninitialized_motherboard, request):
     extra_dependencies = [
-        "lp_token_exchanger_registry",
         "set_common_chainlink_feeds",
         "add_common_uniswap_pools",
         "mainnet_batch_vault_price_oracle",
