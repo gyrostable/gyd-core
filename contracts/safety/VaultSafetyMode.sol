@@ -278,7 +278,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         if (bytes(err).length > 0) {
             if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
                 emit SafetyStatus(err);
-                err = "";
             } else {
                 revert(Errors.NOT_SAFE_TO_MINT);
             }
@@ -290,7 +289,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             vaultAddresses,
             currentBlockNumber
         );
-        require(bytes(err).length == 0, err);
     }
 
     /// @notice Checks whether a redeem operation is safe
@@ -314,7 +312,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         if (bytes(err).length > 0) {
             if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
                 emit SafetyStatus(err);
-                err = "";
             } else {
                 revert(Errors.NOT_SAFE_TO_REDEEM);
             }
@@ -326,7 +323,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             vaultAddresses,
             currentBlockNumber
         );
-        require(bytes(err).length == 0, err);
     }
 
     function getWhitelist() external view returns (address[] memory) {
