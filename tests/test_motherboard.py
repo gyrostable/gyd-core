@@ -151,6 +151,22 @@ def test_mint_vault_token(motherboard, usdc, usdc_vault, alice, gyd_token):
 
 
 @pytest.mark.usefixtures("register_usdc_vault")
+def test_mint_vault_token_same_vault(motherboard, usdc, usdc_vault, alice, gyd_token):
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(usdc_vault, usdc_amount * 2, {"from": alice})
+    usdc_vault.deposit(usdc_amount * 2, 0, {"from": alice})
+    assert usdc_vault.balanceOf(alice) == usdc_amount * 2
+    usdc_vault.approve(motherboard, usdc_amount * 2, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc_vault, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    tx = motherboard.mint([mint_asset, mint_asset], 0, {"from": alice})
+    assert gyd_token.balanceOf(alice) == scale(20)
+    assert tx.return_value == scale(20)
+    assert usdc_vault.balanceOf(alice) == 0
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
 def test_redeem_vault_token(motherboard, usdc, usdc_vault, alice, gyd_token):
     usdc_amount = scale(10, usdc.decimals())
     usdc.approve(usdc_vault, usdc_amount, {"from": alice})
@@ -171,6 +187,49 @@ def test_redeem_vault_token(motherboard, usdc, usdc_vault, alice, gyd_token):
     assert tx.return_value == [usdc_amount]
     assert gyd_token.balanceOf(alice) == 0
     assert usdc_vault.balanceOf(alice) == usdc_amount
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_redeem_vault_token_same_vault(motherboard, usdc, usdc_vault, alice):
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(usdc_vault, usdc_amount, {"from": alice})
+    usdc_vault.deposit(usdc_amount, 0, {"from": alice})
+    usdc_vault.approve(motherboard, usdc_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc_vault, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    motherboard.mint([mint_asset], 0, {"from": alice})
+
+    redeem_asset = RedeemAsset(
+        outputToken=usdc_vault,
+        minOutputAmount=0,
+        originVault=usdc_vault,
+        valueRatio=scale("0.5"),
+    )
+
+    motherboard.redeem(scale(10), [redeem_asset, redeem_asset], {"from": alice})
+    assert usdc_vault.balanceOf(alice) == usdc_amount
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_redeem_vault_token_same_vault_invalid(motherboard, usdc, usdc_vault, alice):
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(usdc_vault, usdc_amount, {"from": alice})
+    usdc_vault.deposit(usdc_amount, 0, {"from": alice})
+    usdc_vault.approve(motherboard, usdc_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc_vault, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    motherboard.mint([mint_asset], 0, {"from": alice})
+
+    redeem_asset = RedeemAsset(
+        outputToken=usdc_vault,
+        minOutputAmount=0,
+        originVault=usdc_vault,
+        valueRatio=scale(1),
+    )
+    with reverts(error_codes.INVALID_ARGUMENT):
+        motherboard.redeem(scale(10), [redeem_asset, redeem_asset], {"from": alice})
 
 
 @pytest.mark.usefixtures("register_usdc_vault")

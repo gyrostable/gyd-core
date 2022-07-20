@@ -273,11 +273,12 @@ contract Motherboard is IMotherboard, Governable {
         pure
         returns (uint256)
     {
+        uint256 total = 0;
         for (uint256 i = 0; i < amounts.length; i++) {
             DataTypes.MonetaryAmount memory vaultAmount = amounts[i];
-            if (vaultAmount.tokenAddress == vault) return vaultAmount.amount;
+            if (vaultAmount.tokenAddress == vault) total += vaultAmount.amount;
         }
-        return 0;
+        return total;
     }
 
     function _monetaryAmountsToMintOrder(
@@ -300,22 +301,22 @@ contract Motherboard is IMotherboard, Governable {
         return order;
     }
 
-    function _getAssetAmountAndValueRatioRedeem(
-        DataTypes.VaultInfo memory vaultInfo,
+    function _getAssetVaultAndRedeemAmount(
+        DataTypes.RedeemAsset calldata asset,
         uint256 usdValueToRedeem,
-        DataTypes.RedeemAsset[] calldata assets
-    ) internal pure returns (uint256, uint256) {
-        for (uint256 i = 0; i < assets.length; i++) {
-            DataTypes.RedeemAsset memory redeemAsset = assets[i];
-            if (redeemAsset.originVault == vaultInfo.vault) {
-                uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(redeemAsset.valueRatio);
+        DataTypes.VaultInfo[] memory vaultsInfo
+    ) internal pure returns (uint256, DataTypes.VaultInfo memory) {
+        for (uint256 i = 0; i < vaultsInfo.length; i++) {
+            DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
+            if (asset.originVault == vaultInfo.vault) {
+                uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(asset.valueRatio);
                 uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultInfo.price);
                 uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vaultInfo.decimals);
 
-                return (scaledVaultTokenAmount, redeemAsset.valueRatio);
+                return (scaledVaultTokenAmount, vaultInfo);
             }
         }
-        return (0, 0);
+        revert(Errors.INVALID_ARGUMENT);
     }
 
     function _createRedeemOrder(
@@ -325,19 +326,19 @@ contract Motherboard is IMotherboard, Governable {
     ) internal pure returns (DataTypes.Order memory) {
         DataTypes.Order memory order = DataTypes.Order({
             mint: false,
-            vaultsWithAmount: new DataTypes.VaultWithAmount[](vaultsInfo.length)
+            vaultsWithAmount: new DataTypes.VaultWithAmount[](assets.length)
         });
 
         uint256 totalValueRatio = 0;
 
-        for (uint256 i = 0; i < vaultsInfo.length; i++) {
-            DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
-            (uint256 amount, uint256 valueRatio) = _getAssetAmountAndValueRatioRedeem(
-                vaultInfo,
+        for (uint256 i = 0; i < assets.length; i++) {
+            DataTypes.RedeemAsset calldata redeemAsset = assets[i];
+            (uint256 amount, DataTypes.VaultInfo memory vaultInfo) = _getAssetVaultAndRedeemAmount(
+                redeemAsset,
                 usdValueToRedeem,
-                assets
+                vaultsInfo
             );
-            totalValueRatio += valueRatio;
+            totalValueRatio += redeemAsset.valueRatio;
 
             order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
                 amount: amount,
