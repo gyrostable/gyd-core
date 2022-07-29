@@ -42,15 +42,6 @@ def static_percentage_fee_handler(StaticPercentageFeeHandler, admin, gyro_config
 
 
 @pytest.fixture(scope="module")
-def lp_token_exchanger_registry(admin, LPTokenExchangerRegistry, gyro_config):
-    exchanger_registry = admin.deploy(LPTokenExchangerRegistry)
-    gyro_config.setAddress(
-        config_keys.EXCHANGER_REGISTRY_ADDRESS, exchanger_registry, {"from": admin}
-    )
-    return exchanger_registry
-
-
-@pytest.fixture(scope="module")
 def gyd_token(admin, GydToken, gyro_config):
     gyd_token = admin.deploy(GydToken, gyro_config, "GYD Token", "GYD")
     gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token, {"from": admin})
@@ -84,16 +75,6 @@ def mock_balancer_pool_two(admin, MockBalancerPool):
 @pytest.fixture(scope="module")
 def mock_balancer_vault(admin, MockBalVault):
     return admin.deploy(MockBalVault)
-
-
-@pytest.fixture(scope="module")
-def bal_exchanger(admin, BalancerExchanger):
-    return admin.deploy(BalancerExchanger)
-
-
-@pytest.fixture(scope="module")
-def bal_pool_registry(admin, BalancerPoolRegistry):
-    return admin.deploy(BalancerPoolRegistry)
 
 
 @pytest.fixture(scope="module")
@@ -194,7 +175,6 @@ def root_safety_check(admin, RootSafetyCheck, gyro_config):
 def motherboard(admin, Motherboard, gyro_config, reserve, request):
     extra_dependencies = [
         "fee_bank",
-        "lp_token_exchanger_registry",
         "mock_pamm",
         "mock_price_oracle",
         "reserve_manager",

@@ -2,7 +2,6 @@
 pragma solidity ^0.8.4;
 
 import "./IGyroConfig.sol";
-import "./ILPTokenExchangerRegistry.sol";
 import "./IGYDToken.sol";
 import "./IReserve.sol";
 import "./IPAMM.sol";
