@@ -28,6 +28,7 @@ library Errors {
     string public constant KEY_NOT_FOUND = "32";
     string public constant KEY_FROZEN = "33";
     string public constant INSUFFICIENT_BALANCE = "34";
+    string public constant INVALID_ASSET = "35";
 
     // Oracle related errors
     string public constant ASSET_NOT_SUPPORTED = "40";

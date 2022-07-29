@@ -206,7 +206,7 @@ contract Motherboard is IMotherboard, Governable {
             if (asset.inputToken == vault.underlying()) {
                 return vault.dryDeposit(asset.inputAmount, 0);
             } else {
-                return (0, Errors.INVALID_ARGUMENT);
+                return (0, Errors.INVALID_ASSET);
             }
         }
     }
@@ -242,7 +242,7 @@ contract Motherboard is IMotherboard, Governable {
         }
 
         address lpTokenAddress = vault.underlying();
-        require(asset.inputToken == lpTokenAddress, Errors.INVALID_ARGUMENT);
+        require(asset.inputToken == lpTokenAddress, Errors.INVALID_ASSET);
 
         IERC20(lpTokenAddress).safeIncreaseAllowance(address(vault), asset.inputAmount);
         return vault.deposit(asset.inputAmount, 0);
@@ -375,7 +375,7 @@ contract Motherboard is IMotherboard, Governable {
             return vaultTokenAmount;
         } else {
             // otherwise, convert the vault token into its underlying LP token
-            require(asset.outputToken == vault.underlying(), Errors.INVALID_ARGUMENT);
+            require(asset.outputToken == vault.underlying(), Errors.INVALID_ASSET);
             return vault.withdraw(vaultTokenAmount, 0);
         }
     }
@@ -415,7 +415,7 @@ contract Motherboard is IMotherboard, Governable {
         // otherwise, we need the outputToken to be the underlying LP token
         // and to convert the vault token into the underlying LP token
         if (asset.outputToken != vault.underlying()) {
-            return (0, Errors.INVALID_ARGUMENT);
+            return (0, Errors.INVALID_ASSET);
         }
 
         uint256 vaultTokenBalance = vault.balanceOf(address(reserve));
