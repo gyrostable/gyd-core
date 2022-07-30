@@ -17,6 +17,7 @@ contract GydToken is ERC20 {
         string memory name,
         string memory symbol
     ) ERC20(name, symbol) {
+        require(_gyroConfig != address(0), Errors.INVALID_ARGUMENT);
         gyroConfig = IGyroConfig(_gyroConfig);
     }
 

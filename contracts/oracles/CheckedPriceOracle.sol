@@ -48,6 +48,8 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
 
     /// _usdOracle is for Chainlink
     constructor(address _usdOracle, address _relativeOracle) {
+        require(_usdOracle != address(0), Errors.INVALID_ARGUMENT);
+        require(_relativeOracle != address(0), Errors.INVALID_ARGUMENT);
         usdOracle = IUSDPriceOracle(_usdOracle);
         relativeOracle = IRelativePriceOracle(_relativeOracle);
         relativeEpsilon = INITIAL_RELATIVE_EPSILON;

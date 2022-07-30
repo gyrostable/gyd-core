@@ -70,6 +70,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
 
     /// @notice Initializes the PAMM with the given system parameters
     constructor(address _gyroConfig, Params memory params) {
+        require(_gyroConfig != address(0), Errors.INVALID_ARGUMENT);
         gyroConfig = IGyroConfig(_gyroConfig);
         systemParams = params;
     }
