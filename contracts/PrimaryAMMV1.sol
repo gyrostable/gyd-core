@@ -384,7 +384,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 theta;
     }
 
-    function computeNormalizedReserveValue(
+    function computeAnchoredReserveValue(
         State memory normalizedState,
         Params memory params,
         DerivedParams memory derived
@@ -481,16 +481,16 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             return nav.mulDown(amount);
         }
 
-        uint256 normalizedReserveValue = computeNormalizedReserveValue(
+        uint256 normalizedAnchoredReserveValue = computeAnchoredReserveValue(
             normalizedState,
             params,
             derived
         );
-        uint256 reserveValue = normalizedReserveValue.mulDown(ya);
+        uint256 anchoredReserveValue = normalizedAnchoredReserveValue.mulDown(ya);
 
         uint256 nextReserveValue = computeReserve(
             state.redemptionLevel + amount,
-            reserveValue,
+            anchoredReserveValue,
             ya,
             params
         );

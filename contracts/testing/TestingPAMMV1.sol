@@ -45,7 +45,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             reserveValue: b,
             totalGyroSupply: y
         });
-        return computeNormalizedReserveValue(state, params, derived);
+        return computeAnchoredReserveValue(state, params, derived);
     }
 
     // NOTE: needs to not be pure to be able to get transaction information from the frontend
