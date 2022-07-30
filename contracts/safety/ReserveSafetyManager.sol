@@ -32,6 +32,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         uint256 _minTokenPrice,
         IAssetRegistry _assetRegistry
     ) {
+        require(address(_assetRegistry) != address(0), Errors.INVALID_ARGUMENT);
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;

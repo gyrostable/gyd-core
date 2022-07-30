@@ -26,6 +26,10 @@ contract ReserveManager is IReserveManager, Governable {
     constructor(IGyroConfig _gyroConfig) {
         vaultRegistry = _gyroConfig.getVaultRegistry();
         reserveAddress = _gyroConfig.getAddress(ConfigKeys.RESERVE_ADDRESS);
+
+        require(address(vaultRegistry) != address(0), Errors.INVALID_ARGUMENT);
+        require(address(vaultRegistry) != address(0), Errors.INVALID_ARGUMENT);
+
         gyroConfig = _gyroConfig;
     }
 
