@@ -20,6 +20,7 @@ contract Governable is IGovernable {
 
     /// @inheritdoc IGovernable
     function changeGovernor(address newGovernor) external override governanceOnly {
+        require(address(newGovernor) != address(0), Errors.INVALID_ARGUMENT);
         pendingGovernor = newGovernor;
         emit GovernorChangeRequested(newGovernor);
     }
