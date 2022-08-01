@@ -4,18 +4,11 @@ from typing import (
     List,
     Literal,
     NamedTuple,
-    Optional,
-    Tuple,
     Union,
-    cast,
     overload,
 )
 
-from brownie import interface
-from eth_abi import encode_abi  # type: ignore
-
 from tests.support.quantized_decimal import DecimalLike, QuantizedDecimal
-from tests.support.types import JoinPoolRequest
 
 DEFAULT_DECIMALS = 18
 
@@ -114,32 +107,3 @@ def scale(x, decimals=18):
 
 def scale_scalar(x: DecimalLike, decimals: int = 18) -> QuantizedDecimal:
     return (to_decimal(x) * 10**decimals).floor()
-
-
-def join_pool(
-    account: str,
-    vault,
-    pool_id: str,
-    amounts: List[Tuple[str, int]],
-    join_kind=JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-):
-    amounts = sorted(amounts, key=lambda b: int(b[0], 16))
-    for token, amount in amounts:
-        interface.ERC20(token).approve(vault, amount, {"from": account})
-
-    tokens, balances = zip(*amounts)
-    abi = ["uint256", "uint256[]", "uint256"]
-    data = [join_kind, balances, 0]
-    encoded_user_data = encode_abi(abi, data)
-
-    return vault.joinPool(
-        pool_id,
-        account,
-        account,
-        JoinPoolRequest(
-            tokens,  # type: ignore
-            balances,  # type: ignore
-            encoded_user_data,
-        ),
-        {"from": account},
-    )

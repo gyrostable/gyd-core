@@ -22,6 +22,7 @@ from tests.support.constants import (
 from tests.support.dfuzzy import isclose, prec_input, prec_sanity_check
 from tests.support.quantized_decimal import QuantizedDecimal as QD
 from tests.support.utils import scale
+from tests.support import error_codes
 
 chain = Chain()
 
@@ -311,7 +312,7 @@ def run_path_independence_test(
         redeem_tx = pamm.redeem(x1 + x2, ba)
         redeem_path_tx = pamm_2step.redeemTwice(x1, x2, ba)
     except VirtualMachineError as ex:
-        if ex.revert_msg != "Integer overflow":  # type: ignore
+        if ex.revert_msg not in ["Integer overflow", error_codes.SUB_OVERFLOW]:  # type: ignore
             raise ex
         return
 

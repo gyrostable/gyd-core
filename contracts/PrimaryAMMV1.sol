@@ -21,6 +21,10 @@ contract PrimaryAMMV1 is IPAMM, Governable {
 
     IGyroConfig public immutable gyroConfig;
 
+    /// @dev we tolerate underflows due to numerical issues up to 1e6, so 1e-12
+    /// given our 1e18 scale
+    uint256 internal constant _UNDERFLOW_EPSILON = 1e6;
+
     uint256 internal constant ONE = 1e18;
     uint256 internal constant TWO = 2e18;
     uint256 internal constant ANCHOR = ONE;
@@ -77,6 +81,11 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     /// @inheritdoc IPAMM
     function setSystemParams(Params memory params) external governanceOnly {
         systemParams = params;
+
+        // NOTE: this is not strictly needed but ensures that the given
+        // parameters allow to compute the derived parameters without underflowing
+        createDerivedParams(params);
+
         emit SystemParamsUpdated(
             params.alphaBar,
             params.xuBar,
@@ -88,7 +97,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     /// Helpers to compute various parameters
 
     /// @dev Proposition 3 (section 3) of the paper
-    function computeAlphaHat(
+    function computeAlpha(
         uint256 ba,
         uint256 ya,
         uint256 thetaBar,
@@ -132,19 +141,22 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 ba,
         uint256 ya,
         uint256 alpha,
-        uint256 xu
+        uint256 xu,
+        bool ignoreUnderflow
     ) internal pure returns (uint256) {
-        if (ba >= ya) {
-            return ya;
-        }
+        require(ba < ya, Errors.INVALID_ARGUMENT);
         uint256 left = (ya - xu).squareUp();
         uint256 right = (TWO * (ya - ba)) / alpha;
-        uint256 rh = left > right ? (left - right).sqrt() : 0;
-        return ya - rh;
+        if (left >= right) {
+            return ya - (left - right).sqrt();
+        } else {
+            require(ignoreUnderflow || left + _UNDERFLOW_EPSILON >= right, Errors.SUB_OVERFLOW);
+            return ya;
+        }
     }
 
     /// @dev Proposition 4 (section 3) of the paper
-    function computeXuHat(
+    function computeXu(
         uint256 ba,
         uint256 ya,
         uint256 alpha,
@@ -156,9 +168,11 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 xu;
         if (alpha.mulDown(delta) <= theta**2 / TWO) {
             uint256 rh = ((TWO * delta) / alpha);
-            xu = rh > ya.squareUp() ? 0 : ya - rh.sqrt();
+            uint256 rhSqrt = rh.sqrt();
+            xu = rhSqrt >= ya ? 0 : ya - rhSqrt;
         } else {
-            xu = ya - delta.divDown(theta) - theta.divDown(2 * alpha);
+            uint256 subtracted = delta.divDown(theta) + theta.divDown(2 * alpha);
+            xu = subtracted >= ya ? 0 : ya - subtracted;
         }
 
         return xu.min(xuMax);
@@ -191,19 +205,21 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             derived.baThresholdRegionI,
             ONE,
             params.alphaBar,
-            params.xuBar
+            params.xuBar,
+            true
         );
         derived.xlThresholdAtThresholdII = computeXl(
             derived.baThresholdRegionII,
             ONE,
             params.alphaBar,
-            0
+            0,
+            true
         );
 
         uint256 theta = ONE - params.thetaBar;
         derived.baThresholdIIHL = ONE - (theta**2) / (2 * params.alphaBar);
 
-        derived.xuThresholdIIHL = computeXuHat(
+        derived.xuThresholdIIHL = computeXu(
             derived.baThresholdIIHL,
             ONE,
             params.alphaBar,
@@ -214,18 +230,25 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             derived.baThresholdIIHL,
             ONE,
             params.alphaBar,
-            derived.xuThresholdIIHL
+            derived.xuThresholdIIHL,
+            true
         );
 
         derived.baThresholdIIIHL = (ONE + params.thetaBar) / 2;
-        derived.alphaThresholdIIIHL = computeAlphaHat(
+        derived.alphaThresholdIIIHL = computeAlpha(
             derived.baThresholdIIIHL,
             ONE,
             params.thetaBar,
             params.alphaBar
         );
 
-        derived.xlThresholdIIIHL = computeXl(derived.baThresholdIIIHL, ONE, params.alphaBar, 0);
+        derived.xlThresholdIIIHL = computeXl(
+            derived.baThresholdIIIHL,
+            ONE,
+            derived.alphaThresholdIIIHL,
+            0,
+            true
+        );
 
         return derived;
     }
@@ -236,21 +259,21 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 ya,
         Params memory params
     ) internal pure returns (uint256) {
-        uint256 alpha = computeAlphaHat(ba, ya, params.thetaBar, params.alphaBar);
-        uint256 xu = computeXuHat(ba, ya, alpha, params.xuBar, ONE - params.thetaBar);
-        uint256 xl = computeXl(ba, ya, alpha, xu);
+        uint256 alpha = computeAlpha(ba, ya, params.thetaBar, params.alphaBar);
+        uint256 xu = computeXu(ba, ya, alpha, params.xuBar, ONE - params.thetaBar);
+        uint256 xl = computeXl(ba, ya, alpha, xu, false);
         return computeReserveFixedParams(x, ba, ya, alpha, xu, xl);
     }
 
     function isInFirstRegion(
-        State memory anchoredState,
+        State memory normalizedState,
         Params memory params,
         DerivedParams memory derived
     ) internal pure returns (bool) {
         return
-            anchoredState.reserveValue >=
+            normalizedState.reserveValue >=
             computeReserveFixedParams(
-                anchoredState.redemptionLevel,
+                normalizedState.redemptionLevel,
                 derived.baThresholdRegionI,
                 ONE,
                 params.alphaBar,
@@ -260,14 +283,14 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     function isInSecondRegion(
-        State memory anchoredState,
+        State memory normalizedState,
         uint256 alphaBar,
         DerivedParams memory derived
     ) internal pure returns (bool) {
         return
-            anchoredState.reserveValue >=
+            normalizedState.reserveValue >=
             computeReserveFixedParams(
-                anchoredState.redemptionLevel,
+                normalizedState.redemptionLevel,
                 derived.baThresholdRegionII,
                 ONE,
                 alphaBar,
@@ -277,14 +300,14 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     function isInSecondRegionHigh(
-        State memory anchoredState,
+        State memory normalizedState,
         uint256 alphaBar,
         DerivedParams memory derived
     ) internal pure returns (bool) {
         return
-            anchoredState.reserveValue >=
+            normalizedState.reserveValue >=
             computeReserveFixedParams(
-                anchoredState.redemptionLevel,
+                normalizedState.redemptionLevel,
                 derived.baThresholdIIHL,
                 ONE,
                 alphaBar,
@@ -293,57 +316,60 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             );
     }
 
-    function isInThirdRegionHigh(State memory anchoredState, DerivedParams memory derived)
+    function isInThirdRegionHigh(State memory normalizedState, DerivedParams memory derived)
         internal
         pure
         returns (bool)
     {
         return
-            anchoredState.reserveValue >=
+            normalizedState.reserveValue >=
             computeReserveFixedParams(
-                anchoredState.redemptionLevel,
+                normalizedState.redemptionLevel,
                 derived.baThresholdIIIHL,
                 ONE,
                 derived.alphaThresholdIIIHL,
                 0,
-                derived.xlThresholdIIHL
+                derived.xlThresholdIIIHL
             );
     }
 
     function computeReserveValueRegion(
-        State memory anchoredState,
+        State memory normalizedState,
         Params memory params,
         DerivedParams memory derived
     ) internal pure returns (Region) {
-        if (isInFirstRegion(anchoredState, params, derived)) {
+        if (isInFirstRegion(normalizedState, params, derived)) {
             // case I
-            if (anchoredState.redemptionLevel <= params.xuBar) return Region.CASE_i;
-            if (anchoredState.redemptionLevel <= derived.xlThresholdAtThresholdI)
-                return Region.CASE_I_ii;
+            if (normalizedState.redemptionLevel <= params.xuBar) return Region.CASE_i;
+
+            uint256 lhs = normalizedState.reserveValue.divDown(normalizedState.totalGyroSupply);
+            uint256 rhs = ONE -
+                uint256(params.alphaBar).mulDown(normalizedState.redemptionLevel - params.xuBar);
+            if (lhs <= rhs) return Region.CASE_I_ii;
             return Region.CASE_I_iii;
         }
 
-        if (isInSecondRegion(anchoredState, params.alphaBar, derived)) {
+        if (isInSecondRegion(normalizedState, params.alphaBar, derived)) {
             // case II
-            if (isInSecondRegionHigh(anchoredState, params.alphaBar, derived)) {
+            if (isInSecondRegionHigh(normalizedState, params.alphaBar, derived)) {
                 // case II_h
                 if (
-                    anchoredState.totalGyroSupply - anchoredState.reserveValue <=
-                    (anchoredState.totalGyroSupply.squareDown() * params.alphaBar) / TWO
+                    normalizedState.totalGyroSupply - normalizedState.reserveValue <=
+                    (normalizedState.totalGyroSupply.squareDown() * params.alphaBar) / TWO
                 ) return Region.CASE_i;
                 return Region.CASE_II_H;
             }
 
             uint256 theta = ONE - params.thetaBar;
             if (
-                anchoredState.reserveValue -
-                    uint256(params.thetaBar).mulDown(anchoredState.totalGyroSupply) >=
+                normalizedState.reserveValue -
+                    uint256(params.thetaBar).mulDown(normalizedState.totalGyroSupply) >=
                 theta**2 / (2 * params.alphaBar)
             ) return Region.CASE_i;
             return Region.CASE_II_L;
         }
 
-        if (isInThirdRegionHigh(anchoredState, derived)) {
+        if (isInThirdRegionHigh(normalizedState, derived)) {
             return Region.CASE_III_H;
         }
 
@@ -359,27 +385,27 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     function computeAnchoredReserveValue(
-        State memory anchoredState,
+        State memory normalizedState,
         Params memory params,
         DerivedParams memory derived
     ) internal pure returns (uint256) {
         NextReserveValueVars memory vars;
 
-        Region region = computeReserveValueRegion(anchoredState, params, derived);
+        Region region = computeReserveValueRegion(normalizedState, params, derived);
 
         vars.ya = ONE;
-        vars.r = anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply);
+        vars.r = normalizedState.reserveValue.divDown(normalizedState.totalGyroSupply);
         vars.u = ONE - vars.r;
         vars.theta = ONE - params.thetaBar;
 
         if (region == Region.CASE_i) {
-            return anchoredState.reserveValue + anchoredState.redemptionLevel;
+            return normalizedState.reserveValue + normalizedState.redemptionLevel;
         }
 
         if (region == Region.CASE_I_ii) {
-            uint256 xDiff = anchoredState.redemptionLevel - params.xuBar;
-            return (anchoredState.reserveValue +
-                anchoredState.redemptionLevel -
+            uint256 xDiff = normalizedState.redemptionLevel - params.xuBar;
+            return (normalizedState.reserveValue +
+                normalizedState.redemptionLevel -
                 (params.alphaBar * xDiff.squareDown()) /
                 TWO);
         }
@@ -392,36 +418,36 @@ contract PrimaryAMMV1 is IPAMM, Governable {
 
         if (region == Region.CASE_II_H) {
             uint256 delta = (params.alphaBar *
-                (vars.u.divDown(params.alphaBar) + (anchoredState.totalGyroSupply / 2))
+                (vars.u.divDown(params.alphaBar) + (normalizedState.totalGyroSupply / 2))
                     .squareDown()) / TWO;
             return vars.ya - delta;
         }
 
         if (region == Region.CASE_II_L) {
             uint256 p = vars.theta.mulDown(
-                vars.theta.divDown(2 * params.alphaBar) + anchoredState.totalGyroSupply
+                vars.theta.divDown(2 * params.alphaBar) + normalizedState.totalGyroSupply
             );
             uint256 d = 2 *
                 (vars.theta**2 / params.alphaBar).mulDown(
-                    anchoredState.reserveValue -
-                        anchoredState.totalGyroSupply.mulDown(params.thetaBar)
+                    normalizedState.reserveValue -
+                        normalizedState.totalGyroSupply.mulDown(params.thetaBar)
                 );
             return vars.ya + d.sqrt() - p;
         }
 
         if (region == Region.CASE_III_H) {
-            uint256 delta = (anchoredState.totalGyroSupply - anchoredState.reserveValue).divDown(
-                (ONE - anchoredState.redemptionLevel.squareDown())
-            );
+            uint256 delta = (normalizedState.totalGyroSupply - normalizedState.reserveValue)
+                .divDown((ONE - normalizedState.redemptionLevel.squareDown()));
             return vars.ya - delta;
         }
 
         if (region == Region.CASE_III_L) {
-            uint256 p = (anchoredState.totalGyroSupply - anchoredState.reserveValue + vars.theta) /
-                2;
-            uint256 q = (anchoredState.totalGyroSupply - anchoredState.reserveValue).mulDown(
+            uint256 p = (normalizedState.totalGyroSupply -
+                normalizedState.reserveValue +
+                vars.theta) / 2;
+            uint256 q = (normalizedState.totalGyroSupply - normalizedState.reserveValue).mulDown(
                 vars.theta
-            ) + vars.theta.squareDown().mulDown(anchoredState.redemptionLevel.squareDown()) / 4;
+            ) + vars.theta.squareDown().mulDown(normalizedState.redemptionLevel.squareDown()) / 4;
             uint256 delta = p - (p.squareDown() - q).sqrt();
             return vars.ya - delta;
         }
@@ -435,29 +461,36 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         DerivedParams memory derived,
         uint256 amount
     ) internal pure returns (uint256) {
-        uint256 nav = state.reserveValue.divDown(state.totalGyroSupply);
+        State memory normalizedState;
+        uint256 ya = state.totalGyroSupply + state.redemptionLevel;
 
-        if (nav >= ONE) {
+        normalizedState.redemptionLevel = state.redemptionLevel.divDown(ya);
+        normalizedState.reserveValue = state.reserveValue.divDown(ya);
+        normalizedState.totalGyroSupply = state.totalGyroSupply.divDown(ya);
+
+        uint256 normalizedNav = normalizedState.reserveValue.divDown(
+            normalizedState.totalGyroSupply
+        );
+
+        if (normalizedNav >= ONE) {
             return amount;
         }
 
-        if (nav <= params.thetaBar) {
+        if (normalizedNav <= params.thetaBar) {
+            uint256 nav = state.reserveValue.divDown(state.totalGyroSupply);
             return nav.mulDown(amount);
         }
 
-        State memory anchoredState;
-        uint256 ya = state.totalGyroSupply + state.redemptionLevel;
-
-        anchoredState.redemptionLevel = state.redemptionLevel.divDown(ya);
-        anchoredState.reserveValue = state.reserveValue.divDown(ya);
-        anchoredState.totalGyroSupply = state.totalGyroSupply.divDown(ya);
-
-        uint256 anchoredReserveValue = computeAnchoredReserveValue(anchoredState, params, derived);
-        uint256 reserveValue = anchoredReserveValue.mulDown(ya);
+        uint256 normalizedAnchoredReserveValue = computeAnchoredReserveValue(
+            normalizedState,
+            params,
+            derived
+        );
+        uint256 anchoredReserveValue = normalizedAnchoredReserveValue.mulDown(ya);
 
         uint256 nextReserveValue = computeReserve(
             state.redemptionLevel + amount,
-            reserveValue,
+            anchoredReserveValue,
             ya,
             params
         );
@@ -519,7 +552,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         DerivedParams memory derived = createDerivedParams(params);
         uint256 redeemAmount = computeRedeemAmount(currentState, params, derived, gydAmount);
 
-        redemptionLevel += gydAmount;
+        redemptionLevel = currentState.redemptionLevel + gydAmount;
         lastRedemptionBlock = block.number;
 
         return redeemAmount;
