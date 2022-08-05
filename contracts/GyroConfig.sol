@@ -2,10 +2,10 @@
 pragma solidity ^0.8.4;
 
 import "../interfaces/IGyroConfig.sol";
-import "./auth/Governable.sol";
+import "./auth/GovernableUpgradeable.sol";
 import "../libraries/EnumerableMapping.sol";
 
-contract GyroConfig is IGyroConfig, Governable {
+contract GyroConfig is IGyroConfig, GovernableUpgradeable {
     using EnumerableMapping for EnumerableMapping.Bytes32ToUIntMap;
 
     uint8 internal constant ADDRESS_TYPE = 1;

@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
+import "./IGovernable.sol";
+
 /// @notice IGyroConfig stores the global configuration of the Gyroscope protocol
-interface IGyroConfig {
+interface IGyroConfig is IGovernable {
     /// @notice Event emitted every time a configuration is changed
     event ConfigChanged(bytes32 key, uint256 previousValue, uint256 newValue);
     event ConfigChanged(bytes32 key, address previousValue, address newValue);
