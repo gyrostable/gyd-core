@@ -10,6 +10,7 @@ DEV_CHAIN_IDS = {1337}
 
 REQUIRED_CONFIRMATIONS = 1
 MAINNET_DEPLOYER_ADDRESS = "0x0000000000000000000000000000000000000000"
+POLYGON_DEPLOYER_ADDRESS = "0x8780779CAF2bC6D402DA5c3EC79A5007bB2edD90"
 
 BROWNIE_GWEI = os.environ.get("BROWNIE_GWEI", "35")
 BROWNIE_PRIORITY_GWEI = os.environ.get("BROWNIE_PRIORITY_GWEI")
@@ -64,7 +65,7 @@ def get_deployer():
     if chain_id == 1:  # mainnet
         return get_clef_account(MAINNET_DEPLOYER_ADDRESS)
     if chain_id == 137:  # polygon
-        return accounts.load("polygon-master")
+        return get_clef_account(POLYGON_DEPLOYER_ADDRESS)
     if chain_id == 42:  # kovan
         return cast(
             LocalAccount, accounts.load("kovan-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore
