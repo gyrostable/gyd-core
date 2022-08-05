@@ -79,7 +79,9 @@ def mock_balancer_vault(admin, MockBalVault):
 
 @pytest.fixture(scope="module")
 def gyro_config(admin, GyroConfig):
-    return admin.deploy(GyroConfig)
+    config = admin.deploy(GyroConfig)
+    config.initialize(admin)
+    return config
 
 
 @pytest.fixture(scope="module")
