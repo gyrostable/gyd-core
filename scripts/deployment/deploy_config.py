@@ -11,4 +11,6 @@ from scripts.utils import (
 @with_gas_usage
 @as_singleton(GyroConfig)
 def main():
-    get_deployer().deploy(GyroConfig, **make_tx_params())
+    deployer = get_deployer()
+    config = deployer.deploy(GyroConfig, **make_tx_params())
+    config.initialize(deployer, {"from": deployer, **make_tx_params()})
