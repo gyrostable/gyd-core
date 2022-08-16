@@ -181,7 +181,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
     /// @notice given input vaultMetadata, updates it with the information about whether the vault contains assets
     /// with safe prices. For a stablecoin, safe means the asset is sufficiently close to the peg. For a
-    /// vault consisting of entirely non-stablecoin assets, this means that all of the prices are not 'dust',
+    /// vault consisting of entirely non-stablecoin assets, this means that at least one of the prices is not 'dust',
     /// to avoid numerical error.
     /// @param vaultMetadata a VaultMetadata struct containing information for a particular vault.
     function _updateVaultWithPriceSafety(DataTypes.VaultMetadata memory vaultMetadata)
