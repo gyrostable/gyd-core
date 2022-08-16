@@ -36,13 +36,17 @@
       "0x9b1f7F645351AF3631a656421eD2e40f2802E6c0"
     ],
     "GyroConfig": [
-      "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
+      "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+      "0x0541E43726fb21bA085723D502fa93A166c0f441"
     ],
     "LPTokenExchangerRegistry": [
       "0x6eD79Aa1c71FD7BdBC515EfdA3Bd4e26394435cC"
     ],
     "Motherboard": [
       "0x0E696947A06550DEf604e82C26fd9E493e576337"
+    ],
+    "ProxyAdmin": [
+      "0x0d776afd1C9Bd65a8B9Eb6CcaC767e2073757382"
     ],
     "Reserve": [
       "0x26b4AFb60d6C903165150C6F0AA14F8016bE4aec"
@@ -67,65 +71,14 @@
     ]
   },
   "137": {
-    "AssetRegistry": [
-      "0x3D6BF45D806ac832094d7BFC63D903806aaE047D"
-    ],
-    "BalancerCEMMPriceOracle": [
-      "0xceEFcAEB27168c5066fF74DEB47551FE27625662"
-    ],
-    "BalancerCPMMPriceOracle": [
-      "0xd76F8B09808334a0C76DF67D2dF95B6bcB76f498"
-    ],
-    "BalancerCPMMV2PriceOracle": [
-      "0x4EBac4ef7cBeC8643cF2e84A9b9496C77AAAd2a5"
-    ],
-    "BalancerCPMMV3PriceOracle": [
-      "0x34Ee0077421a8FF6DD57C053a84ad6323ae9e249"
-    ],
-    "BatchVaultPriceOracle": [
-      "0xaC1CFF584dC11Abbf4444E789f0f78cdCF5559D7"
-    ],
-    "CheckedPriceOracle": [
-      "0x8b7d8D9abE955F79670d06119bd9183d8C4ef0F4"
-    ],
-    "CrashProtectedChainlinkPriceOracle": [
-      "0x82607A8cA2fe48388F14662c338E453e5214ed06"
-    ],
-    "FeeBank": [
-      "0x38ce15a29Ef9C0B3Ed2867e780B9Dea67df23e29"
-    ],
-    "GydToken": [
-      "0xDf69E2A9686FfB4b65f0516c11B0e7A2E7c0Bd1b"
+    "FreezableTransparentUpgradeableProxy": [
+      "0xFdc2e9E03f515804744A40d0f8d25C16e93fbE67"
     ],
     "GyroConfig": [
-      "0x429d5e3dcD3b0E643C4ceD35ee4b9334f9Bf81D7"
+      "0xF5d5441384283e1acCC58c9f4d5e058d2845F18C"
     ],
-    "LPTokenExchangerRegistry": [
-      "0xab9E249742c11420116860977eE0a41F45c8c1E2"
-    ],
-    "Motherboard": [
-      "0x0b0F9A196A78F6B36Dcc097E0f5e48Ad4cA508E5"
-    ],
-    "Reserve": [
-      "0x25FdeBFB7be848e87078DCDA9ca3a51543107543"
-    ],
-    "ReserveSafetyManager": [
-      "0x59020b88560756ea8BA7F47D39049Ea4e24ECcB6"
-    ],
-    "RootSafetyCheck": [
-      "0x5aB71Dc14F5A3E49E42c9A50d6BE596829c6eAcc"
-    ],
-    "StaticPercentageFeeHandler": [
-      "0x61a4A78Bf86FE202495CFc64c6A76b83911F6009"
-    ],
-    "TrustedSignerPriceOracle": [
-      "0x60Ed2b6dCA1BAed74B53c767d5dC49bd68e7896c"
-    ],
-    "UniswapV3TwapOracle": [
-      "0x84b41a458ADaF00E94efa1Fd98312991b82Ac9eB"
-    ],
-    "VaultSafetyMode": [
-      "0x317e59004ad722A7d1645e82f311D417810eD914"
+    "ProxyAdmin": [
+      "0x83d34ca335d197bcFe403cb38E82CBD734C4CbBE"
     ]
   }
 }
