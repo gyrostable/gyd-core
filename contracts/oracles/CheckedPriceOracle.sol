@@ -17,7 +17,6 @@ import "../../libraries/FixedPoint.sol";
 
 contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
     using EnumerableSet for EnumerableSet.AddressSet;
-    using EnumerableExtensions for EnumerableSet.AddressSet;
 
     using FixedPoint for uint256;
     using SafeCast for uint256;
@@ -40,8 +39,14 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
     /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT
     EnumerableSet.AddressSet internal quoteAssetsForPriceLevelTWAPS;
 
+    /// @dev This list is used to check if the relative price of the tokens are consistent
+    EnumerableSet.AddressSet internal assetsForRelativePriceCheck;
+
     event PriceLevelTWAPQuoteAssetAdded(address _addressToAdd);
     event PriceLevelTWAPQuoteAssetRemoved(address _addressToRemove);
+
+    event AssetForRelativePriceCheckAdded(address _addressToAdd);
+    event AssetForRelativePriceCheckRemoved(address _addressToRemove);
 
     event TrustedSignerOracleAdded(address _addressToAdd);
     event TrustedSignerOracleRemoved(address _addressToRemove);
@@ -71,7 +76,7 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
     }
 
     function listQuoteAssetsForPriceLevelTwap() external view returns (address[] memory) {
-        return quoteAssetsForPriceLevelTWAPS.toArray();
+        return quoteAssetsForPriceLevelTWAPS.values();
     }
 
     function removeQuoteAssetsForPriceLevelTwap(address _quoteAssetToRemove)
@@ -82,59 +87,67 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
         emit PriceLevelTWAPQuoteAssetRemoved(_quoteAssetToRemove);
     }
 
-    function batchRelativePriceCheck(
-        address[] memory tokenAddresses,
-        uint256 length,
-        uint256[] memory prices
-    ) internal view returns (uint256[] memory) {
-        bool[] memory checked = new bool[](length);
+    function addAssetForRelativePriceCheck(address assetToAdd) external governanceOnly {
+        assetsForRelativePriceCheck.add(assetToAdd);
+        emit AssetForRelativePriceCheckAdded(assetToAdd);
+    }
 
+    function listAssetForRelativePriceCheck() external view returns (address[] memory) {
+        return assetsForRelativePriceCheck.values();
+    }
+
+    function removeAssetForRelativePriceCheck(address assetToRemove) external governanceOnly {
+        assetsForRelativePriceCheck.remove(assetToRemove);
+        emit AssetForRelativePriceCheckRemoved(assetToRemove);
+    }
+
+    function batchRelativePriceCheck(address[] memory tokenAddresses, uint256[] memory prices)
+        internal
+        view
+        returns (uint256[] memory)
+    {
         uint256[] memory priceLevelTwaps = new uint256[](quoteAssetsForPriceLevelTWAPS.length());
 
         uint256 k;
         for (uint256 i = 0; i < tokenAddresses.length - 1; i++) {
-            if (checked[i]) {
-                continue;
-            }
-
             bool couldCheck = false;
 
-            for (uint256 j = 0; j < tokenAddresses.length; j++) {
+            for (uint256 j = 0; j < assetsForRelativePriceCheck.length(); j++) {
+                address assetForCheck = assetsForRelativePriceCheck.at(j);
                 if (
-                    i == j || !relativeOracle.isPairSupported(tokenAddresses[i], tokenAddresses[j])
+                    tokenAddresses[i] == assetForCheck ||
+                    !relativeOracle.isPairSupported(tokenAddresses[i], assetForCheck)
                 ) {
                     continue;
                 }
 
                 uint256 relativePrice = relativeOracle.getRelativePrice(
                     tokenAddresses[i],
-                    tokenAddresses[j]
+                    assetForCheck
                 );
 
                 if (
                     tokenAddresses[i] == WETH_ADDRESS &&
-                    quoteAssetsForPriceLevelTWAPS.contains(tokenAddresses[j])
+                    quoteAssetsForPriceLevelTWAPS.contains(assetForCheck)
                 ) {
                     priceLevelTwaps[k] = relativePrice;
                     k++;
                 } else if (
-                    tokenAddresses[j] == WETH_ADDRESS &&
+                    assetForCheck == WETH_ADDRESS &&
                     quoteAssetsForPriceLevelTWAPS.contains(tokenAddresses[i])
                 ) {
                     priceLevelTwaps[k] = FixedPoint.ONE.divDown(relativePrice);
                     k++;
                 }
 
-                _ensureRelativePriceConsistency(prices[i], prices[j], relativePrice);
+                uint256 assetForCheckPrice = _findPrice(assetForCheck, tokenAddresses, prices);
+                _ensureRelativePriceConsistency(prices[i], assetForCheckPrice, relativePrice);
 
-                checked[j] = true;
                 couldCheck = true;
                 break;
             }
 
             require(couldCheck, Errors.ASSET_NOT_SUPPORTED);
-
-            checked[i] = true;
         }
 
         uint256[] memory foundTwaps = new uint256[](k);
@@ -153,22 +166,21 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
         override
         returns (uint256[] memory)
     {
-        uint256 length = tokenAddresses.length;
-        require(length > 1, Errors.INVALID_ARGUMENT);
+        require(tokenAddresses.length > 1, Errors.INVALID_ARGUMENT);
 
-        uint256[] memory prices = new uint256[](length);
+        uint256[] memory prices = new uint256[](tokenAddresses.length);
 
         /// Will start with this being the WETH/USD price, this can be modified later if desired.
         uint256 priceLevel;
 
-        for (uint256 i = 0; i < length; i++) {
+        for (uint256 i = 0; i < tokenAddresses.length; i++) {
             prices[i] = usdOracle.getPriceUSD(tokenAddresses[i]);
             if (tokenAddresses[i] == WETH_ADDRESS) {
                 priceLevel = prices[i];
             }
         }
 
-        uint256[] memory priceLevelTwaps = batchRelativePriceCheck(tokenAddresses, length, prices);
+        uint256[] memory priceLevelTwaps = batchRelativePriceCheck(tokenAddresses, prices);
 
         uint256 numberOfTrustedSignerOracles = trustedSignerPriceOracles.length();
         uint256[] memory signedPrices = new uint256[](numberOfTrustedSignerOracles);
@@ -234,6 +246,19 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
         } else {
             return secondMin;
         }
+    }
+
+    function _findPrice(
+        address target,
+        address[] memory tokenAddresses,
+        uint256[] memory prices
+    ) internal pure returns (uint256) {
+        for (uint256 i = 0; i < tokenAddresses.length; i++) {
+            if (tokenAddresses[i] == target) {
+                return prices[i];
+            }
+        }
+        revert(Errors.ASSET_NOT_SUPPORTED);
     }
 
     function _sort(uint256[] memory data) internal view returns (uint256[] memory) {

@@ -65,6 +65,9 @@ def initialize_mainnet_oracles(
     mainnet_checked_price_oracle.addSignedPriceSource(deployed_trusted_signer)
     mainnet_checked_price_oracle.addQuoteAssetsForPriceLevelTwap(TokenAddresses.USDC)
 
+    mainnet_checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.WETH)
+    mainnet_checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.USDC)
+
 
 @pytest.fixture
 def initialize_local_oracle(
@@ -84,6 +87,9 @@ def initialize_local_oracle(
     local_signer_price_oracle.postPrice(encoded_message, signature)
 
     local_checked_price_oracle.addSignedPriceSource(local_signer_price_oracle)
+
+    local_checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.WETH)
+    local_checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.USDC)
 
 
 @pytest.fixture
@@ -170,6 +176,9 @@ def test_get_prices_usd_no_deviation_multiple_assets(
     mock_price_oracle.setRelativePrice(
         TokenAddresses.WBTC, TokenAddresses.USDC, scale(BTC_USD_PRICE / USDC_USD_PRICE)
     )
+    mock_price_oracle.setRelativePrice(
+        TokenAddresses.WETH, TokenAddresses.USDC, scale(ETH_USD_PRICE / USDC_USD_PRICE)
+    )
 
     usd_prices = local_checked_price_oracle.getPricesUSD(
         [
@@ -195,6 +204,9 @@ def test_get_prices_usd_small_deviation_multiple_assets(
         TokenAddresses.USDC,
         scale(BTC_USD_PRICE / USDC_USD_PRICE) * Decimal("0.9999"),
     )
+    mock_price_oracle.setRelativePrice(
+        TokenAddresses.WETH, TokenAddresses.USDC, scale(ETH_USD_PRICE / USDC_USD_PRICE)
+    )
 
     usd_prices = local_checked_price_oracle.getPricesUSD(
         [
@@ -219,6 +231,10 @@ def test_get_prices_usd_large_deviation_multiple_assets(
         TokenAddresses.WBTC,
         TokenAddresses.USDC,
         scale(BTC_USD_PRICE / USDC_USD_PRICE) * Decimal("0.9"),
+    )
+
+    mock_price_oracle.setRelativePrice(
+        TokenAddresses.WETH, TokenAddresses.USDC, scale(ETH_USD_PRICE / USDC_USD_PRICE)
     )
 
     with reverts(error_codes.STALE_PRICE):
