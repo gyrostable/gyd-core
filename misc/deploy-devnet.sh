@@ -78,7 +78,6 @@ brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_motherboard.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_lp_token_exchanger_registry.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py set_feeds
 brownie run --network $NETWORK_ID scripts/deployment/deploy_uniswap_twap_price_oracle.py
