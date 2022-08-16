@@ -13,6 +13,7 @@ def main(asset_registry):
         asset_registry,
         COINBASE_SIGNING_ADDRESS,
     )
+    oracle = TrustedSignerPriceOracle[0]
 
     eth_price = find_price(fetch_prices()[0], "ETH")
     oracle.postPrices([eth_price], {"from": deployer})

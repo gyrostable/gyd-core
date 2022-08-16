@@ -109,7 +109,7 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
         uint256[] memory priceLevelTwaps = new uint256[](quoteAssetsForPriceLevelTWAPS.length());
 
         uint256 k;
-        for (uint256 i = 0; i < tokenAddresses.length - 1; i++) {
+        for (uint256 i = 0; i < tokenAddresses.length; i++) {
             bool couldCheck = false;
 
             for (uint256 j = 0; j < assetsForRelativePriceCheck.length(); j++) {
@@ -166,7 +166,7 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
         override
         returns (uint256[] memory)
     {
-        require(tokenAddresses.length > 1, Errors.INVALID_ARGUMENT);
+        require(tokenAddresses.length > 0, Errors.INVALID_ARGUMENT);
 
         uint256[] memory prices = new uint256[](tokenAddresses.length);
 
@@ -252,13 +252,13 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
         address target,
         address[] memory tokenAddresses,
         uint256[] memory prices
-    ) internal pure returns (uint256) {
+    ) internal view returns (uint256) {
         for (uint256 i = 0; i < tokenAddresses.length; i++) {
             if (tokenAddresses[i] == target) {
                 return prices[i];
             }
         }
-        revert(Errors.ASSET_NOT_SUPPORTED);
+        return usdOracle.getPriceUSD(target);
     }
 
     function _sort(uint256[] memory data) internal view returns (uint256[] memory) {
