@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "../auth/Governable.sol";
 
 import "../../interfaces/oracles/IUSDPriceOracle.sol";
@@ -10,11 +11,17 @@ import "../../libraries/Errors.sol";
 import "../../libraries/DecimalScale.sol";
 
 abstract contract BaseChainlinkPriceOracle is IUSDPriceOracle, Governable {
+    using EnumerableSet for EnumerableSet.AddressSet;
     using DecimalScale for uint256;
 
     uint256 public constant MAX_LAG = 86400;
 
+    EnumerableSet.AddressSet internal _supportedAssets;
     mapping(address => address) public feeds;
+
+    function listSupportedAssets() external view returns (address[] memory) {
+        return _supportedAssets.values();
+    }
 
     function _getLatestRoundData(address feed)
         internal

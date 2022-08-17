@@ -105,6 +105,9 @@ def test_get_price_usd_no_deviation(local_checked_price_oracle, mock_price_oracl
     mock_price_oracle.setRelativePrice(
         TokenAddresses.CRV, TokenAddresses.WETH, scale(CRV_USD_PRICE / ETH_USD_PRICE)
     )
+    mock_price_oracle.setRelativePrice(
+        TokenAddresses.WETH, TokenAddresses.USDC, scale(ETH_USD_PRICE / USDC_USD_PRICE)
+    )
 
     (crv_usd_price, _) = local_checked_price_oracle.getPricesUSD(
         [TokenAddresses.CRV, TokenAddresses.WETH]
@@ -119,6 +122,9 @@ def test_get_price_usd_small_deviation(local_checked_price_oracle, mock_price_or
         TokenAddresses.CRV,
         TokenAddresses.WETH,
         scale(CRV_USD_PRICE / ETH_USD_PRICE) * Decimal("0.9999"),
+    )
+    mock_price_oracle.setRelativePrice(
+        TokenAddresses.WETH, TokenAddresses.USDC, scale(ETH_USD_PRICE / USDC_USD_PRICE)
     )
 
     (crv_usd_price, _) = local_checked_price_oracle.getPricesUSD(

@@ -33,5 +33,6 @@ def main(crash_protected_chainlink_oracle, uniswap_v3_twap_oracle):
         CheckedPriceOracle,
         crash_protected_chainlink_oracle,
         uniswap_v3_twap_oracle,
+        TokenAddresses.WETH,
         **make_tx_params()
     )

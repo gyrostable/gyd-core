@@ -33,6 +33,9 @@ _token_addresses = {
         "USDT": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
         "GUSD": "0xC8A94a3d3D2dabC3C1CaffFFDcA6A7543c3e3e65",
         "HUSD": "0x2088C47Fc0c78356c622F79dBa4CbE1cCfA84A91",
+        "UNI": "0xb33EaAd8d922B1083446DC23f610c2567fB5180f",
+        "LINK": "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
+        "WMATIC": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
     },
 }
 
@@ -119,6 +122,21 @@ class TokenAddresses:
     def HUSD(cls):
         return _token_address("HUSD")
 
+    @classmethod
+    @property
+    def UNI(cls):
+        return _token_address("UNI")
+
+    @classmethod
+    @property
+    def LINK(cls):
+        return _token_address("LINK")
+
+    @classmethod
+    @property
+    def WMATIC(cls):
+        return _token_address("WMATIC")
+
 
 _chainlink_feeds = {
     1: {
@@ -135,6 +153,10 @@ _chainlink_feeds = {
         "WBTC_USD_FEED": "0xDE31F8bFBD8c84b5360CFACCa3539B938dd78ae6",
         "USDC_USD_FEED": "0xfE4A8cc5b5B2366C1B58Bea3858e81843581b2F7",
         "USDT_USD_FEED": "0x0A6513e40db6EB1b165753AD52E80663aeA50545",
+        "MATIC_USD_FEED": "0xAB594600376Ec9fD91F8e885dADF0CE036862dE0",
+        "LINK_USD_FEED": "0xd9FFdb71EbE7496cC440152d43986Aae0AB76665",
+        "AAVE_USD_FEED": "0x72484B12719E23115761D5DA1646945632979bB6",
+        "UNI_USD_FEED": "0xdf0Fb4e4F928d2dCB76f438575fDD8682386e13C",
     },
 }
 
@@ -179,6 +201,26 @@ class ChainlinkFeeds:
     def USDT_USD_FEED(cls):
         return _chainlink_feed("USDT_USD_FEED")
 
+    @classmethod
+    @property
+    def MATIC_USD_FEED(cls):
+        return _chainlink_feed("MATIC_USD_FEED")
+
+    @classmethod
+    @property
+    def LINK_USD_FEED(cls):
+        return _chainlink_feed("LINK_USD_FEED")
+
+    @classmethod
+    @property
+    def AAVE_USD_FEED(cls):
+        return _chainlink_feed("AAVE_USD_FEED")
+
+    @classmethod
+    @property
+    def UNI_USD_FEED(cls):
+        return _chainlink_feed("UNI_USD_FEED")
+
 
 _uniswap_pools = {
     1: {
@@ -189,9 +231,16 @@ _uniswap_pools = {
         "USDT_ETH": "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36",
     },
     137: {
-        "USDC_ETH": "0x45dDa9cb7c25131DF268515131f647d726f50608",
-        "WBTC_USDC": "0x847b64f9d3A95e977D157866447a5C0A5dFa0Ee5",
-        "USDT_ETH": "0x4CcD010148379ea531D6C587CfDd60180196F9b1",
+        "USDC_ETH": "0x0e44ceb592acfc5d3f09d996302eb4c499ff8c10",
+        "WBTC_USDC": "0xfe343675878100b344802a6763fd373fdeed07a4",
+        "USDT_ETH": "0x4ccd010148379ea531d6c587cfdd60180196f9b1",
+        "WBTC_WETH": "0xfe343675878100b344802a6763fd373fdeed07a4",
+        "WETH_DAI": "0x67a9fe12fa6082d9d0203c84c6c56d3c4b269f28",
+        "MATIC_WETH": "0x167384319b41f7094e62f7506409eb38079abff8",
+        "MATIC_USDC": "0x88f3c15523544835ff6c738ddb30995339ad57d6",
+        "WETH_UNI": "0x357faf5843c7fd7fb4e34fbeabdac16eabe8a5bc",
+        "MATIC_AAVE": "0xa9077cdb3d13f45b8b9d87c43e11bce0e73d8631",
+        "LINK_WETH": "0x3e31ab7f37c048fc6574189135d108df80f0ea26",
     },
 }
 
@@ -232,6 +281,41 @@ class UniswapPools:
         return _get_uniswap_pool("USDT_ETH")
 
     @classmethod
+    @property
+    def WBTC_WETH(cls):
+        return _get_uniswap_pool("WBTC_WETH")
+
+    @classmethod
+    @property
+    def WETH_DAI(cls):
+        return _get_uniswap_pool("WETH_DAI")
+
+    @classmethod
+    @property
+    def MATIC_WETH(cls):
+        return _get_uniswap_pool("MATIC_WETH")
+
+    @classmethod
+    @property
+    def MATIC_USDC(cls):
+        return _get_uniswap_pool("MATIC_USDC")
+
+    @classmethod
+    @property
+    def WETH_UNI(cls):
+        return _get_uniswap_pool("WETH_UNI")
+
+    @classmethod
+    @property
+    def MATIC_AAVE(cls):
+        return _get_uniswap_pool("MATIC_AAVE")
+
+    @classmethod
+    @property
+    def LINK_WETH(cls):
+        return _get_uniswap_pool("LINK_WETH")
+
+    @classmethod
     def all_pools(cls):
         return [
             pool
@@ -261,6 +345,10 @@ def get_chainlink_feeds():
             (TokenAddresses.WBTC, ChainlinkFeeds.WBTC_USD_FEED),
             (TokenAddresses.USDC, ChainlinkFeeds.USDC_USD_FEED),
             (TokenAddresses.USDT, ChainlinkFeeds.USDT_USD_FEED),
+            (TokenAddresses.WMATIC, ChainlinkFeeds.MATIC_USD_FEED),
+            (TokenAddresses.LINK, ChainlinkFeeds.LINK_USD_FEED),
+            (TokenAddresses.AAVE, ChainlinkFeeds.AAVE_USD_FEED),
+            (TokenAddresses.UNI, ChainlinkFeeds.UNI_USD_FEED),
         ]
     raise ValueError(f"chain {chain.id} not supported")
 

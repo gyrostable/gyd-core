@@ -5,7 +5,11 @@ import "../oracles/CheckedPriceOracle.sol";
 
 contract TestingCheckedPriceOracle is CheckedPriceOracle {
     constructor(IUSDPriceOracle _priceOracle, IRelativePriceOracle _relativeOracle)
-        CheckedPriceOracle(address(_priceOracle), address(_relativeOracle))
+        CheckedPriceOracle(
+            address(_priceOracle),
+            address(_relativeOracle),
+            address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)
+        )
     {}
 
     function ensureRootPriceGrounded(
