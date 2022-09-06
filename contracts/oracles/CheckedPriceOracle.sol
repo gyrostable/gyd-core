@@ -15,7 +15,7 @@ import "../auth/Governable.sol";
 import "../../libraries/Errors.sol";
 import "../../libraries/FixedPoint.sol";
 
-contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
+contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     using FixedPoint for uint256;
@@ -180,13 +180,34 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
         return foundTwaps;
     }
 
-    //NB this is expected to be queried for ALL asset prices in the reserve
+    /// @inheritdoc IUSDPriceOracle
+    function getPriceUSD(address tokenAddress) public view override returns (uint256) {
+        address[] memory tokenAddresses = new address[](1);
+        tokenAddresses[0] = tokenAddress;
+        uint256[] memory prices = getPricesUSD(tokenAddresses);
+        return prices[0];
+    }
+
     /// @inheritdoc IUSDBatchPriceOracle
     function getPricesUSD(address[] memory tokenAddresses)
         public
         view
         override
         returns (uint256[] memory)
+    {
+        (uint256[] memory prices, , , ) = getPricesUSDWithMetadata(tokenAddresses);
+        return prices;
+    }
+
+    function getPricesUSDWithMetadata(address[] memory tokenAddresses)
+        public
+        view
+        returns (
+            uint256[] memory,
+            uint256,
+            uint256[] memory,
+            uint256[] memory
+        )
     {
         require(tokenAddresses.length > 0, Errors.INVALID_ARGUMENT);
 
@@ -218,7 +239,7 @@ contract CheckedPriceOracle is IUSDBatchPriceOracle, Governable {
 
         _checkPriceLevel(priceLevel, signedPrices, priceLevelTwaps);
 
-        return prices;
+        return (prices, priceLevel, signedPrices, priceLevelTwaps);
     }
 
     function setRelativeMaxEpsilon(uint256 _relativeEpsilon) external governanceOnly {
