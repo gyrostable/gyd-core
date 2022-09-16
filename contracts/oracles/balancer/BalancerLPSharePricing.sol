@@ -128,7 +128,7 @@ library BalancerLPSharePricing {
         } else if (px.divUp(py) >= sqrtBeta.mulDown(sqrtBeta)) {
             bptPrice = invariantDivSupply.mulDown(py).mulDown(sqrtBeta - sqrtAlpha);
         } else {
-            uint256 sqrPxPy = (2 * one).mulDown(FixedPoint.powDown(px.mulDown(py), ONEHALF));
+            uint256 sqrPxPy = 2 * mulDown(FixedPoint.powDown(px.mulDown(py), ONEHALF));
             bptPrice = sqrPxPy - px.divUp(sqrtBeta) - py.mulUp(sqrtAlpha);
             bptPrice = invariantDivSupply.mulDown(bptPrice);
         }
