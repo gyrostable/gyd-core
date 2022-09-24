@@ -267,7 +267,7 @@ def test_get_on_chain_usd_prices(mainnet_checked_price_oracle):
 
     assert scale(1) <= crv_price <= scale(10)
     assert scale(1_000) <= weth_price <= scale(10_000)
-    assert scale(20_000) <= wbtc_price <= scale(100_000)
+    assert scale(10_000) <= wbtc_price <= scale(100_000)
     assert scale("0.99") <= usdc_price <= scale("1.01")
 
 
