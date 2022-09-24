@@ -83,5 +83,5 @@ def test_get_relative_price(uniswap_v3_twap_oracle):
     usdc_wbtc_price = uniswap_v3_twap_oracle.getRelativePrice(
         TokenAddresses.USDC, TokenAddresses.WBTC
     )
-    assert scale(20_000) <= wbtc_usdc_price <= scale(100_000)
+    assert scale(10_000) <= wbtc_usdc_price <= scale(100_000)
     assert usdc_wbtc_price == scale(1, 36) / wbtc_usdc_price

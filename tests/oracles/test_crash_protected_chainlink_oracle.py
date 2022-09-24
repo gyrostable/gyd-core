@@ -84,7 +84,7 @@ def test_mainnet_feeds(crash_protected_chainlink_oracle, interface):
     assert scale(1000) <= eth_price <= scale(5000)
 
     btc_price = crash_protected_chainlink_oracle.getPriceUSD(TokenAddresses.WBTC)
-    assert scale(20_000) <= btc_price <= scale(100_000)
+    assert scale(10_000) <= btc_price <= scale(100_000)
 
     dai_price = crash_protected_chainlink_oracle.getPriceUSD(TokenAddresses.DAI)
     assert scale("0.95") <= dai_price <= scale("1.05")
