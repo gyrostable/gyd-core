@@ -5,11 +5,12 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
+import "../auth/Governable.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../libraries/Errors.sol";
 
-contract BaseVault is IGyroVault, ERC20 {
+contract BaseVault is IGyroVault, ERC20, Governable {
     using FixedPoint for uint256;
     using SafeERC20 for IERC20;
 
@@ -135,7 +136,7 @@ contract BaseVault is IGyroVault, ERC20 {
     }
 
     /// @inheritdoc IGyroVault
-    function setStrategy(address strategyAddress) external override {
+    function setStrategy(address strategyAddress) external override governanceOnly {
         strategy = strategyAddress;
     }
 
