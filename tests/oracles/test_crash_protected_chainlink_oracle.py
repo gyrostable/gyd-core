@@ -81,7 +81,7 @@ def test_get_price_too_large_variation(
 @pytest.mark.usefixtures("set_mainnet_feeds")
 def test_mainnet_feeds(crash_protected_chainlink_oracle, interface):
     eth_price = crash_protected_chainlink_oracle.getPriceUSD(TokenAddresses.ETH)
-    assert scale(1000) <= eth_price <= scale(5000)
+    assert scale(500) <= eth_price <= scale(5000)
 
     btc_price = crash_protected_chainlink_oracle.getPriceUSD(TokenAddresses.WBTC)
     assert scale(10_000) <= btc_price <= scale(100_000)

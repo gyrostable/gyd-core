@@ -70,7 +70,7 @@ def test_get_relative_price(uniswap_v3_twap_oracle):
     eth_usdc_price = uniswap_v3_twap_oracle.getRelativePrice(
         TokenAddresses.WETH, TokenAddresses.USDC
     )
-    assert scale(1_000) <= eth_usdc_price <= scale(10_000)
+    assert scale(500) <= eth_usdc_price <= scale(10_000)
 
     usdc_eth_price = uniswap_v3_twap_oracle.getRelativePrice(
         TokenAddresses.USDC, TokenAddresses.WETH

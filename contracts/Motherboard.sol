@@ -131,6 +131,9 @@ contract Motherboard is IMotherboard, Governable {
         );
 
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
+        if (bytes(err).length > 0) {
+            return (0, err);
+        }
 
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         uint256 usdValue = _getBasketUSDValue(orderAfterFees);
