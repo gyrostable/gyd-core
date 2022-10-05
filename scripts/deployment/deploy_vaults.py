@@ -26,7 +26,7 @@ def main():
         deployer.deploy(
             BalancerPoolVault,
             vault_to_deploy.vault_type,
-            constants.BALANCER_POOL_IDS["WETH_DAI"],
+            vault_to_deploy.pool_id,
             constants.BALANCER_VAULT_ADDRESS,
             vault_to_deploy.name,
             vault_to_deploy.symbol,
