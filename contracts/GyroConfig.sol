@@ -43,6 +43,11 @@ contract GyroConfig is IGyroConfig, GovernableUpgradeable {
     }
 
     /// @inheritdoc IGyroConfig
+    function getUint(bytes32 key, uint256 defaultValue) external view override returns (uint256) {
+        return _get(key, UINT_TYPE, defaultValue);
+    }
+
+    /// @inheritdoc IGyroConfig
     function getAddress(bytes32 key) external view override returns (address) {
         return address(uint160(_get(key, ADDRESS_TYPE)));
     }
@@ -82,6 +87,17 @@ contract GyroConfig is IGyroConfig, GovernableUpgradeable {
     function _get(bytes32 key, uint8 expectedType) internal view returns (uint256) {
         (bool exists, uint8 configType, ) = _getConfigMeta(key);
         require(exists && configType == expectedType, Errors.KEY_NOT_FOUND);
+        return _config[key];
+    }
+
+    function _get(
+        bytes32 key,
+        uint8 expectedType,
+        uint256 defaultValue
+    ) internal view returns (uint256) {
+        (bool exists, uint8 configType, ) = _getConfigMeta(key);
+        if (!exists) return defaultValue;
+        require(configType == expectedType, Errors.KEY_NOT_FOUND);
         return _config[key];
     }
 

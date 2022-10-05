@@ -55,4 +55,8 @@ library ConfigHelpers {
     function getMotherboard(IGyroConfig gyroConfig) internal view returns (IMotherboard) {
         return IMotherboard(gyroConfig.getAddress(ConfigKeys.MOTHERBOARD_ADDRESS));
     }
+
+    function getSupplyCap(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.GYD_SUPPLY_CAP, type(uint256).max);
+    }
 }
