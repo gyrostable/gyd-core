@@ -13,6 +13,12 @@ def get_build_info(contract_name: str):
     contract_path = path.join(BUILD_DIR, "contracts", f"{contract_name}.json")
     if not path.exists(contract_path):
         contract_path = path.join(BUILD_DIR, "interfaces", f"{contract_name}.json")
+    if not path.exists(contract_path):
+        print(
+            "Path not found in contracts or interfaces build directory for: "
+            + str(contract_path)
+        )
+        return
     with open(contract_path) as f:
         return json.load(f)
 
@@ -23,6 +29,9 @@ def compute_dependencies(target_name: str):
             return dependencies
 
         build_info = get_build_info(contract_name)
+
+        if not build_info:
+            return {"path of missing file": contract_name}
 
         if contract_name != target_name:
             dependencies[contract_name] = build_info["ast"]["absolutePath"]
