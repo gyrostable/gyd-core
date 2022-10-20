@@ -24,7 +24,7 @@ list_of_contracts = [
     "CheckedPriceOracle",
     "CrashProtectedChainLinkPriceOracle",
     "TrustedSignerPriceOracle",
-    "UniswapV2TwapPriceOracle",
+    "UniswapV3TwapPriceOracle",
     "ReserveSafetyManager",
     "RootSafetyCheck",
     "VaultSafetyMode",
@@ -41,13 +41,34 @@ list_of_contracts = [
     "VaultRegistry",
 ]
 
+list_of_libraries = [
+    "FullMath",
+    "OracleLibrary",
+    "TickMath",
+    "Arrays",
+    "ConfigHelpers",
+    "ConfigKeys",
+    "DataTypes",
+    "DecimalScale",
+    "EnumerableExtensions",
+    "EnumerableMapping",
+    "Errors",
+    "FixedPoint",
+    "Flow",
+    "LogExpMath",
+    "SignedFixedPoint",
+    "StringExtensions",
+    "TypeConversion",
+    "Vaults",
+]
+
 
 def main():
-    with open("all_dependencies.csv", "w", newline="") as csvfile:
+    with open("all_protocol_dependencies.csv", "w", newline="") as csvfile:
         fieldnames = ["Gyro Contract", "Dependency Contract", "Path"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        for contract in list_of_contracts:
+        for contract in list_of_contracts + list_of_libraries:
             dependencies = compute_dependencies(contract)
             sorted_dependencies = sorted(dependencies.items(), key=lambda v: v[1])
             for i in sorted_dependencies:
