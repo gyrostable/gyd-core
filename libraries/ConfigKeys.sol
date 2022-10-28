@@ -15,4 +15,5 @@ library ConfigKeys {
     bytes32 internal constant RESERVE_MANAGER_ADDRESS = "RESERVE_MANAGER_ADDRESS";
     bytes32 internal constant FEE_HANDLER_ADDRESS = "FEE_HANDLER_ADDRESS";
     bytes32 internal constant MOTHERBOARD_ADDRESS = "MOTHERBOARD_ADDRESS";
+    bytes32 internal constant GYD_SUPPLY_CAP = "GYD_SUPPLY_CAP";
 }

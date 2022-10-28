@@ -1,7 +1,7 @@
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
 
-from tests.support import error_codes
+from tests.support import config_keys, error_codes
 from tests.support.balancer import join_pool
 from tests.support.constants import BALANCER_POOL_IDS, address_from_pool_id
 from tests.support.quantized_decimal import QuantizedDecimal as D
@@ -48,6 +48,20 @@ def test_dry_mint_vault_underlying(motherboard, usdc, usdc_vault, alice):
 
 
 @pytest.mark.usefixtures("register_usdc_vault")
+def test_dry_mint_above_cap(motherboard, usdc, usdc_vault, alice, gyro_config, admin):
+    decimals = usdc.decimals()
+    usdc_amount = scale(10, decimals)
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    gyro_config.setUint(config_keys.GYD_SUPPLY_CAP, scale(5), {"from": admin})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    gyd_minted, err = motherboard.dryMint([mint_asset], 0, {"from": alice})
+    assert err == error_codes.SUPPLY_CAP_EXCEEDED
+    assert gyd_minted == scale(10)
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
 def test_mint_vault_underlying(
     motherboard, usdc, usdc_vault, alice, gyd_token, reserve
 ):
@@ -83,6 +97,18 @@ def test_mint_using_multiple_assets(
     assert gyd_minted == scale(15)
     assert usdc_vault.balanceOf(reserve) == usdc_amount
     assert dai_vault.balanceOf(reserve) == dai_amount
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_mint_above_cap(admin, motherboard, usdc, usdc_vault, alice, gyro_config):
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    gyro_config.setUint(config_keys.GYD_SUPPLY_CAP, scale(5), {"from": admin})
+    with reverts(error_codes.SUPPLY_CAP_EXCEEDED):
+        motherboard.mint([mint_asset], 0, {"from": alice})
 
 
 @pytest.mark.usefixtures("register_usdc_vault")

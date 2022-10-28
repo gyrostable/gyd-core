@@ -76,13 +76,14 @@ contract Motherboard is IMotherboard, Governable {
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
 
         uint256 usdValue = _getBasketUSDValue(orderAfterFees);
-        uint256 gyroToMint = pamm().mint(usdValue, reserveState.totalUSDValue);
+        mintedGYDAmount = pamm().mint(usdValue, reserveState.totalUSDValue);
 
-        require(gyroToMint >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
+        require(mintedGYDAmount >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
 
-        gydToken.mint(msg.sender, gyroToMint);
+        uint256 supplyCap = gyroConfig.getSupplyCap();
+        require(gydToken.totalSupply() + mintedGYDAmount <= supplyCap, Errors.SUPPLY_CAP_EXCEEDED);
 
-        return gyroToMint;
+        gydToken.mint(msg.sender, mintedGYDAmount);
     }
 
     /// @inheritdoc IMotherboard
@@ -140,7 +141,12 @@ contract Motherboard is IMotherboard, Governable {
         mintedGYDAmount = pamm().computeMintAmount(usdValue, reserveState.totalUSDValue);
 
         if (mintedGYDAmount < minReceivedAmount) {
-            err = Errors.TOO_MUCH_SLIPPAGE;
+            return (mintedGYDAmount, Errors.TOO_MUCH_SLIPPAGE);
+        }
+
+        uint256 supplyCap = gyroConfig.getSupplyCap();
+        if (gydToken.totalSupply() + mintedGYDAmount > supplyCap) {
+            return (mintedGYDAmount, Errors.SUPPLY_CAP_EXCEEDED);
         }
     }
 

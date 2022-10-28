@@ -27,6 +27,9 @@ interface IGyroConfig is IGovernable {
     /// @notice Returns a uint256 value from the config
     function getUint(bytes32 key) external view returns (uint256);
 
+    /// @notice Returns a uint256 value from the config or `defaultValue` if it does not exist
+    function getUint(bytes32 key, uint256 defaultValue) external view returns (uint256);
+
     /// @notice Returns an address value from the config
     function getAddress(bytes32 key) external view returns (address);
 
