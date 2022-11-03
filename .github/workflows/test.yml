@@ -57,5 +57,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/setup
-      - name: Run Integration Tests
+      - name: Run end to end Tests
         run: brownie test -m endToEnd --network mainnet-fork --failfast --hypothesis-seed 42
