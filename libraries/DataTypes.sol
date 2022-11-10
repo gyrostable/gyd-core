@@ -76,6 +76,7 @@ library DataTypes {
     struct VaultInfo {
         address vault;
         uint8 decimals;
+        address underlying;
         uint256 price;
         PersistedVaultMetadata persistedMetadata;
         uint256 reserveBalance;

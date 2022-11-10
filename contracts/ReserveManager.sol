@@ -61,6 +61,7 @@ contract ReserveManager is IReserveManager, Governable {
             vaultsInfo[i] = DataTypes.VaultInfo({
                 vault: vaultAddresses[i],
                 decimals: IERC20Metadata(vaultAddresses[i]).decimals(),
+                underlying: IGyroVault(vaultAddresses[i]).underlying(),
                 persistedMetadata: persistedMetadata,
                 reserveBalance: reserveBalance,
                 price: 0,

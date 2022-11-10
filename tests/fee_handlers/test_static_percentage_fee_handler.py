@@ -2,6 +2,7 @@ from decimal import Decimal
 from typing import Iterable, Tuple
 
 import pytest
+from brownie import Contract
 from brownie.test.managers.runner import RevertContextManager as reverts
 from tests.support import error_codes
 from tests.support.types import (
@@ -19,12 +20,13 @@ VAULT_FEES = [
 ]
 
 
-def _create_order(vault_amounts: Iterable[Tuple[str, int]], mint: bool) -> Order:
+def _create_order(vault_amounts: Iterable[Tuple[Contract, int]], mint: bool) -> Order:
     vault_with_amounts = [
         VaultWithAmount(
             vault_info=VaultInfo(
-                vault=vault_address,
+                vault=vault.address,
                 decimals=18,
+                underlying=vault.underlying(),
                 price=0,
                 persisted_metadata=PersistedVaultMetadata(0, 0, 0, 0),
                 reserve_balance=0,
@@ -34,7 +36,7 @@ def _create_order(vault_amounts: Iterable[Tuple[str, int]], mint: bool) -> Order
             ),
             amount=amount,
         )
-        for vault_address, amount in vault_amounts
+        for vault, amount in vault_amounts
     ]
     return Order(vaults_with_amount=vault_with_amounts, mint=mint)
 
@@ -55,8 +57,9 @@ def set_fees(static_percentage_fee_handler, mock_vaults, admin):
 @pytest.mark.parametrize("mint", [True, False])
 def test_apply_fees(static_percentage_fee_handler, mock_vaults, mint):
     amounts = [int(v) for v in [scale("10000"), scale("2000"), scale("3500")]]
-    order = _create_order(zip([v.address for v in mock_vaults], amounts), mint=mint)
-    order_after_fees = Order.from_tuple(static_percentage_fee_handler.applyFees(order))
+    order = _create_order(zip(mock_vaults, amounts), mint=mint)
+    foo = static_percentage_fee_handler.applyFees(order)
+    order_after_fees = Order.from_tuple(foo)
 
     assert order_after_fees.mint == mint
     assert len(order_after_fees.vaults_with_amount) == 3
