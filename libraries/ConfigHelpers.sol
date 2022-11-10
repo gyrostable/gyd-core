@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
 import "./ConfigKeys.sol";
 
 import "../interfaces/oracles/IBatchVaultPriceOracle.sol";
@@ -56,7 +58,23 @@ library ConfigHelpers {
         return IMotherboard(gyroConfig.getAddress(ConfigKeys.MOTHERBOARD_ADDRESS));
     }
 
-    function getSupplyCap(IGyroConfig gyroConfig) internal view returns (uint256) {
-        return gyroConfig.getUint(ConfigKeys.GYD_SUPPLY_CAP, type(uint256).max);
+    function getGlobalSupplyCap(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.GYD_GLOBAL_SUPPLY_CAP, type(uint256).max);
+    }
+
+    function getPerUserSupplyCap(IGyroConfig gyroConfig, bool authenticated)
+        internal
+        view
+        returns (uint256)
+    {
+        if (authenticated) {
+            return gyroConfig.getUint(ConfigKeys.GYD_NFT_AUTHENTICATED_USER_CAP, type(uint256).max);
+        }
+        return gyroConfig.getUint(ConfigKeys.GYD_USER_CAP, type(uint256).max);
+    }
+
+    function isAuthenticated(IGyroConfig gyroConfig, address user) internal view returns (bool) {
+        address nft = gyroConfig.getAddress(ConfigKeys.AUTHENTICATION_NFT_ADDRESS, address(0));
+        return nft != address(0) && IERC721(nft).balanceOf(user) > 0;
     }
 }

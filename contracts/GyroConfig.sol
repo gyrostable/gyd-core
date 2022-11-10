@@ -53,6 +53,16 @@ contract GyroConfig is IGyroConfig, GovernableUpgradeable {
     }
 
     /// @inheritdoc IGyroConfig
+    function getAddress(bytes32 key, address defaultValue)
+        external
+        view
+        override
+        returns (address)
+    {
+        return address(uint160(_get(key, ADDRESS_TYPE, uint256(uint160(defaultValue)))));
+    }
+
+    /// @inheritdoc IGyroConfig
     function setUint(bytes32 key, uint256 newValue) external override governanceOnly {
         uint256 oldValue = _set(key, newValue, UINT_TYPE);
         emit ConfigChanged(key, oldValue, newValue);

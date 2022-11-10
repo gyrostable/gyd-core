@@ -80,8 +80,7 @@ contract Motherboard is IMotherboard, Governable {
 
         require(mintedGYDAmount >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
 
-        uint256 supplyCap = gyroConfig.getSupplyCap();
-        require(gydToken.totalSupply() + mintedGYDAmount <= supplyCap, Errors.SUPPLY_CAP_EXCEEDED);
+        require(!_isOverCap(msg.sender, mintedGYDAmount), Errors.SUPPLY_CAP_EXCEEDED);
 
         gydToken.mint(msg.sender, mintedGYDAmount);
     }
@@ -144,8 +143,7 @@ contract Motherboard is IMotherboard, Governable {
             return (mintedGYDAmount, Errors.TOO_MUCH_SLIPPAGE);
         }
 
-        uint256 supplyCap = gyroConfig.getSupplyCap();
-        if (gydToken.totalSupply() + mintedGYDAmount > supplyCap) {
+        if (_isOverCap(mintedGYDAmount)) {
             return (mintedGYDAmount, Errors.SUPPLY_CAP_EXCEEDED);
         }
     }
@@ -447,5 +445,19 @@ contract Motherboard is IMotherboard, Governable {
             );
             result += scaledAmount.mulDown(vaultWithAmount.vaultInfo.price);
         }
+    }
+
+    function _isOverCap(address account, uint256 mintedGYDAmount) internal view returns (bool) {
+        if (_isOverCap(mintedGYDAmount)) {
+            return true;
+        }
+        bool isAuthenticated = gyroConfig.isAuthenticated(account);
+        uint256 perUserSupplyCap = gyroConfig.getPerUserSupplyCap(isAuthenticated);
+        return gydToken.balanceOf(account) + mintedGYDAmount > perUserSupplyCap;
+    }
+
+    function _isOverCap(uint256 mintedGYDAmount) internal view returns (bool) {
+        uint256 globalSupplyCap = gyroConfig.getGlobalSupplyCap();
+        return gydToken.totalSupply() + mintedGYDAmount > globalSupplyCap;
     }
 }
