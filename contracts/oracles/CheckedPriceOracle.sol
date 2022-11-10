@@ -128,7 +128,9 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         view
         returns (uint256[] memory)
     {
-        uint256[] memory priceLevelTwaps = new uint256[](quoteAssetsForPriceLevelTWAPS.length());
+        uint256[] memory priceLevelTwaps = new uint256[](
+            tokenAddresses.length * quoteAssetsForPriceLevelTWAPS.length()
+        );
 
         uint256 k;
         for (uint256 i = 0; i < tokenAddresses.length; i++) {

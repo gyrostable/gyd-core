@@ -60,10 +60,10 @@ def test_get_price_higher_scale(admin, chainlink_price_oracle, MockChainlinkFeed
 @pytest.mark.usefixtures("set_common_chainlink_feeds")
 def test_mainnet_feeds(chainlink_price_oracle):
     eth_price = chainlink_price_oracle.getPriceUSD(TokenAddresses.ETH)
-    assert scale(500) <= eth_price <= scale(5000)
+    assert scale(800) <= eth_price <= scale(5000)
 
     btc_price = chainlink_price_oracle.getPriceUSD(TokenAddresses.WBTC)
-    assert scale(10_000) <= btc_price <= scale(100_000)
+    assert scale(15_000) <= btc_price <= scale(100_000)
 
     dai_price = chainlink_price_oracle.getPriceUSD(TokenAddresses.DAI)
     assert scale("0.95") <= dai_price <= scale("1.05")

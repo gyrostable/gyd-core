@@ -160,7 +160,10 @@ def mainnet_checked_price_oracle(
 ):
 
     mainnet_checked_price_oracle = admin.deploy(
-        CheckedPriceOracle, chainlink_price_oracle, uniswap_v3_twap_oracle
+        CheckedPriceOracle,
+        chainlink_price_oracle,
+        uniswap_v3_twap_oracle,
+        TokenAddresses.WETH,
     )
     # set the relative max epsilon slightly larger to avoid tests randomly failing
     mainnet_checked_price_oracle.setRelativeMaxEpsilon(scale("0.03"))
