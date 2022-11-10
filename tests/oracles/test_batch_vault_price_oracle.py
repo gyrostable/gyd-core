@@ -6,6 +6,7 @@ def _dummy_vault(tokens):
     return VaultInfo(
         vault=ZERO_ADDRESS,
         decimals=18,
+        underlying=ZERO_ADDRESS,
         price=0,
         persisted_metadata=PersistedVaultMetadata(0, 0, 0, 0),
         reserve_balance=0,

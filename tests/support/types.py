@@ -58,6 +58,7 @@ class PricedToken(NamedTuple):
 class VaultInfo(NamedTuple):
     vault: str
     decimals: int
+    underlying: str
     price: int
     persisted_metadata: PersistedVaultMetadata
     reserve_balance: int
@@ -67,9 +68,9 @@ class VaultInfo(NamedTuple):
 
     @classmethod
     def from_tuple(cls, t) -> VaultInfo:
-        persisted_metadata = PersistedVaultMetadata(*t[3])
+        persisted_metadata = PersistedVaultMetadata(*t[4])
         priced_tokens = [PricedToken(*v) for v in t[-1]]
-        items = t[:3] + (persisted_metadata,) + t[4:-1] + (priced_tokens,)
+        items = t[:4] + (persisted_metadata,) + t[5:-1] + (priced_tokens,)
         return cls(*items)
 
 
