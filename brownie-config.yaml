@@ -1,5 +1,5 @@
 compiler:
-  evm_version: null
+  evm_version: london
   solc:
     version: "0.8.10"
     optimizer:
@@ -20,7 +20,9 @@ dependencies:
 networks:
   development:
     cmd_settings:
-      evm_version: istanbul
+      evm_version: london
+    priority_fee: 2
   mainnet-fork:
     cmd_settings:
       evm_version: london
+    priority_fee: 2
