@@ -105,6 +105,9 @@ def test_get_price_usd_no_deviation(local_checked_price_oracle, mock_price_oracl
     mock_price_oracle.setRelativePrice(
         TokenAddresses.CRV, TokenAddresses.WETH, scale(CRV_USD_PRICE / ETH_USD_PRICE)
     )
+    mock_price_oracle.setRelativePrice(
+        TokenAddresses.WETH, TokenAddresses.USDC, scale(ETH_USD_PRICE / USDC_USD_PRICE)
+    )
 
     (crv_usd_price, _) = local_checked_price_oracle.getPricesUSD(
         [TokenAddresses.CRV, TokenAddresses.WETH]
@@ -119,6 +122,9 @@ def test_get_price_usd_small_deviation(local_checked_price_oracle, mock_price_or
         TokenAddresses.CRV,
         TokenAddresses.WETH,
         scale(CRV_USD_PRICE / ETH_USD_PRICE) * Decimal("0.9999"),
+    )
+    mock_price_oracle.setRelativePrice(
+        TokenAddresses.WETH, TokenAddresses.USDC, scale(ETH_USD_PRICE / USDC_USD_PRICE)
     )
 
     (crv_usd_price, _) = local_checked_price_oracle.getPricesUSD(
@@ -266,8 +272,8 @@ def test_get_on_chain_usd_prices(mainnet_checked_price_oracle):
     crv_price, weth_price, wbtc_price, usdc_price = prices
 
     assert scale("0.5") <= crv_price <= scale(10)
-    assert scale(500) <= weth_price <= scale(10_000)
-    assert scale(10_000) <= wbtc_price <= scale(100_000)
+    assert scale(800) <= weth_price <= scale(10_000)
+    assert scale(15_000) <= wbtc_price <= scale(100_000)
     assert scale("0.99") <= usdc_price <= scale("1.01")
 
 

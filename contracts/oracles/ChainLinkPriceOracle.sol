@@ -8,6 +8,7 @@ import "../../libraries/DecimalScale.sol";
 
 contract ChainlinkPriceOracle is BaseChainlinkPriceOracle {
     using DecimalScale for uint256;
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     event FeedUpdated(address indexed asset, address indexed previousFeed, address indexed newFeed);
 
@@ -24,6 +25,7 @@ contract ChainlinkPriceOracle is BaseChainlinkPriceOracle {
     function setFeed(address asset, address feed) external virtual governanceOnly {
         address previousFeed = feeds[asset];
         require(feed != previousFeed, Errors.INVALID_ARGUMENT);
+        _supportedAssets.add(asset);
         feeds[asset] = feed;
         emit FeedUpdated(asset, previousFeed, feed);
     }

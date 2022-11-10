@@ -1,4 +1,4 @@
-from brownie import UniswapV3TwapOracle  # type: ignore
+from brownie import UniswapV3TwapOracle, web3  # type: ignore
 
 from scripts.utils import (
     get_deployer,
@@ -13,10 +13,14 @@ from tests.fixtures.mainnet_contracts import UniswapPools
 @with_deployed(UniswapV3TwapOracle)
 def add_pools(uniswap_v3_twap_oracle):
     deployer = get_deployer()
+    current_pools = {
+        web3.toChecksumAddress(p) for p in uniswap_v3_twap_oracle.getPools()
+    }
     for pool in UniswapPools.all_pools():
-        uniswap_v3_twap_oracle.registerPool(
-            pool, {"from": deployer, **make_tx_params()}
-        )
+        if web3.toChecksumAddress(pool) not in current_pools:
+            uniswap_v3_twap_oracle.registerPool(
+                pool, {"from": deployer, **make_tx_params()}
+            )
 
 
 @with_gas_usage

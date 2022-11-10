@@ -1,5 +1,11 @@
 from brownie import CheckedPriceOracle, TrustedSignerPriceOracle, UniswapV3TwapOracle, CrashProtectedChainlinkPriceOracle  # type: ignore
-from scripts.utils import as_singleton, get_deployer, with_deployed, with_gas_usage
+from scripts.utils import (
+    as_singleton,
+    get_deployer,
+    make_tx_params,
+    with_deployed,
+    with_gas_usage,
+)
 from tests.fixtures.mainnet_contracts import TokenAddresses
 
 
@@ -8,16 +14,13 @@ from tests.fixtures.mainnet_contracts import TokenAddresses
 @with_deployed(TrustedSignerPriceOracle)
 def initialize(coinbase_price_oracle, checked_price_oracle):
     deployer = get_deployer()
-    checked_price_oracle.addSignedPriceSource(coinbase_price_oracle, {"from": deployer})
-    checked_price_oracle.addQuoteAssetsForPriceLevelTwap(
-        TokenAddresses.USDC, {"from": deployer}
-    )
-    checked_price_oracle.addQuoteAssetsForPriceLevelTwap(
-        TokenAddresses.USDT, {"from": deployer}
-    )
-    checked_price_oracle.addQuoteAssetsForPriceLevelTwap(
-        TokenAddresses.DAI, {"from": deployer}
-    )
+    tx_params = {"from": deployer, **make_tx_params()}
+    checked_price_oracle.addSignedPriceSource(coinbase_price_oracle, tx_params)
+    checked_price_oracle.addQuoteAssetsForPriceLevelTwap(TokenAddresses.USDC, tx_params)
+    checked_price_oracle.addQuoteAssetsForPriceLevelTwap(TokenAddresses.USDT, tx_params)
+    checked_price_oracle.addQuoteAssetsForPriceLevelTwap(TokenAddresses.DAI, tx_params)
+    checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.USDC, tx_params)
+    checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.WETH, tx_params)
 
 
 @with_gas_usage
@@ -27,5 +30,9 @@ def initialize(coinbase_price_oracle, checked_price_oracle):
 def main(crash_protected_chainlink_oracle, uniswap_v3_twap_oracle):
     deployer = get_deployer()
     deployer.deploy(
-        CheckedPriceOracle, crash_protected_chainlink_oracle, uniswap_v3_twap_oracle
+        CheckedPriceOracle,
+        crash_protected_chainlink_oracle,
+        uniswap_v3_twap_oracle,
+        TokenAddresses.WETH,
+        **make_tx_params()
     )

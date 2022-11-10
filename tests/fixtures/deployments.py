@@ -1,5 +1,6 @@
 import pytest
 from brownie import accounts
+from .mainnet_contracts import TokenAddresses
 from tests.support import config_keys, constants
 from tests.support.types import PammParams
 from tests.support.utils import scale
@@ -143,7 +144,9 @@ def crash_protected_chainlink_oracle(CrashProtectedChainlinkPriceOracle, admin):
 
 @pytest.fixture(scope="module")
 def local_checked_price_oracle(admin, mock_price_oracle, CheckedPriceOracle):
-    return admin.deploy(CheckedPriceOracle, mock_price_oracle, mock_price_oracle)
+    return admin.deploy(
+        CheckedPriceOracle, mock_price_oracle, mock_price_oracle, TokenAddresses.WETH
+    )
 
 
 @pytest.fixture(scope="module")
@@ -157,7 +160,10 @@ def mainnet_checked_price_oracle(
 ):
 
     mainnet_checked_price_oracle = admin.deploy(
-        CheckedPriceOracle, chainlink_price_oracle, uniswap_v3_twap_oracle
+        CheckedPriceOracle,
+        chainlink_price_oracle,
+        uniswap_v3_twap_oracle,
+        TokenAddresses.WETH,
     )
     # set the relative max epsilon slightly larger to avoid tests randomly failing
     mainnet_checked_price_oracle.setRelativeMaxEpsilon(scale("0.03"))

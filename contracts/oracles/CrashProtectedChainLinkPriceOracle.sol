@@ -8,6 +8,7 @@ import "../../libraries/FixedPoint.sol";
 contract CrashProtectedChainlinkPriceOracle is BaseChainlinkPriceOracle {
     using DecimalScale for uint256;
     using FixedPoint for uint256;
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     event FeedUpdated(
         address indexed asset,
@@ -60,6 +61,7 @@ contract CrashProtectedChainlinkPriceOracle is BaseChainlinkPriceOracle {
         require(feedMeta.minDiffTime > 0, Errors.INVALID_ARGUMENT);
         feeds[asset] = feed;
         feedMetas[feed] = feedMeta;
+        _supportedAssets.add(asset);
         emit FeedUpdated(asset, previousFeed, feed, feedMeta);
     }
 }
