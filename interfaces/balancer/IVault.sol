@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>. 
+// SPDX-License-Identifier: LicenseRef-Gyro-1.0
+// for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
