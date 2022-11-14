@@ -6,6 +6,7 @@ from scripts.utils import (
     with_gas_usage,
     as_singleton,
 )
+from tests.support import config_keys
 
 
 @with_gas_usage
@@ -13,4 +14,9 @@ from scripts.utils import (
 @as_singleton(VaultRegistry)
 def main(gyro_config):
     deployer = get_deployer()
-    deployer.deploy(VaultRegistry, gyro_config, **make_tx_params())
+    vault_registry = deployer.deploy(VaultRegistry, gyro_config, **make_tx_params())
+    gyro_config.setAddress(
+        config_keys.VAULT_REGISTRY_ADDRESS,
+        vault_registry,
+        {"from": deployer, **make_tx_params()},
+    )
