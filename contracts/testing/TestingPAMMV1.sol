@@ -1,6 +1,7 @@
-pragma solidity ^0.8.4;
+// SPDX-License-Identifier: for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>. 
 
-// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.4;
 
 import "../PrimaryAMMV1.sol";
 
