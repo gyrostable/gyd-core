@@ -303,5 +303,5 @@ def multi_ownable(admin, MultiOwnable):
 
 
 @pytest.fixture(scope="module")
-def authentication_nft(admin, AuthenticationNFT):
-    return admin.deploy(AuthenticationNFT)
+def cap_authentication(admin, CapAuthentication):
+    return admin.deploy(CapAuthentication)

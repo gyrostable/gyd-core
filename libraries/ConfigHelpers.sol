@@ -15,6 +15,7 @@ import "../interfaces/IFeeBank.sol";
 import "../interfaces/IReserve.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
+import "../interfaces/ICapAuthentication.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
 library ConfigHelpers {
@@ -74,7 +75,9 @@ library ConfigHelpers {
     }
 
     function isAuthenticated(IGyroConfig gyroConfig, address user) internal view returns (bool) {
-        address nft = gyroConfig.getAddress(ConfigKeys.AUTHENTICATION_NFT_ADDRESS, address(0));
-        return nft != address(0) && IERC721(nft).balanceOf(user) > 0;
+        if (!gyroConfig.hasKey(ConfigKeys.CAP_AUTHENTICATION_ADDRESS)) return false;
+        return
+            ICapAuthentication(gyroConfig.getAddress(ConfigKeys.CAP_AUTHENTICATION_ADDRESS))
+                .isAuthenticated(user);
     }
 }

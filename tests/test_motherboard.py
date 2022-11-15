@@ -127,10 +127,11 @@ def test_mint_above_user_cap_without_authentication(
 
 @pytest.mark.usefixtures("register_usdc_vault")
 def test_mint_above_user_cap_with_failed_authentication(
-    admin, motherboard, usdc, usdc_vault, alice, gyro_config, AuthenticationNFT
+    admin, motherboard, usdc, usdc_vault, alice, gyro_config, cap_authentication
 ):
-    nft = AuthenticationNFT.deploy({"from": admin})
-    gyro_config.setAddress(config_keys.AUTHENTICATION_NFT_ADDRESS, nft, {"from": admin})
+    gyro_config.setAddress(
+        config_keys.CAP_AUTHENTICATION_ADDRESS, cap_authentication, {"from": admin}
+    )
 
     gyro_config.setUint(config_keys.GYD_USER_CAP, scale(5), {"from": admin})
 
@@ -152,12 +153,14 @@ def test_mint_above_user_cap_with_authentication(
     usdc_vault,
     alice,
     gyro_config,
-    AuthenticationNFT,
+    cap_authentication,
 ):
-    nft = AuthenticationNFT.deploy({"from": admin})
-    nft.mint(alice, {"from": admin})
 
-    gyro_config.setAddress(config_keys.AUTHENTICATION_NFT_ADDRESS, nft, {"from": admin})
+    cap_authentication.authenticate(alice, {"from": admin})
+
+    gyro_config.setAddress(
+        config_keys.CAP_AUTHENTICATION_ADDRESS, cap_authentication, {"from": admin}
+    )
     gyro_config.setUint(config_keys.GYD_USER_CAP, scale(5), {"from": admin})
     gyro_config.setUint(
         config_keys.GYD_NFT_AUTHENTICATED_USER_CAP, scale(15), {"from": admin}
