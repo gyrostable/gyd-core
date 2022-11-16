@@ -1,4 +1,4 @@
-from brownie import GyroConfig, CheckedPriceOracle, TrustedSignerPriceOracle, BatchVaultPriceOracle  # type: ignore
+from brownie import GyroConfig, CheckedPriceOracle, GenericVaultPriceOracle, BatchVaultPriceOracle  # type: ignore
 from brownie import BalancerCPMMPriceOracle, BalancerCPMMV2PriceOracle, BalancerCPMMV3PriceOracle, BalancerCEMMPriceOracle  # type: ignore
 from scripts.utils import (
     as_singleton,
@@ -13,6 +13,7 @@ from tests.support.types import VaultType
 
 @with_gas_usage
 @with_deployed(BatchVaultPriceOracle)
+@with_deployed(GenericVaultPriceOracle)
 @with_deployed(BalancerCPMMPriceOracle)
 @with_deployed(BalancerCPMMV2PriceOracle)
 @with_deployed(BalancerCPMMV3PriceOracle)
@@ -22,9 +23,15 @@ def initialize(
     balancer_cpmm_v3_price_oracle,
     balancer_cpmm_v2_price_oracle,
     balancer_cpmm_price_oracle,
+    generic_vault_price_oracle,
     batch_vault_price_oracle,
 ):
     deployer = get_deployer()
+    batch_vault_price_oracle.registerVaultPriceOracle(
+        VaultType.GENERIC,
+        generic_vault_price_oracle,
+        {"from": deployer, **make_tx_params()},
+    )
     batch_vault_price_oracle.registerVaultPriceOracle(
         VaultType.BALANCER_CPMM,
         balancer_cpmm_price_oracle,

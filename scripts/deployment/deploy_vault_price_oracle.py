@@ -1,5 +1,11 @@
-from brownie import BalancerCEMMPriceOracle, BalancerCPMMPriceOracle, BalancerCPMMV2PriceOracle, BalancerCPMMV3PriceOracle  # type: ignore
+from brownie import GenericVaultPriceOracle, BalancerCEMMPriceOracle, BalancerCPMMPriceOracle, BalancerCPMMV2PriceOracle, BalancerCPMMV3PriceOracle  # type: ignore
 from scripts.utils import as_singleton, get_deployer, with_gas_usage
+
+
+@with_gas_usage
+@as_singleton(GenericVaultPriceOracle)
+def generic():
+    get_deployer().deploy(GenericVaultPriceOracle)
 
 
 @with_gas_usage

@@ -1,73 +1,83 @@
 {
   "1337": {
     "AssetRegistry": [
-      "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24"
+      "0x0290FB167208Af455bB137780163b7B7a9a10C16"
     ],
     "BalancerCEMMPriceOracle": [
-      "0x7414e38377D6DAf6045626EC8a8ABB8a1BC4B97a"
+      "0xc0b3B62DD0400E4baa721DdEc9B8A384147b23fF"
     ],
     "BalancerCPMMPriceOracle": [
-      "0xDDb64fE46a91D46ee29420539FC25FD07c5FEa3E"
+      "0xdAA71FBBA28C946258DD3d5FcC9001401f72270F"
     ],
     "BalancerCPMMV2PriceOracle": [
-      "0x1b88Bdb8269A1aB1372459F5a4eC3663D6f5cCc4"
+      "0xf19A2A01B70519f67ADb309a994Ec8c69A967E8b"
     ],
     "BalancerCPMMV3PriceOracle": [
-      "0x22d5C8BdD4346b390014a07109a8F830094d4abf"
-    ],
-    "BalancerPoolVault": [
-      "0x8914a9E5C5E234fDC3Ce9dc155ec19F43947ab59",
-      "0xD13ebb5C39fB00C06122827E1cbD389930C9E0E3",
-      "0xF16165f1046f1B3cDB37dA25E835B986E696313A"
-    ],
-    "BatchVaultPriceOracle": [
-      "0xB9bdBAEc07751F6d54d19A6B9995708873F3DE18"
-    ],
-    "CheckedPriceOracle": [
-      "0x2D8BE6BF0baA74e0A907016679CaE9190e80dD0A"
-    ],
-    "CrashProtectedChainlinkPriceOracle": [
-      "0xFC628dd79137395F3C9744e33b1c5DE554D94882"
-    ],
-    "FeeBank": [
-      "0x2612Af3A521c2df9EAF28422Ca335b04AdF3ac66"
-    ],
-    "GydToken": [
-      "0x9b1f7F645351AF3631a656421eD2e40f2802E6c0"
-    ],
-    "GyroConfig": [
-      "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
-      "0x0541E43726fb21bA085723D502fa93A166c0f441"
-    ],
-    "LPTokenExchangerRegistry": [
-      "0x6eD79Aa1c71FD7BdBC515EfdA3Bd4e26394435cC"
-    ],
-    "Motherboard": [
-      "0x0E696947A06550DEf604e82C26fd9E493e576337"
-    ],
-    "ProxyAdmin": [
-      "0x0d776afd1C9Bd65a8B9Eb6CcaC767e2073757382"
-    ],
-    "Reserve": [
-      "0x26b4AFb60d6C903165150C6F0AA14F8016bE4aec"
-    ],
-    "ReserveSafetyManager": [
-      "0x47a2Db5D68751EeAdFBC44851E84AcDB4F7299Cc"
-    ],
-    "RootSafetyCheck": [
       "0x4cFB3F70BF6a80397C2e634e5bDd85BC0bb189EE"
     ],
+    "BatchVaultPriceOracle": [
+      "0xCeeFD27e0542aFA926B87d23936c79c276A48277"
+    ],
+    "CheckedPriceOracle": [
+      "0xDDb64fE46a91D46ee29420539FC25FD07c5FEa3E"
+    ],
+    "CrashProtectedChainlinkPriceOracle": [
+      "0xaD888d0Ade988EbEe74B8D4F39BF29a8d0fe8A8D"
+    ],
+    "FeeBank": [
+      "0xFC628dd79137395F3C9744e33b1c5DE554D94882"
+    ],
+    "GenericVault": [
+      "0x995629b19667Ae71483DC812c1B5a35fCaaAF4B8",
+      "0x42D4BA5e542d9FeD87EA657f0295F1968A61c00A",
+      "0xFF5181e2210AB92a5c9db93729Bc47332555B9E9"
+    ],
+    "GenericVaultPriceOracle": [
+      "0x4339316e04CFfB5961D1c41fEF8E44bfA2A7fBd1"
+    ],
+    "GydToken": [
+      "0x6eD79Aa1c71FD7BdBC515EfdA3Bd4e26394435cC"
+    ],
+    "GyroConfig": [
+      "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
+    ],
+    "MockPriceOracle": [
+      "0xD13ebb5C39fB00C06122827E1cbD389930C9E0E3"
+    ],
+    "Motherboard": [
+      "0x21a59654176f2689d12E828B77a783072CD26680"
+    ],
+    "Reserve": [
+      "0xC89Ce4735882C9F0f0FE26686c53074E09B0D550"
+    ],
+    "ReserveManager": [
+      "0x9561C133DD8580860B6b7E504bC5Aa500f0f06a7"
+    ],
+    "ReserveSafetyManager": [
+      "0x2f3efA6bbDC5fAf4dC1a600765c7B7829e47bE10"
+    ],
+    "RootSafetyCheck": [
+      "0x7231ECd1355a60251eE56Bf81f987969fc9bAe29"
+    ],
     "StaticPercentageFeeHandler": [
-      "0xc34175A79ACca40392bECD22ff10fAeBFE780Ae7"
+      "0xdFccc9C59c7361307d47c558ffA75840B32DbA29"
+    ],
+    "Token": [
+      "0x25AF99b922857C37282f578F428CB7f34335B379",
+      "0x6f84742680311CEF5ba42bc10A71a4708b4561d1",
+      "0xfE82e8f24A51E670133f4268cDfc164c49FC3b37"
     ],
     "TrustedSignerPriceOracle": [
-      "0xFF6049B87215476aBf744eaA3a476cBAd46fB1cA"
+      "0xaf5C4C6C7920B4883bC6252e9d9B8fE27187Cf68"
     ],
     "UniswapV3TwapOracle": [
-      "0x86072CbFF48dA3C1F01824a6761A03F105BCC697"
+      "0x5b9b42d6e4B2e4Bf8d42Eba32D46918e10899B66"
+    ],
+    "VaultRegistry": [
+      "0xCfEB869F69431e42cdB54A4F4f105C19C080A601"
     ],
     "VaultSafetyMode": [
-      "0xCeeFD27e0542aFA926B87d23936c79c276A48277"
+      "0x2c5f3c004878923f55A2a255F89Fe29393177509"
     ]
   },
   "137": {

@@ -254,15 +254,15 @@ def decimals(underlying, interface):
 
 
 @pytest.fixture(scope="module")
-def vault(admin, BaseVault, underlying):
-    return admin.deploy(BaseVault, underlying, "Base Vault Token", "BVT")
+def vault(admin, GenericVault, underlying):
+    return admin.deploy(GenericVault, underlying, "Base Vault Token", "BVT")
 
 
 # NOTE: this is a vault that contains only USDC as underlying
 # this is for testing purposes only
 @pytest.fixture(scope="module")
-def usdc_vault(admin, BaseVault, usdc):
-    return admin.deploy(BaseVault, usdc, "USDC Vault", "gUSDC")
+def usdc_vault(admin, GenericVault, usdc):
+    return admin.deploy(GenericVault, usdc, "USDC Vault", "gUSDC")
 
 
 @pytest.fixture(scope="module")
@@ -278,8 +278,8 @@ def batch_vault_price_oracle(admin, TestingBatchVaultPriceOracle, mock_price_ora
 # NOTE: this is a vault that contains only DAI as underlying
 # this is for testing purposes only
 @pytest.fixture(scope="module")
-def dai_vault(admin, BaseVault, dai):
-    return admin.deploy(BaseVault, dai, "DAI Vault", "gDAI")
+def dai_vault(admin, GenericVault, dai):
+    return admin.deploy(GenericVault, dai, "DAI Vault", "gDAI")
 
 
 @pytest.fixture(scope="module")

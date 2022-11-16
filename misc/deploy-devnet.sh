@@ -91,12 +91,16 @@ fi
 brownie run --network $NETWORK_ID scripts/deployment/deploy_coinbase_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_checked_price_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_checked_price_oracle.py initialize
-brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cpmm
-brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cpmm_v2
-brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cpmm_v3
-brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cemm
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py generic
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py cpmm
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py cpmm_v2
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py cpmm_v3
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py cemm
 brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py 
 brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py initialize
+if [ "$LIVE" != "true" ]; then
+    brownie run --network $NETWORK_ID scripts/deployment/deploy_mock_price_oracle.py
+fi
 
 # safety checks
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py root
@@ -106,5 +110,6 @@ brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py reg
 
 # vaults
 brownie run --network $NETWORK_ID scripts/deployment/deploy_static_percentage_fee_handler.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_vaults.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_vaults.py set_fees
+brownie run --network $NETWORK_ID scripts/deployment/deploy_test_vaults.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_test_vaults.py set_fees
+brownie run --network $NETWORK_ID scripts/deployment/deploy_test_vaults.py register_vaults
