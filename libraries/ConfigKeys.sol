@@ -6,7 +6,6 @@ pragma solidity ^0.8.4;
 library ConfigKeys {
     // Addresses
     bytes32 internal constant GYD_TOKEN_ADDRESS = "GYD_TOKEN_ADDRESS";
-    bytes32 internal constant EXCHANGER_REGISTRY_ADDRESS = "EXCHANGER_REGISTRY_ADDRESS";
     bytes32 internal constant PAMM_ADDRESS = "PAMM_ADDRESS";
     bytes32 internal constant FEE_BANK_ADDRESS = "FEE_BANK_ADDRESS";
     bytes32 internal constant RESERVE_ADDRESS = "RESERVE_ADDRESS";
@@ -20,6 +19,6 @@ library ConfigKeys {
 
     // Uints
     bytes32 internal constant GYD_GLOBAL_SUPPLY_CAP = "GYD_GLOBAL_SUPPLY_CAP";
-    bytes32 internal constant GYD_NFT_AUTHENTICATED_USER_CAP = "GYD_NFT_AUTHENTICATED_USER_CAP";
+    bytes32 internal constant GYD_AUTHENTICATED_USER_CAP = "GYD_AUTHENTICATED_USER_CAP";
     bytes32 internal constant GYD_USER_CAP = "GYD_USER_CAP";
 }

@@ -70,7 +70,7 @@ library ConfigHelpers {
         returns (uint256)
     {
         if (authenticated) {
-            return gyroConfig.getUint(ConfigKeys.GYD_NFT_AUTHENTICATED_USER_CAP, type(uint256).max);
+            return gyroConfig.getUint(ConfigKeys.GYD_AUTHENTICATED_USER_CAP, type(uint256).max);
         }
         return gyroConfig.getUint(ConfigKeys.GYD_USER_CAP, type(uint256).max);
     }
