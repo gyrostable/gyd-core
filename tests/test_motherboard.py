@@ -42,7 +42,7 @@ def test_dry_mint_vault_underlying(motherboard, usdc, usdc_vault, alice):
     mint_asset = MintAsset(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
-    gyd_minted, err = motherboard.dryMint([mint_asset], 0, {"from": alice})
+    gyd_minted, err = motherboard.dryMint([mint_asset], 0, alice, {"from": alice})
     assert err == ""
     assert gyd_minted == scale(10)
 
@@ -56,7 +56,7 @@ def test_dry_mint_above_cap(motherboard, usdc, usdc_vault, alice, gyro_config, a
     mint_asset = MintAsset(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
-    gyd_minted, err = motherboard.dryMint([mint_asset], 0, {"from": alice})
+    gyd_minted, err = motherboard.dryMint([mint_asset], 0, alice, {"from": alice})
     assert err == error_codes.SUPPLY_CAP_EXCEEDED
     assert gyd_minted == scale(10)
 
@@ -475,7 +475,7 @@ def test_simple_mint_bpt(
         make_bpt_mint_asset("WETH_USDC"),
     ]
 
-    amount, error = full_motherboard.dryMint(mint_assets, scale(60), {"from": alice})
+    amount, error = full_motherboard.dryMint(mint_assets, scale(60), alice, {"from": alice})
     assert error == ""
     assert scale(60) <= amount <= scale(180)
 

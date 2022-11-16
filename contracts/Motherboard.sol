@@ -109,12 +109,11 @@ contract Motherboard is IMotherboard, Governable {
     }
 
     /// @inheritdoc IMotherboard
-    function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
-        external
-        view
-        override
-        returns (uint256 mintedGYDAmount, string memory err)
-    {
+    function dryMint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount,
+        address account
+    ) external view override returns (uint256 mintedGYDAmount, string memory err) {
         DataTypes.MonetaryAmount[] memory vaultAmounts;
         (vaultAmounts, err) = _dryConvertMintInputAssetsToVaultTokens(assets);
         if (bytes(err).length > 0) {
@@ -143,7 +142,7 @@ contract Motherboard is IMotherboard, Governable {
             return (mintedGYDAmount, Errors.TOO_MUCH_SLIPPAGE);
         }
 
-        if (_isOverCap(mintedGYDAmount)) {
+        if (_isOverCap(account, mintedGYDAmount)) {
             return (mintedGYDAmount, Errors.SUPPLY_CAP_EXCEEDED);
         }
     }
@@ -448,16 +447,12 @@ contract Motherboard is IMotherboard, Governable {
     }
 
     function _isOverCap(address account, uint256 mintedGYDAmount) internal view returns (bool) {
-        if (_isOverCap(mintedGYDAmount)) {
+        uint256 globalSupplyCap = gyroConfig.getGlobalSupplyCap();
+        if (gydToken.totalSupply() + mintedGYDAmount > globalSupplyCap) {
             return true;
         }
         bool isAuthenticated = gyroConfig.isAuthenticated(account);
         uint256 perUserSupplyCap = gyroConfig.getPerUserSupplyCap(isAuthenticated);
         return gydToken.balanceOf(account) + mintedGYDAmount > perUserSupplyCap;
-    }
-
-    function _isOverCap(uint256 mintedGYDAmount) internal view returns (bool) {
-        uint256 globalSupplyCap = gyroConfig.getGlobalSupplyCap();
-        return gydToken.totalSupply() + mintedGYDAmount > globalSupplyCap;
     }
 }

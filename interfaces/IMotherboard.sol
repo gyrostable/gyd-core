@@ -51,9 +51,10 @@ interface IMotherboard {
     /// The parameters are the same as the `mint` function
     /// @param assets the assets and associated amounts used to mint GYD
     /// @param minReceivedAmount the minimum amount of GYD to be minted
+    /// @param account the account that wants to mint
     /// @return mintedGYDAmount the amount that would be minted, or 0 if it an error would occur
     /// @return err a non-empty error message in case an error would happen when minting
-    function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
+    function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount, address account)
         external
         returns (uint256 mintedGYDAmount, string memory err);
 
