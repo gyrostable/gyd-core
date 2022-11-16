@@ -123,10 +123,12 @@ def order_builder(
         tokens = vault.getTokens()
         prices = mock_price_oracle.getPricesUSD(tokens)
         token_with_prices = list(zip(tokens, prices))
+        underlying = vault.underlying()
 
         vault_info = (
             mock_vaults[i].address,
             18,
+            underlying,
             current_vault_prices[i],
             persisted_metadata,
             reserve_balances[i],
@@ -199,10 +201,12 @@ def order_builder_vary_persisted(
         tokens = mock_vaults[i].getTokens()
         prices = mock_price_oracle.getPricesUSD(tokens)
         token_with_prices = list(zip(tokens, prices))
+        underlying = mock_vaults[i].underlying()
 
         vault_info = (
             mock_vaults[i].address,
             18,
+            underlying,
             current_vault_prices[i],
             persisted_metadata,
             reserve_balances[i],

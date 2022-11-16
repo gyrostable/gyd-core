@@ -1,7 +1,16 @@
+import os
 import pytest
 
 from brownie.network import gas_price, priority_fee
 from brownie._config import CONFIG
+from hypothesis import settings
+
+
+settings.register_profile("ci", max_examples=15)
+
+if "CI" in os.environ:
+    settings.load_profile("ci")
+
 
 pytest_plugins = [
     "tests.fixtures.coins",
