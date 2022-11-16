@@ -42,7 +42,7 @@ def test_dry_mint_vault_underlying(motherboard, usdc, usdc_vault, alice):
     mint_asset = MintAsset(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
-    gyd_minted, err = motherboard.dryMint([mint_asset], 0, {"from": alice})
+    gyd_minted, err = motherboard.dryMint([mint_asset], 0, alice, {"from": alice})
     assert err == ""
     assert gyd_minted == scale(10)
 
@@ -52,11 +52,11 @@ def test_dry_mint_above_cap(motherboard, usdc, usdc_vault, alice, gyro_config, a
     decimals = usdc.decimals()
     usdc_amount = scale(10, decimals)
     usdc.approve(motherboard, usdc_amount, {"from": alice})
-    gyro_config.setUint(config_keys.GYD_SUPPLY_CAP, scale(5), {"from": admin})
+    gyro_config.setUint(config_keys.GYD_GLOBAL_SUPPLY_CAP, scale(5), {"from": admin})
     mint_asset = MintAsset(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
-    gyd_minted, err = motherboard.dryMint([mint_asset], 0, {"from": alice})
+    gyd_minted, err = motherboard.dryMint([mint_asset], 0, alice, {"from": alice})
     assert err == error_codes.SUPPLY_CAP_EXCEEDED
     assert gyd_minted == scale(10)
 
@@ -106,7 +106,75 @@ def test_mint_above_cap(admin, motherboard, usdc, usdc_vault, alice, gyro_config
     mint_asset = MintAsset(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
-    gyro_config.setUint(config_keys.GYD_SUPPLY_CAP, scale(5), {"from": admin})
+    gyro_config.setUint(config_keys.GYD_GLOBAL_SUPPLY_CAP, scale(5), {"from": admin})
+    with reverts(error_codes.SUPPLY_CAP_EXCEEDED):
+        motherboard.mint([mint_asset], 0, {"from": alice})
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_mint_above_user_cap_without_authentication(
+    admin, motherboard, usdc, usdc_vault, alice, gyro_config
+):
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    gyro_config.setUint(config_keys.GYD_USER_CAP, scale(5), {"from": admin})
+    with reverts(error_codes.SUPPLY_CAP_EXCEEDED):
+        motherboard.mint([mint_asset], 0, {"from": alice})
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_mint_above_user_cap_with_failed_authentication(
+    admin, motherboard, usdc, usdc_vault, alice, gyro_config, cap_authentication
+):
+    gyro_config.setAddress(
+        config_keys.CAP_AUTHENTICATION_ADDRESS, cap_authentication, {"from": admin}
+    )
+
+    gyro_config.setUint(config_keys.GYD_USER_CAP, scale(5), {"from": admin})
+
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    with reverts(error_codes.SUPPLY_CAP_EXCEEDED):
+        motherboard.mint([mint_asset], 0, {"from": alice})
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_mint_above_user_cap_with_authentication(
+    admin,
+    motherboard,
+    gyd_token,
+    usdc,
+    usdc_vault,
+    alice,
+    gyro_config,
+    cap_authentication,
+):
+
+    cap_authentication.authenticate(alice, {"from": admin})
+
+    gyro_config.setAddress(
+        config_keys.CAP_AUTHENTICATION_ADDRESS, cap_authentication, {"from": admin}
+    )
+    gyro_config.setUint(config_keys.GYD_USER_CAP, scale(5), {"from": admin})
+    gyro_config.setUint(
+        config_keys.GYD_NFT_AUTHENTICATED_USER_CAP, scale(15), {"from": admin}
+    )
+
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(motherboard, usdc_amount * 2, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    motherboard.mint([mint_asset], 0, {"from": alice})
+
+    assert gyd_token.balanceOf(alice) == scale(10)
+
     with reverts(error_codes.SUPPLY_CAP_EXCEEDED):
         motherboard.mint([mint_asset], 0, {"from": alice})
 
@@ -407,7 +475,7 @@ def test_simple_mint_bpt(
         make_bpt_mint_asset("WETH_USDC"),
     ]
 
-    amount, error = full_motherboard.dryMint(mint_assets, scale(60), {"from": alice})
+    amount, error = full_motherboard.dryMint(mint_assets, scale(60), alice, {"from": alice})
     assert error == ""
     assert scale(60) <= amount <= scale(180)
 

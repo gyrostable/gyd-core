@@ -301,3 +301,13 @@ def vault_safety_mode(admin, TestingVaultSafetyMode, request, gyro_config):
 @pytest.fixture(scope="module")
 def testing_fixed_point(admin, TestingFixedPoint):
     return admin.deploy(TestingFixedPoint)
+
+
+@pytest.fixture(scope="module")
+def multi_ownable(admin, MultiOwnable):
+    return admin.deploy(MultiOwnable)
+
+
+@pytest.fixture(scope="module")
+def cap_authentication(admin, CapAuthentication):
+    return admin.deploy(CapAuthentication)

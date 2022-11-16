@@ -2,6 +2,8 @@
 // for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
 import "./ConfigKeys.sol";
 
 import "../interfaces/oracles/IBatchVaultPriceOracle.sol";
@@ -14,6 +16,7 @@ import "../interfaces/IFeeBank.sol";
 import "../interfaces/IReserve.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
+import "../interfaces/ICapAuthentication.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
 library ConfigHelpers {
@@ -57,7 +60,25 @@ library ConfigHelpers {
         return IMotherboard(gyroConfig.getAddress(ConfigKeys.MOTHERBOARD_ADDRESS));
     }
 
-    function getSupplyCap(IGyroConfig gyroConfig) internal view returns (uint256) {
-        return gyroConfig.getUint(ConfigKeys.GYD_SUPPLY_CAP, type(uint256).max);
+    function getGlobalSupplyCap(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.GYD_GLOBAL_SUPPLY_CAP, type(uint256).max);
+    }
+
+    function getPerUserSupplyCap(IGyroConfig gyroConfig, bool authenticated)
+        internal
+        view
+        returns (uint256)
+    {
+        if (authenticated) {
+            return gyroConfig.getUint(ConfigKeys.GYD_NFT_AUTHENTICATED_USER_CAP, type(uint256).max);
+        }
+        return gyroConfig.getUint(ConfigKeys.GYD_USER_CAP, type(uint256).max);
+    }
+
+    function isAuthenticated(IGyroConfig gyroConfig, address user) internal view returns (bool) {
+        if (!gyroConfig.hasKey(ConfigKeys.CAP_AUTHENTICATION_ADDRESS)) return false;
+        return
+            ICapAuthentication(gyroConfig.getAddress(ConfigKeys.CAP_AUTHENTICATION_ADDRESS))
+                .isAuthenticated(user);
     }
 }
