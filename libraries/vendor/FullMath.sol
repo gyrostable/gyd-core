@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: LicenseRef-Gyro-1.0
+// for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 pragma solidity >=0.4.0 <0.9.0;
 
 /// @title Contains 512-bit math functions
