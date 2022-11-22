@@ -35,13 +35,13 @@ vaults = [
         "underlying": {
             "name": "USD Coin",
             "symbol": "USDC",
-            "decimals": 6,
+            "decimals": 18,
             "price": scale(1),
         },
         "mint_fee": scale("0.0001"),
         "redeem_fee": scale("0.0005"),
         "short_flow_memory": int(constants.OUTFLOW_MEMORY),
-        "short_flow_threshold": int(scale(1_000_000, 6)),
+        "short_flow_threshold": int(scale(1_000_000, 18)),
         "initial_weight": scale("0.25"),
     },
 ]

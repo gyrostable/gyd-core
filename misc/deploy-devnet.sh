@@ -82,7 +82,6 @@ brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py in
 brownie run --network $NETWORK_ID scripts/deployment/deploy_pamm.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_motherboard.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py set_feeds
 brownie run --network $NETWORK_ID scripts/deployment/deploy_uniswap_twap_price_oracle.py
@@ -116,3 +115,6 @@ brownie run --network $NETWORK_ID scripts/deployment/deploy_static_percentage_fe
 brownie run --network $NETWORK_ID scripts/deployment/deploy_test_vaults.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_test_vaults.py set_fees
 brownie run --network $NETWORK_ID scripts/deployment/deploy_test_vaults.py register_vaults
+
+# motherboard
+brownie run --network $NETWORK_ID scripts/deployment/deploy_motherboard.py
