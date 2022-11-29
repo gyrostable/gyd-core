@@ -313,4 +313,6 @@ def multi_ownable(admin, MultiOwnable):
 
 @pytest.fixture(scope="module")
 def cap_authentication(admin, CapAuthentication):
-    return admin.deploy(CapAuthentication)
+    cap_authentication = admin.deploy(CapAuthentication)
+    cap_authentication.initialize()
+    return cap_authentication

@@ -1,6 +1,7 @@
 from brownie import GyroConfig  # type: ignore
 
 from scripts.utils import (
+    deploy_proxy,
     get_deployer,
     as_singleton,
     make_tx_params,
@@ -34,8 +35,14 @@ def set_initial_config(gyro_config):
 
 
 @with_gas_usage
+@with_deployed(GyroConfig)
+def proxy(gyro_config):
+    deployer = get_deployer()
+    deploy_proxy(gyro_config, gyro_config.initialize.encode_input(deployer))
+
+
+@with_gas_usage
 @as_singleton(GyroConfig)
 def main():
     deployer = get_deployer()
-    config = deployer.deploy(GyroConfig, **make_tx_params())
-    config.initialize(deployer, {"from": deployer, **make_tx_params()})
+    deployer.deploy(GyroConfig, **make_tx_params())

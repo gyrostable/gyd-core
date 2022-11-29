@@ -1,6 +1,7 @@
-from brownie import CapAuthentication, GyroConfig  # type: ignore
+from brownie import CapAuthentication  # type: ignore
 
 from scripts.utils import (
+    deploy_proxy,
     get_deployer,
     as_singleton,
     make_tx_params,
@@ -11,13 +12,17 @@ from tests.support import config_keys
 
 
 @with_gas_usage
-@as_singleton(CapAuthentication)
-@with_deployed(GyroConfig)
-def main(gyro_config):
-    deployer = get_deployer()
-    cap_authentication = deployer.deploy(CapAuthentication, **make_tx_params())
-    gyro_config.setAddress(
-        config_keys.CAP_AUTHENTICATION_ADDRESS,
+@with_deployed(CapAuthentication)
+def proxy(cap_authentication):
+    deploy_proxy(
         cap_authentication,
-        {"from": deployer, **make_tx_params()},
+        cap_authentication.initialize.encode_input(),
+        config_keys.CAP_AUTHENTICATION_ADDRESS,
     )
+
+
+@with_gas_usage
+@as_singleton(CapAuthentication)
+def main():
+    deployer = get_deployer()
+    deployer.deploy(CapAuthentication, **make_tx_params())
