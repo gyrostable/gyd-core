@@ -25,15 +25,13 @@ def root(gyro_config):
 
 @with_gas_usage
 @as_singleton(ReserveSafetyManager)
-@with_deployed(AssetRegistry)
-def reserve_safety_manager(asset_registry):
+def reserve_safety_manager():
     deployer = get_deployer()
     return deployer.deploy(
         ReserveSafetyManager,
         scale("0.2"),  # large deviation to avoid failing test because of price changes
         constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
-        asset_registry,
         **make_tx_params(),
     )
 

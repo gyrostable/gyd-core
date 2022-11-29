@@ -75,10 +75,10 @@ brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py set_initial_config
 brownie run --network $NETWORK_ID scripts/deployment/deploy_cap_authentication.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_registry.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve_manager.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py initialize
+brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve_manager.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_pamm.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py

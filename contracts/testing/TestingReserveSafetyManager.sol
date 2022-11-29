@@ -9,16 +9,8 @@ contract TestingReserveSafetyManager is ReserveSafetyManager {
     constructor(
         uint256 _maxAllowedVaultDeviation,
         uint256 _stablecoinMaxDeviation,
-        uint256 _minTokenPrice,
-        IAssetRegistry _assetRegistry
-    )
-        ReserveSafetyManager(
-            _maxAllowedVaultDeviation,
-            _stablecoinMaxDeviation,
-            _minTokenPrice,
-            _assetRegistry
-        )
-    {}
+        uint256 _minTokenPrice
+    ) ReserveSafetyManager(_maxAllowedVaultDeviation, _stablecoinMaxDeviation, _minTokenPrice) {}
 
     function calculateWeightsAndTotal(uint256[] memory amounts, uint256[] memory prices)
         external

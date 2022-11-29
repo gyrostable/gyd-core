@@ -22,7 +22,7 @@ def balancer_cpmm_price_oracle(BalancerCPMMPriceOracle, admin):
 
 @pytest.fixture(scope="module")
 def reserve_manager(admin, ReserveManager, gyro_config, request, vault_registry):
-    dependencies = ["reserve", "mock_price_oracle"]
+    dependencies = ["reserve", "asset_registry", "mock_price_oracle"]
     for dep in dependencies:
         request.getfixturevalue(dep)
     reserve_manager = admin.deploy(ReserveManager, gyro_config)
@@ -107,8 +107,12 @@ def mock_price_oracle(admin, MockPriceOracle, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def asset_registry(admin, AssetRegistry):
-    return admin.deploy(AssetRegistry)
+def asset_registry(admin, AssetRegistry, gyro_config):
+    asset_registry = admin.deploy(AssetRegistry)
+    gyro_config.setAddress(
+        config_keys.ASSET_REGISTRY_ADDRESS, asset_registry, {"from": admin}
+    )
+    return asset_registry
 
 
 @pytest.fixture(scope="module")
@@ -215,13 +219,12 @@ def pamm(TestingPAMMV1, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def reserve_safety_manager(admin, TestingReserveSafetyManager, asset_registry):
+def reserve_safety_manager(admin, TestingReserveSafetyManager):
     return admin.deploy(
         TestingReserveSafetyManager,
         constants.MAX_ALLOWED_VAULT_DEVIATION,
         constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
-        asset_registry,
     )
 
 
