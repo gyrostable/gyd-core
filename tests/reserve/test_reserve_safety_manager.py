@@ -1,7 +1,9 @@
-from hypothesis import settings
+from typing import Optional
 import hypothesis.strategies as st
-import pytest
+from brownie import accounts
 from brownie.test import given
+from hypothesis import settings
+
 from tests.reserve import object_creation
 from tests.reserve.reserve_math_implementation import (
     build_metadata,
@@ -15,8 +17,15 @@ from tests.reserve.reserve_math_implementation import (
     update_vault_with_price_safety,
     vault_weight_off_peg_falls,
 )
-from tests.support import constants
-from tests.support.quantized_decimal import QuantizedDecimal as D
+from tests.support import constants, error_codes
+from tests.support.quantized_decimal import DecimalLike, QuantizedDecimal as D
+from tests.support.types import (
+    Order,
+    PersistedVaultMetadata,
+    PricedToken,
+    VaultInfo,
+    VaultWithAmount,
+)
 from tests.support.utils import scale, to_decimal
 
 amount_generator = st.integers(
@@ -47,6 +56,165 @@ vault_metadatas = st.tuples(
 global_metadatas = st.tuples(
     boolean_generator, boolean_generator, boolean_generator, boolean_generator
 )
+
+
+def _create_vault_info(
+    reserve_balance: DecimalLike,
+    price: DecimalLike,
+    current_weight: DecimalLike,
+    is_stable: bool = False,
+    decimals: int = 18,
+    ideal_weight: Optional[DecimalLike] = None,
+    initial_weight: Optional[DecimalLike] = None,
+    initial_price: Optional[DecimalLike] = None,
+):
+    if ideal_weight is None:
+        ideal_weight = current_weight
+    if initial_weight is None:
+        initial_weight = current_weight
+    if initial_price is None:
+        initial_price = price
+
+    underlying_address = accounts.add().address
+
+    return VaultInfo(
+        vault=accounts.add().address,
+        decimals=decimals,
+        current_weight=int(scale(current_weight)),
+        ideal_weight=int(scale(ideal_weight)),
+        persisted_metadata=PersistedVaultMetadata(
+            initial_price=int(scale(initial_price)),
+            initial_weight=int(scale(initial_weight)),
+            short_flow_memory=int(constants.OUTFLOW_MEMORY),
+            short_flow_threshold=int(scale(1_000_000)),
+        ),
+        price=int(scale(price)),
+        priced_tokens=[
+            PricedToken(
+                tokenAddress=underlying_address,
+                price=int(scale(price)),
+                is_stable=is_stable,
+            )
+        ],
+        reserve_balance=int(scale(reserve_balance, decimals)),
+        underlying=underlying_address,
+    )
+
+
+def test_balanced_deposit(reserve_safety_manager):
+    vault_dai = _create_vault_info(1200, 1, "0.5", is_stable=True)
+    vault_eth = _create_vault_info(1, 1200, "0.5")
+    order = Order(
+        mint=True,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_dai, amount=int(scale(1200))),
+            VaultWithAmount(vault_info=vault_eth, amount=int(scale(1))),
+        ],
+    )
+    assert reserve_safety_manager.isMintSafe(order) == ""
+
+
+def test_balanced_deposit_with_different_decimals(reserve_safety_manager):
+    vault_dai = _create_vault_info(2400, 1, "0.5", is_stable=True)
+    vault_eth = _create_vault_info(1, 1200, "0.25")
+    vault_usdc = _create_vault_info(1200, 1, "0.25", is_stable=True, decimals=6)
+    order = Order(
+        mint=True,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_dai, amount=int(scale(2400))),
+            VaultWithAmount(vault_info=vault_eth, amount=int(scale(1))),
+            VaultWithAmount(vault_info=vault_usdc, amount=int(scale(1200, 6))),
+        ],
+    )
+    assert reserve_safety_manager.isMintSafe(order) == ""
+
+
+def test_deposit_within_epsilon(reserve_safety_manager):
+    vault_dai = _create_vault_info(2400, 1, "0.5", is_stable=True)
+    vault_eth = _create_vault_info(1, 1200, "0.25")
+    vault_usdc = _create_vault_info(1200, 1, "0.25", is_stable=True, decimals=6)
+    order = Order(
+        mint=True,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_dai, amount=int(scale(2300))),
+            VaultWithAmount(vault_info=vault_eth, amount=int(scale(1))),
+            VaultWithAmount(vault_info=vault_usdc, amount=int(scale(1100, 6))),
+        ],
+    )
+    assert reserve_safety_manager.isMintSafe(order) == ""
+
+
+def test_deposit_outside_epsilon(reserve_safety_manager):
+    vault_dai = _create_vault_info(2400, 1, "0.5", is_stable=True)
+    vault_eth = _create_vault_info(1, 1200, "0.25")
+    vault_usdc = _create_vault_info(1200, 1, "0.25", is_stable=True, decimals=6)
+    order = Order(
+        mint=True,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_dai, amount=int(scale(3000))),
+            VaultWithAmount(vault_info=vault_eth, amount=int(scale(1))),
+            VaultWithAmount(vault_info=vault_usdc, amount=int(scale(500, 6))),
+        ],
+    )
+    assert reserve_safety_manager.isMintSafe(order) == error_codes.NOT_SAFE_TO_MINT
+
+
+def test_balanced_withdraw(reserve_safety_manager):
+    vault_dai = _create_vault_info(1200, 1, "0.5", is_stable=True)
+    vault_eth = _create_vault_info(1, 1200, "0.5")
+    order = Order(
+        mint=False,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_dai, amount=int(scale(600))),
+            VaultWithAmount(vault_info=vault_eth, amount=int(scale("0.5"))),
+        ],
+    )
+    assert reserve_safety_manager.isRedeemSafe(order) == ""
+
+
+def test_balanced_withdraw_with_different_decimals(reserve_safety_manager):
+    vault_dai = _create_vault_info(2400, 1, "0.5", is_stable=True)
+    vault_eth = _create_vault_info(1, 1200, "0.25")
+    vault_usdc = _create_vault_info(1200, 1, "0.25", is_stable=True, decimals=6)
+    order = Order(
+        mint=False,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_dai, amount=int(scale(1200))),
+            VaultWithAmount(vault_info=vault_eth, amount=int(scale("0.5"))),
+            VaultWithAmount(vault_info=vault_usdc, amount=int(scale(600, 6))),
+        ],
+    )
+    assert reserve_safety_manager.isRedeemSafe(order) == ""
+
+
+def test_withdraw_within_epsilon(reserve_safety_manager):
+    vault_dai = _create_vault_info(2400, 1, "0.5", is_stable=True)
+    vault_eth = _create_vault_info(1, 1200, "0.25")
+    vault_usdc = _create_vault_info(1200, 1, "0.25", is_stable=True, decimals=6)
+    order = Order(
+        mint=False,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_dai, amount=int(scale(1180))),
+            VaultWithAmount(vault_info=vault_eth, amount=int(scale("0.5"))),
+            VaultWithAmount(vault_info=vault_usdc, amount=int(scale(620, 6))),
+        ],
+    )
+    assert reserve_safety_manager.isRedeemSafe(order) == ""
+
+
+def test_withdraw_outside_epsilon(reserve_safety_manager):
+    vault_dai = _create_vault_info(2400, 1, "0.5", is_stable=True)
+    vault_eth = _create_vault_info(1, 1200, "0.25")
+    vault_usdc = _create_vault_info(1200, 1, "0.25", is_stable=True, decimals=6)
+    order = Order(
+        mint=False,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_dai, amount=int(scale(1000))),
+            VaultWithAmount(vault_info=vault_eth, amount=int(scale("0.5"))),
+            VaultWithAmount(vault_info=vault_usdc, amount=int(scale(500, 6))),
+        ],
+    )
+    assert reserve_safety_manager.isRedeemSafe(order) == error_codes.NOT_SAFE_TO_REDEEM
 
 
 @given(
@@ -178,7 +346,10 @@ def test_update_vault_with_price_safety(
     mock_price_oracle.setUSDPrice(usdc, D("1e18"))
 
     ([vault_metadata], _) = object_creation.bundle_to_metadata(
-        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+        ([bundle_vault_metadata], (None,)),
+        mock_vaults,
+        mock_price_oracle,
+        token_stables=[True, True],
     )
 
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
@@ -191,7 +362,10 @@ def test_update_vault_with_price_safety(
     mock_price_oracle.setUSDPrice(dai, D("0.8e18"))
 
     ([vault_metadata], _) = object_creation.bundle_to_metadata(
-        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+        ([bundle_vault_metadata], (None,)),
+        mock_vaults,
+        mock_price_oracle,
+        token_stables=[True, True],
     )
 
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
@@ -203,7 +377,10 @@ def test_update_vault_with_price_safety(
     mock_price_oracle.setUSDPrice(dai, D("0.95e18"))
 
     ([vault_metadata], _) = object_creation.bundle_to_metadata(
-        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+        ([bundle_vault_metadata], (None,)),
+        mock_vaults,
+        mock_price_oracle,
+        token_stables=[True, True],
     )
 
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
@@ -215,7 +392,10 @@ def test_update_vault_with_price_safety(
     mock_price_oracle.setUSDPrice(dai, D("0.94e18"))
 
     ([vault_metadata], _) = object_creation.bundle_to_metadata(
-        ([bundle_vault_metadata], (None,)), mock_vaults, mock_price_oracle
+        ([bundle_vault_metadata], (None,)),
+        mock_vaults,
+        mock_price_oracle,
+        token_stables=[True, True],
     )
 
     vault_metadata_sol = reserve_safety_manager.updateVaultWithPriceSafety(
@@ -597,8 +777,10 @@ def test_is_mint_safe_off_peg(
     mock_price_oracle.setUSDPrice(abc, D("1e18"))
     mock_price_oracle.setUSDPrice(sdt, D("1e18"))
 
+    stable_asets = [True, True, True, False]
+
     mint_order = object_creation.bundle_to_order(
-        order_bundle, True, mock_vaults, mock_price_oracle
+        order_bundle, True, mock_vaults, mock_price_oracle, stable_assets=stable_asets
     )
 
     asset_registry.setAssetAddress("DAI", dai)

@@ -52,6 +52,7 @@ class PersistedVaultMetadata(NamedTuple):
 
 class PricedToken(NamedTuple):
     tokenAddress: str
+    is_stable: bool
     price: int
 
 

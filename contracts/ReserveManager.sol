@@ -11,6 +11,7 @@ import "../libraries/ConfigKeys.sol";
 import "../interfaces/IReserveManager.sol";
 import "../interfaces/oracles/IBatchVaultPriceOracle.sol";
 import "../interfaces/IVaultRegistry.sol";
+import "../interfaces/IAssetRegistry.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGyroVault.sol";
 
@@ -21,15 +22,18 @@ contract ReserveManager is IReserveManager, Governable {
     using ConfigHelpers for IGyroConfig;
 
     IVaultRegistry public immutable vaultRegistry;
+    IAssetRegistry public immutable assetRegistry;
     address public immutable reserveAddress;
     IGyroConfig public immutable gyroConfig;
 
     constructor(IGyroConfig _gyroConfig) {
         vaultRegistry = _gyroConfig.getVaultRegistry();
+        assetRegistry = _gyroConfig.getAssetRegistry();
         reserveAddress = _gyroConfig.getAddress(ConfigKeys.RESERVE_ADDRESS);
 
         require(address(vaultRegistry) != address(0), Errors.INVALID_ARGUMENT);
-        require(address(vaultRegistry) != address(0), Errors.INVALID_ARGUMENT);
+        require(address(assetRegistry) != address(0), Errors.INVALID_ARGUMENT);
+        require(reserveAddress != address(0), Errors.INVALID_ARGUMENT);
 
         gyroConfig = _gyroConfig;
     }
@@ -55,6 +59,7 @@ contract ReserveManager is IReserveManager, Governable {
             for (uint256 j = 0; j < tokens.length; j++) {
                 pricedTokens[j] = DataTypes.PricedToken({
                     tokenAddress: address(tokens[j]),
+                    isStable: assetRegistry.isAssetStable(address(tokens[j])),
                     price: 0
                 });
             }

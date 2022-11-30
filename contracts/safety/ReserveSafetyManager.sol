@@ -7,9 +7,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
+import "../../libraries/DecimalScale.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../interfaces/IReserveManager.sol";
-import "../../interfaces/IAssetRegistry.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../interfaces/balancer/IVault.sol";
 import "../../libraries/Errors.sol";
@@ -17,12 +17,11 @@ import "../../interfaces/ISafetyCheck.sol";
 
 contract ReserveSafetyManager is Governable, ISafetyCheck {
     using FixedPoint for uint256;
+    using DecimalScale for uint256;
 
     uint256 public maxAllowedVaultDeviation;
     uint256 public stablecoinMaxDeviation;
     uint256 public minTokenPrice;
-
-    IAssetRegistry internal assetRegistry;
 
     /// @notice a stablecoin should be equal to 1 USD
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
@@ -30,14 +29,11 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     constructor(
         uint256 _maxAllowedVaultDeviation,
         uint256 _stablecoinMaxDeviation,
-        uint256 _minTokenPrice,
-        IAssetRegistry _assetRegistry
+        uint256 _minTokenPrice
     ) {
-        require(address(_assetRegistry) != address(0), Errors.INVALID_ARGUMENT);
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;
-        assetRegistry = _assetRegistry;
     }
 
     function setVaultMaxDeviation(uint256 _maxAllowedVaultDeviation) external governanceOnly {
@@ -144,6 +140,9 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
                     vaultsWithAmount[i].vaultInfo.reserveBalance -
                     vaultsWithAmount[i].amount;
             }
+            resultingAmounts[i] = resultingAmounts[i].scaleFrom(
+                vaultsWithAmount[i].vaultInfo.decimals
+            );
 
             metaData.vaultMetadata[i].vault = vaultsWithAmount[i].vaultInfo.vault;
             metaData.vaultMetadata[i].idealWeight = vaultsWithAmount[i].vaultInfo.idealWeight;
@@ -192,10 +191,10 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         vaultMetadata.allStablecoinsOnPeg = true;
         vaultMetadata.atLeastOnePriceLargeEnough = false;
         for (uint256 i = 0; i < vaultMetadata.pricedTokens.length; i++) {
-            address tokenAddress = vaultMetadata.pricedTokens[i].tokenAddress;
             uint256 tokenPrice = vaultMetadata.pricedTokens[i].price;
+            bool isStable = vaultMetadata.pricedTokens[i].isStable;
 
-            if (assetRegistry.isAssetStable(tokenAddress)) {
+            if (isStable) {
                 vaultMetadata.atLeastOnePriceLargeEnough = true;
                 if (tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
                     vaultMetadata.allStablecoinsOnPeg = false;

@@ -12,7 +12,7 @@ def _dummy_vault(tokens):
         reserve_balance=0,
         current_weight=0,
         ideal_weight=0,
-        priced_tokens=[PricedToken(t, 0) for t in tokens],
+        priced_tokens=[PricedToken(t, False, 0) for t in tokens],
     )
 
 

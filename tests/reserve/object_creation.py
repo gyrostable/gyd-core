@@ -34,13 +34,17 @@ def vault_info_helper(
     return vault_info
 
 
-def bundle_to_metadata(metadata_bundle, mock_vaults, mock_price_oracle):
+def bundle_to_metadata(
+    metadata_bundle, mock_vaults, mock_price_oracle, token_stables=None
+):
     vaults_bundle, global_metadata = metadata_bundle
     vaults_metadata = []
     for i, v in enumerate(vaults_bundle):
         tokens = mock_vaults[i].getTokens()
         prices = mock_price_oracle.getPricesUSD(tokens)
-        token_with_prices = list(zip(tokens, prices))
+        if token_stables is None:
+            token_stables = [False] * len(tokens)
+        token_with_prices = list(zip(tokens, token_stables, prices))
         vaults_metadata.append((mock_vaults[i],) + v + (token_with_prices,))
     return (vaults_metadata,) + global_metadata
 
@@ -70,7 +74,9 @@ def bundle_to_vault_info(bundle, mock_vaults):
     return vaults_info
 
 
-def bundle_to_order(order_bundle, mint, mock_vaults, mock_price_oracle):
+def bundle_to_order(
+    order_bundle, mint, mock_vaults, mock_price_oracle, stable_assets=None
+):
 
     (
         initial_prices,
@@ -93,6 +99,7 @@ def bundle_to_order(order_bundle, mint, mock_vaults, mock_price_oracle):
         ideal_weights,
         mock_vaults,
         mock_price_oracle,
+        stable_assets,
     )
 
 
@@ -107,6 +114,7 @@ def order_builder(
     ideal_weights,
     mock_vaults,
     mock_price_oracle,
+    stable_assets=None,
 ):
     vaults_with_amount = []
 
@@ -122,7 +130,9 @@ def order_builder(
 
         tokens = vault.getTokens()
         prices = mock_price_oracle.getPricesUSD(tokens)
-        token_with_prices = list(zip(tokens, prices))
+        if stable_assets is None:
+            stable_assets = [False] * len(tokens)
+        token_with_prices = list(zip(tokens, stable_assets, prices))
         underlying = vault.underlying()
 
         vault_info = (
@@ -200,7 +210,7 @@ def order_builder_vary_persisted(
 
         tokens = mock_vaults[i].getTokens()
         prices = mock_price_oracle.getPricesUSD(tokens)
-        token_with_prices = list(zip(tokens, prices))
+        token_with_prices = list(zip(tokens, [False] * len(tokens), prices))
         underlying = mock_vaults[i].underlying()
 
         vault_info = (

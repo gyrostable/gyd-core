@@ -13,6 +13,7 @@ library DataTypes {
     /// @notice Contains a token and the price associated with it
     struct PricedToken {
         address tokenAddress;
+        bool isStable;
         uint256 price;
     }
 
