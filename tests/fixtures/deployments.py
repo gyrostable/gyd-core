@@ -9,6 +9,7 @@ from tests.support.utils import scale
 @pytest.fixture(scope="module")
 def vault_registry(admin, VaultRegistry, gyro_config):
     vault_registry = admin.deploy(VaultRegistry, gyro_config)
+    vault_registry.initialize(admin)
     gyro_config.setAddress(
         config_keys.VAULT_REGISTRY_ADDRESS, vault_registry, {"from": admin}
     )
@@ -29,7 +30,6 @@ def reserve_manager(admin, ReserveManager, gyro_config, request, vault_registry)
     gyro_config.setAddress(
         config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager, {"from": admin}
     )
-    vault_registry.setReserveManagerAddress(reserve_manager, {"from": admin})
     return reserve_manager
 
 
@@ -44,7 +44,8 @@ def static_percentage_fee_handler(StaticPercentageFeeHandler, admin, gyro_config
 
 @pytest.fixture(scope="module")
 def gyd_token(admin, GydToken, gyro_config):
-    gyd_token = admin.deploy(GydToken, gyro_config, "GYD Token", "GYD")
+    gyd_token = admin.deploy(GydToken, gyro_config)
+    gyd_token.initialize("GYD Token", "GYD")
     gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token, {"from": admin})
     return gyd_token
 
@@ -52,6 +53,7 @@ def gyd_token(admin, GydToken, gyro_config):
 @pytest.fixture(scope="module")
 def fee_bank(admin, FeeBank, gyro_config):
     fee_bank = admin.deploy(FeeBank)
+    fee_bank.initialize(admin)
     gyro_config.setAddress(config_keys.FEE_BANK_ADDRESS, fee_bank, {"from": admin})
     return fee_bank
 
@@ -59,6 +61,7 @@ def fee_bank(admin, FeeBank, gyro_config):
 @pytest.fixture(scope="module")
 def reserve(admin, Reserve, gyro_config):
     reserve = admin.deploy(Reserve)
+    reserve.initialize(admin)
     gyro_config.setAddress(config_keys.RESERVE_ADDRESS, reserve, {"from": admin})
     return reserve
 
@@ -109,6 +112,7 @@ def mock_price_oracle(admin, MockPriceOracle, gyro_config):
 @pytest.fixture(scope="module")
 def asset_registry(admin, AssetRegistry, gyro_config):
     asset_registry = admin.deploy(AssetRegistry)
+    asset_registry.initialize(admin)
     gyro_config.setAddress(
         config_keys.ASSET_REGISTRY_ADDRESS, asset_registry, {"from": admin}
     )
@@ -197,6 +201,7 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
     motherboard = admin.deploy(Motherboard, gyro_config)
+    motherboard.initialize(admin)
     reserve.addManager(motherboard, {"from": admin})
     gyro_config.setAddress(
         config_keys.MOTHERBOARD_ADDRESS, motherboard, {"from": admin}
@@ -307,12 +312,14 @@ def testing_fixed_point(admin, TestingFixedPoint):
 
 
 @pytest.fixture(scope="module")
-def multi_ownable(admin, MultiOwnable):
-    return admin.deploy(MultiOwnable)
+def multi_ownable(admin, TestingMultiOwnable):
+    multi_ownable = admin.deploy(TestingMultiOwnable)
+    multi_ownable.initialize(admin)
+    return multi_ownable
 
 
 @pytest.fixture(scope="module")
 def cap_authentication(admin, CapAuthentication):
     cap_authentication = admin.deploy(CapAuthentication)
-    cap_authentication.initialize()
+    cap_authentication.initialize(admin)
     return cap_authentication

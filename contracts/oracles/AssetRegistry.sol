@@ -9,9 +9,9 @@ import "../../interfaces/IAssetRegistry.sol";
 import "../../libraries/Errors.sol";
 import "../../libraries/EnumerableExtensions.sol";
 
-import "../auth/Governable.sol";
+import "../auth/GovernableUpgradeable.sol";
 
-contract AssetRegistry is IAssetRegistry, Governable {
+contract AssetRegistry is IAssetRegistry, GovernableUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.Bytes32Set;
     using EnumerableExtensions for EnumerableSet.Bytes32Set;

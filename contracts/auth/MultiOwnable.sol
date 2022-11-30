@@ -16,8 +16,9 @@ abstract contract MultiOwnable is Initializable {
         _;
     }
 
-    function __initialize() internal {
-        _owners.add(msg.sender);
+    // solhint-disable-next-line func-name-mixedcase
+    function __MultiOwnable_initialize(address owner) internal {
+        _owners.add(owner);
     }
 
     function addOwner(address owner) external onlyOwner {

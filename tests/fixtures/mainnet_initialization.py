@@ -37,12 +37,12 @@ def mainnet_reserve_manager(
     ReserveManager,
     gyro_config,
     request,
-    vault_registry,
     mainnet_vaults: List[DeployedVault],
 ):
     dependencies = [
         "set_mainnet_fees",
         "reserve",
+        "vault_registry",
         "mainnet_batch_vault_price_oracle",
     ]
     for dep in dependencies:
@@ -51,7 +51,6 @@ def mainnet_reserve_manager(
     gyro_config.setAddress(
         config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager, {"from": admin}
     )
-    vault_registry.setReserveManagerAddress(reserve_manager, {"from": admin})
     for vault in mainnet_vaults:
         reserve_manager.registerVault(
             vault.address,
@@ -143,7 +142,10 @@ def full_checked_price_oracle(
     CheckedPriceOracle,
 ):
     mainnet_checked_price_oracle = admin.deploy(
-        CheckedPriceOracle, crash_protected_chainlink_oracle, uniswap_v3_twap_oracle
+        CheckedPriceOracle,
+        crash_protected_chainlink_oracle,
+        uniswap_v3_twap_oracle,
+        TokenAddresses.WETH,
     )
     mainnet_checked_price_oracle.addSignedPriceSource(
         mainnet_coinbase_price_oracle, {"from": admin}

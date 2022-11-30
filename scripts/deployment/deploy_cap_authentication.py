@@ -16,7 +16,7 @@ from tests.support import config_keys
 def proxy(cap_authentication):
     deploy_proxy(
         cap_authentication,
-        cap_authentication.initialize.encode_input(),
+        cap_authentication.initialize.encode_input(get_deployer()),
         config_keys.CAP_AUTHENTICATION_ADDRESS,
     )
 

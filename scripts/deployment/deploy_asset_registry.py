@@ -1,8 +1,9 @@
-from brownie import AssetRegistry, GyroConfig  # type: ignore
+from brownie import AssetRegistry  # type: ignore
 from brownie import ETH_ADDRESS
 
 from scripts.utils import (
     as_singleton,
+    deploy_proxy,
     get_deployer,
     make_tx_params,
     with_deployed,
@@ -31,13 +32,17 @@ def initialize(asset_registry):
 
 
 @with_gas_usage
-@with_deployed(GyroConfig)
-@as_singleton(AssetRegistry)
-def main(gyro_config):
-    deployer = get_deployer()
-    asset_registry = deployer.deploy(AssetRegistry, **make_tx_params())
-    gyro_config.setAddress(
-        config_keys.ASSET_REGISTRY_ADDRESS,
+@with_deployed(AssetRegistry)
+def proxy(asset_registry):
+    deploy_proxy(
         asset_registry,
-        {"from": deployer, **make_tx_params()},
+        config_key=config_keys.ASSET_REGISTRY_ADDRESS,
+        init_data=asset_registry.initialize.encode_input(get_deployer()),
     )
+
+
+@with_gas_usage
+@as_singleton(AssetRegistry)
+def main():
+    deployer = get_deployer()
+    deployer.deploy(AssetRegistry, **make_tx_params())

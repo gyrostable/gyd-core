@@ -9,7 +9,6 @@ import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
 import "../../libraries/DecimalScale.sol";
 import "../../libraries/FixedPoint.sol";
-import "../../interfaces/IReserveManager.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../interfaces/balancer/IVault.sol";
 import "../../libraries/Errors.sol";

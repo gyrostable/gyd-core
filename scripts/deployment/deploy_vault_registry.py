@@ -13,7 +13,11 @@ from tests.support import config_keys
 @with_gas_usage
 @with_deployed(VaultRegistry)
 def proxy(vault_registry):
-    deploy_proxy(vault_registry, config_key=config_keys.VAULT_REGISTRY_ADDRESS)
+    deploy_proxy(
+        vault_registry,
+        config_key=config_keys.VAULT_REGISTRY_ADDRESS,
+        init_data=vault_registry.initialize.encode_input(get_deployer()),
+    )
 
 
 @with_gas_usage

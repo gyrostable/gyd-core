@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
-import "../../interfaces/IReserveManager.sol";
 import "../../interfaces/IGyroConfig.sol";
 import "../../interfaces/IAssetRegistry.sol";
 import "../../interfaces/IGyroVault.sol";
