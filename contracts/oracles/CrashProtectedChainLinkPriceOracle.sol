@@ -25,6 +25,8 @@ contract CrashProtectedChainlinkPriceOracle is BaseChainlinkPriceOracle {
 
     mapping(address => FeedMeta) public feedMetas;
 
+    constructor(address _governor) BaseChainlinkPriceOracle(_governor) {}
+
     /// @inheritdoc IUSDPriceOracle
     function getPriceUSD(address asset) external view override returns (uint256) {
         address feed = feeds[asset];

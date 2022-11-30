@@ -1,4 +1,4 @@
-from brownie import GyroConfig, CheckedPriceOracle, GenericVaultPriceOracle, BatchVaultPriceOracle  # type: ignore
+from brownie import GovernanceProxy, GyroConfig, CheckedPriceOracle, GenericVaultPriceOracle, BatchVaultPriceOracle  # type: ignore
 from brownie import BalancerCPMMPriceOracle, BalancerCPMMV2PriceOracle, BalancerCPMMV3PriceOracle, BalancerCEMMPriceOracle  # type: ignore
 from scripts.utils import (
     as_singleton,
@@ -58,9 +58,12 @@ def initialize(
 @as_singleton(BatchVaultPriceOracle)
 @with_deployed(CheckedPriceOracle)
 @with_deployed(GyroConfig)
-def main(gyro_config, full_checked_price_oracle):
+@with_deployed(GovernanceProxy)
+def main(governance_proxy, gyro_config, full_checked_price_oracle):
     deployer = get_deployer()
-    oracle = deployer.deploy(BatchVaultPriceOracle, full_checked_price_oracle)
+    oracle = deployer.deploy(
+        BatchVaultPriceOracle, governance_proxy, full_checked_price_oracle
+    )
     gyro_config.setAddress(
         config_keys.ROOT_PRICE_ORACLE_ADDRESS,
         oracle,

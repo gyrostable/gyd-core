@@ -30,7 +30,7 @@ contract RootSafetyCheck is ISafetyCheck, Governable {
         _;
     }
 
-    constructor(IGyroConfig _gyroConfig) {
+    constructor(address _governor, IGyroConfig _gyroConfig) Governable(_governor) {
         require(address(_gyroConfig) != address(0), Errors.INVALID_ARGUMENT);
         gyroConfig = _gyroConfig;
     }

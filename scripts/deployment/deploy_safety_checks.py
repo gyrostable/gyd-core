@@ -1,4 +1,4 @@
-from brownie import RootSafetyCheck, AssetRegistry, GyroConfig, ReserveSafetyManager, VaultSafetyMode  # type: ignore
+from brownie import RootSafetyCheck, GovernanceProxy, GyroConfig, ReserveSafetyManager, VaultSafetyMode  # type: ignore
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -13,9 +13,12 @@ from tests.support.utils import scale
 @with_gas_usage
 @as_singleton(RootSafetyCheck)
 @with_deployed(GyroConfig)
-def root(gyro_config):
+@with_deployed(GovernanceProxy)
+def root(governance_proxy, gyro_config):
     deployer = get_deployer()
-    safety_check = deployer.deploy(RootSafetyCheck, gyro_config, **make_tx_params())
+    safety_check = deployer.deploy(
+        RootSafetyCheck, governance_proxy, gyro_config, **make_tx_params()
+    )
     gyro_config.setAddress(
         config_keys.ROOT_SAFETY_CHECK_ADDRESS,
         safety_check,
@@ -25,10 +28,12 @@ def root(gyro_config):
 
 @with_gas_usage
 @as_singleton(ReserveSafetyManager)
-def reserve_safety_manager():
+@with_deployed(GovernanceProxy)
+def reserve_safety_manager(governance_proxy):
     deployer = get_deployer()
     return deployer.deploy(
         ReserveSafetyManager,
+        governance_proxy,
         scale("0.2"),  # large deviation to avoid failing test because of price changes
         constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
@@ -39,11 +44,13 @@ def reserve_safety_manager():
 @with_gas_usage
 @as_singleton(VaultSafetyMode)
 @with_deployed(GyroConfig)
-def vault_safety_mode(gyro_config):
+@with_deployed(GovernanceProxy)
+def vault_safety_mode(governance_proxy, gyro_config):
     deployer = get_deployer()
 
     deployer.deploy(
         VaultSafetyMode,
+        governance_proxy,
         constants.SAFETY_BLOCKS_AUTOMATIC,
         constants.SAFETY_BLOCKS_GUARDIAN,
         gyro_config,

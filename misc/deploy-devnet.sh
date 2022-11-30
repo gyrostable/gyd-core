@@ -71,7 +71,11 @@ elif [ -d "build/deployments/$CHAIN_ID" ]; then
     exit 1
 fi
 
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_proxy_admin.py
+
+brownie run --network $NETWORK_ID scripts/deployment/deploy_governance_proxy.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_governance_proxy.py proxy
 
 brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py proxy

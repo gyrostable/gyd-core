@@ -135,3 +135,4 @@ def deploy_proxy(contract, init_data=b"", config_key=None):
     FreezableTransparentUpgradeableProxy.remove(proxy)
     container.remove(contract)
     container.at(proxy.address)
+    return proxy

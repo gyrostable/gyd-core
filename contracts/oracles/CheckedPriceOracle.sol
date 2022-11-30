@@ -57,10 +57,11 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     /// _usdOracle is for Chainlink
     constructor(
+        address _governor,
         address _usdOracle,
         address _relativeOracle,
         address _wethAddress
-    ) {
+    ) Governable(_governor) {
         require(_usdOracle != address(0), Errors.INVALID_ARGUMENT);
         require(_relativeOracle != address(0), Errors.INVALID_ARGUMENT);
         usdOracle = IUSDPriceOracle(_usdOracle);

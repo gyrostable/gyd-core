@@ -22,11 +22,11 @@ def balancer_cpmm_price_oracle(BalancerCPMMPriceOracle, admin):
 
 
 @pytest.fixture(scope="module")
-def reserve_manager(admin, ReserveManager, gyro_config, request, vault_registry):
-    dependencies = ["reserve", "asset_registry", "mock_price_oracle"]
+def reserve_manager(admin, ReserveManager, gyro_config, request):
+    dependencies = ["reserve", "asset_registry", "mock_price_oracle", "vault_registry"]
     for dep in dependencies:
         request.getfixturevalue(dep)
-    reserve_manager = admin.deploy(ReserveManager, gyro_config)
+    reserve_manager = admin.deploy(ReserveManager, admin, gyro_config)
     gyro_config.setAddress(
         config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager, {"from": admin}
     )
@@ -35,7 +35,7 @@ def reserve_manager(admin, ReserveManager, gyro_config, request, vault_registry)
 
 @pytest.fixture(scope="module")
 def static_percentage_fee_handler(StaticPercentageFeeHandler, admin, gyro_config):
-    fee_handler = admin.deploy(StaticPercentageFeeHandler)
+    fee_handler = admin.deploy(StaticPercentageFeeHandler, admin)
     gyro_config.setAddress(
         config_keys.FEE_HANDLER_ADDRESS, fee_handler, {"from": admin}
     )
@@ -137,12 +137,12 @@ def local_signer_price_oracle(
 
 @pytest.fixture(scope="module")
 def uniswap_v3_twap_oracle(admin, UniswapV3TwapOracle):
-    return admin.deploy(UniswapV3TwapOracle)
+    return admin.deploy(UniswapV3TwapOracle, admin)
 
 
 @pytest.fixture(scope="module")
 def chainlink_price_oracle(ChainlinkPriceOracle, admin):
-    return admin.deploy(ChainlinkPriceOracle)
+    return admin.deploy(ChainlinkPriceOracle, admin)
 
 
 @pytest.fixture(scope="module")
@@ -153,13 +153,19 @@ def crash_protected_chainlink_oracle(CrashProtectedChainlinkPriceOracle, admin):
 @pytest.fixture(scope="module")
 def local_checked_price_oracle(admin, mock_price_oracle, CheckedPriceOracle):
     return admin.deploy(
-        CheckedPriceOracle, mock_price_oracle, mock_price_oracle, TokenAddresses.WETH
+        CheckedPriceOracle,
+        admin,
+        mock_price_oracle,
+        mock_price_oracle,
+        TokenAddresses.WETH,
     )
 
 
 @pytest.fixture(scope="module")
 def testing_checked_price_oracle(admin, mock_price_oracle, TestingCheckedPriceOracle):
-    return admin.deploy(TestingCheckedPriceOracle, mock_price_oracle, mock_price_oracle)
+    return admin.deploy(
+        TestingCheckedPriceOracle, admin, mock_price_oracle, mock_price_oracle
+    )
 
 
 @pytest.fixture(scope="module")
@@ -169,6 +175,7 @@ def mainnet_checked_price_oracle(
 
     mainnet_checked_price_oracle = admin.deploy(
         CheckedPriceOracle,
+        admin,
         chainlink_price_oracle,
         uniswap_v3_twap_oracle,
         TokenAddresses.WETH,
@@ -180,7 +187,7 @@ def mainnet_checked_price_oracle(
 
 @pytest.fixture(scope="module")
 def root_safety_check(admin, RootSafetyCheck, gyro_config):
-    safety_check = admin.deploy(RootSafetyCheck, gyro_config)
+    safety_check = admin.deploy(RootSafetyCheck, admin, gyro_config)
     gyro_config.setAddress(
         config_keys.ROOT_SAFETY_CHECK_ADDRESS, safety_check, {"from": admin}
     )
@@ -210,8 +217,9 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
 
 
 @pytest.fixture(scope="module")
-def pamm(TestingPAMMV1, gyro_config):
+def pamm(admin, TestingPAMMV1, gyro_config):
     return TestingPAMMV1.deploy(
+        admin,
         gyro_config,
         PammParams(
             int(constants.ALPHA_MIN_REL),
@@ -219,7 +227,7 @@ def pamm(TestingPAMMV1, gyro_config):
             int(constants.THETA_FLOOR),
             int(constants.OUTFLOW_MEMORY),
         ),
-        {"from": accounts[0]},
+        {"from": admin},
     )
 
 
@@ -227,6 +235,7 @@ def pamm(TestingPAMMV1, gyro_config):
 def reserve_safety_manager(admin, TestingReserveSafetyManager):
     return admin.deploy(
         TestingReserveSafetyManager,
+        admin,
         constants.MAX_ALLOWED_VAULT_DEVIATION,
         constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
@@ -280,7 +289,7 @@ def mock_vaults(admin, MockGyroVault, dai):
 
 @pytest.fixture(scope="module")
 def batch_vault_price_oracle(admin, TestingBatchVaultPriceOracle, mock_price_oracle):
-    return admin.deploy(TestingBatchVaultPriceOracle, mock_price_oracle)
+    return admin.deploy(TestingBatchVaultPriceOracle, admin, mock_price_oracle)
 
 
 # NOTE: this is a vault that contains only DAI as underlying
@@ -300,6 +309,7 @@ def vault_safety_mode(admin, TestingVaultSafetyMode, request, gyro_config):
     request.getfixturevalue("motherboard")
     return admin.deploy(
         TestingVaultSafetyMode,
+        admin,
         constants.SAFETY_BLOCKS_AUTOMATIC,
         constants.SAFETY_BLOCKS_GUARDIAN,
         gyro_config,

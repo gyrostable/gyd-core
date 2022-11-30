@@ -1,4 +1,4 @@
-from brownie import CheckedPriceOracle, TrustedSignerPriceOracle, UniswapV3TwapOracle, CrashProtectedChainlinkPriceOracle  # type: ignore
+from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, UniswapV3TwapOracle, CrashProtectedChainlinkPriceOracle  # type: ignore
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -27,10 +27,12 @@ def initialize(coinbase_price_oracle, checked_price_oracle):
 @as_singleton(CheckedPriceOracle)
 @with_deployed(UniswapV3TwapOracle)
 @with_deployed(CrashProtectedChainlinkPriceOracle)
-def main(crash_protected_chainlink_oracle, uniswap_v3_twap_oracle):
+@with_deployed(GovernanceProxy)
+def main(governance_proxy, crash_protected_chainlink_oracle, uniswap_v3_twap_oracle):
     deployer = get_deployer()
     deployer.deploy(
         CheckedPriceOracle,
+        governance_proxy,
         crash_protected_chainlink_oracle,
         uniswap_v3_twap_oracle,
         TokenAddresses.WETH,

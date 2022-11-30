@@ -26,10 +26,11 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
 
     constructor(
+        address _governor,
         uint256 _maxAllowedVaultDeviation,
         uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice
-    ) {
+    ) Governable(_governor) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;

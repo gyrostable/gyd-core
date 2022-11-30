@@ -50,10 +50,11 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     uint256 public constant THRESHOLD_BUFFER = 8e17;
 
     constructor(
+        address _governor,
         uint256 _safetyBlocksAutomatic,
         uint256 _safetyBlocksGuardian,
         address _gyroConfig
-    ) {
+    ) Governable(_governor) {
         safetyBlocksAutomatic = _safetyBlocksAutomatic;
         safetyBlocksGuardian = _safetyBlocksGuardian;
         gyroConfig = IGyroConfig(_gyroConfig);

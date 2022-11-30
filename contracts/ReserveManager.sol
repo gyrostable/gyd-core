@@ -26,7 +26,7 @@ contract ReserveManager is IReserveManager, Governable {
     address public immutable reserveAddress;
     IGyroConfig public immutable gyroConfig;
 
-    constructor(IGyroConfig _gyroConfig) {
+    constructor(address governor, IGyroConfig _gyroConfig) Governable(governor) {
         vaultRegistry = _gyroConfig.getVaultRegistry();
         assetRegistry = _gyroConfig.getAssetRegistry();
         reserveAddress = _gyroConfig.getAddress(ConfigKeys.RESERVE_ADDRESS);

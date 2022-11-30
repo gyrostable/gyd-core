@@ -1,4 +1,4 @@
-from brownie import GyroConfig, PrimaryAMMV1  # type: ignore
+from brownie import GovernanceProxy, GyroConfig, PrimaryAMMV1  # type: ignore
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -13,10 +13,12 @@ from tests.support.types import PammParams
 @with_gas_usage
 @as_singleton(PrimaryAMMV1)
 @with_deployed(GyroConfig)
-def main(gyro_config):
+@with_deployed(GovernanceProxy)
+def main(governance_proxy, gyro_config):
     deployer = get_deployer()
     pamm = deployer.deploy(
         PrimaryAMMV1,
+        governance_proxy,
         gyro_config,
         PammParams(
             alpha_bar=int(constants.ALPHA_MIN_REL),
@@ -25,6 +27,8 @@ def main(gyro_config):
             outflow_memory=int(constants.OUTFLOW_MEMORY),
         ),
     )
-    gyro_config.setAddress(
-        config_keys.PAMM_ADDRESS, pamm, {"from": deployer, **make_tx_params()}
+    governance_proxy.executeCall(
+        gyro_config,
+        gyro_config.setAddress.encode_input(config_keys.PAMM_ADDRESS, pamm),
+        {"from": deployer, **make_tx_params()},
     )

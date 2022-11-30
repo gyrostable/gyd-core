@@ -5,10 +5,11 @@ import "./BaseVault.sol";
 
 contract GenericVault is BaseVault {
     constructor(
+        address _governor,
         address _underlying,
         string memory name,
         string memory symbol
-    ) BaseVault(_underlying, name, symbol) {}
+    ) BaseVault(_governor, _underlying, name, symbol) {}
 
     /// @inheritdoc IGyroVault
     function vaultType() external view virtual override returns (Vaults.Type) {
