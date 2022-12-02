@@ -8,13 +8,12 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "../interfaces/IReserve.sol";
 import "../libraries/EnumerableExtensions.sol";
-import "./auth/Governable.sol";
+import "./auth/GovernableUpgradeable.sol";
 
 /// @notice all the Gyroscope reserve funds are stored in this address
-contract Reserve is IReserve, Governable {
+contract Reserve is IReserve, GovernableUpgradeable {
     using SafeERC20 for IERC20;
     using EnumerableSet for EnumerableSet.AddressSet;
-    using EnumerableExtensions for EnumerableSet.AddressSet;
 
     EnumerableSet.AddressSet internal _managers;
 
@@ -37,7 +36,7 @@ contract Reserve is IReserve, Governable {
 
     /// @inheritdoc IReserve
     function managers() external view returns (address[] memory) {
-        return _managers.toArray();
+        return _managers.values();
     }
 
     /// @inheritdoc IReserve

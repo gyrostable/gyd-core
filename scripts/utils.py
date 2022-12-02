@@ -3,6 +3,8 @@ import sys
 from functools import lru_cache, wraps
 from typing import Any, Dict, cast
 
+import brownie
+from brownie import GyroConfig, GovernanceProxy, FreezableTransparentUpgradeableProxy, ProxyAdmin  # type: ignore
 from brownie import accounts, network
 from brownie.network.account import ClefAccount, LocalAccount
 
@@ -113,3 +115,27 @@ def with_deployed(Contract):
         return wrapper
 
     return wrapped
+
+
+def deploy_proxy(contract, init_data=b"", config_key=None):
+    deployer = get_deployer()
+    proxy = deployer.deploy(
+        FreezableTransparentUpgradeableProxy,
+        contract,
+        ProxyAdmin[0],
+        init_data,
+        **make_tx_params(),
+    )
+    if config_key:
+        gyro_config = GyroConfig[0]
+        GovernanceProxy[0].executeCall(
+            gyro_config,
+            gyro_config.setAddress.encode_input(config_key, proxy),
+            {"from": deployer, **make_tx_params()},
+        )
+    container = getattr(brownie, contract._name)
+
+    FreezableTransparentUpgradeableProxy.remove(proxy)
+    container.remove(contract)
+    container.at(proxy.address)
+    return proxy

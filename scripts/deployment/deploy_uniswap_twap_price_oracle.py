@@ -1,4 +1,4 @@
-from brownie import UniswapV3TwapOracle, web3  # type: ignore
+from brownie import GovernanceProxy, UniswapV3TwapOracle, web3  # type: ignore
 
 from scripts.utils import (
     get_deployer,
@@ -25,5 +25,8 @@ def add_pools(uniswap_v3_twap_oracle):
 
 @with_gas_usage
 @as_singleton(UniswapV3TwapOracle)
-def main():
-    return get_deployer().deploy(UniswapV3TwapOracle, **make_tx_params())
+@with_deployed(GovernanceProxy)
+def main(governance_proxy):
+    return get_deployer().deploy(
+        UniswapV3TwapOracle, governance_proxy, **make_tx_params()
+    )

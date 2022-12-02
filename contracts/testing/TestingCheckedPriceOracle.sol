@@ -5,8 +5,13 @@ pragma solidity ^0.8.10;
 import "../oracles/CheckedPriceOracle.sol";
 
 contract TestingCheckedPriceOracle is CheckedPriceOracle {
-    constructor(IUSDPriceOracle _priceOracle, IRelativePriceOracle _relativeOracle)
+    constructor(
+        address _governor,
+        IUSDPriceOracle _priceOracle,
+        IRelativePriceOracle _relativeOracle
+    )
         CheckedPriceOracle(
+            _governor,
             address(_priceOracle),
             address(_relativeOracle),
             address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)

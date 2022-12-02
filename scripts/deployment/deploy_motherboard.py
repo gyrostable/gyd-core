@@ -1,6 +1,7 @@
-from brownie import Motherboard, GyroConfig, Reserve  # type: ignore
+from brownie import GovernanceProxy, Motherboard, GyroConfig, Reserve  # type: ignore
 from scripts.utils import (
     as_singleton,
+    deploy_proxy,
     get_deployer,
     make_tx_params,
     with_deployed,
@@ -10,16 +11,26 @@ from tests.support import config_keys
 
 
 @with_gas_usage
-@as_singleton(Motherboard)
-@with_deployed(GyroConfig)
+@with_deployed(Motherboard)
 @with_deployed(Reserve)
-def main(reserve, gyro_config):
+@with_deployed(GovernanceProxy)
+def proxy(governance_proxy, reserve, motherboard):
     deployer = get_deployer()
-
-    motherboard = deployer.deploy(Motherboard, gyro_config, **make_tx_params())
-    reserve.addManager(motherboard, {"from": deployer, **make_tx_params()})
-    gyro_config.setAddress(
-        config_keys.MOTHERBOARD_ADDRESS,
+    deploy_proxy(
         motherboard,
+        config_key=config_keys.MOTHERBOARD_ADDRESS,
+        init_data=motherboard.initialize.encode_input(deployer),
+    )
+    governance_proxy.executeCall(
+        reserve,
+        reserve.addManager.encode_input(motherboard),
         {"from": deployer, **make_tx_params()},
     )
+
+
+@with_gas_usage
+@as_singleton(Motherboard)
+@with_deployed(GyroConfig)
+def main(gyro_config):
+    deployer = get_deployer()
+    deployer.deploy(Motherboard, gyro_config, **make_tx_params())

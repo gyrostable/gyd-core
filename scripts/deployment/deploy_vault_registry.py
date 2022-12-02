@@ -1,5 +1,6 @@
 from brownie import GyroConfig, VaultRegistry  # type: ignore
 from scripts.utils import (
+    deploy_proxy,
     get_deployer,
     make_tx_params,
     with_deployed,
@@ -10,13 +11,18 @@ from tests.support import config_keys
 
 
 @with_gas_usage
+@with_deployed(VaultRegistry)
+def proxy(vault_registry):
+    deploy_proxy(
+        vault_registry,
+        config_key=config_keys.VAULT_REGISTRY_ADDRESS,
+        init_data=vault_registry.initialize.encode_input(get_deployer()),
+    )
+
+
+@with_gas_usage
 @with_deployed(GyroConfig)
 @as_singleton(VaultRegistry)
 def main(gyro_config):
     deployer = get_deployer()
-    vault_registry = deployer.deploy(VaultRegistry, gyro_config, **make_tx_params())
-    gyro_config.setAddress(
-        config_keys.VAULT_REGISTRY_ADDRESS,
-        vault_registry,
-        {"from": deployer, **make_tx_params()},
-    )
+    deployer.deploy(VaultRegistry, gyro_config, **make_tx_params())

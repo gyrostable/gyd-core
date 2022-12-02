@@ -9,7 +9,6 @@ import "./../auth/Governable.sol";
 import "../../libraries/DataTypes.sol";
 import "../../libraries/DecimalScale.sol";
 import "../../libraries/FixedPoint.sol";
-import "../../interfaces/IReserveManager.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../interfaces/balancer/IVault.sol";
 import "../../libraries/Errors.sol";
@@ -27,10 +26,11 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
 
     constructor(
+        address _governor,
         uint256 _maxAllowedVaultDeviation,
         uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice
-    ) {
+    ) Governable(_governor) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
         stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;

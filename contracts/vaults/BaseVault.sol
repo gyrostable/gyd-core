@@ -25,10 +25,11 @@ abstract contract BaseVault is IGyroVault, ERC20, Governable {
     address public override strategy;
 
     constructor(
+        address _governor,
         address _underlying,
         string memory name,
         string memory symbol
-    ) ERC20(name, symbol) {
+    ) Governable(_governor) ERC20(name, symbol) {
         require(address(_underlying) != address(0), Errors.INVALID_ARGUMENT);
         underlying = _underlying;
         deployedAt = block.number;

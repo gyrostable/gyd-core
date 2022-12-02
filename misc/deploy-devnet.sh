@@ -71,17 +71,42 @@ elif [ -d "build/deployments/$CHAIN_ID" ]; then
     exit 1
 fi
 
+
+brownie run --network $NETWORK_ID scripts/deployment/deploy_proxy_admin.py
+
+brownie run --network $NETWORK_ID scripts/deployment/deploy_governance_proxy.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_governance_proxy.py proxy
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py proxy
 brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py set_initial_config
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_cap_authentication.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_cap_authentication.py proxy
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_registry.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_registry.py proxy
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py proxy
 brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py initialize
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve.py proxy
+
+# does not hold any state so no need for proxy, `setAddress` is enough
 brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve_manager.py
+
+# does not hold any state so no need for proxy, `setAddress` is enough
 brownie run --network $NETWORK_ID scripts/deployment/deploy_pamm.py
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py proxy
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py proxy
+
+# oracles can be replaced without needing to be upgraded
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py set_feeds
 brownie run --network $NETWORK_ID scripts/deployment/deploy_uniswap_twap_price_oracle.py
@@ -107,6 +132,7 @@ fi
 # safety checks
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py root
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py vault_safety_mode
+brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py vault_safety_mode_proxy
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py reserve_safety_manager
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py register
 

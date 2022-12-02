@@ -29,7 +29,7 @@ contract UniswapV3TwapOracle is IRelativePriceOracle, Governable {
 
     uint32 public timeWindowLengthSeconds;
 
-    constructor() {
+    constructor(address _governor) Governable(_governor) {
         timeWindowLengthSeconds = DEFAULT_TIME_WINDOW_LENGTH_SECONDS_AGO;
     }
 
