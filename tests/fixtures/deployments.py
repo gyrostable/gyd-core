@@ -147,7 +147,7 @@ def chainlink_price_oracle(ChainlinkPriceOracle, admin):
 
 @pytest.fixture(scope="module")
 def crash_protected_chainlink_oracle(CrashProtectedChainlinkPriceOracle, admin):
-    return admin.deploy(CrashProtectedChainlinkPriceOracle)
+    return admin.deploy(CrashProtectedChainlinkPriceOracle, admin)
 
 
 @pytest.fixture(scope="module")
@@ -272,14 +272,14 @@ def decimals(underlying, interface):
 
 @pytest.fixture(scope="module")
 def vault(admin, GenericVault, underlying):
-    return admin.deploy(GenericVault, underlying, "Base Vault Token", "BVT")
+    return admin.deploy(GenericVault, admin, underlying, "Base Vault Token", "BVT")
 
 
 # NOTE: this is a vault that contains only USDC as underlying
 # this is for testing purposes only
 @pytest.fixture(scope="module")
 def usdc_vault(admin, GenericVault, usdc):
-    return admin.deploy(GenericVault, usdc, "USDC Vault", "gUSDC")
+    return admin.deploy(GenericVault, admin, usdc, "USDC Vault", "gUSDC")
 
 
 @pytest.fixture(scope="module")
@@ -296,7 +296,7 @@ def batch_vault_price_oracle(admin, TestingBatchVaultPriceOracle, mock_price_ora
 # this is for testing purposes only
 @pytest.fixture(scope="module")
 def dai_vault(admin, GenericVault, dai):
-    return admin.deploy(GenericVault, dai, "DAI Vault", "gDAI")
+    return admin.deploy(GenericVault, admin, dai, "DAI Vault", "gDAI")
 
 
 @pytest.fixture(scope="module")
@@ -309,6 +309,7 @@ def vault_safety_mode(admin, TestingVaultSafetyMode, request, gyro_config):
     request.getfixturevalue("motherboard")
     return admin.deploy(
         TestingVaultSafetyMode,
+        admin,
         constants.SAFETY_BLOCKS_AUTOMATIC,
         constants.SAFETY_BLOCKS_GUARDIAN,
         gyro_config,
