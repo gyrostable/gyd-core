@@ -6,8 +6,8 @@ library Vaults {
     enum Type {
         GENERIC,
         BALANCER_CPMM,
-        BALANCER_CPMMV2,
-        BALANCER_CPMMV3,
-        BALANCER_CEMM
+        BALANCER_2CLP,
+        BALANCER_3CLP,
+        BALANCER_ECLP
     }
 }

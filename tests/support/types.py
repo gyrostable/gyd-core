@@ -18,7 +18,7 @@ class RedeemAsset(NamedTuple):
     originVault: str
 
 
-class CEMMMathParams(NamedTuple):
+class ECLPMathParams(NamedTuple):
     alpha: DecimalLike
     beta: DecimalLike
     c: DecimalLike
@@ -31,7 +31,7 @@ class Vector2(NamedTuple):
     y: DecimalLike
 
 
-class CEMMMathDerivedParams(NamedTuple):
+class ECLPMathDerivedParams(NamedTuple):
     tauAlpha: Vector2
     tauBeta: Vector2
 
@@ -102,9 +102,9 @@ class FeedMeta(NamedTuple):
 class VaultType:
     GENERIC = 0
     BALANCER_CPMM = 1
-    BALANCER_CPMMV2 = 2
-    BALANCER_CPMMV3 = 3
-    BALANCER_CEMM = 4
+    BALANCER_2CLP = 2
+    BALANCER_3CLP = 3
+    BALANCER_ECLP = 4
 
 
 class VaultToDeploy(NamedTuple):

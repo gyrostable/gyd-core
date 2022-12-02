@@ -120,9 +120,9 @@ brownie run --network $NETWORK_ID scripts/deployment/deploy_checked_price_oracle
 brownie run --network $NETWORK_ID scripts/deployment/deploy_checked_price_oracle.py initialize
 brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py generic
 brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py cpmm
-brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py cpmm_v2
-brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py cpmm_v3
-brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py cemm
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py g2clp
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py g3clp
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py eclp
 brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py 
 brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py initialize
 if [ "$LIVE" != "true" ]; then

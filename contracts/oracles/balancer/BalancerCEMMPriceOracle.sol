@@ -7,9 +7,9 @@ import "./BaseBalancerPriceOracle.sol";
 
 import "../../../libraries/TypeConversion.sol";
 
-import "../../../interfaces/balancer/ICEMM.sol";
+import "../../../interfaces/balancer/IECLP.sol";
 
-contract BalancerCEMMPriceOracle is BaseBalancerPriceOracle {
+contract BalancerECLPPriceOracle is BaseBalancerPriceOracle {
     using TypeConversion for DataTypes.PricedToken[];
     using FixedPoint for uint256;
 
@@ -18,11 +18,11 @@ contract BalancerCEMMPriceOracle is BaseBalancerPriceOracle {
         IGyroVault vault,
         DataTypes.PricedToken[] memory underlyingPricedTokens
     ) public view override returns (uint256) {
-        ICEMM pool = ICEMM(vault.underlying());
-        (ICEMM.Params memory params, ICEMM.DerivedParams memory derivedParams) = pool
+        IECLP pool = IECLP(vault.underlying());
+        (IECLP.Params memory params, IECLP.DerivedParams memory derivedParams) = pool
             .getParameters();
         return
-            BalancerLPSharePricing.priceBptCEMM(
+            BalancerLPSharePricing.priceBptECLP(
                 params,
                 derivedParams,
                 getInvariantDivSupply(pool),

@@ -19,7 +19,7 @@ def proxy(governance_proxy, reserve, motherboard):
     deploy_proxy(
         motherboard,
         config_key=config_keys.MOTHERBOARD_ADDRESS,
-        init_data=motherboard.initialize.encode_input(deployer),
+        init_data=motherboard.initialize.encode_input(governance_proxy),
     )
     governance_proxy.executeCall(
         reserve,

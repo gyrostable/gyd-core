@@ -1,4 +1,4 @@
-from brownie import GyroConfig, Reserve  # type: ignore
+from brownie import GovernanceProxy, Reserve  # type: ignore
 from scripts.utils import (
     as_singleton,
     deploy_proxy,
@@ -12,11 +12,12 @@ from tests.support import config_keys
 
 @with_gas_usage
 @with_deployed(Reserve)
-def proxy(reserve):
+@with_deployed(GovernanceProxy)
+def proxy(governance_proxy, reserve):
     deploy_proxy(
         reserve,
         config_key=config_keys.RESERVE_ADDRESS,
-        init_data=reserve.initialize.encode_input(get_deployer()),
+        init_data=reserve.initialize.encode_input(governance_proxy),
     )
 
 

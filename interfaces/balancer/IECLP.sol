@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 
 import "./IMinimalPoolView.sol";
 
-interface ICEMM is IMinimalPoolView {
+interface IECLP is IMinimalPoolView {
     struct Params {
         int256 alpha;
         int256 beta;

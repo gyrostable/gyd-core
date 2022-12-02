@@ -37,7 +37,7 @@ def reserve_safety_manager(governance_proxy):
     return deployer.deploy(
         ReserveSafetyManager,
         governance_proxy,
-        scale("0.2"),  # large deviation to avoid failing test because of price changes
+        scale("0.1"),
         constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
         **make_tx_params(),
@@ -61,10 +61,11 @@ def vault_safety_mode(gyro_config):
 
 @with_gas_usage
 @with_deployed(VaultSafetyMode)
-def vault_safety_mode_proxy(vault_safety_mode):
+@with_deployed(GovernanceProxy)
+def vault_safety_mode_proxy(governance_proxy, vault_safety_mode):
     deploy_proxy(
         vault_safety_mode,
-        init_data=vault_safety_mode.initialize.encode_input(get_deployer()),
+        init_data=vault_safety_mode.initialize.encode_input(governance_proxy),
     )
 
 

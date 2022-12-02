@@ -1,4 +1,4 @@
-from brownie import CapAuthentication  # type: ignore
+from brownie import CapAuthentication, GovernanceProxy  # type: ignore
 
 from scripts.utils import (
     deploy_proxy,
@@ -13,10 +13,11 @@ from tests.support import config_keys
 
 @with_gas_usage
 @with_deployed(CapAuthentication)
-def proxy(cap_authentication):
+@with_deployed(GovernanceProxy)
+def proxy(governance_proxy, cap_authentication):
     deploy_proxy(
         cap_authentication,
-        cap_authentication.initialize.encode_input(get_deployer()),
+        cap_authentication.initialize.encode_input(governance_proxy),
         config_keys.CAP_AUTHENTICATION_ADDRESS,
     )
 

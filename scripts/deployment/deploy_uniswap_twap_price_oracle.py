@@ -11,15 +11,18 @@ from tests.fixtures.mainnet_contracts import UniswapPools
 
 
 @with_deployed(UniswapV3TwapOracle)
-def add_pools(uniswap_v3_twap_oracle):
+@with_deployed(GovernanceProxy)
+def add_pools(governance_proxy, uniswap_v3_twap_oracle):
     deployer = get_deployer()
     current_pools = {
         web3.toChecksumAddress(p) for p in uniswap_v3_twap_oracle.getPools()
     }
     for pool in UniswapPools.all_pools():
         if web3.toChecksumAddress(pool) not in current_pools:
-            uniswap_v3_twap_oracle.registerPool(
-                pool, {"from": deployer, **make_tx_params()}
+            governance_proxy.executeCall(
+                uniswap_v3_twap_oracle,
+                uniswap_v3_twap_oracle.registerPool.encode_input(pool),
+                {"from": deployer, **make_tx_params()},
             )
 
 

@@ -1,4 +1,4 @@
-from brownie import AssetRegistry  # type: ignore
+from brownie import GovernanceProxy, AssetRegistry  # type: ignore
 from brownie import ETH_ADDRESS
 
 from scripts.utils import (
@@ -15,29 +15,67 @@ from tests.support import config_keys
 
 @with_gas_usage
 @with_deployed(AssetRegistry)
-def initialize(asset_registry):
+@with_deployed(GovernanceProxy)
+def initialize(governance_proxy, asset_registry):
     deployer = get_deployer()
-    asset_registry.setAssetAddress("ETH", ETH_ADDRESS, {"from": deployer})
-    asset_registry.setAssetAddress("WETH", TokenAddresses.WETH, {"from": deployer})
-    asset_registry.setAssetAddress("DAI", TokenAddresses.DAI, {"from": deployer})
-    asset_registry.setAssetAddress("WBTC", TokenAddresses.WBTC, {"from": deployer})
-    asset_registry.setAssetAddress("USDC", TokenAddresses.USDC, {"from": deployer})
-    asset_registry.setAssetAddress("USDT", TokenAddresses.USDT, {"from": deployer})
+    governance_proxy.executeCall(
+        asset_registry,
+        asset_registry.setAssetAddress.encode_input("ETH", ETH_ADDRESS),
+        {"from": deployer},
+    )
+    governance_proxy.executeCall(
+        asset_registry,
+        asset_registry.setAssetAddress.encode_input("WETH", TokenAddresses.WETH),
+        {"from": deployer},
+    )
+    governance_proxy.executeCall(
+        asset_registry,
+        asset_registry.setAssetAddress.encode_input("DAI", TokenAddresses.DAI),
+        {"from": deployer},
+    )
+    governance_proxy.executeCall(
+        asset_registry,
+        asset_registry.setAssetAddress.encode_input("WBTC", TokenAddresses.WBTC),
+        {"from": deployer},
+    )
+    governance_proxy.executeCall(
+        asset_registry,
+        asset_registry.setAssetAddress.encode_input("USDC", TokenAddresses.USDC),
+        {"from": deployer},
+    )
+    governance_proxy.executeCall(
+        asset_registry,
+        asset_registry.setAssetAddress.encode_input("USDT", TokenAddresses.USDT),
+        {"from": deployer},
+    )
 
-    asset_registry.addStableAsset(TokenAddresses.USDT, {"from": deployer})
-    asset_registry.addStableAsset(TokenAddresses.USDC, {"from": deployer})
-    asset_registry.addStableAsset(TokenAddresses.DAI, {"from": deployer})
+    governance_proxy.executeCall(
+        asset_registry,
+        asset_registry.addStableAsset.encode_input(TokenAddresses.USDT),
+        {"from": deployer},
+    )
+    governance_proxy.executeCall(
+        asset_registry,
+        asset_registry.addStableAsset.encode_input(TokenAddresses.USDC),
+        {"from": deployer},
+    )
+    governance_proxy.executeCall(
+        asset_registry,
+        asset_registry.addStableAsset.encode_input(TokenAddresses.DAI),
+        {"from": deployer},
+    )
 
     return asset_registry
 
 
 @with_gas_usage
 @with_deployed(AssetRegistry)
-def proxy(asset_registry):
+@with_deployed(GovernanceProxy)
+def proxy(governance_proxy, asset_registry):
     deploy_proxy(
         asset_registry,
         config_key=config_keys.ASSET_REGISTRY_ADDRESS,
-        init_data=asset_registry.initialize.encode_input(get_deployer()),
+        init_data=asset_registry.initialize.encode_input(governance_proxy),
     )
 
 

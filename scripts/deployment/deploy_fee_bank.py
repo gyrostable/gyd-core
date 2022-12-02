@@ -1,4 +1,4 @@
-from brownie import FeeBank, GyroConfig  # type: ignore
+from brownie import FeeBank, GovernanceProxy  # type: ignore
 from scripts.utils import (
     as_singleton,
     deploy_proxy,
@@ -12,11 +12,12 @@ from tests.support import config_keys
 
 @with_gas_usage
 @with_deployed(FeeBank)
-def proxy(fee_bank):
+@with_deployed(GovernanceProxy)
+def proxy(governance_proxy, fee_bank):
     deploy_proxy(
         fee_bank,
         config_key=config_keys.FEE_BANK_ADDRESS,
-        init_data=fee_bank.initialize.encode_input(get_deployer()),
+        init_data=fee_bank.initialize.encode_input(governance_proxy),
     )
 
 
