@@ -13,7 +13,8 @@ from tests.support.utils import scale
 
 
 @with_deployed(CrashProtectedChainlinkPriceOracle)
-def set_feeds(crash_protected_chainlink_oracle):
+@with_deployed(GovernanceProxy)
+def set_feeds(governance_proxy, crash_protected_chainlink_oracle):
     deployer = get_deployer()
     supported_assets = {
         web3.toChecksumAddress(a)
@@ -24,10 +25,11 @@ def set_feeds(crash_protected_chainlink_oracle):
             continue
         min_diff_time = 3_600
         max_deviation = scale("0.01" if is_stable(asset) else "0.05")
-        crash_protected_chainlink_oracle.setFeed(
-            asset,
-            feed,
-            (min_diff_time, max_deviation),
+        governance_proxy.executeCall(
+            crash_protected_chainlink_oracle,
+            crash_protected_chainlink_oracle.setFeed.encode_input(
+                asset, feed, (min_diff_time, max_deviation)
+            ),
             {"from": deployer, **make_tx_params()},
         )
 

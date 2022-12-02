@@ -1,4 +1,4 @@
-from brownie import GenericVault, Token, StaticPercentageFeeHandler, ReserveManager, MockPriceOracle  # type: ignore
+from brownie import GenericVault, Token, StaticPercentageFeeHandler, ReserveManager, MockPriceOracle, GovernanceProxy  # type: ignore
 from scripts.utils import get_deployer, with_deployed, with_gas_usage
 from tests.support.utils import scale
 from tests.support import constants
@@ -49,35 +49,42 @@ vaults = [
 
 @with_gas_usage
 @with_deployed(StaticPercentageFeeHandler)
-def set_fees(static_percentage_fee_handler):
+@with_deployed(GovernanceProxy)
+def set_fees(governance_proxy, static_percentage_fee_handler):
     deployer = get_deployer()
     for i, vault in enumerate(vaults):
-        static_percentage_fee_handler.setVaultFees(
-            GenericVault[i],
-            vault["mint_fee"],
-            vault["redeem_fee"],
+        governance_proxy.executeCall(
+            static_percentage_fee_handler,
+            static_percentage_fee_handler.setVaultFees.encode_input(
+                GenericVault[i], vault["mint_fee"], vault["redeem_fee"]
+            ),
             {"from": deployer},
         )
 
 
 @with_gas_usage
 @with_deployed(ReserveManager)
-def register_vaults(reserve_manager):
+@with_deployed(GovernanceProxy)
+def register_vaults(governance_proxy, reserve_manager):
     deployer = get_deployer()
     for i, vault_info in enumerate(vaults):
         vault = GenericVault[i]
-        reserve_manager.registerVault(
-            vault,
-            vault_info["initial_weight"],
-            vault_info["short_flow_memory"],
-            vault_info["short_flow_threshold"],
+        governance_proxy.executeCall(
+            reserve_manager,
+            reserve_manager.registerVault.encode_input(
+                vault,
+                vault_info["initial_weight"],
+                vault_info["short_flow_memory"],
+                vault_info["short_flow_threshold"],
+            ),
             {"from": deployer, "allow_revert": True, "gas_limit": 1_000_000},
         )
 
 
 @with_gas_usage
 @with_deployed(MockPriceOracle)
-def main(mock_price_oracle):
+@with_deployed(GovernanceProxy)
+def main(governance_proxy, mock_price_oracle):
     deployer = get_deployer()
     for vault_info in vaults:
         decimals = vault_info["underlying"]["decimals"]
@@ -95,4 +102,6 @@ def main(mock_price_oracle):
             token, vault_info["underlying"]["price"], {"from": deployer}
         )
 
-        deployer.deploy(GenericVault, token, f"Vault {name}", f"gv{symbol}")
+        deployer.deploy(
+            GenericVault, governance_proxy, token, f"Vault {name}", f"gv{symbol}"
+        )

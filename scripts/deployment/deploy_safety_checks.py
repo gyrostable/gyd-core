@@ -20,9 +20,11 @@ def root(governance_proxy, gyro_config):
     safety_check = deployer.deploy(
         RootSafetyCheck, governance_proxy, gyro_config, **make_tx_params()
     )
-    gyro_config.setAddress(
-        config_keys.ROOT_SAFETY_CHECK_ADDRESS,
-        safety_check,
+    governance_proxy.executeCall(
+        gyro_config,
+        gyro_config.setAddress.encode_input(
+            config_keys.ROOT_SAFETY_CHECK_ADDRESS, safety_check
+        ),
         {"from": deployer, **make_tx_params()},
     )
 
@@ -70,11 +72,18 @@ def vault_safety_mode_proxy(vault_safety_mode):
 @with_deployed(VaultSafetyMode)
 @with_deployed(ReserveSafetyManager)
 @with_deployed(RootSafetyCheck)
-def register(root_safety_check, reserve_safety_manager, vault_safety_mode):
+@with_deployed(GovernanceProxy)
+def register(
+    governance_proxy, root_safety_check, reserve_safety_manager, vault_safety_mode
+):
     deployer = get_deployer()
-    root_safety_check.addCheck(
-        vault_safety_mode, {"from": deployer, **make_tx_params()}
+    governance_proxy.executeCall(
+        root_safety_check,
+        root_safety_check.addCheck.encode_input(vault_safety_mode),
+        {"from": deployer, **make_tx_params()},
     )
-    root_safety_check.addCheck(
-        reserve_safety_manager, {"from": deployer, **make_tx_params()}
+    governance_proxy.executeCall(
+        root_safety_check,
+        root_safety_check.addCheck.encode_input(reserve_safety_manager),
+        {"from": deployer, **make_tx_params()},
     )

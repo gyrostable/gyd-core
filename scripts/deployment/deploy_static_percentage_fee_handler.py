@@ -13,8 +13,10 @@ def main(governance_proxy, gyro_config):
     fee_handler = deployer.deploy(
         StaticPercentageFeeHandler, governance_proxy, **make_tx_params()
     )
-    gyro_config.setAddress(
-        config_keys.FEE_HANDLER_ADDRESS,
-        fee_handler,
+    governance_proxy.executeCall(
+        gyro_config,
+        gyro_config.setAddress.encode_input(
+            config_keys.FEE_HANDLER_ADDRESS, fee_handler
+        ),
         {"from": deployer, **make_tx_params()},
     )
