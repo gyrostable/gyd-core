@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-import "./../auth/Governable.sol";
+import "./../auth/GovernableUpgradeable.sol";
 import "../../libraries/DataTypes.sol";
 import "../../interfaces/IGyroConfig.sol";
 import "../../interfaces/IAssetRegistry.sol";
@@ -22,7 +22,7 @@ import "../../libraries/StringExtensions.sol";
 import "../../libraries/EnumerableExtensions.sol";
 import "../../libraries/ConfigHelpers.sol";
 
-contract VaultSafetyMode is ISafetyCheck, Governable {
+contract VaultSafetyMode is ISafetyCheck, GovernableUpgradeable {
     using FixedPoint for uint256;
     using StringExtensions for string;
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -50,11 +50,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     uint256 public constant THRESHOLD_BUFFER = 8e17;
 
     constructor(
-        address _governor,
         uint256 _safetyBlocksAutomatic,
         uint256 _safetyBlocksGuardian,
         address _gyroConfig
-    ) Governable(_governor) {
+    ) {
         safetyBlocksAutomatic = _safetyBlocksAutomatic;
         safetyBlocksGuardian = _safetyBlocksGuardian;
         gyroConfig = IGyroConfig(_gyroConfig);

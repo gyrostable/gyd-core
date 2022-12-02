@@ -309,7 +309,6 @@ def vault_safety_mode(admin, TestingVaultSafetyMode, request, gyro_config):
     request.getfixturevalue("motherboard")
     return admin.deploy(
         TestingVaultSafetyMode,
-        admin,
         constants.SAFETY_BLOCKS_AUTOMATIC,
         constants.SAFETY_BLOCKS_GUARDIAN,
         gyro_config,

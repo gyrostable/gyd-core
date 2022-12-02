@@ -15,7 +15,7 @@ contract TestingVaultSafetyMode is VaultSafetyMode {
         uint256 _safetyBlocksAutomatic,
         uint256 _safetyBlocksGuardian,
         address _gyroConfig
-    ) VaultSafetyMode(_governor, _safetyBlocksAutomatic, _safetyBlocksGuardian, _gyroConfig) {}
+    ) VaultSafetyMode(_safetyBlocksAutomatic, _safetyBlocksGuardian, _gyroConfig) {}
 
     function calculateRemainingBlocks(uint256 lastRemainingBlocks, uint256 blocksElapsed)
         external
