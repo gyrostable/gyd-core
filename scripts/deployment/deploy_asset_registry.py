@@ -20,7 +20,7 @@ def initialize(governance_proxy, asset_registry):
     deployer = get_deployer()
     governance_proxy.executeCall(
         asset_registry,
-        asset_registry.setAssetAddress.encode_input("ETH", ETH_ADDRESS),
+        asset_registry.setAssetAddress.encode_input("ETH", TokenAddresses.WETH),
         {"from": deployer},
     )
     governance_proxy.executeCall(

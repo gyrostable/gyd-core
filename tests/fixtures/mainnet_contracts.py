@@ -36,6 +36,7 @@ _token_addresses = {
         "UNI": "0xb33EaAd8d922B1083446DC23f610c2567fB5180f",
         "LINK": "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
         "WMATIC": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+        "BUSD": "0x9C9e5fD8bbc25984B178FdCE6117Defa39d2db39",
     },
 }
 
@@ -114,6 +115,11 @@ class TokenAddresses:
 
     @classmethod
     @property
+    def BUSD(cls):
+        return _token_address("BUSD")
+
+    @classmethod
+    @property
     def GUSD(cls):
         return _token_address("GUSD")
 
@@ -157,6 +163,8 @@ _chainlink_feeds = {
         "LINK_USD_FEED": "0xd9FFdb71EbE7496cC440152d43986Aae0AB76665",
         "AAVE_USD_FEED": "0x72484B12719E23115761D5DA1646945632979bB6",
         "UNI_USD_FEED": "0xdf0Fb4e4F928d2dCB76f438575fDD8682386e13C",
+        "TUSD_USD_FEED": "0x7c5d415b64312d38c56b54358449d0a4058339d2",
+        "BUSD_USD_FEED": "0xe0dc07d5ed74741ceeda61284ee56a2a0f7a4cc9",
     },
 }
 
@@ -221,6 +229,11 @@ class ChainlinkFeeds:
     def UNI_USD_FEED(cls):
         return _chainlink_feed("UNI_USD_FEED")
 
+    @classmethod
+    @property
+    def TUSD_USD_FEED(cls):
+        return _chainlink_feed("TUSD_USD_FEED")
+
 
 _uniswap_pools = {
     1: {
@@ -241,6 +254,7 @@ _uniswap_pools = {
         "WETH_UNI": "0x357faf5843c7fd7fb4e34fbeabdac16eabe8a5bc",
         "MATIC_AAVE": "0xa9077cdb3d13f45b8b9d87c43e11bce0e73d8631",
         "LINK_WETH": "0x3e31ab7f37c048fc6574189135d108df80f0ea26",
+        "TUSD_USDC": "0x39529e96c28807655b5856b3d342c6225111770e",
     },
 }
 
@@ -316,6 +330,11 @@ class UniswapPools:
         return _get_uniswap_pool("LINK_WETH")
 
     @classmethod
+    @property
+    def TUSD_USDC(cls):
+        return _get_uniswap_pool("TUSD_USDC")
+
+    @classmethod
     def all_pools(cls):
         return [
             pool
@@ -349,6 +368,7 @@ def get_chainlink_feeds():
             (TokenAddresses.LINK, ChainlinkFeeds.LINK_USD_FEED),
             (TokenAddresses.AAVE, ChainlinkFeeds.AAVE_USD_FEED),
             (TokenAddresses.UNI, ChainlinkFeeds.UNI_USD_FEED),
+            (TokenAddresses.TUSD, ChainlinkFeeds.TUSD_USD_FEED),
         ]
     raise ValueError(f"chain {chain.id} not supported")
 
