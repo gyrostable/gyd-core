@@ -3,17 +3,12 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin-upgradeable/contracts/access/OwnableUpgradeable.sol";
+import "./GovernableUpgradeable.sol";
 
-contract GovernanceProxy is OwnableUpgradeable {
+contract GovernanceProxy is GovernableUpgradeable {
     using Address for address;
 
-    function initialize(address _owner) external initializer {
-        __Ownable_init();
-        transferOwnership(_owner);
-    }
-
-    function executeCall(address target, bytes calldata payload) external onlyOwner {
+    function executeCall(address target, bytes calldata payload) external governanceOnly {
         target.functionCall(payload);
     }
 }
