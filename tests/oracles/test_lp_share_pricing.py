@@ -387,7 +387,7 @@ def test_price_bpt_eclp(
 
     bpt_price_sol = gyro_lp_price_testing.priceBptECLP(
         scale(params),
-        scale(derived),
+        scale(derived) + [0] * 5,
         scale(invariant_div_supply),
         scale(underlying_prices),
     )
