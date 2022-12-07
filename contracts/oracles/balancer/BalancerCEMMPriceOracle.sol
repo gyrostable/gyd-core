@@ -20,7 +20,7 @@ contract BalancerECLPPriceOracle is BaseBalancerPriceOracle {
     ) public view override returns (uint256) {
         IECLP pool = IECLP(vault.underlying());
         (IECLP.Params memory params, IECLP.DerivedParams memory derivedParams) = pool
-            .getParameters();
+            .getECLPParams();
         return
             BalancerLPSharePricing.priceBptECLP(
                 params,

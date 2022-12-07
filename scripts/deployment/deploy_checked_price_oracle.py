@@ -14,6 +14,9 @@ from tests.fixtures.mainnet_contracts import TokenAddresses
 @with_deployed(TrustedSignerPriceOracle)
 @with_deployed(GovernanceProxy)
 def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
+    checked_price_oracle = CheckedPriceOracle.at(
+        "0xFEfEEE9ED22B243E8CD52fA353172C3d44fFB434"
+    )
     deployer = get_deployer()
     tx_params = {"from": deployer, **make_tx_params()}
     governance_proxy.executeCall(
