@@ -11,6 +11,7 @@ import "../../../interfaces/balancer/IECLP.sol";
 
 contract BalancerECLPPriceOracle is BaseBalancerPriceOracle {
     using TypeConversion for DataTypes.PricedToken[];
+    using TypeConversion for IECLP.DerivedParams;
     using FixedPoint for uint256;
 
     /// @inheritdoc BaseVaultPriceOracle
@@ -24,7 +25,7 @@ contract BalancerECLPPriceOracle is BaseBalancerPriceOracle {
         return
             BalancerLPSharePricing.priceBptECLP(
                 params,
-                derivedParams,
+                derivedParams.downscaleDerivedParams(),
                 getInvariantDivSupply(pool),
                 underlyingPricedTokens.pluckPrices()
             );

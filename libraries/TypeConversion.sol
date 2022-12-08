@@ -3,6 +3,7 @@
 pragma solidity ^0.8.4;
 
 import "./DataTypes.sol";
+import "../interfaces/balancer/IECLP.sol";
 
 library TypeConversion {
     function pluckPrices(DataTypes.PricedToken[] memory pricedTokens)
@@ -15,5 +16,27 @@ library TypeConversion {
             prices[i] = pricedTokens[i].price;
         }
         return prices;
+    }
+
+    function downscaleVector(IECLP.Vector2 memory v) internal pure returns (IECLP.Vector2 memory) {
+        return IECLP.Vector2(v.x / 1e20, v.y / 1e20);
+    }
+
+    function downscaleDerivedParams(IECLP.DerivedParams memory params)
+        internal
+        pure
+        returns (IECLP.DerivedParams memory)
+    {
+        return
+            IECLP.DerivedParams(
+                downscaleVector(params.tauAlpha),
+                downscaleVector(params.tauBeta),
+                // the following variables are not used in the price calculation
+                params.u,
+                params.v,
+                params.w,
+                params.z,
+                params.dSq
+            );
     }
 }
