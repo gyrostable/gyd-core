@@ -78,7 +78,7 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
         for (uint256 i = 0; i < vaultsToUpdate.length; i++) {
             require(vaultAddresses.contains(vaultsToUpdate[i]), Errors.VAULT_NOT_FOUND);
             vaultsMetadata[vaultsToUpdate[i]].shortFlowMemory = newShortFlowMemory[i];
-            vaultsMetadata[vaultsToUpdate[i]].shortFlowMemory = newShortFlowThreshold[i];
+            vaultsMetadata[vaultsToUpdate[i]].shortFlowThreshold = newShortFlowThreshold[i];
         }
     }
 
