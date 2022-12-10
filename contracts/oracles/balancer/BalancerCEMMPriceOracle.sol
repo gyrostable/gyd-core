@@ -30,4 +30,10 @@ contract BalancerECLPPriceOracle is BaseBalancerPriceOracle {
                 underlyingPricedTokens.pluckPrices()
             );
     }
+
+    function getInvariantDivSupply(IMinimalPoolView pool) internal view override returns (uint256) {
+        uint256 invariant = pool.getLastInvariant();
+        uint256 totalSupply = pool.totalSupply();
+        return invariant.divDown(totalSupply);
+    }
 }

@@ -13,7 +13,7 @@ abstract contract BaseBalancerPriceOracle is BaseVaultPriceOracle {
     using TypeConversion for DataTypes.PricedToken[];
     using FixedPoint for uint256;
 
-    function getInvariantDivSupply(IMinimalPoolView pool) internal view returns (uint256) {
+    function getInvariantDivSupply(IMinimalPoolView pool) internal view virtual returns (uint256) {
         uint256 invariant = pool.getInvariant();
         uint256 totalSupply = pool.totalSupply();
         return invariant.divDown(totalSupply);
