@@ -18,6 +18,9 @@ POLYGON_2CLP_USDC_DAI_POOL_ID = (
     "0xf16a66320fafe03c9bf6daaaebe9418f17620de60002000000000000000008e1"
 )
 
+GV_2CLP_USDC_DAI_PER_USD = 400416022433178311987
+GV_ECLP_TUSD_USDC_PER_USD = 566252610024670
+GV_3CLP_USDC_BUSD_USDT_PER_USD = 1994750994494982116993
 
 vaults = [
     {
@@ -29,7 +32,7 @@ vaults = [
         "mint_fee": 0,
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
-        "short_flow_threshold": int(scale(1_000)),
+        "short_flow_threshold": 1000 * GV_2CLP_USDC_DAI_PER_USD,
         "initial_weight": int(scale(1) / 3) + 1,
     },
     {
@@ -41,7 +44,7 @@ vaults = [
         "mint_fee": 0,
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
-        "short_flow_threshold": int(scale(1_000)),
+        "short_flow_threshold": 1000 * GV_ECLP_TUSD_USDC_PER_USD,
         "initial_weight": int(scale(1) / 3),
     },
     {
@@ -53,7 +56,7 @@ vaults = [
         "mint_fee": 0,
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
-        "short_flow_threshold": int(scale(1_000)),
+        "short_flow_threshold": 1000 * GV_3CLP_USDC_BUSD_USDT_PER_USD,
         "initial_weight": int(scale(1) / 3),
     },
     {

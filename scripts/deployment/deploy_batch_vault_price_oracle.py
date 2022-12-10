@@ -59,6 +59,7 @@ def initialize(
         ),
         {"from": deployer, **make_tx_params()},
     )
+
     governance_proxy.executeCall(
         batch_vault_price_oracle,
         batch_vault_price_oracle.registerVaultPriceOracle.encode_input(
