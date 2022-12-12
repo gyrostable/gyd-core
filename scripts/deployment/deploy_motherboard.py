@@ -16,14 +16,14 @@ from tests.support import config_keys
 @with_deployed(GovernanceProxy)
 def proxy(governance_proxy, reserve, motherboard):
     deployer = get_deployer()
-    deploy_proxy(
+    motherboard_proxy = deploy_proxy(
         motherboard,
         config_key=config_keys.MOTHERBOARD_ADDRESS,
         init_data=motherboard.initialize.encode_input(governance_proxy),
     )
     governance_proxy.executeCall(
         reserve,
-        reserve.addManager.encode_input(motherboard),
+        reserve.addManager.encode_input(motherboard_proxy),
         {"from": deployer, **make_tx_params()},
     )
 
