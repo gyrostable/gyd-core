@@ -234,6 +234,11 @@ class ChainlinkFeeds:
     def TUSD_USD_FEED(cls):
         return _chainlink_feed("TUSD_USD_FEED")
 
+    @classmethod
+    @property
+    def BUSD_USD_FEED(cls):
+        return _chainlink_feed("BUSD_USD_FEED")
+
 
 _uniswap_pools = {
     1: {
@@ -369,6 +374,7 @@ def get_chainlink_feeds():
             (TokenAddresses.AAVE, ChainlinkFeeds.AAVE_USD_FEED),
             (TokenAddresses.UNI, ChainlinkFeeds.UNI_USD_FEED),
             (TokenAddresses.TUSD, ChainlinkFeeds.TUSD_USD_FEED),
+            (TokenAddresses.BUSD, ChainlinkFeeds.BUSD_USD_FEED),
         ]
     raise ValueError(f"chain {chain.id} not supported")
 
