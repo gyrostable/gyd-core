@@ -47,7 +47,7 @@ def mainnet_reserve_manager(
     ]
     for dep in dependencies:
         request.getfixturevalue(dep)
-    reserve_manager = admin.deploy(ReserveManager, gyro_config)
+    reserve_manager = admin.deploy(ReserveManager, admin, gyro_config)
     gyro_config.setAddress(
         config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager, {"from": admin}
     )
@@ -101,6 +101,7 @@ def mainnet_vaults(BalancerPoolVault, admin, balancer_vault):
         DeployedVault(
             address=admin.deploy(
                 BalancerPoolVault,
+                admin,
                 vault_to_deploy.vault_type,
                 constants.BALANCER_POOL_IDS["WETH_DAI"],
                 balancer_vault,
@@ -121,7 +122,7 @@ def mainnet_batch_vault_price_oracle(
     gyro_config,
     balancer_cpmm_price_oracle,
 ):
-    oracle = admin.deploy(BatchVaultPriceOracle, full_checked_price_oracle)
+    oracle = admin.deploy(BatchVaultPriceOracle, admin, full_checked_price_oracle)
     gyro_config.setAddress(
         config_keys.ROOT_PRICE_ORACLE_ADDRESS,
         oracle,
@@ -143,6 +144,7 @@ def full_checked_price_oracle(
 ):
     mainnet_checked_price_oracle = admin.deploy(
         CheckedPriceOracle,
+        admin,
         crash_protected_chainlink_oracle,
         uniswap_v3_twap_oracle,
         TokenAddresses.WETH,

@@ -28,3 +28,9 @@ networks:
     cmd_settings:
       evm_version: london
     priority_fee: 2
+  polygon-fork:
+    cmd_settings:
+      evm_version: london
+      unlock:
+        - 0x8780779CAF2bC6D402DA5c3EC79A5007bB2edD90
+    priority_fee: 2
