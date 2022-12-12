@@ -1,5 +1,5 @@
-from brownie import GyroConfig, CheckedPriceOracle, TrustedSignerPriceOracle, BatchVaultPriceOracle  # type: ignore
-from brownie import BalancerCPMMPriceOracle, BalancerCPMMV2PriceOracle, BalancerCPMMV3PriceOracle, BalancerCEMMPriceOracle  # type: ignore
+from brownie import GovernanceProxy, GyroConfig, CheckedPriceOracle, GenericVaultPriceOracle, BatchVaultPriceOracle  # type: ignore
+from brownie import BalancerCPMMPriceOracle, Balancer2CLPPriceOracle, Balancer3CLPPriceOracle, BalancerECLPPriceOracle  # type: ignore
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -13,36 +13,58 @@ from tests.support.types import VaultType
 
 @with_gas_usage
 @with_deployed(BatchVaultPriceOracle)
+@with_deployed(GenericVaultPriceOracle)
 @with_deployed(BalancerCPMMPriceOracle)
-@with_deployed(BalancerCPMMV2PriceOracle)
-@with_deployed(BalancerCPMMV3PriceOracle)
-@with_deployed(BalancerCEMMPriceOracle)
+@with_deployed(Balancer2CLPPriceOracle)
+@with_deployed(Balancer3CLPPriceOracle)
+@with_deployed(BalancerECLPPriceOracle)
+@with_deployed(GovernanceProxy)
 def initialize(
-    balancer_cemm_price_oracle,
-    balancer_cpmm_v3_price_oracle,
-    balancer_cpmm_v2_price_oracle,
+    governance_proxy,
+    balancer_eclp_price_oracle,
+    balancer_3clp_price_oracle,
+    balancer_2clp_price_oracle,
     balancer_cpmm_price_oracle,
+    generic_vault_price_oracle,
     batch_vault_price_oracle,
 ):
     deployer = get_deployer()
-    batch_vault_price_oracle.registerVaultPriceOracle(
-        VaultType.BALANCER_CPMM,
-        balancer_cpmm_price_oracle,
+
+    governance_proxy.executeCall(
+        batch_vault_price_oracle,
+        batch_vault_price_oracle.registerVaultPriceOracle.encode_input(
+            VaultType.GENERIC, generic_vault_price_oracle
+        ),
         {"from": deployer, **make_tx_params()},
     )
-    batch_vault_price_oracle.registerVaultPriceOracle(
-        VaultType.BALANCER_CPMM,
-        balancer_cpmm_v2_price_oracle,
+    governance_proxy.executeCall(
+        batch_vault_price_oracle,
+        batch_vault_price_oracle.registerVaultPriceOracle.encode_input(
+            VaultType.BALANCER_CPMM, balancer_cpmm_price_oracle
+        ),
         {"from": deployer, **make_tx_params()},
     )
-    batch_vault_price_oracle.registerVaultPriceOracle(
-        VaultType.BALANCER_CPMM,
-        balancer_cpmm_v3_price_oracle,
+
+    governance_proxy.executeCall(
+        batch_vault_price_oracle,
+        batch_vault_price_oracle.registerVaultPriceOracle.encode_input(
+            VaultType.BALANCER_2CLP, balancer_2clp_price_oracle
+        ),
         {"from": deployer, **make_tx_params()},
     )
-    batch_vault_price_oracle.registerVaultPriceOracle(
-        VaultType.BALANCER_CPMM,
-        balancer_cemm_price_oracle,
+    governance_proxy.executeCall(
+        batch_vault_price_oracle,
+        batch_vault_price_oracle.registerVaultPriceOracle.encode_input(
+            VaultType.BALANCER_3CLP, balancer_3clp_price_oracle
+        ),
+        {"from": deployer, **make_tx_params()},
+    )
+
+    governance_proxy.executeCall(
+        batch_vault_price_oracle,
+        batch_vault_price_oracle.registerVaultPriceOracle.encode_input(
+            VaultType.BALANCER_ECLP, balancer_eclp_price_oracle
+        ),
         {"from": deployer, **make_tx_params()},
     )
 
@@ -51,11 +73,20 @@ def initialize(
 @as_singleton(BatchVaultPriceOracle)
 @with_deployed(CheckedPriceOracle)
 @with_deployed(GyroConfig)
-def main(gyro_config, full_checked_price_oracle):
+@with_deployed(GovernanceProxy)
+def main(governance_proxy, gyro_config, full_checked_price_oracle):
     deployer = get_deployer()
-    oracle = deployer.deploy(BatchVaultPriceOracle, full_checked_price_oracle)
-    gyro_config.setAddress(
-        config_keys.ROOT_PRICE_ORACLE_ADDRESS,
-        oracle,
+    oracle = deployer.deploy(
+        BatchVaultPriceOracle,
+        governance_proxy,
+        full_checked_price_oracle,
+        **make_tx_params()
+    )
+    governance_proxy.executeCall(
+        gyro_config,
+        gyro_config.setAddress.encode_input(
+            config_keys.ROOT_PRICE_ORACLE_ADDRESS,
+            oracle,
+        ),
         {"from": deployer, **make_tx_params()},
     )

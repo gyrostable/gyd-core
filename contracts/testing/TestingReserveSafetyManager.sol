@@ -7,16 +7,16 @@ import "../../libraries/DataTypes.sol";
 
 contract TestingReserveSafetyManager is ReserveSafetyManager {
     constructor(
+        address _governor,
         uint256 _maxAllowedVaultDeviation,
         uint256 _stablecoinMaxDeviation,
-        uint256 _minTokenPrice,
-        IAssetRegistry _assetRegistry
+        uint256 _minTokenPrice
     )
         ReserveSafetyManager(
+            _governor,
             _maxAllowedVaultDeviation,
             _stablecoinMaxDeviation,
-            _minTokenPrice,
-            _assetRegistry
+            _minTokenPrice
         )
     {}
 

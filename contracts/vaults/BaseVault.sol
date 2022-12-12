@@ -11,7 +11,7 @@ import "../../interfaces/IGyroVault.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../libraries/Errors.sol";
 
-contract BaseVault is IGyroVault, ERC20, Governable {
+abstract contract BaseVault is IGyroVault, ERC20, Governable {
     using FixedPoint for uint256;
     using SafeERC20 for IERC20;
 
@@ -25,25 +25,14 @@ contract BaseVault is IGyroVault, ERC20, Governable {
     address public override strategy;
 
     constructor(
+        address _governor,
         address _underlying,
         string memory name,
         string memory symbol
-    ) ERC20(name, symbol) {
+    ) Governable(_governor) ERC20(name, symbol) {
         require(address(_underlying) != address(0), Errors.INVALID_ARGUMENT);
         underlying = _underlying;
         deployedAt = block.number;
-    }
-
-    /// @inheritdoc IGyroVault
-    function vaultType() external view virtual override returns (Vaults.Type) {
-        return Vaults.Type.GENERIC;
-    }
-
-    /// @inheritdoc IGyroVault
-    function getTokens() external view virtual override returns (IERC20[] memory) {
-        IERC20[] memory tokens = new IERC20[](1);
-        tokens[0] = IERC20(underlying);
-        return tokens;
     }
 
     /// @inheritdoc IERC20Metadata

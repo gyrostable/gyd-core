@@ -6,7 +6,7 @@ from tests.support import error_codes
 
 @pytest.fixture(scope="module")
 def governable(Governable, admin):
-    return admin.deploy(Governable)
+    return admin.deploy(Governable, admin)
 
 
 def test_views(governable, admin):

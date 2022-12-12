@@ -2,10 +2,11 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "../../libraries/Errors.sol";
 
-contract MultiOwnable {
+abstract contract MultiOwnable is Initializable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     EnumerableSet.AddressSet internal _owners;
@@ -15,8 +16,9 @@ contract MultiOwnable {
         _;
     }
 
-    constructor() {
-        _owners.add(msg.sender);
+    // solhint-disable-next-line func-name-mixedcase
+    function __MultiOwnable_initialize(address owner) internal {
+        _owners.add(owner);
     }
 
     function addOwner(address owner) external onlyOwner {

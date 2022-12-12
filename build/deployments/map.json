@@ -1,101 +1,202 @@
 {
   "1337": {
     "AssetRegistry": [
-      "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24"
-    ],
-    "BalancerCEMMPriceOracle": [
-      "0x7414e38377D6DAf6045626EC8a8ABB8a1BC4B97a"
-    ],
-    "BalancerCPMMPriceOracle": [
-      "0xDDb64fE46a91D46ee29420539FC25FD07c5FEa3E"
-    ],
-    "BalancerCPMMV2PriceOracle": [
-      "0x1b88Bdb8269A1aB1372459F5a4eC3663D6f5cCc4"
-    ],
-    "BalancerCPMMV3PriceOracle": [
-      "0x22d5C8BdD4346b390014a07109a8F830094d4abf"
-    ],
-    "BalancerPoolVault": [
-      "0x8914a9E5C5E234fDC3Ce9dc155ec19F43947ab59",
-      "0xD13ebb5C39fB00C06122827E1cbD389930C9E0E3",
-      "0xF16165f1046f1B3cDB37dA25E835B986E696313A"
-    ],
-    "BatchVaultPriceOracle": [
-      "0xB9bdBAEc07751F6d54d19A6B9995708873F3DE18"
-    ],
-    "CheckedPriceOracle": [
-      "0x2D8BE6BF0baA74e0A907016679CaE9190e80dD0A"
-    ],
-    "CrashProtectedChainlinkPriceOracle": [
-      "0xFC628dd79137395F3C9744e33b1c5DE554D94882"
-    ],
-    "FeeBank": [
-      "0x2612Af3A521c2df9EAF28422Ca335b04AdF3ac66"
-    ],
-    "GydToken": [
-      "0x9b1f7F645351AF3631a656421eD2e40f2802E6c0"
-    ],
-    "GyroConfig": [
-      "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
-      "0x0541E43726fb21bA085723D502fa93A166c0f441"
-    ],
-    "LPTokenExchangerRegistry": [
-      "0x6eD79Aa1c71FD7BdBC515EfdA3Bd4e26394435cC"
-    ],
-    "Motherboard": [
       "0x0E696947A06550DEf604e82C26fd9E493e576337"
     ],
+    "BalancerCEMMPriceOracle": [
+      "0x966d3e76E7a890A2d7B9AE1E370dC219E920F9D4"
+    ],
+    "BalancerCPMMPriceOracle": [
+      "0x3acc15dE35aaB8A94B7D2426E27c887541e4DE6c"
+    ],
+    "BalancerCPMMV2PriceOracle": [
+      "0x2c5f3c004878923f55A2a255F89Fe29393177509"
+    ],
+    "BalancerCPMMV3PriceOracle": [
+      "0x2f3efA6bbDC5fAf4dC1a600765c7B7829e47bE10"
+    ],
+    "BatchVaultPriceOracle": [
+      "0x1aBE68277AE236083947f2551FEe8b885efCA8f5"
+    ],
+    "CapAuthentication": [
+      "0x9b1f7F645351AF3631a656421eD2e40f2802E6c0"
+    ],
+    "CheckedPriceOracle": [
+      "0x988B6CFBf3332FF98FFBdED665b1F53a61f92612"
+    ],
+    "CrashProtectedChainlinkPriceOracle": [
+      "0x7414e38377D6DAf6045626EC8a8ABB8a1BC4B97a"
+    ],
+    "FeeBank": [
+      "0x1b88Bdb8269A1aB1372459F5a4eC3663D6f5cCc4"
+    ],
+    "GenericVault": [
+      "0xE8e43b5D61C43375aB7b651F1419F2a81C5E6615",
+      "0xe93e3B649d4E01e47dd2170CAFEf0651477649Da",
+      "0x6793E8E0E8ac22d71c65c2bf82e9B142dEf9eCDb"
+    ],
+    "GenericVaultPriceOracle": [
+      "0x7231ECd1355a60251eE56Bf81f987969fc9bAe29"
+    ],
+    "GovernanceProxy": [
+      "0xCfEB869F69431e42cdB54A4F4f105C19C080A601"
+    ],
+    "GydToken": [
+      "0xaf5C4C6C7920B4883bC6252e9d9B8fE27187Cf68"
+    ],
+    "GyroConfig": [
+      "0xD833215cBcc3f914bD1C9ece3EE7BF8B14f841bb"
+    ],
+    "MockPriceOracle": [
+      "0xC5aFE31AE505594B190AC71EA689B58139d1C354"
+    ],
+    "Motherboard": [
+      "0xc22Ffa318051d8aF4E5f2E2732d7049486fcE093"
+    ],
+    "PrimaryAMMV1": [
+      "0x2D8BE6BF0baA74e0A907016679CaE9190e80dD0A"
+    ],
     "ProxyAdmin": [
-      "0x0d776afd1C9Bd65a8B9Eb6CcaC767e2073757382"
+      "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
     ],
     "Reserve": [
-      "0x26b4AFb60d6C903165150C6F0AA14F8016bE4aec"
+      "0x5017A545b09ab9a30499DE7F431DF0855bCb7275"
     ],
-    "ReserveSafetyManager": [
-      "0x47a2Db5D68751EeAdFBC44851E84AcDB4F7299Cc"
-    ],
-    "RootSafetyCheck": [
-      "0x4cFB3F70BF6a80397C2e634e5bDd85BC0bb189EE"
-    ],
-    "StaticPercentageFeeHandler": [
-      "0xc34175A79ACca40392bECD22ff10fAeBFE780Ae7"
-    ],
-    "TrustedSignerPriceOracle": [
+    "ReserveManager": [
       "0xFF6049B87215476aBf744eaA3a476cBAd46fB1cA"
     ],
+    "ReserveSafetyManager": [
+      "0x25D02115bd67258a406A0F676147E6C3598a91a9"
+    ],
+    "RootSafetyCheck": [
+      "0x25AF99b922857C37282f578F428CB7f34335B379"
+    ],
+    "StaticPercentageFeeHandler": [
+      "0xdC78afe9cFDe0576Ff236667DC8c380615c24Ca9"
+    ],
+    "Token": [
+      "0xEd447aCB0CEb49d77f317dD6D37CB64da7a7E7F8",
+      "0x68b86Cd90A44C805b1cCF4808b29C9c7cf73FDFF",
+      "0xd45A464a2412A2f83498d13635698a041b9dBe9b"
+    ],
+    "TrustedSignerPriceOracle": [
+      "0xCeeFD27e0542aFA926B87d23936c79c276A48277"
+    ],
     "UniswapV3TwapOracle": [
-      "0x86072CbFF48dA3C1F01824a6761A03F105BCC697"
+      "0xc0b3B62DD0400E4baa721DdEc9B8A384147b23fF"
+    ],
+    "VaultRegistry": [
+      "0xA57B8a5584442B467b4689F1144D269d096A3daF"
     ],
     "VaultSafetyMode": [
-      "0xCeeFD27e0542aFA926B87d23936c79c276A48277"
+      "0x94dFeceb91678ec912ef8f14c72721c102ed2Df7"
     ]
   },
   "137": {
     "AssetRegistry": [
-      "0xd8902590F55AB9AA9AFa3EEEB12c4A0b9b96Eb87"
+      "0x0FEfDfCa029822C18ae73c2b76c4602949621fe1"
+    ],
+    "Balancer2CLPPriceOracle": [
+      "0xf20548537F6B4f6F7C85F5260d71800B99C04fd2"
+    ],
+    "Balancer3CLPPriceOracle": [
+      "0x7EDfa795f07F701bC8BB0bDBE8FDbdcAC94bf531"
+    ],
+    "BalancerCEMMPriceOracle": [
+      "0x7c832F620F274B78754aDF60F7a6475b80A4bB7E"
+    ],
+    "BalancerCPMMPriceOracle": [
+      "0x57c374e1d515b288De3980E5c6b7EB5233c2dea5"
+    ],
+    "BalancerCPMMV2PriceOracle": [
+      "0x9A0Ed6dcAdc0B220b47Aebb169A9a97Ad6C94de8"
+    ],
+    "BalancerCPMMV3PriceOracle": [
+      "0x46f800E4062ADD6dbFc68cFC36A597BA1171E8f4"
+    ],
+    "BalancerECLPPriceOracle": [
+      "0xBB3a3EcD0F25F1fb6f0a586a846db187878562B1"
+    ],
+    "BalancerPoolVault": [
+      "0x1E6aFF38A1A908b71ad36834895515c9cf3b786b",
+      "0x67D204645F4639ABFf0a91F45b3236a3D7541829",
+      "0xd23960Bad016F8f286874ca7B30c351F2CE3243F"
+    ],
+    "BatchVaultPriceOracle": [
+      "0x747D79d4697AB8D07fcE7d145b8c5A4881094978"
+    ],
+    "CapAuthentication": [
+      "0x8d84f2255E2970BcBEdc6348fB08d65f76d8cc67"
     ],
     "CheckedPriceOracle": [
       "0xc94AF59Ab587ba15778739A1132Fe7F826EC32f8",
-      "0xBa116c6f9e631413847747dF3cF6Dc5cDD1455C7"
+      "0xFEfEEE9ED22B243E8CD52fA353172C3d44fFB434",
+      "0xBa116c6f9e631413847747dF3cF6Dc5cDD1455C7",
+      "0xFBc87Da6f3Bc9Dc4Dbf81B4D100A737e2aF178d6"
     ],
     "CrashProtectedChainlinkPriceOracle": [
-      "0x71242644944a33B7e92EbcBd144D292030365f7f"
+      "0x71242644944a33B7e92EbcBd144D292030365f7f",
+      "0xA2bde98EbfEceee293398F26592c148eC9464CA0"
+    ],
+    "FeeBank": [
+      "0xD543D2b45fA3B592ca5e7162FaAa8954942b8222"
     ],
     "FreezableTransparentUpgradeableProxy": [
       "0xFdc2e9E03f515804744A40d0f8d25C16e93fbE67"
     ],
+    "GenericVault": [
+      "0x6556EeE8ebC5cBe31A15bFfdA743454926e9e4ED"
+    ],
+    "GenericVaultPriceOracle": [
+      "0x8612e4CA6918B6C2e627Df3Beb45c6cAbfaA1f27"
+    ],
+    "GovernanceProxy": [
+      "0x19d8293009C41e915c397A1F523Be7224FaEB08C"
+    ],
+    "GydToken": [
+      "0x37b8E1152fB90A867F3dccA6e8d537681B04705E"
+    ],
     "GyroConfig": [
-      "0xFdc2e9E03f515804744A40d0f8d25C16e93fbE67",
-      "0xF5d5441384283e1acCC58c9f4d5e058d2845F18C"
+      "0x3c00e4663be7262E50251380EBE5fE4A17e68B51",
+      "0xF5d5441384283e1acCC58c9f4d5e058d2845F18C",
+      "0x0FEfDfCa029822C18ae73c2b76c4602949621fe1",
+      "0xFdc2e9E03f515804744A40d0f8d25C16e93fbE67"
+    ],
+    "Motherboard": [
+      "0x68BDeE1bF95AD730F379A05eB8c51fb5dFA07748"
+    ],
+    "PrimaryAMMV1": [
+      "0x5365d8A5B849801f4a7aAAf09F9bB46221400Ba3"
     ],
     "ProxyAdmin": [
       "0x83d34ca335d197bcFe403cb38E82CBD734C4CbBE"
     ],
+    "Reserve": [
+      "0x754cf3043985B2775424A8cb9659139E9818927F"
+    ],
+    "ReserveManager": [
+      "0x588d857Ee8B11452F3716F1127eDCae7d1046514"
+    ],
+    "ReserveSafetyManager": [
+      "0x614647C102325295149B3067c8ef2de45908a684"
+    ],
+    "RootSafetyCheck": [
+      "0xFf686f7Ddc4b144823B1a518237Ff5A704D54d4c"
+    ],
+    "StaticPercentageFeeHandler": [
+      "0xeb4d20D7B5F7e1Ea5c46a0f8Df89e603ca5742a4"
+    ],
     "TrustedSignerPriceOracle": [
-      "0x611a66667327db64F44144766c9198EC52a5ece4"
+      "0x8F1e1cF420e2F097538B3572Ab945Ff4471ddd27"
     ],
     "UniswapV3TwapOracle": [
-      "0x66105fdA19535Ee800c9FDC8b1688d41BfCE76a5"
+      "0xfE5d9082B689D239c264001B2a5dBf9fC3E7d6b0"
+    ],
+    "VaultRegistry": [
+      "0x71F1C9526153eCE06aE779410dc9b60a556956Ab"
+    ],
+    "VaultSafetyMode": [
+      "0x375d1371dB50a914d1BCbAaf5E5DD266bA5D546F"
     ]
   }
 }

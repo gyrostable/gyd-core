@@ -5,6 +5,8 @@ pragma solidity ^0.8.4;
 import "../../oracles/UniswapV3TwapPriceOracle.sol";
 
 contract UniswapV3TwapOracleProfiler is UniswapV3TwapOracle {
+    constructor(address _governor) UniswapV3TwapOracle(_governor) {}
+
     function profileGetRelativePrice(address[] calldata baseAssets, address[] calldata quoteAssets)
         external
     {

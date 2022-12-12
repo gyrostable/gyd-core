@@ -9,7 +9,7 @@ from math import cos, sin, pi
 # from dfuzzy import isle, isge
 from typing import Optional
 
-from tests.support.cemm.dfuzzy import (
+from tests.support.eclp.dfuzzy import (
     isclose,
     prec_sanity_check,
     soft_clamp,
@@ -146,7 +146,7 @@ def scalarprod(x1: D, y1: D, x2: D, y2: D) -> D:
 
 
 @dataclass  # Mainly to get automatic repr()
-class CEMM:
+class ECLP:
     params: Params
     x: D
     y: D
@@ -165,7 +165,7 @@ class CEMM:
         """Initialize from real reserves x, y.
 
         Proposition 12."""
-        ret = CEMM(params)
+        ret = ECLP(params)
         ret.x = x
         ret.y = y
         at: Vector = params.A_times(x, y)
@@ -191,7 +191,7 @@ class CEMM:
         # assert params.alpha <= px <= params.beta
         px = soft_clamp(px, params.alpha, params.beta, prec_input)
 
-        ret = CEMM(params)
+        ret = ECLP(params)
         ret.r = r
         taupx: Vector = params.tau(
             px
@@ -217,7 +217,7 @@ class CEMM:
         xn = params.Ainv_times_x(*params.tau_beta) - params.Ainv_times_x(*taupx)
         yn = params.Ainv_times_y(*params.tau_alpha) - params.Ainv_times_y(*taupx)
         r = v / (px * xn + yn)
-        return CEMM.from_px_r(px, r, params)
+        return ECLP.from_px_r(px, r, params)
 
     # Offsets. Note that, in contrast to (say) virtual reserve offsets, these are *subtracted* from the real reserve.
     # Equivalently, we shift the curve up-right rather than down-left.
@@ -405,7 +405,7 @@ class CEMM:
             self.y += dy
         return dx, dy
 
-    def assert_isclose_to(self, mm, prec: D):  # mm: CEMM
+    def assert_isclose_to(self, mm, prec: D):  # mm: ECLP
         assert (
             isclose(self.x, mm.x, prec)
             and isclose(self.y, mm.y, prec)
@@ -413,7 +413,7 @@ class CEMM:
         )
 
 
-def mtest_rebuild_r(mm: CEMM):
-    mm1 = CEMM.from_x_y(mm.x, mm.y, mm.params)
+def mtest_rebuild_r(mm: ECLP):
+    mm1 = ECLP.from_x_y(mm.x, mm.y, mm.params)
     print(mm.r, mm1.r)
     assert isclose(mm.r, mm1.r, prec_sanity_check)

@@ -7,8 +7,13 @@ typechain
 deployments/localhost
 dist/
 .env
-build/
+build/*
+!build/deployments
+build/deployments/*
+!build/deployments/map.json
+!build/deployments/137
 __pycache__
 packages
 reports/
 protocol_cloc.csv
+.hypothesis

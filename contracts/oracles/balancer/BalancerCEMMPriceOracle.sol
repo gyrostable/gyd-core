@@ -7,10 +7,11 @@ import "./BaseBalancerPriceOracle.sol";
 
 import "../../../libraries/TypeConversion.sol";
 
-import "../../../interfaces/balancer/ICEMM.sol";
+import "../../../interfaces/balancer/IECLP.sol";
 
-contract BalancerCEMMPriceOracle is BaseBalancerPriceOracle {
+contract BalancerECLPPriceOracle is BaseBalancerPriceOracle {
     using TypeConversion for DataTypes.PricedToken[];
+    using TypeConversion for IECLP.DerivedParams;
     using FixedPoint for uint256;
 
     /// @inheritdoc BaseVaultPriceOracle
@@ -18,15 +19,21 @@ contract BalancerCEMMPriceOracle is BaseBalancerPriceOracle {
         IGyroVault vault,
         DataTypes.PricedToken[] memory underlyingPricedTokens
     ) public view override returns (uint256) {
-        ICEMM pool = ICEMM(vault.underlying());
-        (ICEMM.Params memory params, ICEMM.DerivedParams memory derivedParams) = pool
-            .getParameters();
+        IECLP pool = IECLP(vault.underlying());
+        (IECLP.Params memory params, IECLP.DerivedParams memory derivedParams) = pool
+            .getECLPParams();
         return
-            BalancerLPSharePricing.priceBptCEMM(
+            BalancerLPSharePricing.priceBptECLP(
                 params,
-                derivedParams,
+                derivedParams.downscaleDerivedParams(),
                 getInvariantDivSupply(pool),
                 underlyingPricedTokens.pluckPrices()
             );
+    }
+
+    function getInvariantDivSupply(IMinimalPoolView pool) internal view override returns (uint256) {
+        uint256 invariant = pool.getLastInvariant();
+        uint256 totalSupply = pool.totalSupply();
+        return invariant.divDown(totalSupply);
     }
 }

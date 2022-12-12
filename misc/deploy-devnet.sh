@@ -71,13 +71,42 @@ elif [ -d "build/deployments/$CHAIN_ID" ]; then
     exit 1
 fi
 
+
+brownie run --network $NETWORK_ID scripts/deployment/deploy_proxy_admin.py
+
+brownie run --network $NETWORK_ID scripts/deployment/deploy_governance_proxy.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_governance_proxy.py proxy
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py proxy
+brownie run --network $NETWORK_ID scripts/deployment/deploy_config.py set_initial_config
+
+brownie run --network $NETWORK_ID scripts/deployment/deploy_cap_authentication.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_cap_authentication.py proxy
+
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_registry.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_registry.py proxy
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py proxy
 brownie run --network $NETWORK_ID scripts/deployment/deploy_asset_registry.py initialize
-brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py
+
 brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_motherboard.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve.py proxy
+
+# does not hold any state so no need for proxy, `setAddress` is enough
+brownie run --network $NETWORK_ID scripts/deployment/deploy_reserve_manager.py
+
+# does not hold any state so no need for proxy, `setAddress` is enough
+brownie run --network $NETWORK_ID scripts/deployment/deploy_pamm.py
+
+brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py proxy
+
+brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py proxy
+
+# oracles can be replaced without needing to be upgraded
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py set_feeds
 brownie run --network $NETWORK_ID scripts/deployment/deploy_uniswap_twap_price_oracle.py
@@ -89,20 +118,29 @@ fi
 brownie run --network $NETWORK_ID scripts/deployment/deploy_coinbase_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_checked_price_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_checked_price_oracle.py initialize
-brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cpmm
-brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cpmm_v2
-brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cpmm_v3
-brownie run --network $NETWORK_ID scripts/deployment/deploy_balancer_price_oracle.py cemm
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py generic
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py cpmm
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py g2clp
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py g3clp
+brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py eclp
 brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py 
 brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py initialize
+if [ "$LIVE" != "true" ]; then
+    brownie run --network $NETWORK_ID scripts/deployment/deploy_mock_price_oracle.py
+fi
 
 # safety checks
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py root
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py vault_safety_mode
+brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py vault_safety_mode_proxy
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py reserve_safety_manager
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py register
 
 # vaults
 brownie run --network $NETWORK_ID scripts/deployment/deploy_static_percentage_fee_handler.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_vaults.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_vaults.py set_fees
+brownie run --network $NETWORK_ID scripts/deployment/deploy_test_vaults.py
+brownie run --network $NETWORK_ID scripts/deployment/deploy_test_vaults.py set_fees
+brownie run --network $NETWORK_ID scripts/deployment/deploy_test_vaults.py register_vaults
+
+# motherboard
+brownie run --network $NETWORK_ID scripts/deployment/deploy_motherboard.py

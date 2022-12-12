@@ -3,6 +3,8 @@ import sys
 from functools import lru_cache, wraps
 from typing import Any, Dict, cast
 
+import brownie
+from brownie import AssetRegistry, GyroConfig, GovernanceProxy, FreezableTransparentUpgradeableProxy, ProxyAdmin  # type: ignore
 from brownie import accounts, network
 from brownie.network.account import ClefAccount, LocalAccount
 
@@ -10,11 +12,19 @@ DEV_CHAIN_IDS = {1337}
 
 REQUIRED_CONFIRMATIONS = 1
 MAINNET_DEPLOYER_ADDRESS = "0x0000000000000000000000000000000000000000"
-POLYGON_DEPLOYER_ADDRESS = "0x8780779CAF2bC6D402DA5c3EC79A5007bB2edD90"
+
+GYRO_CONFIG_POLYGON_ADDRESS = "0x3c00e4663be7262E50251380EBE5fE4A17e68B51"
+GYRO_ASSET_REGISTRY_ADDRESS = "0x0FEfDfCa029822C18ae73c2b76c4602949621fe1"
 
 BROWNIE_GWEI = os.environ.get("BROWNIE_GWEI", "35")
 BROWNIE_PRIORITY_GWEI = os.environ.get("BROWNIE_PRIORITY_GWEI")
 BROWNIE_ACCOUNT_PASSWORD = os.environ.get("BROWNIE_ACCOUNT_PASSWORD")
+
+
+def get_token_name_and_symbol():
+    if brownie.chain.id == 137:
+        return "Proto Gyro Dollar", "p-GYD"
+    return "Gyro Dollar", "GYD"
 
 
 def is_live():
@@ -65,7 +75,9 @@ def get_deployer():
     if chain_id == 1:  # mainnet
         return get_clef_account(MAINNET_DEPLOYER_ADDRESS)
     if chain_id == 137:  # polygon
-        return get_clef_account(POLYGON_DEPLOYER_ADDRESS)
+        return cast(
+            LocalAccount, accounts.load("gyro-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore
+        )
     if chain_id == 42:  # kovan
         return cast(
             LocalAccount, accounts.load("kovan-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore
@@ -99,6 +111,18 @@ def as_singleton(Contract):
     return wrapped
 
 
+def get_gyro_config():
+    if brownie.chain.id == 137:
+        return GyroConfig.at(GYRO_CONFIG_POLYGON_ADDRESS)
+    return GyroConfig[0]
+
+
+def get_asset_registry():
+    if brownie.chain.id == 137:
+        return AssetRegistry.at(GYRO_ASSET_REGISTRY_ADDRESS)
+    return AssetRegistry[0]
+
+
 def with_deployed(Contract):
     def wrapped(f):
         @wraps(f)
@@ -106,10 +130,40 @@ def with_deployed(Contract):
             if len(Contract) == 0:
                 abort(f"{Contract.deploy._name} not deployed")
 
-            contract = Contract[0]
+            if Contract == GyroConfig:
+                contract = get_gyro_config()
+            elif Contract == AssetRegistry:
+                contract = get_asset_registry()
+            else:
+                contract = Contract[-1]
+
             result = f(contract, *args, **kwargs)
             return result
 
         return wrapper
 
     return wrapped
+
+
+def deploy_proxy(contract, init_data=b"", config_key=None):
+    deployer = get_deployer()
+    proxy = deployer.deploy(
+        FreezableTransparentUpgradeableProxy,
+        contract,
+        ProxyAdmin[0],
+        init_data,
+        **make_tx_params(),
+    )
+    if config_key:
+        gyro_config = get_gyro_config()
+        GovernanceProxy[0].executeCall(
+            gyro_config,
+            gyro_config.setAddress.encode_input(config_key, proxy),
+            {"from": deployer, **make_tx_params()},
+        )
+    container = getattr(brownie, contract._name)
+
+    FreezableTransparentUpgradeableProxy.remove(proxy)
+    container.remove(contract)
+    container.at(proxy.address)
+    return proxy

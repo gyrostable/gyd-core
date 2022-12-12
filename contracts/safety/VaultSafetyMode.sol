@@ -6,9 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-import "./../auth/Governable.sol";
+import "./../auth/GovernableUpgradeable.sol";
 import "../../libraries/DataTypes.sol";
-import "../../interfaces/IReserveManager.sol";
 import "../../interfaces/IGyroConfig.sol";
 import "../../interfaces/IAssetRegistry.sol";
 import "../../interfaces/IGyroVault.sol";
@@ -23,7 +22,7 @@ import "../../libraries/StringExtensions.sol";
 import "../../libraries/EnumerableExtensions.sol";
 import "../../libraries/ConfigHelpers.sol";
 
-contract VaultSafetyMode is ISafetyCheck, Governable {
+contract VaultSafetyMode is ISafetyCheck, GovernableUpgradeable {
     using FixedPoint for uint256;
     using StringExtensions for string;
     using EnumerableSet for EnumerableSet.AddressSet;

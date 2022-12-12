@@ -10,6 +10,11 @@ contract CapAuthentication is MultiOwnable {
 
     EnumerableSet.AddressSet internal _authenticatedAccounts;
 
+    function initialize(address owner) external initializer {
+        __MultiOwnable_initialize(owner);
+        _authenticatedAccounts.add(owner);
+    }
+
     function authenticate(address account) external onlyOwner {
         _authenticatedAccounts.add(account);
     }

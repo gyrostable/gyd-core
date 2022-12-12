@@ -5,7 +5,9 @@ pragma solidity ^0.8.4;
 import "../oracles/BatchVaultPriceOracle.sol";
 
 contract TestingBatchVaultPriceOracle is BatchVaultPriceOracle {
-    constructor(IUSDBatchPriceOracle _batchPriceOracle) BatchVaultPriceOracle(_batchPriceOracle) {}
+    constructor(address _governor, IUSDBatchPriceOracle _batchPriceOracle)
+        BatchVaultPriceOracle(_governor, _batchPriceOracle)
+    {}
 
     function constructTokensArray(DataTypes.VaultInfo[] memory vaultsInfo)
         external

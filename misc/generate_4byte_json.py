@@ -16,8 +16,9 @@ parser.add_argument("--include-contract-name", "-i", action="store_true")
 
 
 def encode_argument(component):
-    if component["type"] == "tuple":
-        return "(" + encode_arguments(component["components"]) + ")"
+    if component["type"] in ("tuple", "tuple[]"):
+        suffix = component["type"].replace("tuple", "")
+        return "(" + encode_arguments(component["components"]) + ")" + suffix
     return component["type"]
 
 
