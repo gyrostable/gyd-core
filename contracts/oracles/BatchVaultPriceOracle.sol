@@ -19,9 +19,14 @@ contract BatchVaultPriceOracle is IBatchVaultPriceOracle, Governable {
 
     mapping(Vaults.Type => IVaultPriceOracle) public vaultPriceOracles;
 
-    constructor(IUSDBatchPriceOracle _batchPriceOracle) {
+    constructor(address _governor, IUSDBatchPriceOracle _batchPriceOracle) Governable(_governor) {
         require(address(_batchPriceOracle) != address(0), Errors.INVALID_ARGUMENT);
         batchPriceOracle = _batchPriceOracle;
+    }
+
+    function setBatchPriceOracle(IUSDBatchPriceOracle priceOracle) external governanceOnly {
+        batchPriceOracle = priceOracle;
+        emit BatchPriceOracleChanged(address(priceOracle));
     }
 
     function registerVaultPriceOracle(Vaults.Type vaultType, IVaultPriceOracle priceOracle)

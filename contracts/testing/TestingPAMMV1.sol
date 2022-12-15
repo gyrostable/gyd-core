@@ -10,7 +10,11 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
 
     uint256 internal _gyroSupply;
 
-    constructor(address gyroConfig, Params memory params) PrimaryAMMV1(gyroConfig, params) {}
+    constructor(
+        address _governor,
+        address gyroConfig,
+        Params memory params
+    ) PrimaryAMMV1(_governor, gyroConfig, params) {}
 
     function computeRegion(State calldata normalizedState) external view returns (Region) {
         DerivedParams memory derived = createDerivedParams(systemParams);

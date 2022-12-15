@@ -7,6 +7,7 @@ import "../../libraries/DataTypes.sol";
 import "../IGyroVault.sol";
 
 interface IBatchVaultPriceOracle {
+    event BatchPriceOracleChanged(address indexed priceOracle);
     event VaultPriceOracleChanged(Vaults.Type indexed vaultType, address indexed priceOracle);
 
     /// @notice Fetches the price of the vault token as well as the underlying tokens

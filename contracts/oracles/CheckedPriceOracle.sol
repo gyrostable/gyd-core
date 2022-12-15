@@ -43,6 +43,9 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     /// @dev This list is used to check if the relative price of the tokens are consistent
     EnumerableSet.AddressSet internal assetsForRelativePriceCheck;
 
+    /// @dev Assets in this list are not required to have a relative price
+    EnumerableSet.AddressSet internal assetsWithIgnorableRelativePriceCheck;
+
     event USDOracleUpdated(address indexed oracle);
     event RelativeOracleUpdated(address indexed oracle);
 
@@ -55,12 +58,16 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     event TrustedSignerOracleAdded(address _addressToAdd);
     event TrustedSignerOracleRemoved(address _addressToRemove);
 
+    event AssetsWithIgnorableRelativePriceCheckAdded(address assetToAdd);
+    event AssetsWithIgnorableRelativePriceCheckRemoved(address assetToRemove);
+
     /// _usdOracle is for Chainlink
     constructor(
+        address _governor,
         address _usdOracle,
         address _relativeOracle,
         address _wethAddress
-    ) {
+    ) Governable(_governor) {
         require(_usdOracle != address(0), Errors.INVALID_ARGUMENT);
         require(_relativeOracle != address(0), Errors.INVALID_ARGUMENT);
         usdOracle = IUSDPriceOracle(_usdOracle);
@@ -124,6 +131,23 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         emit AssetForRelativePriceCheckRemoved(assetToRemove);
     }
 
+    function addAssetsWithIgnorableRelativePriceCheck(address assetToAdd) external governanceOnly {
+        assetsWithIgnorableRelativePriceCheck.add(assetToAdd);
+        emit AssetsWithIgnorableRelativePriceCheckAdded(assetToAdd);
+    }
+
+    function listAssetsWithIgnorableRelativePriceCheck() external view returns (address[] memory) {
+        return assetsWithIgnorableRelativePriceCheck.values();
+    }
+
+    function removeAssetsWithIgnorableRelativePriceCheck(address assetToRemove)
+        external
+        governanceOnly
+    {
+        assetsWithIgnorableRelativePriceCheck.remove(assetToRemove);
+        emit AssetsWithIgnorableRelativePriceCheckRemoved(assetToRemove);
+    }
+
     function batchRelativePriceCheck(address[] memory tokenAddresses, uint256[] memory prices)
         internal
         view
@@ -172,7 +196,10 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
                 break;
             }
 
-            require(couldCheck, Errors.ASSET_NOT_SUPPORTED);
+            require(
+                couldCheck || assetsWithIgnorableRelativePriceCheck.contains(tokenAddresses[i]),
+                Errors.ASSET_NOT_SUPPORTED
+            );
         }
 
         uint256[] memory foundTwaps = new uint256[](k);

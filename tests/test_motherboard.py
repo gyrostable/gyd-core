@@ -163,7 +163,7 @@ def test_mint_above_user_cap_with_authentication(
     )
     gyro_config.setUint(config_keys.GYD_USER_CAP, scale(5), {"from": admin})
     gyro_config.setUint(
-        config_keys.GYD_NFT_AUTHENTICATED_USER_CAP, scale(15), {"from": admin}
+        config_keys.GYD_AUTHENTICATED_USER_CAP, scale(15), {"from": admin}
     )
 
     usdc_amount = scale(10, usdc.decimals())
@@ -475,7 +475,9 @@ def test_simple_mint_bpt(
         make_bpt_mint_asset("WETH_USDC"),
     ]
 
-    amount, error = full_motherboard.dryMint(mint_assets, scale(60), alice, {"from": alice})
+    amount, error = full_motherboard.dryMint(
+        mint_assets, scale(60), alice, {"from": alice}
+    )
     assert error == ""
     assert scale(60) <= amount <= scale(180)
 

@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "../../../libraries/FixedPoint.sol";
 import "../../../libraries/SignedFixedPoint.sol";
 
-import "../../../interfaces/balancer/ICEMM.sol";
+import "../../../interfaces/balancer/IECLP.sol";
 
 library BalancerLPSharePricing {
     using FixedPoint for uint256;
@@ -100,13 +100,13 @@ library BalancerLPSharePricing {
         bptPrice = invariantDivSupply.mulDown(prod);
     }
 
-    /** @dev Calculates the value of BPT for CPMMv2 pools
+    /** @dev Calculates the value of BPT for 2CLP pools
      *  these are constant product invariant 2-pools with 1/2 weights and virtual reserves
      *  @param sqrtAlpha = sqrt of lower price bound
      *  @param sqrtBeta = sqrt of upper price bound
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
      *  This calculation is robust to price manipulation within the Balancer pool */
-    function priceBptCPMMv2(
+    function priceBpt2CLP(
         uint256 sqrtAlpha,
         uint256 sqrtBeta,
         uint256 invariantDivSupply,
@@ -135,7 +135,7 @@ library BalancerLPSharePricing {
         }
     }
 
-    /** @dev Calculates the value of BPT for CPMMv3 pools
+    /** @dev Calculates the value of BPT for 3CLP pools
      *  these are constant product invariant 3-pools with 1/3 weights and virtual reserves
      *  virtual reserves are chosen such that alpha = lower price bound and 1/alpha = upper price bound
      *  @param cbrtAlpha = cube root of alpha (lower price bound)
@@ -143,7 +143,7 @@ library BalancerLPSharePricing {
      *  @param underlyingPrices = array of three prices for the
      *  This calculation is robust to price manipulation within the Balancer pool.
      *  The calculation includes a kind of no-arbitrage equilibrium computation, see the Gyroscope Oracles document, p. 7. */
-    function priceBptCPMMv3(
+    function priceBpt3CLP(
         uint256 cbrtAlpha,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
@@ -155,7 +155,7 @@ library BalancerLPSharePricing {
             uint256 alpha = cbrtAlpha.mulDown(cbrtAlpha).mulDown(cbrtAlpha);
             uint256 pXZ = underlyingPrices[0].divDown(underlyingPrices[2]);
             uint256 pYZ = underlyingPrices[1].divDown(underlyingPrices[2]);
-            (pXZPool, pYZPool) = relativeEquilibriumPricesCPMMv3(alpha, pXZ, pYZ);
+            (pXZPool, pYZPool) = relativeEquilibriumPrices3CLP(alpha, pXZ, pYZ);
         }
 
         uint256 cbrtPxzPyzPool = pXZPool.mulDown(pYZPool);
@@ -173,14 +173,14 @@ library BalancerLPSharePricing {
         bptPrice = bptPrice.mulDown(invariantDivSupply);
     }
 
-    /** @dev Compute the unique price vector of a CPMMv pool that is in equilibrium with an external market with the given relative prices.
+    /** @dev Compute the unique price vector of a 3CLP pool that is in equilibrium with an external market with the given relative prices.
         See Gyroscope Oracles document, Section 4.3.
         @param alpha = lower price bound
         @param pXZ = relative price of asset x denoted in units of z of the external market
         @param pYZ = relative price of asset y denoted in units of z of the external market
         @return relative prices of x and y, respectively, denoted in units of z, of a pool in equilibrium with (pXZ, pYZ).
      */
-    function relativeEquilibriumPricesCPMMv3(
+    function relativeEquilibriumPrices3CLP(
         uint256 alpha,
         uint256 pXZ,
         uint256 pYZ
@@ -216,14 +216,14 @@ library BalancerLPSharePricing {
         }
     }
 
-    /** @dev Calculates the value of BPT for constant ellipse (CEMM) pools of two assets
-     *  @param params = CEMM pool parameters
+    /** @dev Calculates the value of BPT for constant ellipse (ECLP) pools of two assets
+     *  @param params = ECLP pool parameters
      *  @param derivedParams = (tau(alpha), tau(beta))
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
      *  This calculation is robust to price manipulation within the Balancer pool */
-    function priceBptCEMM(
-        ICEMM.Params memory params,
-        ICEMM.DerivedParams memory derivedParams,
+    function priceBptECLP(
+        IECLP.Params memory params,
+        IECLP.DerivedParams memory derivedParams,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
@@ -248,21 +248,21 @@ library BalancerLPSharePricing {
                 mulAinv(params, derivedParams.tauBeta).y);
             bptPrice = (bP.mulDownMag(py)).toUint256().mulDown(invariantDivSupply);
         } else {
-            ICEMM.Vector2 memory vec = mulAinv(params, tau(params, pxIny));
+            IECLP.Vector2 memory vec = mulAinv(params, tau(params, pxIny));
             vec.x = mulAinv(params, derivedParams.tauBeta).x - vec.x;
             vec.y = mulAinv(params, derivedParams.tauAlpha).y - vec.y;
-            bptPrice = scalarProdDown(ICEMM.Vector2(px, py), vec).toUint256().mulDown(
+            bptPrice = scalarProdDown(IECLP.Vector2(px, py), vec).toUint256().mulDown(
                 invariantDivSupply
             );
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////
-    // The following functions and structs copied over from CEMM math library
+    // The following functions and structs copied over from ECLP math library
     // Can't easily inherit because of different Solidity versions
 
-    // Scalar product of ICEMM.Vector2 objects
-    function scalarProdDown(ICEMM.Vector2 memory t1, ICEMM.Vector2 memory t2)
+    // Scalar product of IECLP.Vector2 objects
+    function scalarProdDown(IECLP.Vector2 memory t1, IECLP.Vector2 memory t2)
         internal
         pure
         returns (int256 ret)
@@ -273,10 +273,10 @@ library BalancerLPSharePricing {
     /** @dev Calculate A^{-1}t where A^{-1} is given in Section 2.2
      *  This is rotating and scaling the circle into the ellipse */
 
-    function mulAinv(ICEMM.Params memory params, ICEMM.Vector2 memory t)
+    function mulAinv(IECLP.Params memory params, IECLP.Vector2 memory t)
         internal
         pure
-        returns (ICEMM.Vector2 memory tp)
+        returns (IECLP.Vector2 memory tp)
     {
         tp.x = t.x.mulDownMag(params.lambda).mulDownMag(params.c) + t.y.mulDownMag(params.s);
         tp.y = -t.x.mulDownMag(params.lambda).mulDownMag(params.s) + t.y.mulDownMag(params.c);
@@ -285,10 +285,10 @@ library BalancerLPSharePricing {
     /** @dev Calculate A t where A is given in Section 2.2
      *  This is reversing rotation and scaling of the ellipse (mapping back to circle) */
 
-    function mulA(ICEMM.Params memory params, ICEMM.Vector2 memory tp)
+    function mulA(IECLP.Params memory params, IECLP.Vector2 memory tp)
         internal
         pure
-        returns (ICEMM.Vector2 memory t)
+        returns (IECLP.Vector2 memory t)
     {
         t.x =
             params.c.mulDownMag(tp.x).divDownMag(params.lambda) -
@@ -298,17 +298,17 @@ library BalancerLPSharePricing {
 
     /** @dev Given price px on the transformed ellipse, get the untransformed price pxc on the circle
      *  px = price of asset x in terms of asset y */
-    function zeta(ICEMM.Params memory params, int256 px) internal pure returns (int256 pxc) {
-        ICEMM.Vector2 memory nd = mulA(params, ICEMM.Vector2(-SignedFixedPoint.ONE, px));
+    function zeta(IECLP.Params memory params, int256 px) internal pure returns (int256 pxc) {
+        IECLP.Vector2 memory nd = mulA(params, IECLP.Vector2(-SignedFixedPoint.ONE, px));
         return -nd.y.divDownMag(nd.x);
     }
 
     /** @dev Given price px on the transformed ellipse, maps to the corresponding point on the untransformed normalized circle
      *  px = price of asset x in terms of asset y */
-    function tau(ICEMM.Params memory params, int256 px)
+    function tau(IECLP.Params memory params, int256 px)
         internal
         pure
-        returns (ICEMM.Vector2 memory tpp)
+        returns (IECLP.Vector2 memory tpp)
     {
         return eta(zeta(params, px));
     }
@@ -316,7 +316,7 @@ library BalancerLPSharePricing {
     /** @dev Given price on a circle, gives the normalized corresponding point on the circle centered at the origin
      *  pxc = price of asset x in terms of asset y (measured on the circle)
      *  Notice that the eta function does not depend on Params */
-    function eta(int256 pxc) internal pure returns (ICEMM.Vector2 memory tpp) {
+    function eta(int256 pxc) internal pure returns (IECLP.Vector2 memory tpp) {
         int256 z = FixedPoint
             .powDown(FixedPoint.ONE + (pxc.mulDownMag(pxc).toUint256()), ONEHALF)
             .toInt256();
@@ -324,7 +324,7 @@ library BalancerLPSharePricing {
     }
 
     /** @dev Calculates eta in more efficient way if the square root is known and input as second arg */
-    function eta(int256 pxc, int256 z) internal pure returns (ICEMM.Vector2 memory tpp) {
+    function eta(int256 pxc, int256 z) internal pure returns (IECLP.Vector2 memory tpp) {
         tpp.x = pxc.divDownMag(z);
         tpp.y = SignedFixedPoint.ONE.divDownMag(z);
     }

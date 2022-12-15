@@ -26,6 +26,8 @@ contract StaticPercentageFeeHandler is IFeeHandler, Governable {
     /// @notice mapping from vault to fees
     mapping(address => Fees) public vaultFees;
 
+    constructor(address _governor) Governable(_governor) {}
+
     /// @notice set the fees for a vault
     function setVaultFees(
         address vault,

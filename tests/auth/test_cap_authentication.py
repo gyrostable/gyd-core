@@ -19,6 +19,6 @@ def test_deauthenticate(cap_authentication, admin, alice, bob):
 
     cap_authentication.deauthenticate(alice, {"from": admin})
 
-    assert len(cap_authentication.listAuthenticatedAccounts()) == 0
+    assert cap_authentication.listAuthenticatedAccounts() == [admin]
     cap_authentication.authenticate(alice, {"from": admin})
-    assert cap_authentication.listAuthenticatedAccounts() == [alice]
+    assert cap_authentication.listAuthenticatedAccounts() == [admin, alice]

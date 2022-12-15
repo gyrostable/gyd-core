@@ -11,6 +11,7 @@ contract TestingVaultSafetyMode is VaultSafetyMode {
     using StringExtensions for string;
 
     constructor(
+        address _governor,
         uint256 _safetyBlocksAutomatic,
         uint256 _safetyBlocksGuardian,
         address _gyroConfig

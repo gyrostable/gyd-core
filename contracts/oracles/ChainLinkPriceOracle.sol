@@ -13,6 +13,8 @@ contract ChainlinkPriceOracle is BaseChainlinkPriceOracle {
 
     event FeedUpdated(address indexed asset, address indexed previousFeed, address indexed newFeed);
 
+    constructor(address _governor) BaseChainlinkPriceOracle(_governor) {}
+
     /// @inheritdoc IUSDPriceOracle
     function getPriceUSD(address asset) external view override returns (uint256) {
         address feed = feeds[asset];

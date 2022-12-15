@@ -2,24 +2,24 @@
 // for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin-upgradeable/contracts/token/ERC20/ERC20Upgradeable.sol";
 
 import "../interfaces/IGyroConfig.sol";
 
 import "../libraries/ConfigHelpers.sol";
 
-contract GydToken is ERC20 {
+contract GydToken is ERC20Upgradeable {
     using ConfigHelpers for IGyroConfig;
 
     IGyroConfig public immutable gyroConfig;
 
-    constructor(
-        address _gyroConfig,
-        string memory name,
-        string memory symbol
-    ) ERC20(name, symbol) {
+    constructor(address _gyroConfig) {
         require(_gyroConfig != address(0), Errors.INVALID_ARGUMENT);
         gyroConfig = IGyroConfig(_gyroConfig);
+    }
+
+    function initialize(string memory name, string memory symbol) external initializer {
+        __ERC20_init(name, symbol);
     }
 
     function mint(address account, uint256 amount) external {

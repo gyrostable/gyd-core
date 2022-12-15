@@ -20,6 +20,8 @@ abstract contract BaseChainlinkPriceOracle is IUSDPriceOracle, Governable {
     EnumerableSet.AddressSet internal _supportedAssets;
     mapping(address => address) public feeds;
 
+    constructor(address _governor) Governable(_governor) {}
+
     function listSupportedAssets() external view returns (address[] memory) {
         return _supportedAssets.values();
     }

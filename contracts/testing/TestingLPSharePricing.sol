@@ -42,13 +42,13 @@ contract TestingLPSharePricing {
         );
     }
 
-    function priceBptCPMMv2(
+    function priceBpt2CLP(
         uint256 sqrtAlpha,
         uint256 sqrtBeta,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) external pure returns (uint256 bptPrice) {
-        bptPrice = BalancerLPSharePricing.priceBptCPMMv2(
+        bptPrice = BalancerLPSharePricing.priceBpt2CLP(
             sqrtAlpha,
             sqrtBeta,
             invariantDivSupply,
@@ -56,33 +56,33 @@ contract TestingLPSharePricing {
         );
     }
 
-    function priceBptCPMMv3(
+    function priceBpt3CLP(
         uint256 cbrtAlpha,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) external pure returns (uint256 bptPrice) {
-        bptPrice = BalancerLPSharePricing.priceBptCPMMv3(
+        bptPrice = BalancerLPSharePricing.priceBpt3CLP(
             cbrtAlpha,
             invariantDivSupply,
             underlyingPrices
         );
     }
 
-    function relativeEquilibriumPricesCPMMv3(
+    function relativeEquilibriumPrices3CLP(
         uint256 alpha,
         uint256 pXZ,
         uint256 pYZ
     ) external pure returns (uint256, uint256) {
-        return BalancerLPSharePricing.relativeEquilibriumPricesCPMMv3(alpha, pXZ, pYZ);
+        return BalancerLPSharePricing.relativeEquilibriumPrices3CLP(alpha, pXZ, pYZ);
     }
 
-    function priceBptCEMM(
-        ICEMM.Params memory params,
-        ICEMM.DerivedParams memory derivedParams,
+    function priceBptECLP(
+        IECLP.Params memory params,
+        IECLP.DerivedParams memory derivedParams,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) external pure returns (uint256 bptPrice) {
-        bptPrice = BalancerLPSharePricing.priceBptCEMM(
+        bptPrice = BalancerLPSharePricing.priceBptECLP(
             params,
             derivedParams,
             invariantDivSupply,

@@ -13,7 +13,6 @@ import "../interfaces/IPAMM.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeBank.sol";
-import "../interfaces/oracles/IUSDPriceOracle.sol";
 
 import "../libraries/DataTypes.sol";
 import "../libraries/ConfigKeys.sol";
@@ -22,11 +21,11 @@ import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/DecimalScale.sol";
 
-import "./auth/Governable.sol";
+import "./auth/GovernableUpgradeable.sol";
 
 /// @title MotherBoard is the central contract connecting the different pieces
 /// of the Gyro protocol
-contract Motherboard is IMotherboard, Governable {
+contract Motherboard is IMotherboard, GovernableUpgradeable {
     using FixedPoint for uint256;
     using DecimalScale for uint256;
     using SafeERC20 for IERC20;

@@ -7,9 +7,9 @@ import "./BaseBalancerPriceOracle.sol";
 
 import "../../../libraries/TypeConversion.sol";
 
-import "../../../interfaces/balancer/ICPMMV2.sol";
+import "../../../interfaces/balancer/I2CLP.sol";
 
-contract BalancerCPMMV2PriceOracle is BaseBalancerPriceOracle {
+contract Balancer2CLPPriceOracle is BaseBalancerPriceOracle {
     using TypeConversion for DataTypes.PricedToken[];
     using FixedPoint for uint256;
 
@@ -18,10 +18,10 @@ contract BalancerCPMMV2PriceOracle is BaseBalancerPriceOracle {
         IGyroVault vault,
         DataTypes.PricedToken[] memory underlyingPricedTokens
     ) public view override returns (uint256) {
-        ICPMMV2 pool = ICPMMV2(vault.underlying());
+        I2CLP pool = I2CLP(vault.underlying());
         (uint256 sqrtAlpha, uint256 sqrtBeta) = pool.getSqrtParameters();
         return
-            BalancerLPSharePricing.priceBptCPMMv2(
+            BalancerLPSharePricing.priceBpt2CLP(
                 sqrtAlpha,
                 sqrtBeta,
                 getInvariantDivSupply(pool),

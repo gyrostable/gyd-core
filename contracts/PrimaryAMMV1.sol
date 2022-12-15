@@ -74,7 +74,11 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     uint256 public lastRedemptionBlock;
 
     /// @notice Initializes the PAMM with the given system parameters
-    constructor(address _gyroConfig, Params memory params) {
+    constructor(
+        address _governor,
+        address _gyroConfig,
+        Params memory params
+    ) Governable(_governor) {
         require(_gyroConfig != address(0), Errors.INVALID_ARGUMENT);
         gyroConfig = IGyroConfig(_gyroConfig);
         systemParams = params;

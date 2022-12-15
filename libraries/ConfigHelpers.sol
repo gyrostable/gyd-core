@@ -11,6 +11,7 @@ import "../interfaces/IMotherboard.sol";
 import "../interfaces/ISafetyCheck.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IVaultRegistry.sol";
+import "../interfaces/IAssetRegistry.sol";
 import "../interfaces/IReserveManager.sol";
 import "../interfaces/IFeeBank.sol";
 import "../interfaces/IReserve.sol";
@@ -34,6 +35,10 @@ library ConfigHelpers {
 
     function getVaultRegistry(IGyroConfig gyroConfig) internal view returns (IVaultRegistry) {
         return IVaultRegistry(gyroConfig.getAddress(ConfigKeys.VAULT_REGISTRY_ADDRESS));
+    }
+
+    function getAssetRegistry(IGyroConfig gyroConfig) internal view returns (IAssetRegistry) {
+        return IAssetRegistry(gyroConfig.getAddress(ConfigKeys.ASSET_REGISTRY_ADDRESS));
     }
 
     function getReserveManager(IGyroConfig gyroConfig) internal view returns (IReserveManager) {
@@ -70,7 +75,7 @@ library ConfigHelpers {
         returns (uint256)
     {
         if (authenticated) {
-            return gyroConfig.getUint(ConfigKeys.GYD_NFT_AUTHENTICATED_USER_CAP, type(uint256).max);
+            return gyroConfig.getUint(ConfigKeys.GYD_AUTHENTICATED_USER_CAP, type(uint256).max);
         }
         return gyroConfig.getUint(ConfigKeys.GYD_USER_CAP, type(uint256).max);
     }

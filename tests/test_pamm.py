@@ -298,10 +298,10 @@ def run_path_independence_test(
 
     gyro_config.setAddress(config_keys.MOTHERBOARD_ADDRESS, admin, {"from": admin})
 
-    pamm = admin.deploy(PAMM, gyro_config, params)
+    pamm = admin.deploy(PAMM, admin, gyro_config, params)
     pamm.setState((D(0), ba, ya))
 
-    pamm_2step = admin.deploy(PAMM, gyro_config, params)
+    pamm_2step = admin.deploy(PAMM, admin, gyro_config, params)
     pamm_2step.setState((D(0), ba, ya))
 
     # NOTE: the current input generation is slightly problematic as it generates

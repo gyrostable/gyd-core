@@ -16,12 +16,13 @@ contract BalancerPoolVault is BaseVault {
     Vaults.Type public immutable override vaultType;
 
     constructor(
+        address _governor,
         Vaults.Type _vaultType,
         bytes32 _poolId,
         IVault _balancerVault,
         string memory name,
         string memory symbol
-    ) BaseVault(_getPoolAddress(_poolId), name, symbol) {
+    ) BaseVault(_governor, _getPoolAddress(_poolId), name, symbol) {
         poolId = _poolId;
         balancerVault = _balancerVault;
         vaultType = _vaultType;

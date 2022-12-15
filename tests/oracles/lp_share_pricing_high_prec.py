@@ -6,7 +6,7 @@ from tests.support.quantized_decimal_100 import QuantizedDecimal as D3
 from tests.support.quantized_decimal_convd import convd
 
 
-class CEMM_params:
+class ECLP_params:
     def __init__(self, alpha: D, beta: D, c: D, s: D, lam: D):
         self.alpha = alpha
         self.beta = beta
@@ -15,7 +15,7 @@ class CEMM_params:
         self.lam = lam
 
 
-class CEMM_derived_params:
+class ECLP_derived_params:
     def __init__(self, tau_alpha: tuple[D, D], tau_beta: tuple[D, D]):
         self.tau_alpha = tau_alpha
         self.tau_beta = tau_beta
@@ -53,7 +53,7 @@ def price_bpt_CPMM_equal_weights(
     return convd(prod * convd(invariant_div_supply, D3), D)
 
 
-def price_bpt_CPMMv2(
+def price_bpt_2clp(
     sqrt_alpha: D, sqrt_beta: D, invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:
     px, py = (convd(underlying_prices[0], D3), convd(underlying_prices[1], D3))
@@ -88,7 +88,7 @@ def price_bpt_CPMMv2(
         return convd(term * invariant_div_supply_high_prec, D)
 
 
-def price_bpt_CPMMv3(
+def price_bpt_3clp(
     cbrt_alpha: D, invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:
     px, py, pz = (underlying_prices[0], underlying_prices[1], underlying_prices[2])
@@ -96,9 +96,9 @@ def price_bpt_CPMMv3(
     return term * invariant_div_supply
 
 
-def price_bpt_CEMM(
-    params: CEMM_params,
-    derived_params: CEMM_derived_params,
+def price_bpt_ECLP(
+    params: ECLP_params,
+    derived_params: ECLP_derived_params,
     invariant_div_supply: D,
     underlying_prices: Iterable[D],
 ) -> D:
@@ -130,7 +130,7 @@ def scalar_prod(t1: tuple[D3, D3], t2: tuple[D3, D3]) -> D3:
     return t1[0] * t2[0] + t1[1] * t2[1]
 
 
-def mul_Ainv(params: CEMM_params, t: tuple[D, D]) -> tuple[D3, D3]:
+def mul_Ainv(params: ECLP_params, t: tuple[D, D]) -> tuple[D3, D3]:
     vecx = convd(t[0], D3) * convd(params.lam, D3) * convd(params.c, D3) + convd(
         t[1], D3
     ) * convd(params.s, D3)
@@ -140,18 +140,18 @@ def mul_Ainv(params: CEMM_params, t: tuple[D, D]) -> tuple[D3, D3]:
     return (vecx, vecy)
 
 
-def mul_A(params: CEMM_params, tp: tuple[D, D]) -> tuple[D, D]:
+def mul_A(params: ECLP_params, tp: tuple[D, D]) -> tuple[D, D]:
     vecx = params.c * tp[0] / params.lam - (params.s * tp[1] / params.lam)
     vecy = params.s * tp[0] + (params.c * tp[1])
     return (vecx, vecy)
 
 
-def zeta(params: CEMM_params, px: D) -> D:
+def zeta(params: ECLP_params, px: D) -> D:
     nd = mul_A(params, (-1, px))
     return -nd[1] / nd[0]
 
 
-def tau(params: CEMM_params, px: D) -> tuple[D, D]:
+def tau(params: ECLP_params, px: D) -> tuple[D, D]:
     return eta(zeta(params, px))
 
 
@@ -162,7 +162,7 @@ def eta(pxc: D) -> tuple[D, D]:
     return (vecx, vecy)
 
 
-def relativeEquilibriumPricesCPMMV3(alpha: D, pXZ: D, pYZ: D) -> tuple[D, D]:
+def relativeEquilibriumPrices3CLP(alpha: D, pXZ: D, pYZ: D) -> tuple[D, D]:
     alpha_high_prec = convd(alpha, D3)
     pXZ_high_prec = convd(pXZ, D3)
     pYZ_high_prec = convd(pYZ, D3)
@@ -201,7 +201,7 @@ def relativeEquilibriumPricesCPMMV3(alpha: D, pXZ: D, pYZ: D) -> tuple[D, D]:
         return convd(pXZ_high_prec, D), convd(pYZ_high_prec, D)
 
 
-def price_bpt_CPMMV3(
+def price_bpt_3CLP(
     root3Alpha: D, invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:
     alpha_high_prec = convd(root3Alpha, D3) ** 3
@@ -216,7 +216,7 @@ def price_bpt_CPMMV3(
     pYZ = pY / pZ
 
     # Relative prices of a pool that is arbitrage-free with the external market
-    pXZPool, pYZPool = relativeEquilibriumPricesCPMMV3(alpha_high_prec, pXZ, pYZ)
+    pXZPool, pYZPool = relativeEquilibriumPrices3CLP(alpha_high_prec, pXZ, pYZ)
 
     gamma = (convd(pXZPool, D3) * convd(pYZPool, D3)) ** (D3(1) / 3)
 
