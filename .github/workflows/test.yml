@@ -20,6 +20,8 @@ jobs:
   unit_test:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    env:
+      GITHUB_TOKEN: ${{ secrets.GHP_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/setup
@@ -29,6 +31,8 @@ jobs:
   property_test:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    env:
+      GITHUB_TOKEN: ${{ secrets.GHP_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/setup
@@ -39,6 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
+      GITHUB_TOKEN: ${{ secrets.GHP_TOKEN }}
       WEB3_INFURA_PROJECT_ID: ${{ secrets.WEB3_INFURA_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v2
@@ -50,6 +55,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   timeout-minutes: 120
   #   env:
+  #     GITHUB_TOKEN: ${{ secrets.GHP_TOKEN }}
   #     WEB3_INFURA_PROJECT_ID: ${{ secrets.WEB3_INFURA_PROJECT_ID }}
   #     COINBASE_API_KEY: ${{ secrets.COINBASE_API_KEY }}
   #     COINBASE_API_PASSPHRASE: ${{ secrets.COINBASE_API_PASSPHRASE }}

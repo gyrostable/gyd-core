@@ -1,237 +1,299 @@
-from random import randint
-from hypothesis import settings
-
-import hypothesis.strategies as st
 import pytest
-from brownie.test import given
+from brownie import ZERO_ADDRESS
+from brownie.test.managers.runner import RevertContextManager as reverts
 
-from tests.fixtures.deployments import vault
-from tests.reserve import object_creation
-from tests.support import constants
-from tests.support.quantized_decimal import QuantizedDecimal as D
-from tests.support.utils import scale, to_decimal
-
-MAX_VAULTS = 10
-
-
-amount_generator = st.integers(
-    min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000))
+from tests.support.types import (
+    FlowDirection,
+    Order,
+    VaultWithAmount,
+    VaultInfo,
+    PersistedVaultMetadata,
 )
-short_flow_memory_generator = st.integers(min_value=1, max_value=1000)
-price_generator = st.integers(
-    min_value=int(scale("0.001")), max_value=int(scale(1_000_000_000))
-)
-weight_generator = st.integers(min_value=int(scale("0.001")), max_value=int(scale(1)))
-
-boolean_generator = st.booleans()
-
-stablecoin_price_generator = st.integers(
-    min_value=int(scale("0.94")), max_value=int(scale("1.06"))
-)
-
-CURRENT_BLOCK_NUMBER = 2000
+from tests.support import config_keys
+from tests.support import error_codes
+from tests.support.utils import scale
 
 
-def test_calculate_remaining_blocks(vault_safety_mode):
-    remaining_blocks = vault_safety_mode.calculateRemainingBlocks(100, 20)
-    assert remaining_blocks == 80
-
-
-def build_directional_flow_data(vault_addresses):
-    directional_flow_data = []
-    for i in range(len(vault_addresses)):
-        directional_flow_data.append((randint(3, 30000), randint(5, 29999)))
-
-    return directional_flow_data
-
-
-@given(
-    order_bundle=st.lists(
-        st.tuples(
-            price_generator,
-            weight_generator,
-            amount_generator,
-            price_generator,
-            amount_generator,
-            weight_generator,
-            weight_generator,
+def _create_vault_info(admin, MockGyroVault, decimals, short_flow_threshold):
+    vault = admin.deploy(MockGyroVault, ZERO_ADDRESS)
+    return VaultInfo(
+        vault=vault,
+        current_weight=0,
+        decimals=decimals,
+        price=0,
+        ideal_weight=0,
+        persisted_metadata=PersistedVaultMetadata(
+            initial_price=0,
+            short_flow_memory=int(scale("0.9", 18)),
+            initial_weight=0,
+            short_flow_threshold=short_flow_threshold,
         ),
-        min_size=constants.RESERVE_VAULTS,
-        max_size=constants.RESERVE_VAULTS,
-    ),
-)
-@settings(max_examples=10)
-def test_store_and_access_directional_flow_data_mint(
-    vault_safety_mode, order_bundle, mock_vaults, mock_price_oracle
+        priced_tokens=[],
+        reserve_balance=0,
+        underlying=ZERO_ADDRESS,
+    )
+
+
+@pytest.fixture
+def authorize_admin(admin, gyro_config):
+    gyro_config.setAddress(
+        config_keys.ROOT_SAFETY_CHECK_ADDRESS, admin.address, {"from": admin}
+    )
+
+
+@pytest.mark.usefixtures("authorize_admin")
+@pytest.mark.parametrize("mint", [True, False])
+def test_multiple_mints_or_redeems(
+    vault_safety_mode, admin, mint, chain, MockGyroVault
 ):
-
-    mint_order = object_creation.bundle_to_order(
-        order_bundle, True, mock_vaults, mock_price_oracle
+    value_index = 0 if mint else 1
+    other_value_index = 1 if mint else 0
+    query_check = (
+        vault_safety_mode.isMintSafe if mint else vault_safety_mode.isRedeemSafe
     )
-    vault_addresses = [i.address for i in mock_vaults]
-    stored_data = vault_safety_mode.accessDirectionalFlowData(
-        vault_addresses, mint_order
-    )
-
-    directional_flow_data = build_directional_flow_data(vault_addresses)
-    vault_safety_mode.storeDirectionalFlowData(
-        directional_flow_data, mint_order, vault_addresses, 60
-    )
-    new_stored_data = vault_safety_mode.accessDirectionalFlowData(
-        vault_addresses, mint_order
+    execute_check = (
+        vault_safety_mode.checkAndPersistMint
+        if mint
+        else vault_safety_mode.checkAndPersistRedeem
     )
 
-    assert stored_data != new_stored_data
-
-    latest_data = vault_safety_mode.accessDirectionalFlowData(
-        vault_addresses, mint_order
+    # mint/redeem with two vaults and ensure that everything is persisted correctly
+    amount_a_1 = 2 * 10**18
+    vault_info_a = _create_vault_info(admin, MockGyroVault, 18, 10**19)
+    vault_info_b = _create_vault_info(admin, MockGyroVault, 6, 10**8)
+    order = Order(
+        mint=mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=amount_a_1),
+            VaultWithAmount(vault_info=vault_info_b, amount=30 * 10**6),
+        ],
     )
-    assert latest_data[0][5] == directional_flow_data[5]
-
-
-@given(
-    order_bundle=st.lists(
-        st.tuples(
-            price_generator,
-            weight_generator,
-            amount_generator,
-            price_generator,
-            amount_generator,
-            weight_generator,
-            weight_generator,
-        ),
-        min_size=constants.RESERVE_VAULTS,
-        max_size=constants.RESERVE_VAULTS,
-    ),
-)
-@settings(max_examples=10)
-def test_store_and_access_directional_flow_data_redeem(
-    vault_safety_mode, order_bundle, mock_vaults, mock_price_oracle
-):
-
-    redeem_order = object_creation.bundle_to_order(
-        order_bundle, False, mock_vaults, mock_price_oracle
+    assert query_check(order) == ""
+    tx = execute_check(order)
+    assert not tx.events
+    persisted_a = vault_safety_mode.persistedFlowData(
+        order.vaults_with_amount[0].vault_info.vault
     )
-    vault_addresses = [i.address for i in mock_vaults]
-    stored_data = vault_safety_mode.accessDirectionalFlowData(
-        vault_addresses, redeem_order
-    )
-
-    directional_flow_data = build_directional_flow_data(vault_addresses)
-    vault_safety_mode.storeDirectionalFlowData(
-        directional_flow_data, redeem_order, vault_addresses, 60
-    )
-    new_stored_data = vault_safety_mode.accessDirectionalFlowData(
-        vault_addresses, redeem_order
-    )
-
-    assert stored_data != new_stored_data
-
-    latest_data = vault_safety_mode.accessDirectionalFlowData(
-        vault_addresses, redeem_order
-    )
-    assert latest_data[0][5] == directional_flow_data[5]
-
-
-@given(
-    order_bundle=st.lists(
-        st.tuples(
-            price_generator,
-            weight_generator,
-            amount_generator,
-            price_generator,
-            amount_generator,
-            weight_generator,
-            weight_generator,
-        ),
-        min_size=constants.RESERVE_VAULTS,
-        max_size=constants.RESERVE_VAULTS,
-    ),
-)
-@settings(max_examples=10)
-def test_fetch_latest_directional_flow_data(
-    vault_safety_mode, order_bundle, mock_vaults, mock_price_oracle
-):
-
-    redeem_order = object_creation.bundle_to_order(
-        order_bundle, False, mock_vaults, mock_price_oracle
-    )
-    vault_addresses = [i.address for i in mock_vaults]
-
-    directional_flow_data = build_directional_flow_data(vault_addresses)
-    vault_safety_mode.storeDirectionalFlowData(
-        directional_flow_data, redeem_order, vault_addresses, 60
-    )
-
-    directional_flow_data_latest = vault_safety_mode.fetchLatestDirectionalFlowData(
-        vault_addresses, 100, redeem_order
-    )
-
-
-def update_vault_flow_safety(
-    directional_flow_data, proposed_flow_change, short_flow_threshold
-):
-    allow_transaction = True
-    is_safety_mode_activated = False
-    if directional_flow_data[1] > 0:
-        return (directional_flow_data, False, True)
-    new_flow = D(directional_flow_data[0]) + D(proposed_flow_change)
-    tuple_as_list = list(directional_flow_data)
-
-    if new_flow > D(short_flow_threshold):
-        allow_transaction = False
-        tuple_as_list[1] = 100
-        directional_flow_data = tuple(tuple_as_list)
-    elif new_flow > D(short_flow_threshold) * D("0.8"):
-        tuple_as_list[1] = 100
-        tuple_as_list[0] += D(new_flow)
-        directional_flow_data = tuple(tuple_as_list)
-        is_safety_mode_activated = True
+    assert persisted_a[value_index][0] == order.vaults_with_amount[0].amount
+    assert persisted_a[value_index][1] == 0
+    assert persisted_a[other_value_index][0] == 0
+    assert persisted_a[other_value_index][1] == 0
+    if mint:
+        assert vault_safety_mode.lastMintBlock() == tx.block_number
+        assert vault_safety_mode.lastRedeemBlock() == 0
     else:
-        tuple_as_list[0] += D(new_flow)
+        assert vault_safety_mode.lastMintBlock() == 0
+        assert vault_safety_mode.lastRedeemBlock() == tx.block_number
 
-    return (directional_flow_data, allow_transaction, is_safety_mode_activated)
-
-
-@given(
-    directional_flow_data=st.tuples(amount_generator, amount_generator),
-    proposed_flow_change=amount_generator,
-    short_flow_threshold=amount_generator,
-)
-def test_update_vault_flow_safety(
-    vault_safety_mode, directional_flow_data, proposed_flow_change, short_flow_threshold
-):
-    result_sol = vault_safety_mode.updateVaultFlowSafety(
-        directional_flow_data, proposed_flow_change, short_flow_threshold
+    persisted_b = vault_safety_mode.persistedFlowData(
+        order.vaults_with_amount[1].vault_info.vault
     )
-    result_python = update_vault_flow_safety(
-        directional_flow_data, proposed_flow_change, short_flow_threshold
+    assert persisted_b[value_index][0] == order.vaults_with_amount[1].amount
+    assert persisted_b[other_value_index][0] == 0
+
+    order = Order(
+        mint=mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=9 * 10**18)
+        ],
     )
-    assert result_sol == result_python
+    assert query_check(order) == error_codes.VAULT_FLOW_TOO_HIGH
+    with reverts(error_codes.VAULT_FLOW_TOO_HIGH):
+        execute_check(order)
+
+    amount_a_2 = 3 * 10**18
+    order = Order(
+        mint=mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=amount_a_2)
+        ],
+    )
+    tx = execute_check(order)
+    assert not tx.events
+    persisted_a = vault_safety_mode.persistedFlowData(
+        order.vaults_with_amount[0].vault_info.vault
+    )
+    # ensure that the updated flow makes sense and uses the discounted sum
+    assert persisted_a[value_index][0] < amount_a_1 + amount_a_2
+
+    # ensure that the safety mode is activated when required
+    amount_a_3 = int(scale("4.5"))  # type: ignore
+    order = Order(
+        mint=mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=amount_a_3)
+        ],
+    )
+    tx = execute_check(order)
+    assert (
+        tx.events["SafetyStatus"]["err"]
+        == error_codes.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED
+    )
+    persisted_a = vault_safety_mode.persistedFlowData(
+        order.vaults_with_amount[0].vault_info.vault
+    )
+    assert persisted_a[value_index][0] < amount_a_1 + amount_a_2 + amount_a_3
+    assert (
+        persisted_a[value_index][1]
+        == tx.block_number + vault_safety_mode.safetyBlocksAutomatic()
+    )
+
+    assert query_check(order) == error_codes.SAFETY_MODE_ACTIVATED
+    # we cannot use the vault once the safety mode is activated
+    with reverts(error_codes.SAFETY_MODE_ACTIVATED):
+        execute_check(order)
+
+    # but we can mint/redeem with other vaults
+    order = Order(
+        mint=mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_b, amount=30 * 10**6),
+        ],
+    )
+    tx = execute_check(order)
+    assert not tx.events
+
+    chain.mine(vault_safety_mode.safetyBlocksAutomatic())
+
+    # once the safety mode is deactivated (after n blocks), we can use the vault again
+    order = Order(
+        mint=mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=amount_a_3)
+        ],
+    )
+    tx = execute_check(order)
+    assert not tx.events
 
 
-@given(
-    order_bundle=st.lists(
-        st.tuples(
-            price_generator,
-            weight_generator,
-            amount_generator,
-            price_generator,
-            amount_generator,
-            weight_generator,
-            weight_generator,
-            short_flow_memory_generator,
-            amount_generator,
-        ),
-        min_size=constants.RESERVE_VAULTS,
-        max_size=constants.RESERVE_VAULTS,
-    ),
-)
-def test_flow_safety_state_updater(
-    vault_safety_mode, order_bundle, mock_vaults, mock_price_oracle
-):
-    redeem_order = object_creation.bundle_to_order_vary_persisted(
-        order_bundle, False, mock_vaults, mock_price_oracle
+@pytest.mark.usefixtures("authorize_admin")
+def test_mixed_mints_and_redeems(vault_safety_mode, admin, chain, MockGyroVault):
+    vault_info = _create_vault_info(admin, MockGyroVault, 18, 10**19)
+    mint_order = Order(
+        mint=True,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info, amount=7 * 10**18)
+        ],
     )
-    response = vault_safety_mode.flowSafetyStateUpdater(redeem_order)
-    assert response[2] == [i.address for i in mock_vaults]
+    tx = vault_safety_mode.checkAndPersistMint(mint_order)
+    assert not tx.events
+
+    chain.mine(vault_safety_mode.safetyBlocksAutomatic() * 10)
+
+    redeem_order = Order(
+        mint=False,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info, amount=7 * 10**18)
+        ],
+    )
+    tx = vault_safety_mode.checkAndPersistRedeem(redeem_order)
+    assert not tx.events
+
+    tx = vault_safety_mode.checkAndPersistMint(mint_order)
+    assert not tx.events
+
+    with reverts(error_codes.VAULT_FLOW_TOO_HIGH):
+        vault_safety_mode.checkAndPersistRedeem(redeem_order)
+
+
+@pytest.mark.parametrize("mint", [True, False])
+@pytest.mark.usefixtures("authorize_admin")
+def test_guardian_oracle(vault_safety_mode, admin, chain, MockGyroVault, mint):
+    tx = vault_safety_mode.addAddressToWhitelist(admin, {"from": admin})
+    assert tx.events["AddedToWhitelist"]["account"] == admin
+
+    vault_info_a = _create_vault_info(admin, MockGyroVault, 18, 10**19)
+    vault_info_b = _create_vault_info(admin, MockGyroVault, 18, 10**19)
+
+    direction = FlowDirection.IN if mint else FlowDirection.OUT
+    guarded_check, normal_check = (
+        vault_safety_mode.checkAndPersistMint,
+        vault_safety_mode.checkAndPersistRedeem,
+    )
+    if not mint:
+        guarded_check, normal_check = normal_check, guarded_check
+
+    tx = vault_safety_mode.activateOracleGuardian((vault_info_a.vault, direction), 100)
+    assert len(tx.events["OracleGuardianActivated"]) == 1
+    assert tx.events["OracleGuardianActivated"]["vaultAddress"] == vault_info_a.vault
+    assert tx.events["OracleGuardianActivated"]["durationOfProtectionInBlocks"] == 100
+    assert tx.events["OracleGuardianActivated"]["inFlows"] == mint
+
+    failing_order = Order(
+        mint=mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=7 * 10**18)
+        ],
+    )
+    with reverts(error_codes.SAFETY_MODE_ACTIVATED):
+        guarded_check(failing_order)
+
+    other_vault_order = Order(
+        mint=mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_b, amount=30 * 10**6)
+        ],
+    )
+    tx = guarded_check(other_vault_order)
+    assert not tx.events
+
+    non_guarded_order = Order(
+        mint=not mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=7 * 10**18)
+        ],
+    )
+    tx = normal_check(non_guarded_order)
+    assert not tx.events
+
+    chain.mine(100)
+    guarded_order = Order(
+        mint=mint,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=7 * 10**18)
+        ],
+    )
+    tx = guarded_check(guarded_order)
+    assert not tx.events
+
+    tx = vault_safety_mode.activateOracleGuardian(
+        (vault_info_a.vault, FlowDirection.BOTH), 100
+    )
+    assert len(tx.events["OracleGuardianActivated"]) == 2
+    assert tx.events["OracleGuardianActivated"][0]["vaultAddress"] == vault_info_a.vault
+    assert (
+        tx.events["OracleGuardianActivated"][0]["durationOfProtectionInBlocks"] == 100
+    )
+    assert tx.events["OracleGuardianActivated"]["inFlows"] == True
+    assert tx.events["OracleGuardianActivated"][1]["vaultAddress"] == vault_info_a.vault
+    assert (
+        tx.events["OracleGuardianActivated"][1]["durationOfProtectionInBlocks"] == 100
+    )
+    assert tx.events["OracleGuardianActivated"][1]["inFlows"] == False
+
+    mint_order = Order(
+        mint=True,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=7 * 10**18)
+        ],
+    )
+    redeem_order = Order(
+        mint=False,
+        vaults_with_amount=[
+            VaultWithAmount(vault_info=vault_info_a, amount=7 * 10**18)
+        ],
+    )
+
+    with reverts(error_codes.SAFETY_MODE_ACTIVATED):
+        vault_safety_mode.checkAndPersistMint(mint_order)
+
+    with reverts(error_codes.SAFETY_MODE_ACTIVATED):
+        vault_safety_mode.checkAndPersistRedeem(redeem_order)
+
+    chain.mine(100)
+
+    tx = vault_safety_mode.checkAndPersistMint(mint_order)
+    assert not tx.events
+
+    tx = vault_safety_mode.checkAndPersistRedeem(redeem_order)
+    assert not tx.events
