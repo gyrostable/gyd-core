@@ -5,7 +5,7 @@ import json
 from functools import cached_property
 from glob import glob
 from os import path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from web3 import Web3
 
@@ -20,6 +20,7 @@ TRACE_URLS = {
 
 parser = argparse.ArgumentParser(prog="format-call-trace.py")
 parser.add_argument("trace_or_txid", help="Path to the trace file or transaction id")
+parser.add_argument("-s", "--save-trace", help="Save trace to file when it is fetched")
 parser.add_argument(
     "-n", "--network", help="Network ID", type=int, default=DEFAULT_NETWORK_ID
 )
@@ -75,6 +76,10 @@ class Call:
         return self.trace["input"]
 
     @cached_property
+    def error(self):
+        return self.trace.get("error")
+
+    @cached_property
     def selector(self):
         return self.input[2:10]
 
@@ -120,7 +125,10 @@ class Call:
 
     @cached_property
     def summary(self):
-        return f"{self.formatted_to}.{self.function_name} ({self.gas_used:,})"
+        summary = f"{self.formatted_to}.{self.function_name} ({self.gas_used:,})"
+        if self.error:
+            summary += f" ✗: {self.error}"
+        return summary
 
     def format(self, maxlvl=None):
         return self._format([], maxlvl=maxlvl)
@@ -150,7 +158,7 @@ class Call:
         return line
 
 
-def get_trace(trace_or_txid: str, network_id: int):
+def get_trace(trace_or_txid: str, network_id: int, save_trace: Optional[str] = None):
     if path.exists(trace_or_txid):
         with open(trace_or_txid) as f:
             return json.load(f)
@@ -163,14 +171,18 @@ def get_trace(trace_or_txid: str, network_id: int):
         if r.status_code != 200:
             raise ValueError("could not get trace")
         soup = BeautifulSoup(r.text, "html.parser")
-        return json.loads(soup.find(id="editor").text)
+        result = json.loads(soup.find(id="editor").text)
+        if save_trace:
+            with open(save_trace, "w") as f:
+                json.dump(result, f)
+        return result
     else:
         raise ValueError("invalid trace or txid")
 
 
 def main():
     args = parser.parse_args()
-    trace = get_trace(args.trace_or_txid, args.network)
+    trace = get_trace(args.trace_or_txid, args.network, save_trace=args.save_trace)
     Call.metadata = Metadata(load_4bytes(), load_known_contracts(args.network))
     call = Call(trace)
     print(call.format())
