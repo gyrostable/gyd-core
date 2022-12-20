@@ -42,9 +42,12 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     event AddedToWhitelist(address indexed account);
     event RemovedFromWhitelist(address indexed account);
 
+    struct FlowResult {
+        uint256 newFlow;
+        bool safetyModeActivated;
+    }
+
     mapping(address => DataTypes.FlowData) public persistedFlowData;
-    uint256 public lastMintBlock;
-    uint256 public lastRedeemBlock;
 
     IGyroConfig public immutable gyroConfig;
 
@@ -95,11 +98,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @return err empty string if it is safe, otherwise the reason why it is not safe
     function isRedeemSafe(DataTypes.Order memory order) external view returns (string memory err) {
         (err, ) = _checkFlows(order);
-    }
-
-    struct FlowResult {
-        uint256 newFlow;
-        bool safetyModeActivated;
     }
 
     /// @notice Checks whether a redeem operation is safe
@@ -168,7 +166,6 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         returns (string memory err, FlowResult[] memory result)
     {
         result = new FlowResult[](order.vaultsWithAmount.length);
-        uint256 lastSeenBlock = order.mint ? lastMintBlock : lastRedeemBlock;
 
         for (uint256 i; i < order.vaultsWithAmount.length; i++) {
             uint256 amount = order.vaultsWithAmount[i].amount;
@@ -187,7 +184,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 Flow.updateFlow(
                     directionalData.shortFlow,
                     block.number,
-                    lastSeenBlock,
+                    directionalData.lastSeenBlock,
                     vault.persistedMetadata.shortFlowMemory
                 );
 
@@ -196,12 +193,12 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                 break;
             }
 
-            bool activateSaftyMode = newFlow > THRESHOLD_BUFFER.mulDown(shortFlowThreshold);
-            if (activateSaftyMode) {
+            bool activateSafetyMode = newFlow > THRESHOLD_BUFFER.mulDown(shortFlowThreshold);
+            if (activateSafetyMode) {
                 err = Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED;
             }
 
-            result[i] = FlowResult(newFlow, activateSaftyMode);
+            result[i] = FlowResult(newFlow, activateSafetyMode);
         }
     }
 
@@ -211,13 +208,12 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             DataTypes.FlowData storage flowData = persistedFlowData[vault.vault];
             DataTypes.DirectionalFlowData storage directionalData;
             if (order.mint) {
-                lastMintBlock = block.number;
                 directionalData = flowData.inFlow;
             } else {
-                lastRedeemBlock = block.number;
                 directionalData = flowData.outFlow;
             }
-            directionalData.shortFlow = uint192(result[i].newFlow);
+            directionalData.lastSeenBlock = uint64(block.number);
+            directionalData.shortFlow = uint128(result[i].newFlow);
             if (result[i].safetyModeActivated) {
                 directionalData.lastSafetyBlock = uint64(block.number + safetyBlocksAutomatic);
             }

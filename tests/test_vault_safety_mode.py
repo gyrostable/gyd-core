@@ -76,14 +76,10 @@ def test_multiple_mints_or_redeems(
     )
     assert persisted_a[value_index][0] == order.vaults_with_amount[0].amount
     assert persisted_a[value_index][1] == 0
+    assert persisted_a[value_index][2] == tx.block_number
     assert persisted_a[other_value_index][0] == 0
     assert persisted_a[other_value_index][1] == 0
-    if mint:
-        assert vault_safety_mode.lastMintBlock() == tx.block_number
-        assert vault_safety_mode.lastRedeemBlock() == 0
-    else:
-        assert vault_safety_mode.lastMintBlock() == 0
-        assert vault_safety_mode.lastRedeemBlock() == tx.block_number
+    assert persisted_a[other_value_index][2] == 0
 
     persisted_b = vault_safety_mode.persistedFlowData(
         order.vaults_with_amount[1].vault_info.vault

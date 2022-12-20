@@ -132,7 +132,6 @@ fi
 # safety checks
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py root
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py vault_safety_mode
-brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py vault_safety_mode_proxy
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py reserve_safety_manager
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py register
 
