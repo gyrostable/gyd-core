@@ -149,22 +149,22 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         external
         isWhitelisted(msg.sender)
     {
-        require(blocks <= safetyBlocksGuardian, Errors.ORACLE_GUARDIAN_TIME_LIMIT);
+        _activateOracleGuardian(vaultToProtect, blocks);
+    }
 
-        uint64 targetBlock = uint64(block.number + blocks);
-        if (
-            vaultToProtect.direction == DataTypes.Direction.In ||
-            vaultToProtect.direction == DataTypes.Direction.Both
-        ) {
-            persistedFlowData[vaultToProtect.vaultAddress].inFlow.lastSafetyBlock = targetBlock;
-            emit OracleGuardianActivated(vaultToProtect.vaultAddress, blocks, true);
-        }
-        if (
-            vaultToProtect.direction == DataTypes.Direction.Out ||
-            vaultToProtect.direction == DataTypes.Direction.Both
-        ) {
-            persistedFlowData[vaultToProtect.vaultAddress].outFlow.lastSafetyBlock = targetBlock;
-            emit OracleGuardianActivated(vaultToProtect.vaultAddress, blocks, false);
+    function pauseProtocol(bool depositsOnly) external isWhitelisted(msg.sender) {
+        IVaultRegistry vaultRegistry = gyroConfig.getVaultRegistry();
+        address[] memory vaults = vaultRegistry.listVaults();
+        DataTypes.Direction direction = depositsOnly
+            ? DataTypes.Direction.In
+            : DataTypes.Direction.Both;
+        uint256 blocksToActivate = safetyBlocksGuardian;
+        for (uint256 i = 0; i < vaults.length; i++) {
+            DataTypes.GuardedVaults memory vaultToProtect = DataTypes.GuardedVaults(
+                vaults[i],
+                direction
+            );
+            _activateOracleGuardian(vaultToProtect, blocksToActivate);
         }
     }
 
@@ -225,6 +225,28 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             if (result[i].safetyModeActivated) {
                 directionalData.lastSafetyBlock = uint64(block.number + safetyBlocksAutomatic);
             }
+        }
+    }
+
+    function _activateOracleGuardian(DataTypes.GuardedVaults memory vaultToProtect, uint256 blocks)
+        internal
+    {
+        require(blocks <= safetyBlocksGuardian, Errors.ORACLE_GUARDIAN_TIME_LIMIT);
+
+        uint64 targetBlock = uint64(block.number + blocks);
+        if (
+            vaultToProtect.direction == DataTypes.Direction.In ||
+            vaultToProtect.direction == DataTypes.Direction.Both
+        ) {
+            persistedFlowData[vaultToProtect.vaultAddress].inFlow.lastSafetyBlock = targetBlock;
+            emit OracleGuardianActivated(vaultToProtect.vaultAddress, blocks, true);
+        }
+        if (
+            vaultToProtect.direction == DataTypes.Direction.Out ||
+            vaultToProtect.direction == DataTypes.Direction.Both
+        ) {
+            persistedFlowData[vaultToProtect.vaultAddress].outFlow.lastSafetyBlock = targetBlock;
+            emit OracleGuardianActivated(vaultToProtect.vaultAddress, blocks, false);
         }
     }
 }
