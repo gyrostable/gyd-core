@@ -287,22 +287,22 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return order;
     }
 
-    function _getAssetVaultAndRedeemAmount(
-        DataTypes.RedeemAsset calldata asset,
+    function _getRedeemAssetAndAmount(
+        DataTypes.VaultInfo memory vaultInfo,
         uint256 usdValueToRedeem,
-        DataTypes.VaultInfo[] memory vaultsInfo
-    ) internal pure returns (uint256, DataTypes.VaultInfo memory) {
-        for (uint256 i = 0; i < vaultsInfo.length; i++) {
-            DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
+        DataTypes.RedeemAsset[] calldata redeemAssets
+    ) internal pure returns (uint256, uint256) {
+        for (uint256 i = 0; i < redeemAssets.length; i++) {
+            DataTypes.RedeemAsset calldata asset = redeemAssets[i];
             if (asset.originVault == vaultInfo.vault) {
                 uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(asset.valueRatio);
                 uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultInfo.price);
                 uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vaultInfo.decimals);
 
-                return (scaledVaultTokenAmount, vaultInfo);
+                return (scaledVaultTokenAmount, asset.valueRatio);
             }
         }
-        revert(Errors.INVALID_ARGUMENT);
+        return (0, 0);
     }
 
     function _createRedeemOrder(
@@ -310,21 +310,23 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.RedeemAsset[] calldata assets,
         DataTypes.VaultInfo[] memory vaultsInfo
     ) internal pure returns (DataTypes.Order memory) {
+        _ensureNoDuplicates(assets);
+
         DataTypes.Order memory order = DataTypes.Order({
             mint: false,
-            vaultsWithAmount: new DataTypes.VaultWithAmount[](assets.length)
+            vaultsWithAmount: new DataTypes.VaultWithAmount[](vaultsInfo.length)
         });
 
         uint256 totalValueRatio = 0;
 
-        for (uint256 i = 0; i < assets.length; i++) {
-            DataTypes.RedeemAsset calldata redeemAsset = assets[i];
-            (uint256 amount, DataTypes.VaultInfo memory vaultInfo) = _getAssetVaultAndRedeemAmount(
-                redeemAsset,
+        for (uint256 i = 0; i < vaultsInfo.length; i++) {
+            DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
+            (uint256 amount, uint256 valueRatio) = _getRedeemAssetAndAmount(
+                vaultInfo,
                 usdValueToRedeem,
-                vaultsInfo
+                assets
             );
-            totalValueRatio += redeemAsset.valueRatio;
+            totalValueRatio += valueRatio;
 
             order.vaultsWithAmount[i] = DataTypes.VaultWithAmount({
                 amount: amount,
@@ -454,5 +456,15 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         bool isAuthenticated = gyroConfig.isAuthenticated(account);
         uint256 perUserSupplyCap = gyroConfig.getPerUserSupplyCap(isAuthenticated);
         return gydToken.balanceOf(account) + mintedGYDAmount > perUserSupplyCap;
+    }
+
+    function _ensureNoDuplicates(DataTypes.RedeemAsset[] calldata redeemAssets) internal pure {
+        for (uint256 i = 0; i < redeemAssets.length; i++) {
+            DataTypes.RedeemAsset calldata asset = redeemAssets[i];
+            for (uint256 j = i + 1; j < redeemAssets.length; j++) {
+                DataTypes.RedeemAsset calldata otherAsset = redeemAssets[j];
+                require(asset.originVault != otherAsset.originVault, Errors.INVALID_ARGUMENT);
+            }
+        }
     }
 }
