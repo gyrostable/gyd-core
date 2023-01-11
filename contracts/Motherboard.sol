@@ -32,6 +32,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     using SafeERC20 for IGYDToken;
     using ConfigHelpers for IGyroConfig;
 
+    uint256 internal constant _REDEEM_DEVIATION_EPSILON = 1e13; // 0.001 %
+
     /// @inheritdoc IMotherboard
     IGYDToken public immutable override gydToken;
 
@@ -97,6 +99,11 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             .getReserveState();
 
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveState.totalUSDValue);
+        require(
+            usdValueToRedeem <= gydToRedeem.mulDown(FixedPoint.ONE + _REDEEM_DEVIATION_EPSILON),
+            Errors.REDEEM_AMOUNT_BUG
+        );
+
         DataTypes.Order memory order = _createRedeemOrder(
             usdValueToRedeem,
             assets,
