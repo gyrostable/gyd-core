@@ -41,7 +41,7 @@ def main():
     signed_prices = _make_signed_prices(prices, price_signer)
 
     trusted_signer_price_oracle_profiler = accounts[0].deploy(
-        TrustedSignerPriceOracleProfiler, asset_registry, price_signer.address  # type: ignore
+        TrustedSignerPriceOracleProfiler, asset_registry, price_signer.address, True  # type: ignore
     )
 
     tx = trusted_signer_price_oracle_profiler.profilePostPrice(

@@ -173,6 +173,7 @@ def mainnet_coinbase_price_oracle(
         TrustedSignerPriceOracle,
         mainnet_asset_registry,
         constants.COINBASE_SIGNING_ADDRESS,
+        True,
     )
 
     eth_price = find_price(fetch_prices()[0], "ETH")

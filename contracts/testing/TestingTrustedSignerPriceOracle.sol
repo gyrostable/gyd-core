@@ -5,9 +5,11 @@ pragma solidity ^0.8.4;
 import "../oracles/TrustedSignerPriceOracle.sol";
 
 contract TestingTrustedSignerPriceOracle is TrustedSignerPriceOracle {
-    constructor(address _assetRegistry, address _priceSigner)
-        TrustedSignerPriceOracle(_assetRegistry, _priceSigner)
-    {}
+    constructor(
+        address _assetRegistry,
+        address _priceSigner,
+        bool _preventStalePrice
+    ) TrustedSignerPriceOracle(_assetRegistry, _priceSigner, _preventStalePrice) {}
 
     function callVerifyMessage(bytes memory message, bytes memory signature)
         external

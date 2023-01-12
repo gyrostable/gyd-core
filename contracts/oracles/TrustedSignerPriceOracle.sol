@@ -38,16 +38,26 @@ contract TrustedSignerPriceOracle is IUSDPriceOracle {
     /// @dev asset to prices storage
     mapping(address => PriceData) internal prices;
 
-    constructor(address _assetRegistry, address _priceSigner) {
+    /// @notice if this is `true`, the oracle will revert if the price is stale
+    bool public preventStalePrice;
+
+    constructor(
+        address _assetRegistry,
+        address _priceSigner,
+        bool _preventStalePrice
+    ) {
         assetRegistry = IAssetRegistry(_assetRegistry);
         trustedPriceSigner = _priceSigner;
+        preventStalePrice = _preventStalePrice;
     }
 
     /// @inheritdoc IUSDPriceOracle
     function getPriceUSD(address baseAsset) external view returns (uint256) {
         PriceData memory signedPrice = prices[baseAsset];
         require(signedPrice.timestamp > 0, Errors.ASSET_NOT_SUPPORTED);
-        require(signedPrice.timestamp + MAX_LAG >= block.timestamp, Errors.STALE_PRICE);
+        if (preventStalePrice) {
+            require(signedPrice.timestamp + MAX_LAG >= block.timestamp, Errors.STALE_PRICE);
+        }
         return signedPrice.price;
     }
 

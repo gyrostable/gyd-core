@@ -40,7 +40,7 @@ def initialize_mainnet_oracles(
     price_signer,
 ):
     deployed_trusted_signer = admin.deploy(
-        TestingTrustedSignerPriceOracle, asset_registry, price_signer
+        TestingTrustedSignerPriceOracle, asset_registry, price_signer, True
     )
     timestamp = int(time.time())
     unscaled_price = D(get_eth_price())
