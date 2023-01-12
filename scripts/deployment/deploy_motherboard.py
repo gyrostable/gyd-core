@@ -29,7 +29,6 @@ def proxy(governance_proxy, reserve, motherboard):
 
 
 @with_gas_usage
-@as_singleton(Motherboard)
 @with_deployed(GyroConfig)
 def main(gyro_config):
     deployer = get_deployer()

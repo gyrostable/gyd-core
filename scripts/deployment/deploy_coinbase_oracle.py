@@ -25,11 +25,10 @@ def post_prices(oracle):
 @as_singleton(TrustedSignerPriceOracle)
 def main(asset_registry):
     deployer = get_deployer()
-    oracle = deployer.deploy(
+    deployer.deploy(
         TrustedSignerPriceOracle,
         asset_registry,
         COINBASE_SIGNING_ADDRESS,
         False,
         **make_tx_params()
     )
-    _post_prices(deployer, oracle)

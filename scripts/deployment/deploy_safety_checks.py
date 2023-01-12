@@ -1,7 +1,6 @@
 from brownie import RootSafetyCheck, GovernanceProxy, GyroConfig, ReserveSafetyManager, VaultSafetyMode  # type: ignore
 from scripts.utils import (
     as_singleton,
-    deploy_proxy,
     get_deployer,
     make_tx_params,
     with_deployed,
