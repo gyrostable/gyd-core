@@ -43,6 +43,23 @@ def authorize_admin(admin, gyro_config):
 
 @pytest.mark.usefixtures("authorize_admin")
 @pytest.mark.parametrize("mint", [True, False])
+def test_call_wrong_function(admin, vault_safety_mode, mint):
+    order = Order(mint=mint, vaults_with_amount=[])
+    query_check = (
+        vault_safety_mode.isRedeemSafe if mint else vault_safety_mode.isMintSafe
+    )
+    execute_check = (
+        vault_safety_mode.checkAndPersistRedeem
+        if mint
+        else vault_safety_mode.checkAndPersistMint
+    )
+    assert query_check(order) == error_codes.INVALID_ARGUMENT
+    with reverts(error_codes.INVALID_ARGUMENT):
+        execute_check(order, {"from": admin})
+
+
+@pytest.mark.usefixtures("authorize_admin")
+@pytest.mark.parametrize("mint", [True, False])
 def test_multiple_mints_or_redeems(
     vault_safety_mode, admin, mint, chain, MockGyroVault
 ):

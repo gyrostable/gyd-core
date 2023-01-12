@@ -75,7 +75,11 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @notice Checks whether a mint operation is safe
     /// @return err empty string if it is safe, otherwise the reason why it is not safe
     function isMintSafe(DataTypes.Order memory order) external view returns (string memory err) {
-        (err, ) = _checkFlows(order);
+        if (order.mint) {
+            (err, ) = _checkFlows(order);
+        } else {
+            err = Errors.INVALID_ARGUMENT;
+        }
     }
 
     /// @inheritdoc ISafetyCheck
@@ -97,7 +101,11 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     /// @notice Checks whether a redeem operation is safe
     /// @return err empty string if it is safe, otherwise the reason why it is not safe
     function isRedeemSafe(DataTypes.Order memory order) external view returns (string memory err) {
-        (err, ) = _checkFlows(order);
+        if (!order.mint) {
+            (err, ) = _checkFlows(order);
+        } else {
+            err = Errors.INVALID_ARGUMENT;
+        }
     }
 
     /// @notice Checks whether a redeem operation is safe
