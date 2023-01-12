@@ -50,13 +50,13 @@ library DataTypes {
 
     /// @notice Directional (in or out) flow data for the vaults
     struct DirectionalFlowData {
-        uint256 shortFlow;
-        uint256 remainingSafetyBlocks;
+        uint128 shortFlow;
+        uint64 lastSafetyBlock;
+        uint64 lastSeenBlock;
     }
 
     /// @notice Bidirectional vault flow data
     struct FlowData {
-        uint256 lastSeenBlock;
         DirectionalFlowData inFlow;
         DirectionalFlowData outFlow;
     }

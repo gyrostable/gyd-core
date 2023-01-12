@@ -107,6 +107,12 @@ class VaultType:
     BALANCER_ECLP = 4
 
 
+class FlowDirection:
+    IN = 0
+    OUT = 1
+    BOTH = 2
+
+
 class VaultToDeploy(NamedTuple):
     pool_id: str
     vault_type: int

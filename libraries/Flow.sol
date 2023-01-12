@@ -14,12 +14,12 @@ library Flow {
         uint256 lastSeenBlock,
         uint256 memoryParam
     ) internal pure returns (uint256) {
-        if (lastSeenBlock < currentBlock) {
+        if (lastSeenBlock == currentBlock || flowHistory == 0) {
+            return flowHistory;
+        } else if (lastSeenBlock < currentBlock) {
             uint256 blockDifference = currentBlock - lastSeenBlock;
             uint256 memoryParamRaised = memoryParam.intPowDown(blockDifference);
             return flowHistory.mulDown(memoryParamRaised);
-        } else if (lastSeenBlock == currentBlock) {
-            return flowHistory;
         }
         revert(Errors.INVALID_ARGUMENT);
     }

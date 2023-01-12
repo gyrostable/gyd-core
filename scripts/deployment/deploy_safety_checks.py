@@ -47,25 +47,17 @@ def reserve_safety_manager(governance_proxy):
 @with_gas_usage
 @as_singleton(VaultSafetyMode)
 @with_deployed(GyroConfig)
-def vault_safety_mode(gyro_config):
+@with_deployed(GovernanceProxy)
+def vault_safety_mode(governance_proxy, gyro_config):
     deployer = get_deployer()
 
     deployer.deploy(
         VaultSafetyMode,
+        governance_proxy,
         constants.SAFETY_BLOCKS_AUTOMATIC,
         constants.SAFETY_BLOCKS_GUARDIAN,
         gyro_config,
         **make_tx_params(),
-    )
-
-
-@with_gas_usage
-@with_deployed(VaultSafetyMode)
-@with_deployed(GovernanceProxy)
-def vault_safety_mode_proxy(governance_proxy, vault_safety_mode):
-    deploy_proxy(
-        vault_safety_mode,
-        init_data=vault_safety_mode.initialize.encode_input(governance_proxy),
     )
 
 
