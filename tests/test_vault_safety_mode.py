@@ -310,3 +310,55 @@ def test_guardian_oracle(vault_safety_mode, admin, chain, MockGyroVault, mint):
 
     tx = vault_safety_mode.checkAndPersistRedeem(redeem_order)
     assert not tx.events
+
+
+@pytest.mark.parametrize("deposits_only", [True, False])
+@pytest.mark.usefixtures("authorize_admin")
+def test_pause_protocol(
+    vault_safety_mode,
+    static_percentage_fee_handler,
+    admin,
+    reserve_manager,
+    MockGyroVault,
+    deposits_only,
+    mock_price_oracle,
+):
+    tx = vault_safety_mode.addAddressToWhitelist(admin, {"from": admin})
+    vaults = []
+    for _ in range(2):
+        v = _create_vault_info(admin, MockGyroVault, 18, 10**19)
+        mock_price_oracle.setUSDPrice(v.vault, scale(1), {"from": admin})
+        static_percentage_fee_handler.setVaultFees(v.vault, 0, 0, {"from": admin})
+        metadata = list(v.persisted_metadata)[1:]
+        reserve_manager.registerVault(v.vault, *metadata, {"from": admin})
+        vaults.append(v)
+
+    tx = vault_safety_mode.pauseProtocol(deposits_only, {"from": admin})
+    if deposits_only:
+        assert len(tx.events["OracleGuardianActivated"]) == len(vaults)
+    else:
+        assert len(tx.events["OracleGuardianActivated"]) == len(vaults) * 2
+    assert (
+        tx.events["OracleGuardianActivated"][0]["durationOfProtectionInBlocks"]
+        == vault_safety_mode.safetyBlocksGuardian()
+    )
+
+    for vault in vaults:
+        mint_order = Order(
+            mint=True,
+            vaults_with_amount=[VaultWithAmount(vault_info=vault, amount=7 * 10**18)],
+        )
+        redeem_order = Order(
+            mint=False,
+            vaults_with_amount=[VaultWithAmount(vault_info=vault, amount=7 * 10**18)],
+        )
+
+        with reverts(error_codes.SAFETY_MODE_ACTIVATED):
+            vault_safety_mode.checkAndPersistMint(mint_order)
+
+        if deposits_only:
+            tx = vault_safety_mode.checkAndPersistRedeem(redeem_order)
+            assert not tx.events
+        else:
+            with reverts(error_codes.SAFETY_MODE_ACTIVATED):
+                vault_safety_mode.checkAndPersistRedeem(redeem_order)
