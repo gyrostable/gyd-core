@@ -221,6 +221,28 @@ def test_redeem_vault_underlying(
 
 
 @pytest.mark.usefixtures("register_usdc_vault")
+def test_redeem_broken_pamm(
+    motherboard, usdc, usdc_vault, alice, gyro_config, PAMMWrongRedeemQuote, admin
+):
+    broken_pamm = admin.deploy(PAMMWrongRedeemQuote)
+    gyro_config.setAddress(config_keys.PAMM_ADDRESS, broken_pamm, {"from": admin})
+
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    motherboard.mint([mint_asset], 0, {"from": alice})
+
+    redeem_asset = RedeemAsset(
+        outputToken=usdc, minOutputAmount=0, originVault=usdc_vault, valueRatio=scale(1)
+    )
+    with reverts(error_codes.REDEEM_AMOUNT_BUG):
+        motherboard.redeem(scale(10), [redeem_asset], {"from": alice})
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
 def test_mint_vault_token(motherboard, usdc, usdc_vault, alice, gyd_token):
     usdc_amount = scale(10, usdc.decimals())
     usdc.approve(usdc_vault, usdc_amount, {"from": alice})
