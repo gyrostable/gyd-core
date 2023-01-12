@@ -287,7 +287,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return order;
     }
 
-    function _getRedeemAssetAndAmount(
+    function _getRedeemAssetAmountAndRatio(
         DataTypes.VaultInfo memory vaultInfo,
         uint256 usdValueToRedeem,
         DataTypes.RedeemAsset[] calldata redeemAssets
@@ -321,7 +321,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
         for (uint256 i = 0; i < vaultsInfo.length; i++) {
             DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
-            (uint256 amount, uint256 valueRatio) = _getRedeemAssetAndAmount(
+            (uint256 amount, uint256 valueRatio) = _getRedeemAssetAmountAndRatio(
                 vaultInfo,
                 usdValueToRedeem,
                 assets
