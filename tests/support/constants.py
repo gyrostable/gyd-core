@@ -52,8 +52,8 @@ def address_from_pool_id(pool_id):
     return pool_id[:42]
 
 
-SAFETY_BLOCKS_AUTOMATIC = 100
-SAFETY_BLOCKS_GUARDIAN = 200
+SAFETY_BLOCKS_AUTOMATIC = 1_800  # ~1 hour on Polygon
+SAFETY_BLOCKS_GUARDIAN = 5_400  # ~3 hours on Polygon
 
 
 GYD_GLOBAL_SUPPLY_CAP = scale(100_000)
