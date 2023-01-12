@@ -178,7 +178,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         for (uint256 i; i < order.vaultsWithAmount.length; i++) {
             uint256 amount = order.vaultsWithAmount[i].amount;
             DataTypes.VaultInfo memory vault = order.vaultsWithAmount[i].vaultInfo;
-            DataTypes.FlowData memory flowData = persistedFlowData[vault.vault];
+            DataTypes.FlowData storage flowData = persistedFlowData[vault.vault];
             DataTypes.DirectionalFlowData memory directionalData;
             directionalData = order.mint ? flowData.inFlow : flowData.outFlow;
 
