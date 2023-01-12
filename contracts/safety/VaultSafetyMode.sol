@@ -182,7 +182,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             DataTypes.DirectionalFlowData memory directionalData;
             directionalData = order.mint ? flowData.inFlow : flowData.outFlow;
 
-            if (amount > 0 && block.number < directionalData.lastSafetyBlock) {
+            if (amount > 0 && block.number <= directionalData.lastSafetyBlock) {
                 err = Errors.SAFETY_MODE_ACTIVATED;
                 break;
             }
