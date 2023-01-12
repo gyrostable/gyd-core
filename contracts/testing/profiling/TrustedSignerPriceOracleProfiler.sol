@@ -7,9 +7,11 @@ import "../../oracles/TrustedSignerPriceOracle.sol";
 contract TrustedSignerPriceOracleProfiler is TrustedSignerPriceOracle {
     TrustedSignerPriceOracle internal oracle;
 
-    constructor(address _assetRegistry, address _priceSigner)
-        TrustedSignerPriceOracle(_assetRegistry, _priceSigner)
-    {}
+    constructor(
+        address _assetRegistry,
+        address _priceSigner,
+        bool _preventStalePrice
+    ) TrustedSignerPriceOracle(_assetRegistry, _priceSigner, _preventStalePrice) {}
 
     function profilePostPrice(TrustedSignerPriceOracle.SignedPrice[] calldata signedPrices)
         external

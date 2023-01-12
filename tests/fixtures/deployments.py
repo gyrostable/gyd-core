@@ -125,6 +125,7 @@ def coinbase_price_oracle(admin, TestingTrustedSignerPriceOracle, asset_registry
         TestingTrustedSignerPriceOracle,
         asset_registry,
         constants.COINBASE_SIGNING_ADDRESS,
+        True,
     )
 
 
@@ -132,7 +133,9 @@ def coinbase_price_oracle(admin, TestingTrustedSignerPriceOracle, asset_registry
 def local_signer_price_oracle(
     admin, TestingTrustedSignerPriceOracle, asset_registry, price_signer
 ):
-    return admin.deploy(TestingTrustedSignerPriceOracle, asset_registry, price_signer)
+    return admin.deploy(
+        TestingTrustedSignerPriceOracle, asset_registry, price_signer, True
+    )
 
 
 @pytest.fixture(scope="module")

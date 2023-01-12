@@ -29,6 +29,7 @@ def main(asset_registry):
         TrustedSignerPriceOracle,
         asset_registry,
         COINBASE_SIGNING_ADDRESS,
+        False,
         **make_tx_params()
     )
     _post_prices(deployer, oracle)
