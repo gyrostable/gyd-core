@@ -24,7 +24,6 @@ list_of_contracts = [
     "CheckedPriceOracle",
     "CrashProtectedChainLinkPriceOracle",
     "TrustedSignerPriceOracle",
-    "UniswapV3TwapPriceOracle",
     "ReserveSafetyManager",
     "RootSafetyCheck",
     "VaultSafetyMode",

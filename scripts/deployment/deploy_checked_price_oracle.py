@@ -1,12 +1,14 @@
-from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, UniswapV3TwapOracle, CrashProtectedChainlinkPriceOracle  # type: ignore
+from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, MockPriceOracle, CrashProtectedChainlinkPriceOracle  # type: ignore
 from scripts.utils import (
     as_singleton,
     get_deployer,
+    is_live,
     make_tx_params,
     with_deployed,
     with_gas_usage,
 )
 from tests.fixtures.mainnet_contracts import TokenAddresses
+from tests.support.constants import UNISWAP_V3_ORACLE
 
 
 @with_gas_usage
@@ -63,16 +65,19 @@ def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
 
 @with_gas_usage
 @as_singleton(CheckedPriceOracle)
-@with_deployed(UniswapV3TwapOracle)
 @with_deployed(CrashProtectedChainlinkPriceOracle)
 @with_deployed(GovernanceProxy)
-def main(governance_proxy, crash_protected_chainlink_oracle, uniswap_v3_twap_oracle):
+def main(governance_proxy, crash_protected_chainlink_oracle):
     deployer = get_deployer()
+    if is_live():
+        relative_oracle = UNISWAP_V3_ORACLE
+    else:
+        relative_oracle = MockPriceOracle[0]
     deployer.deploy(
         CheckedPriceOracle,
         governance_proxy,
         crash_protected_chainlink_oracle,
-        uniswap_v3_twap_oracle,
+        relative_oracle,
         TokenAddresses.WETH,
         **make_tx_params()
     )
