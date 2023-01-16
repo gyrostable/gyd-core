@@ -6,7 +6,11 @@ from tests.support.types import VaultType
 from tests.support.utils import scale
 from tests.fixtures.mainnet_contracts import TokenAddresses
 
-OUTFLOW_MEMORY = 999993123563518195
+# decreases by 50% during the first hour (1 block = 2 seconds)
+OUTFLOW_MEMORY = 999614992367489633
+
+# this value is in USD and needs to be multiplied by the price of the token
+SHORT_FLOW_THRESHOLD_USD = 10_000
 
 POLYGON_3CLP_USDC_BUSD_USDT_POOL_ID = (
     "0x17f1ef81707811ea15d9ee7c741179bbe2a63887000100000000000000000799"
@@ -32,7 +36,7 @@ vaults = [
         "mint_fee": 0,
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
-        "short_flow_threshold": 1000 * GV_2CLP_USDC_DAI_PER_USD,
+        "short_flow_threshold": SHORT_FLOW_THRESHOLD_USD * GV_2CLP_USDC_DAI_PER_USD,
         "initial_weight": int(scale(1) / 3) + 1,
     },
     {
@@ -44,7 +48,7 @@ vaults = [
         "mint_fee": 0,
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
-        "short_flow_threshold": 1000 * GV_ECLP_TUSD_USDC_PER_USD,
+        "short_flow_threshold": SHORT_FLOW_THRESHOLD_USD * GV_ECLP_TUSD_USDC_PER_USD,
         "initial_weight": int(scale(1) / 3),
     },
     {
@@ -56,7 +60,9 @@ vaults = [
         "mint_fee": 0,
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
-        "short_flow_threshold": 1000 * GV_3CLP_USDC_BUSD_USDT_PER_USD,
+        "short_flow_threshold": (
+            SHORT_FLOW_THRESHOLD_USD * GV_3CLP_USDC_BUSD_USDT_PER_USD
+        ),
         "initial_weight": int(scale(1) / 3),
     },
     {
@@ -67,7 +73,7 @@ vaults = [
         "mint_fee": 0,
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
-        "short_flow_threshold": int(scale(1)),
+        "short_flow_threshold": int(scale(3)),
         "initial_weight": 0,
     },
 ]

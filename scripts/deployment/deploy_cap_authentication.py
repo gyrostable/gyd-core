@@ -23,7 +23,6 @@ def proxy(governance_proxy, cap_authentication):
 
 
 @with_gas_usage
-@as_singleton(CapAuthentication)
 def main():
     deployer = get_deployer()
     deployer.deploy(CapAuthentication, **make_tx_params())
