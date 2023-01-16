@@ -4,6 +4,8 @@
   "version": "0.1.0",
   "main": "typechain/index.ts",
   "devDependencies": {
+    "@openzeppelin/contracts": "^4.8.1",
+    "@openzeppelin/contracts-upgradeable": "^4.8.1",
     "@typechain/ethers-v5": "^2.0.0",
     "ethers": "^5.4.0",
     "hardhat": "^2.6.1",

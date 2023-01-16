@@ -12,7 +12,7 @@ compiler:
       - "@balancer-labs/v2-pool-weighted=balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/pool-weighted"
       - "@balancer-labs/v2-vault=balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/vault"
       - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.3.2"
-      - "@openzeppelin-upgradeable=OpenZeppelin/openzeppelin-contracts-upgradeable@4.3.2"
+      - "@openzeppelin/contracts-upgradeable=OpenZeppelin/openzeppelin-contracts-upgradeable@4.3.2/contracts"
 
 dependencies:
   - OpenZeppelin/openzeppelin-contracts@4.3.2
