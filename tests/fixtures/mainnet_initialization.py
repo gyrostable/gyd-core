@@ -4,7 +4,6 @@ import pytest
 from tests.fixtures.mainnet_contracts import (
     get_chainlink_feeds,
     TokenAddresses,
-    UniswapPools,
     is_stable,
 )
 from tests.support import config_keys, constants
@@ -61,12 +60,6 @@ def mainnet_reserve_manager(
         )
 
     return reserve_manager
-
-
-@pytest.fixture(scope="module")
-def add_common_uniswap_pools(admin, uniswap_v3_twap_oracle):
-    for pool in UniswapPools.all_pools():
-        uniswap_v3_twap_oracle.registerPool(pool, {"from": admin})
 
 
 @pytest.fixture(scope="module")
@@ -246,7 +239,6 @@ def uninitialized_motherboard(admin, Motherboard, request, gyro_config, reserve)
 def full_motherboard(uninitialized_motherboard, request):
     extra_dependencies = [
         "set_common_chainlink_feeds",
-        "add_common_uniswap_pools",
         "mainnet_batch_vault_price_oracle",
         "mainnet_reserve_manager",
         "mainnet_pamm",

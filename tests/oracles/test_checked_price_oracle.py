@@ -282,7 +282,6 @@ def test_get_prices_usd_large_deviation_multiple_assets(
 
 @pytest.mark.mainnetFork
 @pytest.mark.usefixtures(
-    "add_common_uniswap_pools",
     "set_common_chainlink_feeds",
     "initialize_mainnet_oracles",
 )

@@ -17,6 +17,11 @@ def vault_registry(admin, VaultRegistry, gyro_config):
 
 
 @pytest.fixture(scope="module")
+def uniswap_spot_price_oracle(SpotRelativePriceOracle, admin):
+    return admin.deploy(SpotRelativePriceOracle, constants.UNISWAP_ROUTER)
+
+
+@pytest.fixture(scope="module")
 def balancer_cpmm_price_oracle(BalancerCPMMPriceOracle, admin):
     return admin.deploy(BalancerCPMMPriceOracle)
 
@@ -139,11 +144,6 @@ def local_signer_price_oracle(
 
 
 @pytest.fixture(scope="module")
-def uniswap_v3_twap_oracle(admin, UniswapV3TwapOracle):
-    return admin.deploy(UniswapV3TwapOracle, admin)
-
-
-@pytest.fixture(scope="module")
 def chainlink_price_oracle(ChainlinkPriceOracle, admin):
     return admin.deploy(ChainlinkPriceOracle, admin)
 
@@ -173,14 +173,14 @@ def testing_checked_price_oracle(admin, mock_price_oracle, TestingCheckedPriceOr
 
 @pytest.fixture(scope="module")
 def mainnet_checked_price_oracle(
-    admin, chainlink_price_oracle, uniswap_v3_twap_oracle, CheckedPriceOracle
+    admin, chainlink_price_oracle, uniswap_spot_price_oracle, CheckedPriceOracle
 ):
 
     mainnet_checked_price_oracle = admin.deploy(
         CheckedPriceOracle,
         admin,
         chainlink_price_oracle,
-        uniswap_v3_twap_oracle,
+        uniswap_spot_price_oracle,
         TokenAddresses.WETH,
     )
     # set the relative max epsilon slightly larger to avoid tests randomly failing

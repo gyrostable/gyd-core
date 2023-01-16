@@ -106,13 +106,13 @@ brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py proxy
 brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py proxy
 
+if [ "$LIVE" != "true" ]; then
+    brownie run --network $NETWORK_ID scripts/deployment/deploy_mock_price_oracle.py
+fi
+
 # oracles can be replaced without needing to be upgraded
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_chainlink_price_oracle.py set_feeds
-brownie run --network $NETWORK_ID scripts/deployment/deploy_uniswap_twap_price_oracle.py
-if [ "$LIVE" = "true" ]; then
-    brownie run --network $NETWORK_ID scripts/deployment/deploy_uniswap_twap_price_oracle.py add_pools
-fi
 
 # oracles
 brownie run --network $NETWORK_ID scripts/deployment/deploy_coinbase_oracle.py
@@ -125,9 +125,6 @@ brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.p
 brownie run --network $NETWORK_ID scripts/deployment/deploy_vault_price_oracle.py eclp
 brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py 
 brownie run --network $NETWORK_ID scripts/deployment/deploy_batch_vault_price_oracle.py initialize
-if [ "$LIVE" != "true" ]; then
-    brownie run --network $NETWORK_ID scripts/deployment/deploy_mock_price_oracle.py
-fi
 
 # safety checks
 brownie run --network $NETWORK_ID scripts/deployment/deploy_safety_checks.py root
