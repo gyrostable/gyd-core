@@ -70,6 +70,16 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
         vaultsMetadata[vault].initialPrice = initialPrice;
     }
 
+    function updateInitialWeights(address[] memory vaultsToUpdate, uint256[] memory weights)
+        external
+        governanceOnly
+    {
+        for (uint256 i = 0; i < vaultsToUpdate.length; i++) {
+            require(vaultAddresses.contains(vaultsToUpdate[i]), Errors.VAULT_NOT_FOUND);
+            vaultsMetadata[vaultsToUpdate[i]].initialWeight = weights[i];
+        }
+    }
+
     function updatePersistedVaultFlowParams(
         address[] memory vaultsToUpdate,
         uint256[] memory newShortFlowMemory,

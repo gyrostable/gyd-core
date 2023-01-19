@@ -37,7 +37,7 @@ vaults = [
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
         "short_flow_threshold": SHORT_FLOW_THRESHOLD_USD * GV_2CLP_USDC_DAI_PER_USD,
-        "initial_weight": int(scale(1) / 3) + 1,
+        "initial_weight": int(scale("0.33")),
     },
     {
         "name": "Gyro ECLP TUSD/USDC vault",
@@ -49,7 +49,7 @@ vaults = [
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
         "short_flow_threshold": SHORT_FLOW_THRESHOLD_USD * GV_ECLP_TUSD_USDC_PER_USD,
-        "initial_weight": int(scale(1) / 3),
+        "initial_weight": int(scale("0.33")),
     },
     {
         "name": "Gyro 3CLP USDC/BUSD/USDT vault",
@@ -63,7 +63,7 @@ vaults = [
         "short_flow_threshold": (
             SHORT_FLOW_THRESHOLD_USD * GV_3CLP_USDC_BUSD_USDT_PER_USD
         ),
-        "initial_weight": int(scale(1) / 3),
+        "initial_weight": int(scale("0.32")),
     },
     {
         "name": "Gyro WETH vault",
@@ -74,7 +74,7 @@ vaults = [
         "redeem_fee": 0,
         "short_flow_memory": int(OUTFLOW_MEMORY),
         "short_flow_threshold": int(scale(3)),
-        "initial_weight": 0,
+        "initial_weight": int(scale("0.02")),
     },
 ]
 
