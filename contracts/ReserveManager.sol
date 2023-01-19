@@ -108,12 +108,14 @@ contract ReserveManager is IReserveManager, Governable {
         // only 0 at initialization
         if (returnsSum > 0) {
             uint256 totalIdealWeight = 0;
-            for (uint256 i = 0; i < length - 1; i++) {
-                uint256 idealWeight = weightedReturns[i].divDown(returnsSum);
+            for (uint256 i = 0; i < length; i++) {
+                uint256 idealWeight = weightedReturns[i].divUp(returnsSum);
+                if (totalIdealWeight + idealWeight > FixedPoint.ONE) {
+                    idealWeight = FixedPoint.ONE - totalIdealWeight;
+                }
                 vaultsInfo[i].idealWeight = idealWeight;
                 totalIdealWeight += idealWeight;
             }
-            vaultsInfo[length - 1].idealWeight = FixedPoint.ONE - totalIdealWeight;
         }
 
         return DataTypes.ReserveState({vaults: vaultsInfo, totalUSDValue: reserveUSDValue});
