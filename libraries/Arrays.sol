@@ -6,6 +6,7 @@ import "../libraries/Errors.sol";
 
 library Arrays {
     function sort(address[] memory data) internal view returns (address[] memory) {
+        if (data.length == 0) return data;
         _sort(data, int256(0), int256(data.length - 1));
         return data;
     }
