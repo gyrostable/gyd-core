@@ -14,6 +14,13 @@ contract BalancerECLPPriceOracle is BaseBalancerPriceOracle {
     using TypeConversion for IECLP.DerivedParams;
     using FixedPoint for uint256;
 
+    function getInvariantDivSupply(IMinimalPoolView pool) internal view override returns (uint256) {
+        // Temporary workaround. To be removed (so the base class's version is used) in the mainnet deployment.
+        uint256 invariant = pool.getLastInvariant();
+        uint256 totalSupply = pool.totalSupply();
+        return invariant.divDown(totalSupply);
+    }
+
     /// @inheritdoc BaseVaultPriceOracle
     function getPoolTokenPriceUSD(
         IGyroVault vault,

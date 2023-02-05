@@ -13,6 +13,7 @@ import "../interfaces/IPAMM.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeBank.sol";
+import "../interfaces/balancer/IVault.sol";
 
 import "../libraries/DataTypes.sol";
 import "../libraries/ConfigKeys.sol";
@@ -43,10 +44,14 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     /// @inheritdoc IMotherboard
     IGyroConfig public immutable override gyroConfig;
 
+    // Balancer vault used for re-entrancy check.
+    IVault internal immutable balancerVault;
+
     constructor(IGyroConfig _gyroConfig) {
         gyroConfig = _gyroConfig;
         gydToken = _gyroConfig.getGYDToken();
         reserve = _gyroConfig.getReserve();
+        balancerVault = _gyroConfig.getBalancerVault();
         gydToken.safeApprove(address(_gyroConfig.getFeeBank()), type(uint256).max);
     }
 
@@ -56,6 +61,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         override
         returns (uint256 mintedGYDAmount)
     {
+        _ensureBalancerVaultNotReentrant();
+
         DataTypes.MonetaryAmount[] memory vaultAmounts = _convertMintInputAssetsToVaultTokens(
             assets
         );
@@ -93,6 +100,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         override
         returns (uint256[] memory)
     {
+        _ensureBalancerVaultNotReentrant();
+
         gydToken.burnFrom(msg.sender, gydToRedeem);
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
@@ -473,5 +482,15 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
                 require(asset.originVault != otherAsset.originVault, Errors.INVALID_ARGUMENT);
             }
         }
+    }
+
+    /// @dev Ensures that this is not called from inside a Balancer vault operation. This avoids a reentrancy condition.
+    function _ensureBalancerVaultNotReentrant() internal {
+        // A simple no-op that would trip the Vault's reentrancy check. The code "withdraws" an amount of 0 of token
+        // address(0) from the Vault’s internal balance for the calling contract and sends it to address(0).
+        IVault.UserBalanceOp[] memory ops = new IVault.UserBalanceOp[](1);
+        ops[0].kind = IVault.UserBalanceOpKind.WITHDRAW_INTERNAL;
+        ops[0].sender = address(this);
+        balancerVault.manageUserBalance(ops);
     }
 }

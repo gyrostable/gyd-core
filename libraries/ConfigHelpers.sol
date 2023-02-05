@@ -18,6 +18,7 @@ import "../interfaces/IReserve.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/ICapAuthentication.sol";
+import "../interfaces/balancer/IVault.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
 library ConfigHelpers {
@@ -63,6 +64,10 @@ library ConfigHelpers {
 
     function getMotherboard(IGyroConfig gyroConfig) internal view returns (IMotherboard) {
         return IMotherboard(gyroConfig.getAddress(ConfigKeys.MOTHERBOARD_ADDRESS));
+    }
+
+    function getBalancerVault(IGyroConfig gyroConfig) internal view returns (IVault) {
+        return IVault(gyroConfig.getAddress(ConfigKeys.BALANCER_VAULT_ADDRESS));
     }
 
     function getGlobalSupplyCap(IGyroConfig gyroConfig) internal view returns (uint256) {

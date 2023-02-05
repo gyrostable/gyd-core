@@ -82,8 +82,10 @@ def mock_balancer_pool_two(admin, MockBalancerPool):
 
 
 @pytest.fixture(scope="module")
-def mock_balancer_vault(admin, MockBalVault):
-    return admin.deploy(MockBalVault)
+def mock_balancer_vault(admin, gyro_config, MockBalVault):
+    bvault = admin.deploy(MockBalVault)
+    gyro_config.setAddress(config_keys.BALANCER_VAULT_ADDRESS, bvault)
+    return bvault
 
 
 @pytest.fixture(scope="module")
