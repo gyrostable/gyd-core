@@ -102,5 +102,4 @@ contract MockBalVault is IPoolSwapStructs {
     function manageUserBalance(IVault.UserBalanceOp[] memory ops) external payable {
         // Dummy. This is only used for a re-entrancy check hack in Motherboard, which here always succeeds.
     }
-
 }
