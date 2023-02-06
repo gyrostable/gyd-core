@@ -208,6 +208,7 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
         "reserve_manager",
         "root_safety_check",
         "static_percentage_fee_handler",
+        "mock_balancer_vault",
         "gyd_token",
     ]
     for dep in extra_dependencies:
