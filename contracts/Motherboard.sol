@@ -63,6 +63,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             .getReserveManager()
             .getReserveState();
 
+        // TODO implement an interface and getGydRecovery() when interface is final.
+        gyroConfig.getGydRecovery().checkAndRun(reserveState);
+
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(
             vaultAmounts,
             reserveState.vaults
@@ -93,10 +96,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         override
         returns (uint256[] memory)
     {
-        gydToken.burnFrom(msg.sender, gydToRedeem);
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
+
+        gyroConfig.getGydRecovery().checkAndRun(reserveState);
+
+        gydToken.burnFrom(msg.sender, gydToRedeem);
 
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveState.totalUSDValue);
         require(
@@ -180,6 +186,14 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         }
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         return _computeRedeemOutputAmounts(assets, orderAfterFees);
+    }
+
+    function checkAndRunGydRecovery() external override returns (bool)
+    {
+        DataTypes.ReserveState memory reserveState = gyroConfig
+            .getReserveManager()
+            .getReserveState();
+        return gyroConfig.getGydRecovery().checkAndRun(reserveState);
     }
 
     /// @inheritdoc IMotherboard

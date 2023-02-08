@@ -17,9 +17,13 @@ library ConfigKeys {
     bytes32 internal constant FEE_HANDLER_ADDRESS = "FEE_HANDLER_ADDRESS";
     bytes32 internal constant MOTHERBOARD_ADDRESS = "MOTHERBOARD_ADDRESS";
     bytes32 internal constant CAP_AUTHENTICATION_ADDRESS = "CAP_AUTHENTICATION_ADDRESS";
+    bytes32 internal constant GYD_RECOVERY_ADDRESS = "GYD_RECOVERY_ADDRESS";
 
     // Uints
     bytes32 internal constant GYD_GLOBAL_SUPPLY_CAP = "GYD_GLOBAL_SUPPLY_CAP";
     bytes32 internal constant GYD_AUTHENTICATED_USER_CAP = "GYD_AUTHENTICATED_USER_CAP";
     bytes32 internal constant GYD_USER_CAP = "GYD_USER_CAP";
+
+    bytes32 internal constant GYD_RECOVERY_TRIGGER_CR = "GYD_RECOVERY_TRIGGER_CR";
+    bytes32 internal constant GYD_RECOVERY_TARGET_CR = "GYD_RECOVERY_TARGETh_CR";
 }

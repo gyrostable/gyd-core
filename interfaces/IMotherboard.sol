@@ -41,6 +41,9 @@ interface IMotherboard {
     /// @notice Main redemption function to be called by a withdrawer
     /// This redeems using at most `maxRedeemedAmount` of GYD and returns the
     /// exact outputs as specified by `tokens` and `amounts`
+    ///
+    /// Note: This does *not* include the action of the recovery module, if any!
+    ///
     /// @param gydToRedeem the maximum amount of GYD to redeem
     /// @param assets the output tokens and associated amounts to return against GYD
     /// @return outputAmounts the amounts receivd against the redeemed GYD
@@ -50,6 +53,9 @@ interface IMotherboard {
 
     /// @notice Simulates a mint to know whether it would succeed and how much would be minted
     /// The parameters are the same as the `mint` function
+    ///
+    /// Note: This does *not* include the action of the recovery module, if any!
+    ///
     /// @param assets the assets and associated amounts used to mint GYD
     /// @param minReceivedAmount the minimum amount of GYD to be minted
     /// @param account the account that wants to mint
@@ -68,4 +74,9 @@ interface IMotherboard {
     function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] memory assets)
         external
         returns (uint256[] memory outputAmounts, string memory err);
+
+    /// @notice Checks if the GYD recovery module should be run and runs it. Optional, this also happens on every mint
+    /// and redeem.
+    /// @return whether the safety module has burnt any GYD.
+    function checkAndRunGydRecovery() external returns (bool);
 }
