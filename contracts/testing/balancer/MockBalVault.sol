@@ -9,6 +9,7 @@ import "../../../interfaces/balancer/IVault.sol";
 import "../../../interfaces/balancer/IBasePool.sol";
 import "../../../interfaces/balancer/IPoolSwapStructs.sol";
 import "../../../interfaces/balancer/IMinimalSwapInfoPool.sol";
+import "../../../interfaces/balancer/IVault.sol";
 
 contract MockBalVault is IPoolSwapStructs {
     struct Pool {
@@ -96,5 +97,9 @@ contract MockBalVault is IPoolSwapStructs {
 
     function getPool(bytes32 poolId) external view returns (address, IVault.PoolSpecialization) {
         return (vaultPools[poolId].poolAddress, IVault.PoolSpecialization.GENERAL);
+    }
+
+    function manageUserBalance(IVault.UserBalanceOp[] memory ops) external payable {
+        // Dummy. This is only used for a re-entrancy check hack in Motherboard, which here always succeeds.
     }
 }

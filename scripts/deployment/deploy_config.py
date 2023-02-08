@@ -40,6 +40,14 @@ def set_initial_config(governance_proxy, gyro_config):
         {"from": deployer, **make_tx_params()},
     )
 
+    governance_proxy.executeCall(
+        gyro_config,
+        gyro_config.setAddress.encode_input(
+            config_keys.BALANCER_VAULT_ADDRESS, constants.BALANCER_VAULT_ADDRESS
+        ),
+        {"from": deployer, **make_tx_params()},
+    )
+
 
 @with_gas_usage
 @with_deployed(GyroConfig)

@@ -18,6 +18,7 @@ library ConfigKeys {
     bytes32 internal constant MOTHERBOARD_ADDRESS = "MOTHERBOARD_ADDRESS";
     bytes32 internal constant CAP_AUTHENTICATION_ADDRESS = "CAP_AUTHENTICATION_ADDRESS";
     bytes32 internal constant GYD_RECOVERY_ADDRESS = "GYD_RECOVERY_ADDRESS";
+    bytes32 internal constant BALANCER_VAULT_ADDRESS = "BALANCER_VAULT_ADDRESS";
 
     // Uints
     bytes32 internal constant GYD_GLOBAL_SUPPLY_CAP = "GYD_GLOBAL_SUPPLY_CAP";
