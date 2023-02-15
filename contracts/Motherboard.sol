@@ -92,13 +92,16 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         require(!_isOverCap(msg.sender, mintedGYDAmount), Errors.SUPPLY_CAP_EXCEEDED);
 
         gydToken.mint(msg.sender, mintedGYDAmount);
+
+        // TODO write this getter and config key
+        gyroConfig.getReserveStewardshipIncentives().updateTrackedVariables(reserveState);
     }
 
     /// @inheritdoc IMotherboard
     function redeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
         external
         override
-        returns (uint256[] memory)
+        returns (uint256[] memory outputAmounts)
     {
         _ensureBalancerVaultNotReentrant();
 
@@ -121,7 +124,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         gyroConfig.getRootSafetyCheck().checkAndPersistRedeem(order);
 
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
-        return _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
+        outputAmounts = _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
+
+        gyroConfig.getReserveStewardshipIncentives().updateTrackedVariables(reserveState);
     }
 
     /// @inheritdoc IMotherboard
