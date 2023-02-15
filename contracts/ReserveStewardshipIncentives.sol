@@ -19,16 +19,16 @@ contract ReserveStewardshipIncentives is Governable {
         uint256 startTime;  // timestamp (not block)
         uint256 endTime;  // timestamp (not block)
         // SOMEDAY optimization: could be stored with fewer bits to save a slot
-        uint256 minCollateralizationRatio;
+        uint256 minCollateralRatio;
         uint256 rewardPercentage;
     }
-    Proposal public activeProposal;  // activeProposal.endTime = 0 means none is there.
+    Proposal public activeProposal;  // .endTime = 0 means none is there.
 
     // To track the second lowest collateralization ratio, we store two otherwise equal (date, CR) slots.
     struct CollateralizationAtDate {
-        // SOMEDAY optimization date and CR could have fewer bits to pack into one slot.
+        // SOMEDAY optimization: date and CR could have fewer bits to pack into one slot.
         uint256 date; // days since unix epoch
-        uint256 collateralizationRatio;
+        uint256 collateralRatio;
     }
     struct ReserveHealth {
         CollateralizationAtDate a;
@@ -37,54 +37,55 @@ contract ReserveStewardshipIncentives is Governable {
     ReserveHealth public reserveHealth;
 
     // We store the time integral of the GYD supply to compute the reward at the end based on avg supply.
-    struct SupplyIntegral {
+    struct AggSupply {
         uint256 lastUpdatedTimestamp;
-        uint256 supply;
+        uint256 aggSupply;
     }
-    SupplyIntegral public supplyIntegral;
+    AggSupply public aggSupply;
 
     IGyroConfig public immutable gyroConfig;
     IGYDToken public immutable gydToken;
 
-    // TODO some events
+    // TODO some events, raise below.
 
-    constructor(address _gyroConfig)
+    constructor(address _governor, address _gyroConfig) Governable(_governor)
     {
         gyroConfig = IGyroConfig(_gyroConfig);
         gydToken = gyroConfig.getGYDToken();
     }
 
     // TODO should the rewardPercentage be an argument to this fct or a GyroConfig variable? I feel *probably* here but
-    //   flagging.
+    // flagging.
+    /** @dev Create new incentive proposal.
+     * @param rewardPercentage Share of the average GYD supply over time that should be paid as a reward.
+    */
     function createProposal(uint256 rewardPercentage) external governanceOnly
     {
-        require(!activeProposal.endTime);  // currently no proposal running
         require(rewardPercentage <= MAX_REWARD_PERCENTAGE);
+        require(!activeProposal.endTime);
 
-        uint256 minCollateralizationRatio = gyroConfig.getIncentiveMinCollateralizationRatio();
+        // TODO code these config keys and access methods
+        uint256 minCollateralRatio = gyroConfig.getIncentiveMinCollateralRatio();
         uint256 duration = gyroConfig.getIncentiveDuration();
 
-        // TODO Check proposal validity (depends on what the condition will be exactly)
-        // TODO pull reserve state from reserve manager (this is easy)
-        DataTypes.ReserveState reserveState;
-
+        DataTypes.ReserveState memory reserveState = gyroConfig.getReserveManager().getReserveState();
         uint256 gydSupply = gydToken.totalSupply();
 
-        uint256 collateralizationRatio = reserveState.totalUSDValue.divDown(gydSupply);
-        require(collateralizationRatio >= minCollateralizationRatio);
+        uint256 collateralRatio = reserveState.totalUSDValue.divDown(gydSupply);
+        require(collateralRatio >= minCollateralRatio);
 
-        uint256 date = timestampToDatestamp(block.timestamp);
+        uint256 today = timestampToDatestamp(block.timestamp);
         reserveHealth = ReserveHealth({
-            a: CollateralizationAtDate(date, collateralizationRatio),
-            b: CollateralizationAtDate(date, collateralizationRatio)
+            a: CollateralizationAtDate(today, collateralRatio),
+            b: CollateralizationAtDate(today, collateralRatio)
         });
 
-        supplyIntegral = SupplyIntegral(block.timestamp, gydSupply);
+        aggSupply = AggSupply(block.timestamp, 0);  // init at 0 because it's aggregate over time.
 
         activeProposal = Proposal({
             startTime: block.timestamp,
             endTime: block.timestamp + duration,
-            minCollateralizationRatio: minCollateralizationRatio,
+            minCollateralRatio: minCollateralRatio,
             rewardPercentage: rewardPercentage
         });
     }
@@ -93,81 +94,84 @@ contract ReserveStewardshipIncentives is Governable {
         activeProposal.endTime = 0;
     }
 
-    // TODO should this be governanceOnly?
+    // TODO should this be governanceOnly? Should it an address to send the funds to as an argument?
     function completeActiveProposal() external {
         uint256 endTime = activeProposal.endTime;
         require(endTime > 0 && endTime <= block.timestamp);
 
-        // TODO add we have view methods for easier checking by others.
+        // TODO add view methods for easier checking by others. Then use these functions, too, here.
         
         // Check incentive success
-        uint256 crA = reserveHealth.a.collateralizationRatio;
-        uint256 crB = reserveHealth.b.collateralizationRatio;
+        uint256 crA = reserveHealth.a.collateralRatio;
+        uint256 crB = reserveHealth.b.collateralRatio;
         uint256 secondLowestDailyCR = crA >= crB ? crA : crB;
-        require(secondLowestDailyCR >= activeProposal.minCollateralizationRatio);
+        require(secondLowestDailyCR >= activeProposal.minCollateralRatio);
 
         // Compute target reward
-        uint256 proposalLength = block.timestamp - activeProposal.startTime;
-        uint256 avgGYDSupply = supplyIntegral.supply / proposalLength;
+        uint256 proposalLength = aggSupply.lastUpdatedTimestamp - activeProposal.startTime;
+        uint256 avgGYDSupply = aggSupply.aggSupply / proposalLength;
         uint256 targetReward = activeProposal.rewardPercentage.mulDown(avgGYDSupply);
 
         // Compute max available reward
-        // TODO should this be in relative terms? Does it matter?
-        // TODO fetch reserve state
-        DataTypes.ReserveState reserveState;
+        DataTypes.ReserveState reserveState = gyroConfig.getReserveManager().getReserveState();
         uint256 gydSupply = gydToken.totalSupply();
-        uint256 maxAllowedGYDSupply = reserveState.totalUSDValue.divDown(
-            FixedPoint.ONE + activeProposal.rewardPercentage);
+        // TODO should this pull the *current* min collateralization ratio from config instead in case it was changed?
+        uint256 maxAllowedGYDSupply = reserveState.totalUSDValue.divDown(activeProposal.minCollateralRatio);
         // If the following fails, collateralization ratio fell too low between the last update and now.
         require(gydSupply < maxAllowedGYDSupply);
         uint256 maxReward = maxAllowedGYDSupply - gydSupply;
 
-        // Marry target reward with max available reward. We could take the minimum here but we use
-        // a slightly different function.
-        // TODO open what exactly the formula should be. This one introduces a linear penalty for over-estimation.
+        // Marry target reward with max available reward. We could take the minimum here but we use a slightly different
+        // function to incentivize governance towards moderation when choosing rewardPercentage.
+        // TODO still a bit open what exactly the formula should be. This one introduces a linear penalty for over-estimation.
         uint256 reward = targetReward;
         if (reward > maxReward) {
-            uint256 reduction = (FixedPoint.ONE + OVERESTIMATION_PENALTY_FACTOR).mulDown(maxReward - targetReward);
-            reward = reduction < maxReward ? maxReward - reduction : 0;
+            uint256 reduction = (FixedPoint.ONE + OVERESTIMATION_PENALTY_FACTOR).mulDown(reward - maxReward);
+            reward = reduction < reward ? reward - reduction : 0;
         }
 
-        // TODO mint `reward` new GYD out of thin air and transfer them to governance treasury
+        // TODO mint `reward` new GYD out of thin air and transfer them to governance treasury (tbd)
 
-        // End proposal
         activeProposal.endTime = 0;
     }
 
     function updateTrackedVariables(DataTypes.ReserveState memory reserveState) public
     {
+        if (!activeProposal.endTime || activeProposal.endTime <= block.timestamp)
+            // NB we don't track anything after the proposal has ended: may introduce manipulability.
+            return;
+
         uint256 gydSupply = gydToken.totalSupply();
         
-        uint256 lastUpdated = supplyIntegral.lastUpdatedTimestamp;
-        if (block.timestamp > lastUpdated) {
-            // Might fail b/c of short-term fluctuations of the timestamp
-            supplyIntegral.supply += (block.timestamp - supplyIntegral.lastUpdatedTimestamp) * gydSupply;
-            supplyIntegral.lastUpdatedTimestamp = block.timestamp;
+        uint256 lastUpdated = aggSupply.lastUpdatedTimestamp;
+        if (block.timestamp > lastUpdated) {  // Check to handle timestamp fluctuations
+            aggSupply.aggSupply += (block.timestamp - lastUpdated) * gydSupply;
+            aggSupply.lastUpdatedTimestamp = block.timestamp;
         }
         
-        uint256 collateralizationRatio = reserveState.totalUSDValue.divDown(gydSupply);
+        uint256 collateralRatio = reserveState.totalUSDValue.divDown(gydSupply);
 
         uint256 today = timestampToDatestamp(block.timestamp);
+        // TODO actually do I need to do this? All I gotta do is check if the condition has been tripped on a prior
+        // day. Should be cheaper. We can also count the days. (same gas needed)
         // TODO gas-optimize reads
-        // We check for "today" using ">=" to handle timestamp fluctuations.
-        if (reserveHealth.a.date >= today) {
-            if (reserveHealth.a.collateralizationRatio > collateralizationRatio)
-                reserveHealth.a.collateralizationRatio = collateralizationRatio;
-        if (reserveHealth.b.date >= today) {
-            if (reserveHealth.b.collateralizationRatio > collateralizationRatio)
-                reserveHealth.b.collateralizationRatio = collateralizationRatio;
+        // We check for "today" using ">=", not "==", to handle timestamp fluctuations.
+        // TODO a bit open if this should be smoothed out across days. But probably not.
+        ReserveHealth storage a = reserveHealth.a;
+        ReserveHealth storage b = reserveHealth.b;
+        if (a.date >= today) {
+            if (a.collateralRatio > collateralRatio)
+                a.collateralRatio = collateralRatio;
+        } else if (b.date >= today) {
+            if (b.collateralRatio > collateralRatio)
+                b.collateralRatio = collateralRatio;
         } else {
-            ReserveHealth storage lower;
-            if (reserveHealth.a.collateralizationRatio < reserveHealth.b.collateralizationRatio)
-                lower = reserveHealth.a;
-            else
-                lower = reserveHealth.b;
-            if (lower.collateralizationRatio > collateralizationRatio) {
-                lower.date = today;
-                lower.collateralizationRatio = collateralizationRatio;
+            if (a.collateralRatio <= b.collateralRatio && collateralRatio < b.collateralRatio) {
+                b.date = today;
+                b.collateralRatio = collateralRatio;
+            } else if (b.collateralRatio <= a.collateralRatio && collateralRatio < a.collateralRatio) {
+                a.date = today;
+                a.collateralRatio = collateralRatio;
             }
         }
     }
