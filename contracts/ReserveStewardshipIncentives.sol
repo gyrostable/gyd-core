@@ -14,6 +14,7 @@ contract ReserveStewardshipIncentives is Governable {
 
     uint internal constant MAX_REWARD_PERCENTAGE = 0.5e18;
     uint internal constant OVERESTIMATION_PENALTY_FACTOR = 0.1e18;
+    uint internal constant MAX_HEALTH_VIOLATIONS = 1;  // TODO could be configurable
 
     struct Proposal {
         uint256 startTime;  // timestamp (not block)
@@ -24,17 +25,12 @@ contract ReserveStewardshipIncentives is Governable {
     }
     Proposal public activeProposal;  // .endTime = 0 means none is there.
 
-    // To track the second lowest collateralization ratio, we store two otherwise equal (date, CR) slots.
-    struct CollateralizationAtDate {
-        // SOMEDAY optimization: date and CR could have fewer bits to pack into one slot.
-        uint256 date; // days since unix epoch
-        uint256 collateralRatio;
+    struct ReserveHealthViolations {
+        // SOMEDAY optimization: could be stored with fewer bits to save a slot
+        uint256 lastViolatedDate;  // date
+        uint256 nViolations;
     }
-    struct ReserveHealth {
-        CollateralizationAtDate a;
-        CollateralizationAtDate b;
-    }
-    ReserveHealth public reserveHealth;
+    ReserveHealthViolations reserveHealthViolations;
 
     // We store the time integral of the GYD supply to compute the reward at the end based on avg supply.
     struct AggSupply {
@@ -75,10 +71,7 @@ contract ReserveStewardshipIncentives is Governable {
         require(collateralRatio >= minCollateralRatio);
 
         uint256 today = timestampToDatestamp(block.timestamp);
-        reserveHealth = ReserveHealth({
-            a: CollateralizationAtDate(today, collateralRatio),
-            b: CollateralizationAtDate(today, collateralRatio)
-        });
+        reserveHealthViolations = ReserveHealthViolations(0, 0);
 
         aggSupply = AggSupply(block.timestamp, 0);  // init at 0 because it's aggregate over time.
 
@@ -102,10 +95,7 @@ contract ReserveStewardshipIncentives is Governable {
         // TODO add view methods for easier checking by others. Then use these functions, too, here.
         
         // Check incentive success
-        uint256 crA = reserveHealth.a.collateralRatio;
-        uint256 crB = reserveHealth.b.collateralRatio;
-        uint256 secondLowestDailyCR = crA >= crB ? crA : crB;
-        require(secondLowestDailyCR >= activeProposal.minCollateralRatio);
+        require(reserveHealthViolations.nViolations <= MAX_HEALTH_VIOLATIONS);
 
         // Compute target reward
         uint256 proposalLength = aggSupply.lastUpdatedTimestamp - activeProposal.startTime;
@@ -130,7 +120,7 @@ contract ReserveStewardshipIncentives is Governable {
             reward = reduction < reward ? reward - reduction : 0;
         }
 
-        // TODO mint `reward` new GYD out of thin air and transfer them to governance treasury (tbd)
+        // TODO mint `reward` new GYD out of thin air and credit them to governance treasury (tbd)
 
         activeProposal.endTime = 0;
     }
@@ -138,11 +128,10 @@ contract ReserveStewardshipIncentives is Governable {
     function updateTrackedVariables(DataTypes.ReserveState memory reserveState) public
     {
         if (!activeProposal.endTime || activeProposal.endTime <= block.timestamp)
-            // NB we don't track anything after the proposal has ended: may introduce manipulability.
+            // NB it's important to not track anything after the proposal has ended: may introduce manipulability.
             return;
 
         uint256 gydSupply = gydToken.totalSupply();
-        
         uint256 lastUpdated = aggSupply.lastUpdatedTimestamp;
         if (block.timestamp > lastUpdated) {  // Check to handle timestamp fluctuations
             aggSupply.aggSupply += (block.timestamp - lastUpdated) * gydSupply;
@@ -150,28 +139,11 @@ contract ReserveStewardshipIncentives is Governable {
         }
         
         uint256 collateralRatio = reserveState.totalUSDValue.divDown(gydSupply);
-
-        uint256 today = timestampToDatestamp(block.timestamp);
-        // TODO actually do I need to do this? All I gotta do is check if the condition has been tripped on a prior
-        // day. Should be cheaper. We can also count the days. (same gas needed)
-        // TODO gas-optimize reads
-        // We check for "today" using ">=", not "==", to handle timestamp fluctuations.
-        // TODO a bit open if this should be smoothed out across days. But probably not.
-        ReserveHealth storage a = reserveHealth.a;
-        ReserveHealth storage b = reserveHealth.b;
-        if (a.date >= today) {
-            if (a.collateralRatio > collateralRatio)
-                a.collateralRatio = collateralRatio;
-        } else if (b.date >= today) {
-            if (b.collateralRatio > collateralRatio)
-                b.collateralRatio = collateralRatio;
-        } else {
-            if (a.collateralRatio <= b.collateralRatio && collateralRatio < b.collateralRatio) {
-                b.date = today;
-                b.collateralRatio = collateralRatio;
-            } else if (b.collateralRatio <= a.collateralRatio && collateralRatio < a.collateralRatio) {
-                a.date = today;
-                a.collateralRatio = collateralRatio;
+        if (collateralRatio < activeProposal.minCollateralRatio) {
+            uint256 today = timestampToDatestamp(block.timestamp);
+            if (reserveHealthViolations.lastViolatedDate < today) {
+                ++reserveHealthViolations.nViolations;
+                reserveHealthViolations.lastViolatedDate = today;
             }
         }
     }
@@ -183,7 +155,6 @@ contract ReserveStewardshipIncentives is Governable {
             .getReserveState();
         updateTrackedVariables(reserveState);
     }
-
     /// @dev Approximately days since epoch. Not quite correct but good enough to distinguish different
     /// days, which is all we need here.
     function timestampToDatestamp(uint256 timestamp) returns (uint256)
