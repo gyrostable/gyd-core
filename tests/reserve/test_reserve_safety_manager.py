@@ -1,4 +1,5 @@
 from typing import Optional
+
 import hypothesis.strategies as st
 from brownie import accounts
 from brownie.test import given
@@ -18,7 +19,8 @@ from tests.reserve.reserve_math_implementation import (
     vault_weight_off_peg_falls,
 )
 from tests.support import constants, error_codes
-from tests.support.quantized_decimal import DecimalLike, QuantizedDecimal as D
+from tests.support.quantized_decimal import DecimalLike
+from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.types import (
     Order,
     PersistedVaultMetadata,
@@ -922,3 +924,169 @@ def test_is_redeem_safe_small_prices(
 
     if not response == "56" == response_expected:
         assert response == response_expected == "55"
+
+
+def test_safe_to_execute_outside_epsilon_redeem_rebalance_narrowing(
+    reserve_safety_manager, mock_vaults, mock_price_oracle
+):
+
+    bundle_metadata = (
+        [
+            (
+                1000000000058658,
+                1000001374190671,
+                1000000000019459,
+                1000000000050416,
+                True,
+                False,
+                True,
+            ),
+            (
+                1000000000001689,
+                1000000000000184,
+                1000000000053250,
+                1000000000054038,
+                True,
+                False,
+                True,
+            ),
+            (
+                1000000000016354,
+                1000000000055080,
+                1000000000000018,
+                1000000000000252,
+                False,
+                False,
+                True,
+            ),
+            (
+                1000000000034354,
+                1000000000027595,
+                1000000000039306,
+                1000000000028698,
+                True,
+                True,
+                False,
+            ),
+        ],
+        (False, True, True, False),
+    )
+
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
+
+    result_sol = reserve_safety_manager.safeToExecuteOutsideEpsilon(metadata)
+
+    assert result_sol == True
+
+
+def test_safe_to_execute_outside_epsilon_redeem_rebalance_widening(
+    reserve_safety_manager, mock_vaults, mock_price_oracle
+):
+
+    bundle_metadata = (
+        [
+            (
+                1000000000058658,
+                1000001374190671,
+                1000000000019459,
+                1000000000050416,
+                True,
+                False,
+                True,
+            ),
+            (
+                1000000000001689,
+                1000000000000184,
+                1000000000053250,
+                1000000000054038,
+                True,
+                False,
+                True,
+            ),
+            (
+                1000000000016354,
+                1000000000055080,
+                1000000000000018,
+                1000000000000252,
+                False,
+                False,
+                True,
+            ),
+            (
+                1000000000034354,
+                1000000000027595,
+                1000000000024306,
+                1000000000028698,
+                True,
+                True,
+                False,
+            ),
+        ],
+        (False, True, True, False),
+    )
+
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
+
+    result_sol = reserve_safety_manager.safeToExecuteOutsideEpsilon(metadata)
+
+    assert result_sol == False
+
+
+def test_update_metadata_with_epsilon_status_spot_check(
+    reserve_safety_manager, mock_vaults, mock_price_oracle
+):
+
+    bundle_metadata = (
+        [
+            (
+                1000000000058658,
+                1000001374190671,
+                1000000000019459,
+                1000000000050416,
+                True,
+                False,
+                False,
+            ),
+            (
+                1000000000001689,
+                1000000000000184,
+                800000000053250,
+                1000000000054038,
+                True,
+                False,
+                True,
+            ),
+            (
+                1000000000016354,
+                1000000000055080,
+                1000000000000018,
+                1000000000000252,
+                False,
+                False,
+                True,
+            ),
+            (
+                1000000000034354,
+                1000000000027595,
+                1000000000024306,
+                1000000000028698,
+                True,
+                True,
+                False,
+            ),
+        ],
+        (True, True, True, False),
+    )
+
+    metadata = object_creation.bundle_to_metadata(
+        bundle_metadata, mock_vaults, mock_price_oracle
+    )
+
+    result_sol = reserve_safety_manager.updateMetaDataWithEpsilonStatus(metadata)
+
+    assert result_sol[0][0][7] == True
+    assert result_sol[0][1][7] == False
