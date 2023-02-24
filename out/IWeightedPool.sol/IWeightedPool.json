@@ -1,0 +1,330 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getInvariant",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getLastInvariant",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getNormalizedWeights",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getInvariant()": "c0ff1a15",
+    "getLastInvariant()": "9b02cdde",
+    "getNormalizedWeights()": "f89f27ed",
+    "totalSupply()": "18160ddd"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getInvariant\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getLastInvariant\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNormalizedWeights\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/balancer/IWeightedPool.sol\":\"IWeightedPool\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/balancer/IMinimalPoolView.sol\":{\"keccak256\":\"0x1a7e9fb35537abc36556bdef83626fced3a2d6ad0aeb8113e93b2982fb5aa234\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://d87fb2ecb3bd96c17e03f6f65a15737e6b12fedf81b0ed7058aa16f79ec2bea4\",\"dweb:/ipfs/QmQAsJ7XSc8DngGLaNh76SBSuUSeEiyYxR2K56c6Joysmc\"]},\"interfaces/balancer/IWeightedPool.sol\":{\"keccak256\":\"0x213cd471a137e330b8eaf7952f612c56e08fff4baae653f621f9ed228e79e362\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://b64d86e317d35b7d8a1bebd60496da39043af4a25ac539744066eb9f32e227e9\",\"dweb:/ipfs/QmPACdcreqTrq4RsMUav3Y6jiCF8RcjgP9KLuBxAzjcFMb\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getInvariant",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getLastInvariant",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getNormalizedWeights",
+          "outputs": [
+            {
+              "internalType": "uint256[]",
+              "name": "",
+              "type": "uint256[]"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "totalSupply",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/balancer/IWeightedPool.sol": "IWeightedPool"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/balancer/IMinimalPoolView.sol": {
+        "keccak256": "0x1a7e9fb35537abc36556bdef83626fced3a2d6ad0aeb8113e93b2982fb5aa234",
+        "urls": [
+          "bzz-raw://d87fb2ecb3bd96c17e03f6f65a15737e6b12fedf81b0ed7058aa16f79ec2bea4",
+          "dweb:/ipfs/QmQAsJ7XSc8DngGLaNh76SBSuUSeEiyYxR2K56c6Joysmc"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/balancer/IWeightedPool.sol": {
+        "keccak256": "0x213cd471a137e330b8eaf7952f612c56e08fff4baae653f621f9ed228e79e362",
+        "urls": [
+          "bzz-raw://b64d86e317d35b7d8a1bebd60496da39043af4a25ac539744066eb9f32e227e9",
+          "dweb:/ipfs/QmPACdcreqTrq4RsMUav3Y6jiCF8RcjgP9KLuBxAzjcFMb"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/balancer/IWeightedPool.sol",
+    "id": 17635,
+    "exportedSymbols": {
+      "IMinimalPoolView": [
+        17023
+      ],
+      "IWeightedPool": [
+        17634
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:185:92",
+    "nodes": [
+      {
+        "id": 17624,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:92",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 17625,
+        "nodeType": "ImportDirective",
+        "src": "199:32:92",
+        "nodes": [],
+        "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
+        "file": "./IMinimalPoolView.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 17635,
+        "sourceUnit": 17024,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 17634,
+        "nodeType": "ContractDefinition",
+        "src": "233:125:92",
+        "nodes": [
+          {
+            "id": 17633,
+            "nodeType": "FunctionDefinition",
+            "src": "283:73:92",
+            "nodes": [],
+            "functionSelector": "f89f27ed",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getNormalizedWeights",
+            "nameLocation": "292:20:92",
+            "parameters": {
+              "id": 17628,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "312:2:92"
+            },
+            "returnParameters": {
+              "id": 17632,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17631,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17633,
+                  "src": "338:16:92",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 17629,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "338:7:92",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 17630,
+                    "nodeType": "ArrayTypeName",
+                    "src": "338:9:92",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "337:18:92"
+            },
+            "scope": 17634,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 17626,
+              "name": "IMinimalPoolView",
+              "nameLocations": [
+                "260:16:92"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 17023,
+              "src": "260:16:92"
+            },
+            "id": 17627,
+            "nodeType": "InheritanceSpecifier",
+            "src": "260:16:92"
+          }
+        ],
+        "canonicalName": "IWeightedPool",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          17634,
+          17023
+        ],
+        "name": "IWeightedPool",
+        "nameLocation": "243:13:92",
+        "scope": 17635,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 92
+}

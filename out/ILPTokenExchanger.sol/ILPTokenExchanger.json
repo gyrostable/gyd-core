@@ -1,0 +1,1018 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct DataTypes.MonetaryAmount",
+          "name": "tokenToDeposit",
+          "type": "tuple"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "lpTokenAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct DataTypes.MonetaryAmount",
+          "name": "tokenToDeposit",
+          "type": "tuple"
+        }
+      ],
+      "name": "dryDeposit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "lpTokenAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "err",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct DataTypes.MonetaryAmount",
+          "name": "tokenToWithdraw",
+          "type": "tuple"
+        }
+      ],
+      "name": "dryWithdraw",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "lpTokenAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "err",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSupportedTokens",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct DataTypes.MonetaryAmount",
+          "name": "tokenToWithdraw",
+          "type": "tuple"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "lpTokenAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "deposit((address,uint256))": "5c7a2a80",
+    "dryDeposit((address,uint256))": "ecc05a5b",
+    "dryWithdraw((address,uint256))": "74e53577",
+    "getSupportedTokens()": "d3c7c2c7",
+    "withdraw((address,uint256))": "3c565417"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.MonetaryAmount\",\"name\":\"tokenToDeposit\",\"type\":\"tuple\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"lpTokenAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.MonetaryAmount\",\"name\":\"tokenToDeposit\",\"type\":\"tuple\"}],\"name\":\"dryDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"lpTokenAmount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"err\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.MonetaryAmount\",\"name\":\"tokenToWithdraw\",\"type\":\"tuple\"}],\"name\":\"dryWithdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"lpTokenAmount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"err\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSupportedTokens\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.MonetaryAmount\",\"name\":\"tokenToWithdraw\",\"type\":\"tuple\"}],\"name\":\"withdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"lpTokenAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"deposit((address,uint256))\":{\"params\":{\"tokenToDeposit\":\"the underlying token and amount to deposit\"}},\"dryDeposit((address,uint256))\":{\"params\":{\"tokenToDeposit\":\"the underlying token and amount to deposit\"},\"returns\":{\"lpTokenAmount\":\"the received LP tokens as `lpTokenAmount`\"}},\"dryWithdraw((address,uint256))\":{\"params\":{\"tokenToWithdraw\":\"the underlying token and amount to withdraw\"}},\"getSupportedTokens()\":{\"details\":\"This will typically be the tokens in the pool (e.g. ETH and DAI for an ETH/DAI pool) but we could also support swapping tokens before depositing them\"},\"withdraw((address,uint256))\":{\"params\":{\"tokenToWithdraw\":\"the underlying token and amount to withdraw\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"deposit((address,uint256))\":{\"notice\":\"Deposits `underlyingMonetaryAmount` to the liquidity pool and sends back the received LP tokens as `lpTokenAmount`\"},\"dryDeposit((address,uint256))\":{\"notice\":\"Dry version of `deposit`\"},\"dryWithdraw((address,uint256))\":{\"notice\":\"Dry version of `withdraw` and sends back an underlyingMonetaryAmount\"},\"getSupportedTokens()\":{\"notice\":\"Returns a list of tokens supported by this exchanger to deposit to the underlying pool\"},\"withdraw((address,uint256))\":{\"notice\":\"Withdraws token from the liquidity pool and sends back an underlyingMonetaryAmount\"}},\"notice\":\"ILPTokenExchanger transforms underlying tokens to/from lp tokens supported by Gyro vaults It can also be used to give estimates about these conversions\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/ILPTokenExchanger.sol\":\"ILPTokenExchanger\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/ILPTokenExchanger.sol\":{\"keccak256\":\"0x7355d56577d250c46a78fb92cd883e79b027db66d31ec9f610d609972977942e\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://817dd15dbdbfacf6e735bfe9fb02d3dc56eaa480c93dd5c30dbf76a57c8f9552\",\"dweb:/ipfs/QmQtXMvGarBANKLatZKRVGpat25zCGQYtfZk9FAZqdmZZK\"]},\"libraries/DataTypes.sol\":{\"keccak256\":\"0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494\",\"dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "struct DataTypes.MonetaryAmount",
+              "name": "tokenToDeposit",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "tokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "deposit",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "lpTokenAmount",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "struct DataTypes.MonetaryAmount",
+              "name": "tokenToDeposit",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "tokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "dryDeposit",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "lpTokenAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "err",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "struct DataTypes.MonetaryAmount",
+              "name": "tokenToWithdraw",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "tokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "dryWithdraw",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "lpTokenAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "err",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getSupportedTokens",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "struct DataTypes.MonetaryAmount",
+              "name": "tokenToWithdraw",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "tokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "withdraw",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "lpTokenAmount",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "deposit((address,uint256))": {
+            "params": {
+              "tokenToDeposit": "the underlying token and amount to deposit"
+            }
+          },
+          "dryDeposit((address,uint256))": {
+            "params": {
+              "tokenToDeposit": "the underlying token and amount to deposit"
+            },
+            "returns": {
+              "lpTokenAmount": "the received LP tokens as `lpTokenAmount`"
+            }
+          },
+          "dryWithdraw((address,uint256))": {
+            "params": {
+              "tokenToWithdraw": "the underlying token and amount to withdraw"
+            }
+          },
+          "getSupportedTokens()": {
+            "details": "This will typically be the tokens in the pool (e.g. ETH and DAI for an ETH/DAI pool) but we could also support swapping tokens before depositing them"
+          },
+          "withdraw((address,uint256))": {
+            "params": {
+              "tokenToWithdraw": "the underlying token and amount to withdraw"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "deposit((address,uint256))": {
+            "notice": "Deposits `underlyingMonetaryAmount` to the liquidity pool and sends back the received LP tokens as `lpTokenAmount`"
+          },
+          "dryDeposit((address,uint256))": {
+            "notice": "Dry version of `deposit`"
+          },
+          "dryWithdraw((address,uint256))": {
+            "notice": "Dry version of `withdraw` and sends back an underlyingMonetaryAmount"
+          },
+          "getSupportedTokens()": {
+            "notice": "Returns a list of tokens supported by this exchanger to deposit to the underlying pool"
+          },
+          "withdraw((address,uint256))": {
+            "notice": "Withdraws token from the liquidity pool and sends back an underlyingMonetaryAmount"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/ILPTokenExchanger.sol": "ILPTokenExchanger"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/ILPTokenExchanger.sol": {
+        "keccak256": "0x7355d56577d250c46a78fb92cd883e79b027db66d31ec9f610d609972977942e",
+        "urls": [
+          "bzz-raw://817dd15dbdbfacf6e735bfe9fb02d3dc56eaa480c93dd5c30dbf76a57c8f9552",
+          "dweb:/ipfs/QmQtXMvGarBANKLatZKRVGpat25zCGQYtfZk9FAZqdmZZK"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/DataTypes.sol": {
+        "keccak256": "0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29",
+        "urls": [
+          "bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494",
+          "dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/ILPTokenExchanger.sol",
+    "id": 16467,
+    "exportedSymbols": {
+      "DataTypes": [
+        54519
+      ],
+      "ILPTokenExchanger": [
+        16466
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:1955:70",
+    "nodes": [
+      {
+        "id": 16416,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:70",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 16417,
+        "nodeType": "ImportDirective",
+        "src": "199:36:70",
+        "nodes": [],
+        "absolutePath": "libraries/DataTypes.sol",
+        "file": "../libraries/DataTypes.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 16467,
+        "sourceUnit": 54520,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 16466,
+        "nodeType": "ContractDefinition",
+        "src": "405:1723:70",
+        "nodes": [
+          {
+            "id": 16425,
+            "nodeType": "FunctionDefinition",
+            "src": "721:71:70",
+            "nodes": [],
+            "documentation": {
+              "id": 16419,
+              "nodeType": "StructuredDocumentation",
+              "src": "439:277:70",
+              "text": "@notice Returns a list of tokens supported by this exchanger to deposit\n to the underlying pool\n @dev This will typically be the tokens in the pool (e.g. ETH and DAI for an ETH/DAI pool)\n but we could also support swapping tokens before depositing them"
+            },
+            "functionSelector": "d3c7c2c7",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getSupportedTokens",
+            "nameLocation": "730:18:70",
+            "parameters": {
+              "id": 16420,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "748:2:70"
+            },
+            "returnParameters": {
+              "id": 16424,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16423,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16425,
+                  "src": "774:16:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 16421,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "774:7:70",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 16422,
+                    "nodeType": "ArrayTypeName",
+                    "src": "774:9:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "773:18:70"
+            },
+            "scope": 16466,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16434,
+            "nodeType": "FunctionDefinition",
+            "src": "1010:122:70",
+            "nodes": [],
+            "documentation": {
+              "id": 16426,
+              "nodeType": "StructuredDocumentation",
+              "src": "798:207:70",
+              "text": "@notice Deposits `underlyingMonetaryAmount` to the liquidity pool\n and sends back the received LP tokens as `lpTokenAmount`\n @param tokenToDeposit the underlying token and amount to deposit"
+            },
+            "functionSelector": "5c7a2a80",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deposit",
+            "nameLocation": "1019:7:70",
+            "parameters": {
+              "id": 16430,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16429,
+                  "mutability": "mutable",
+                  "name": "tokenToDeposit",
+                  "nameLocation": "1059:14:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16434,
+                  "src": "1027:46:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_MonetaryAmount_$54381_memory_ptr",
+                    "typeString": "struct DataTypes.MonetaryAmount"
+                  },
+                  "typeName": {
+                    "id": 16428,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 16427,
+                      "name": "DataTypes.MonetaryAmount",
+                      "nameLocations": [
+                        "1027:9:70",
+                        "1037:14:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 54381,
+                      "src": "1027:24:70"
+                    },
+                    "referencedDeclaration": 54381,
+                    "src": "1027:24:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_MonetaryAmount_$54381_storage_ptr",
+                      "typeString": "struct DataTypes.MonetaryAmount"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1026:48:70"
+            },
+            "returnParameters": {
+              "id": 16433,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16432,
+                  "mutability": "mutable",
+                  "name": "lpTokenAmount",
+                  "nameLocation": "1117:13:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16434,
+                  "src": "1109:21:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16431,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1109:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1108:23:70"
+            },
+            "scope": 16466,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16445,
+            "nodeType": "FunctionDefinition",
+            "src": "1324:157:70",
+            "nodes": [],
+            "documentation": {
+              "id": 16435,
+              "nodeType": "StructuredDocumentation",
+              "src": "1138:181:70",
+              "text": "@notice Dry version of `deposit`\n @param tokenToDeposit the underlying token and amount to deposit\n @return lpTokenAmount the received LP tokens as `lpTokenAmount`"
+            },
+            "functionSelector": "ecc05a5b",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "dryDeposit",
+            "nameLocation": "1333:10:70",
+            "parameters": {
+              "id": 16439,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16438,
+                  "mutability": "mutable",
+                  "name": "tokenToDeposit",
+                  "nameLocation": "1376:14:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16445,
+                  "src": "1344:46:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_MonetaryAmount_$54381_memory_ptr",
+                    "typeString": "struct DataTypes.MonetaryAmount"
+                  },
+                  "typeName": {
+                    "id": 16437,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 16436,
+                      "name": "DataTypes.MonetaryAmount",
+                      "nameLocations": [
+                        "1344:9:70",
+                        "1354:14:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 54381,
+                      "src": "1344:24:70"
+                    },
+                    "referencedDeclaration": 54381,
+                    "src": "1344:24:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_MonetaryAmount_$54381_storage_ptr",
+                      "typeString": "struct DataTypes.MonetaryAmount"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1343:48:70"
+            },
+            "returnParameters": {
+              "id": 16444,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16441,
+                  "mutability": "mutable",
+                  "name": "lpTokenAmount",
+                  "nameLocation": "1447:13:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16445,
+                  "src": "1439:21:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16440,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1439:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16443,
+                  "mutability": "mutable",
+                  "name": "err",
+                  "nameLocation": "1476:3:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16445,
+                  "src": "1462:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 16442,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1462:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1438:42:70"
+            },
+            "scope": 16466,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16454,
+            "nodeType": "FunctionDefinition",
+            "src": "1669:124:70",
+            "nodes": [],
+            "documentation": {
+              "id": 16446,
+              "nodeType": "StructuredDocumentation",
+              "src": "1487:177:70",
+              "text": "@notice Withdraws token from the liquidity pool\n and sends back an underlyingMonetaryAmount\n @param tokenToWithdraw the underlying token and amount to withdraw"
+            },
+            "functionSelector": "3c565417",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "withdraw",
+            "nameLocation": "1678:8:70",
+            "parameters": {
+              "id": 16450,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16449,
+                  "mutability": "mutable",
+                  "name": "tokenToWithdraw",
+                  "nameLocation": "1719:15:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16454,
+                  "src": "1687:47:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_MonetaryAmount_$54381_memory_ptr",
+                    "typeString": "struct DataTypes.MonetaryAmount"
+                  },
+                  "typeName": {
+                    "id": 16448,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 16447,
+                      "name": "DataTypes.MonetaryAmount",
+                      "nameLocations": [
+                        "1687:9:70",
+                        "1697:14:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 54381,
+                      "src": "1687:24:70"
+                    },
+                    "referencedDeclaration": 54381,
+                    "src": "1687:24:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_MonetaryAmount_$54381_storage_ptr",
+                      "typeString": "struct DataTypes.MonetaryAmount"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1686:49:70"
+            },
+            "returnParameters": {
+              "id": 16453,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16452,
+                  "mutability": "mutable",
+                  "name": "lpTokenAmount",
+                  "nameLocation": "1778:13:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16454,
+                  "src": "1770:21:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16451,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1770:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1769:23:70"
+            },
+            "scope": 16466,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16465,
+            "nodeType": "FunctionDefinition",
+            "src": "1967:159:70",
+            "nodes": [],
+            "documentation": {
+              "id": 16455,
+              "nodeType": "StructuredDocumentation",
+              "src": "1799:163:70",
+              "text": "@notice Dry version of `withdraw`\n and sends back an underlyingMonetaryAmount\n @param tokenToWithdraw the underlying token and amount to withdraw"
+            },
+            "functionSelector": "74e53577",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "dryWithdraw",
+            "nameLocation": "1976:11:70",
+            "parameters": {
+              "id": 16459,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16458,
+                  "mutability": "mutable",
+                  "name": "tokenToWithdraw",
+                  "nameLocation": "2020:15:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16465,
+                  "src": "1988:47:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_MonetaryAmount_$54381_memory_ptr",
+                    "typeString": "struct DataTypes.MonetaryAmount"
+                  },
+                  "typeName": {
+                    "id": 16457,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 16456,
+                      "name": "DataTypes.MonetaryAmount",
+                      "nameLocations": [
+                        "1988:9:70",
+                        "1998:14:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 54381,
+                      "src": "1988:24:70"
+                    },
+                    "referencedDeclaration": 54381,
+                    "src": "1988:24:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_MonetaryAmount_$54381_storage_ptr",
+                      "typeString": "struct DataTypes.MonetaryAmount"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1987:49:70"
+            },
+            "returnParameters": {
+              "id": 16464,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16461,
+                  "mutability": "mutable",
+                  "name": "lpTokenAmount",
+                  "nameLocation": "2092:13:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16465,
+                  "src": "2084:21:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16460,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2084:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16463,
+                  "mutability": "mutable",
+                  "name": "err",
+                  "nameLocation": "2121:3:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16465,
+                  "src": "2107:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 16462,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2107:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2083:42:70"
+            },
+            "scope": 16466,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "ILPTokenExchanger",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 16418,
+          "nodeType": "StructuredDocumentation",
+          "src": "237:168:70",
+          "text": "@notice ILPTokenExchanger transforms underlying tokens to/from lp tokens supported by Gyro vaults\n It can also be used to give estimates about these conversions"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          16466
+        ],
+        "name": "ILPTokenExchanger",
+        "nameLocation": "415:17:70",
+        "scope": 16467,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 70
+}

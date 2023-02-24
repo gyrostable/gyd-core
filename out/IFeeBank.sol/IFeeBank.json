@@ -1,0 +1,634 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newGovernor",
+          "type": "address"
+        }
+      ],
+      "name": "GovernorChangeRequested",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "oldGovernor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newGovernor",
+          "type": "address"
+        }
+      ],
+      "name": "GovernorChanged",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "acceptGovernance",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newGovernor",
+          "type": "address"
+        }
+      ],
+      "name": "changeGovernor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "underlying",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "depositFees",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "governor",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pendingGovernor",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "underlying",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "beneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdrawFees",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "acceptGovernance()": "238efcbc",
+    "changeGovernor(address)": "e4c0aaf4",
+    "depositFees(address,uint256)": "a71532cd",
+    "governor()": "0c340a24",
+    "pendingGovernor()": "e3056a34",
+    "withdrawFees(address,address,uint256)": "e55dc4e6"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newGovernor\",\"type\":\"address\"}],\"name\":\"GovernorChangeRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oldGovernor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newGovernor\",\"type\":\"address\"}],\"name\":\"GovernorChanged\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"acceptGovernance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newGovernor\",\"type\":\"address\"}],\"name\":\"changeGovernor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"depositFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"governor\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pendingGovernor\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"beneficiary\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"withdrawFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"depositFees(address,uint256)\":{\"details\":\"the fee bank should be approved to spend at least `amount` of `underlying`\"}},\"version\":1},\"userdoc\":{\"events\":{\"GovernorChangeRequested(address)\":{\"notice\":\"Emmited when the governor is change is requested\"},\"GovernorChanged(address,address)\":{\"notice\":\"Emmited when the governor is changed\"}},\"kind\":\"user\",\"methods\":{\"acceptGovernance()\":{\"notice\":\"Called by the pending governor to approve the change\"},\"changeGovernor(address)\":{\"notice\":\"Changes the governor can only be called by the current governor\"},\"depositFees(address,uint256)\":{\"notice\":\"Deposits `amount` of `underlying` in the fee bank\"},\"governor()\":{\"notice\":\"Returns the current governor\"},\"pendingGovernor()\":{\"notice\":\"Returns the pending governor\"},\"withdrawFees(address,address,uint256)\":{\"notice\":\"Withdraws `amount` of `underlying` from the fee bank to `beneficiary`\"}},\"notice\":\"IFeeBank is where the fees will be stored\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/IFeeBank.sol\":\"IFeeBank\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/IFeeBank.sol\":{\"keccak256\":\"0xbae0c79fd80887c105efb69dcf7bc75aa6266ef611ce33be0569b93b668ed413\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://bfaa26c1f2ef522fa6166108eb5e8925f6f3e9057156d061d2c7dcf9641f718a\",\"dweb:/ipfs/Qmcyd9hDh7iATWJrYsJ359mHYns2WPG7ngTJygUparQG2a\"]},\"interfaces/IGovernable.sol\":{\"keccak256\":\"0x5e0804b45ef3fb3cfd9bf24999ea98307d157dd1e3fb4965ab902f16a8a7a834\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://cc9a2bcf74ff86ae5c89873dd7eea6bb4d9c71bf67f63414cf6519a17bb60066\",\"dweb:/ipfs/QmT45sh3fadFtq6gD1STeTxtFgE1AQ6SNVtCbChoWdRkid\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newGovernor",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "GovernorChangeRequested",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "oldGovernor",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "newGovernor",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "GovernorChanged",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "acceptGovernance"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newGovernor",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "changeGovernor"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "underlying",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "depositFees"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "governor",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "pendingGovernor",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "underlying",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "beneficiary",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "withdrawFees"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "depositFees(address,uint256)": {
+            "details": "the fee bank should be approved to spend at least `amount` of `underlying`"
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "acceptGovernance()": {
+            "notice": "Called by the pending governor to approve the change"
+          },
+          "changeGovernor(address)": {
+            "notice": "Changes the governor can only be called by the current governor"
+          },
+          "depositFees(address,uint256)": {
+            "notice": "Deposits `amount` of `underlying` in the fee bank"
+          },
+          "governor()": {
+            "notice": "Returns the current governor"
+          },
+          "pendingGovernor()": {
+            "notice": "Returns the pending governor"
+          },
+          "withdrawFees(address,address,uint256)": {
+            "notice": "Withdraws `amount` of `underlying` from the fee bank to `beneficiary`"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/IFeeBank.sol": "IFeeBank"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/IFeeBank.sol": {
+        "keccak256": "0xbae0c79fd80887c105efb69dcf7bc75aa6266ef611ce33be0569b93b668ed413",
+        "urls": [
+          "bzz-raw://bfaa26c1f2ef522fa6166108eb5e8925f6f3e9057156d061d2c7dcf9641f718a",
+          "dweb:/ipfs/Qmcyd9hDh7iATWJrYsJ359mHYns2WPG7ngTJygUparQG2a"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/IGovernable.sol": {
+        "keccak256": "0x5e0804b45ef3fb3cfd9bf24999ea98307d157dd1e3fb4965ab902f16a8a7a834",
+        "urls": [
+          "bzz-raw://cc9a2bcf74ff86ae5c89873dd7eea6bb4d9c71bf67f63414cf6519a17bb60066",
+          "dweb:/ipfs/QmT45sh3fadFtq6gD1STeTxtFgE1AQ6SNVtCbChoWdRkid"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/IFeeBank.sol",
+    "id": 16077,
+    "exportedSymbols": {
+      "IFeeBank": [
+        16076
+      ],
+      "IGovernable": [
+        16176
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:581:64",
+    "nodes": [
+      {
+        "id": 16053,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:64",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 16054,
+        "nodeType": "ImportDirective",
+        "src": "199:27:64",
+        "nodes": [],
+        "absolutePath": "interfaces/IGovernable.sol",
+        "file": "./IGovernable.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 16077,
+        "sourceUnit": 16177,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 16076,
+        "nodeType": "ContractDefinition",
+        "src": "282:472:64",
+        "nodes": [
+          {
+            "id": 16065,
+            "nodeType": "FunctionDefinition",
+            "src": "476:66:64",
+            "nodes": [],
+            "documentation": {
+              "id": 16058,
+              "nodeType": "StructuredDocumentation",
+              "src": "322:149:64",
+              "text": "@notice Deposits `amount` of `underlying` in the fee bank\n @dev the fee bank should be approved to spend at least `amount` of `underlying`"
+            },
+            "functionSelector": "a71532cd",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "depositFees",
+            "nameLocation": "485:11:64",
+            "parameters": {
+              "id": 16063,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16060,
+                  "mutability": "mutable",
+                  "name": "underlying",
+                  "nameLocation": "505:10:64",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16065,
+                  "src": "497:18:64",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16059,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "497:7:64",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16062,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "525:6:64",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16065,
+                  "src": "517:14:64",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16061,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "517:7:64",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "496:36:64"
+            },
+            "returnParameters": {
+              "id": 16064,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "541:0:64"
+            },
+            "scope": 16076,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16075,
+            "nodeType": "FunctionDefinition",
+            "src": "634:118:64",
+            "nodes": [],
+            "documentation": {
+              "id": 16066,
+              "nodeType": "StructuredDocumentation",
+              "src": "548:81:64",
+              "text": "@notice Withdraws `amount` of `underlying` from the fee bank to `beneficiary`"
+            },
+            "functionSelector": "e55dc4e6",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "withdrawFees",
+            "nameLocation": "643:12:64",
+            "parameters": {
+              "id": 16073,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16068,
+                  "mutability": "mutable",
+                  "name": "underlying",
+                  "nameLocation": "673:10:64",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16075,
+                  "src": "665:18:64",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16067,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "665:7:64",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16070,
+                  "mutability": "mutable",
+                  "name": "beneficiary",
+                  "nameLocation": "701:11:64",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16075,
+                  "src": "693:19:64",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16069,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "693:7:64",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16072,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "730:6:64",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16075,
+                  "src": "722:14:64",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16071,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "722:7:64",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "655:87:64"
+            },
+            "returnParameters": {
+              "id": 16074,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "751:0:64"
+            },
+            "scope": 16076,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 16056,
+              "name": "IGovernable",
+              "nameLocations": [
+                "304:11:64"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 16176,
+              "src": "304:11:64"
+            },
+            "id": 16057,
+            "nodeType": "InheritanceSpecifier",
+            "src": "304:11:64"
+          }
+        ],
+        "canonicalName": "IFeeBank",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 16055,
+          "nodeType": "StructuredDocumentation",
+          "src": "228:54:64",
+          "text": "@notice IFeeBank is where the fees will be stored"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          16076,
+          16176
+        ],
+        "name": "IFeeBank",
+        "nameLocation": "292:8:64",
+        "scope": 16077,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 64
+}

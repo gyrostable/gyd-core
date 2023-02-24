@@ -1,0 +1,259 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "tokenAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getPriceUSD",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getPriceUSD(address)": "5708447d"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"getPriceUSD\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"getPriceUSD(address)\":{\"params\":{\"tokenAddress\":\"the asset of which the price is to be quoted\"},\"returns\":{\"_0\":\"the USD price of the asset\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getPriceUSD(address)\":{\"notice\":\"Quotes the USD price of `tokenAddress` The quoted price is always scaled with 18 decimals regardless of the source used for the oracle.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/oracles/IUSDPriceOracle.sol\":\"IUSDPriceOracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/oracles/IUSDPriceOracle.sol\":{\"keccak256\":\"0xf5b9d5cff4b98ffdfda85702a4cc32ae27f9bf0c690f3640a959f7479ba72f41\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://88e1c960b489590938b68c879581c7809986348d504a5ed67dba6ef464ba227c\",\"dweb:/ipfs/QmY8mNgbN7GZnMeuVh2M4z1bp2swWbfVFgFU59RHUqUM5j\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getPriceUSD",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "getPriceUSD(address)": {
+            "params": {
+              "tokenAddress": "the asset of which the price is to be quoted"
+            },
+            "returns": {
+              "_0": "the USD price of the asset"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "getPriceUSD(address)": {
+            "notice": "Quotes the USD price of `tokenAddress` The quoted price is always scaled with 18 decimals regardless of the source used for the oracle."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/oracles/IUSDPriceOracle.sol": "IUSDPriceOracle"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/oracles/IUSDPriceOracle.sol": {
+        "keccak256": "0xf5b9d5cff4b98ffdfda85702a4cc32ae27f9bf0c690f3640a959f7479ba72f41",
+        "urls": [
+          "bzz-raw://88e1c960b489590938b68c879581c7809986348d504a5ed67dba6ef464ba227c",
+          "dweb:/ipfs/QmY8mNgbN7GZnMeuVh2M4z1bp2swWbfVFgFU59RHUqUM5j"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/oracles/IUSDPriceOracle.sol",
+    "id": 17710,
+    "exportedSymbols": {
+      "IUSDPriceOracle": [
+        17709
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:419:96",
+    "nodes": [
+      {
+        "id": 17700,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:96",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 17709,
+        "nodeType": "ContractDefinition",
+        "src": "199:393:96",
+        "nodes": [
+          {
+            "id": 17708,
+            "nodeType": "FunctionDefinition",
+            "src": "515:75:96",
+            "nodes": [],
+            "documentation": {
+              "id": 17701,
+              "nodeType": "StructuredDocumentation",
+              "src": "231:279:96",
+              "text": "@notice Quotes the USD price of `tokenAddress`\n The quoted price is always scaled with 18 decimals regardless of the\n source used for the oracle.\n @param tokenAddress the asset of which the price is to be quoted\n @return the USD price of the asset"
+            },
+            "functionSelector": "5708447d",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPriceUSD",
+            "nameLocation": "524:11:96",
+            "parameters": {
+              "id": 17704,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17703,
+                  "mutability": "mutable",
+                  "name": "tokenAddress",
+                  "nameLocation": "544:12:96",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17708,
+                  "src": "536:20:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 17702,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "536:7:96",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "535:22:96"
+            },
+            "returnParameters": {
+              "id": 17707,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17706,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17708,
+                  "src": "581:7:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 17705,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "581:7:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "580:9:96"
+            },
+            "scope": 17709,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IUSDPriceOracle",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          17709
+        ],
+        "name": "IUSDPriceOracle",
+        "nameLocation": "209:15:96",
+        "scope": 17710,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 96
+}

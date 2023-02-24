@@ -1,0 +1,1356 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "alphaBar",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "xuBar",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "thetaBar",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "outflowMemory",
+          "type": "uint64"
+        }
+      ],
+      "name": "SystemParamsUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "usdAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "computeMintAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "gydAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "computeRedeemAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "usdAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "gydAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "redeem",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "alphaBar",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "xuBar",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "thetaBar",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "outflowMemory",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct IPAMM.Params",
+          "name": "params",
+          "type": "tuple"
+        }
+      ],
+      "name": "setSystemParams",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x608060405234801561001057600080fd5b5061023a806100206000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80631b2ef1ca1461005c578063616a1ed91461005c57806371db63ec146100815780637cbc2373146100815780639e59085414610094575b600080fd5b61006f61006a3660046100f3565b6100a7565b60405190815260200160405180910390f35b61006f61008f3660046100f3565b6100af565b6100a56100a2366004610132565b50565b005b815b92915050565b60006100c383670de444324c2a80006100ca565b9392505050565b6000806100d783856101bd565b90506100eb670de0b6b3a7640000826101e2565b949350505050565b6000806040838503121561010657600080fd5b50508035926020909101359150565b803567ffffffffffffffff8116811461012d57600080fd5b919050565b60006080828403121561014457600080fd5b6040516080810181811067ffffffffffffffff8211171561017557634e487b7160e01b600052604160045260246000fd5b60405261018183610115565b815261018f60208401610115565b60208201526101a060408401610115565b60408201526101b160608401610115565b60608201529392505050565b80820281158282048414176100a957634e487b7160e01b600052601160045260246000fd5b6000826101ff57634e487b7160e01b600052601260045260246000fd5b50049056fea26469706673582212202e0b6aeb36217f87b577266b7855aeef2d6d925268596ba5381b9577765a75d164736f6c63430008110033",
+    "sourceMap": "279:834:38:-:0;;;;;;;;;;;;;;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x608060405234801561001057600080fd5b50600436106100575760003560e01c80631b2ef1ca1461005c578063616a1ed91461005c57806371db63ec146100815780637cbc2373146100815780639e59085414610094575b600080fd5b61006f61006a3660046100f3565b6100a7565b60405190815260200160405180910390f35b61006f61008f3660046100f3565b6100af565b6100a56100a2366004610132565b50565b005b815b92915050565b60006100c383670de444324c2a80006100ca565b9392505050565b6000806100d783856101bd565b90506100eb670de0b6b3a7640000826101e2565b949350505050565b6000806040838503121561010657600080fd5b50508035926020909101359150565b803567ffffffffffffffff8116811461012d57600080fd5b919050565b60006080828403121561014457600080fd5b6040516080810181811067ffffffffffffffff8211171561017557634e487b7160e01b600052604160045260246000fd5b60405261018183610115565b815261018f60208401610115565b60208201526101a060408401610115565b60408201526101b160608401610115565b60608201529392505050565b80820281158282048414176100a957634e487b7160e01b600052601160045260246000fd5b6000826101ff57634e487b7160e01b600052601260045260246000fd5b50049056fea26469706673582212202e0b6aeb36217f87b577266b7855aeef2d6d925268596ba5381b9577765a75d164736f6c63430008110033",
+    "sourceMap": "279:834:38:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;529:151;;;;;;:::i;:::-;;:::i;:::-;;;413:25:166;;;401:2;386:18;529:151:38;;;;;;;686:184;;;;;;:::i;:::-;;:::i;1053:58::-;;;;;;:::i;:::-;;;;;529:151;664:9;529:151;;;;;:::o;686:184::-;810:7;836:27;:9;854:8;836:17;:27::i;:::-;829:34;686:184;-1:-1:-1;;;686:184:38:o;750:142:158:-;812:7;;849:5;853:1;849;:5;:::i;:::-;831:23;-1:-1:-1;872:13:158;364:4;831:23;872:13;:::i;:::-;865:20;750:142;-1:-1:-1;;;;750:142:158:o;14:248:166:-;82:6;90;143:2;131:9;122:7;118:23;114:32;111:52;;;159:1;156;149:12;111:52;-1:-1:-1;;182:23:166;;;252:2;237:18;;;224:32;;-1:-1:-1;14:248:166:o;449:171::-;516:20;;576:18;565:30;;555:41;;545:69;;610:1;607;600:12;545:69;449:171;;;:::o;625:755::-;709:6;762:3;750:9;741:7;737:23;733:33;730:53;;;779:1;776;769:12;730:53;812:2;806:9;854:3;846:6;842:16;924:6;912:10;909:22;888:18;876:10;873:34;870:62;867:185;;;974:10;969:3;965:20;962:1;955:31;1009:4;1006:1;999:15;1037:4;1034:1;1027:15;867:185;1068:2;1061:22;1107:28;1125:9;1107:28;:::i;:::-;1099:6;1092:44;1169:37;1202:2;1191:9;1187:18;1169:37;:::i;:::-;1164:2;1156:6;1152:15;1145:62;1240:37;1273:2;1262:9;1258:18;1240:37;:::i;:::-;1235:2;1227:6;1223:15;1216:62;1311:37;1344:2;1333:9;1329:18;1311:37;:::i;:::-;1306:2;1294:15;;1287:62;1298:6;625:755;-1:-1:-1;;;625:755:166:o;1385:265::-;1458:9;;;1489;;1506:15;;;1500:22;;1486:37;1476:168;;1566:10;1561:3;1557:20;1554:1;1547:31;1601:4;1598:1;1591:15;1629:4;1626:1;1619:15;1655:217;1695:1;1721;1711:132;;1765:10;1760:3;1756:20;1753:1;1746:31;1800:4;1797:1;1790:15;1828:4;1825:1;1818:15;1711:132;-1:-1:-1;1857:9:166;;1655:217::o",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "computeMintAmount(uint256,uint256)": "616a1ed9",
+    "computeRedeemAmount(uint256,uint256)": "71db63ec",
+    "mint(uint256,uint256)": "1b2ef1ca",
+    "redeem(uint256,uint256)": "7cbc2373",
+    "setSystemParams((uint64,uint64,uint64,uint64))": "9e590854"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"alphaBar\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"xuBar\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"thetaBar\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"outflowMemory\",\"type\":\"uint64\"}],\"name\":\"SystemParamsUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"usdAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"computeMintAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"gydAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"computeRedeemAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"usdAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"mint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"gydAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"redeem\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"alphaBar\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"xuBar\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"thetaBar\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"outflowMemory\",\"type\":\"uint64\"}],\"internalType\":\"struct IPAMM.Params\",\"name\":\"params\",\"type\":\"tuple\"}],\"name\":\"setSystemParams\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"events\":{\"SystemParamsUpdated(uint64,uint64,uint64,uint64)\":{\"notice\":\"this event is emitted when the system parameters are updated\"}},\"kind\":\"user\",\"methods\":{\"setSystemParams((uint64,uint64,uint64,uint64))\":{\"notice\":\"Allows for the system parameters to be updated\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/testing/PAMMWrongRedeemQuote.sol\":\"PAMMWrongRedeemQuote\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"contracts/auth/Governable.sol\":{\"keccak256\":\"0x8e35f59c8df176f2f2ec0b27bc567106f419942f28b317c4aeb459572c7cddc9\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://2bbe14ec52921d7a1a67116dbfa1729647f94aded19b4949765f4260c46b99fd\",\"dweb:/ipfs/QmXhqMmvwZRUgAFNCxifNKPE2FkDEDVpCBMQNs2LBEQsFi\"]},\"contracts/auth/GovernableBase.sol\":{\"keccak256\":\"0x076c1535458771c52ae11bdd7747704ff990bb8e778c678c5963d4453c43eff0\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://90296c3c42624636dc61c63dccb91807566d905607e13cf3f85dadde65e4ef9f\",\"dweb:/ipfs/QmNdL6uFNGLgwvgwuGVqp2wmmdsKViQhuFeMGNgHsdCeQ6\"]},\"contracts/testing/PAMMWrongRedeemQuote.sol\":{\"keccak256\":\"0xa14e897404ba8832323d70045f06f1078d775d7d4fdc340a850be8de9caf0198\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://6a134b5291853a4cdd134ddc84ef3d1557def5da007fffdbf666f9c344abc4ca\",\"dweb:/ipfs/QmfNrh6Av7RLwnZAPEnzzw4xLHpK8ksj9SKNsYUh7VxL9G\"]},\"interfaces/IGovernable.sol\":{\"keccak256\":\"0x5e0804b45ef3fb3cfd9bf24999ea98307d157dd1e3fb4965ab902f16a8a7a834\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://cc9a2bcf74ff86ae5c89873dd7eea6bb4d9c71bf67f63414cf6519a17bb60066\",\"dweb:/ipfs/QmT45sh3fadFtq6gD1STeTxtFgE1AQ6SNVtCbChoWdRkid\"]},\"interfaces/IPAMM.sol\":{\"keccak256\":\"0x26e4ae598f71529d34a91298ce208c6f34686a4f67360274d20309680f237db2\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://ceda5a304d4c9564cda5c7ac1f0fa5a2ee3933d2843dbdb7ee87b16e75ebb616\",\"dweb:/ipfs/QmV974iH2s27qXvo6Mrx3E5xwAXiHbELCbUtPQzCwj8v3o\"]},\"libraries/DataTypes.sol\":{\"keccak256\":\"0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494\",\"dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC\"]},\"libraries/Errors.sol\":{\"keccak256\":\"0x771ff83586512e92e677f886216cf85fae5441fe40817bc22eda7d46c70b98bd\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://61879ffdaa1d9ef27af0d9da62915059eb44db5d0ba98d3f83a864c517b45a55\",\"dweb:/ipfs/QmX9nfSMgt5LsisqaxWjT4LFsaPirC1h9RfqcLGybFmAzC\"]},\"libraries/FixedPoint.sol\":{\"keccak256\":\"0x568a825b9e1c4ecbbd63e066ae2b4c668eb65a10b0cbe0a63adacb0448e8ec3f\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://4e0e07efe3b4b43e50d91f23212671f713eaf9714ae9a6bbdbdbe88c0bb28235\",\"dweb:/ipfs/QmXTdFRiJwkBvHKVbUMynafrvkdAvDwYFw5CL2LR31DHUz\"]},\"libraries/LogExpMath.sol\":{\"keccak256\":\"0xf5d7e3b373595b85286b9a44e92acc297e2bbc9c4bf00866c97718b7e3175ea6\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://d0ee84b67f1f56e040168ff81a5adae6654e2d854b6780dabe7289993a9313c4\",\"dweb:/ipfs/QmbKa7apomK1mwxiDn8N1aohKcuKsZVGNthyhVpDP6gffm\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint64",
+              "name": "alphaBar",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "internalType": "uint64",
+              "name": "xuBar",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "internalType": "uint64",
+              "name": "thetaBar",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "internalType": "uint64",
+              "name": "outflowMemory",
+              "type": "uint64",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "SystemParamsUpdated",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "usdAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "computeMintAmount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "gydAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "computeRedeemAmount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "usdAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "mint",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "gydAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "redeem",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "struct IPAMM.Params",
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "alphaBar",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "xuBar",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "thetaBar",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "outflowMemory",
+                  "type": "uint64"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "setSystemParams"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "setSystemParams((uint64,uint64,uint64,uint64))": {
+            "notice": "Allows for the system parameters to be updated"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/testing/PAMMWrongRedeemQuote.sol": "PAMMWrongRedeemQuote"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/auth/Governable.sol": {
+        "keccak256": "0x8e35f59c8df176f2f2ec0b27bc567106f419942f28b317c4aeb459572c7cddc9",
+        "urls": [
+          "bzz-raw://2bbe14ec52921d7a1a67116dbfa1729647f94aded19b4949765f4260c46b99fd",
+          "dweb:/ipfs/QmXhqMmvwZRUgAFNCxifNKPE2FkDEDVpCBMQNs2LBEQsFi"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "contracts/auth/GovernableBase.sol": {
+        "keccak256": "0x076c1535458771c52ae11bdd7747704ff990bb8e778c678c5963d4453c43eff0",
+        "urls": [
+          "bzz-raw://90296c3c42624636dc61c63dccb91807566d905607e13cf3f85dadde65e4ef9f",
+          "dweb:/ipfs/QmNdL6uFNGLgwvgwuGVqp2wmmdsKViQhuFeMGNgHsdCeQ6"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "contracts/testing/PAMMWrongRedeemQuote.sol": {
+        "keccak256": "0xa14e897404ba8832323d70045f06f1078d775d7d4fdc340a850be8de9caf0198",
+        "urls": [
+          "bzz-raw://6a134b5291853a4cdd134ddc84ef3d1557def5da007fffdbf666f9c344abc4ca",
+          "dweb:/ipfs/QmfNrh6Av7RLwnZAPEnzzw4xLHpK8ksj9SKNsYUh7VxL9G"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/IGovernable.sol": {
+        "keccak256": "0x5e0804b45ef3fb3cfd9bf24999ea98307d157dd1e3fb4965ab902f16a8a7a834",
+        "urls": [
+          "bzz-raw://cc9a2bcf74ff86ae5c89873dd7eea6bb4d9c71bf67f63414cf6519a17bb60066",
+          "dweb:/ipfs/QmT45sh3fadFtq6gD1STeTxtFgE1AQ6SNVtCbChoWdRkid"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/IPAMM.sol": {
+        "keccak256": "0x26e4ae598f71529d34a91298ce208c6f34686a4f67360274d20309680f237db2",
+        "urls": [
+          "bzz-raw://ceda5a304d4c9564cda5c7ac1f0fa5a2ee3933d2843dbdb7ee87b16e75ebb616",
+          "dweb:/ipfs/QmV974iH2s27qXvo6Mrx3E5xwAXiHbELCbUtPQzCwj8v3o"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/DataTypes.sol": {
+        "keccak256": "0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29",
+        "urls": [
+          "bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494",
+          "dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/Errors.sol": {
+        "keccak256": "0x771ff83586512e92e677f886216cf85fae5441fe40817bc22eda7d46c70b98bd",
+        "urls": [
+          "bzz-raw://61879ffdaa1d9ef27af0d9da62915059eb44db5d0ba98d3f83a864c517b45a55",
+          "dweb:/ipfs/QmX9nfSMgt5LsisqaxWjT4LFsaPirC1h9RfqcLGybFmAzC"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/FixedPoint.sol": {
+        "keccak256": "0x568a825b9e1c4ecbbd63e066ae2b4c668eb65a10b0cbe0a63adacb0448e8ec3f",
+        "urls": [
+          "bzz-raw://4e0e07efe3b4b43e50d91f23212671f713eaf9714ae9a6bbdbdbe88c0bb28235",
+          "dweb:/ipfs/QmXTdFRiJwkBvHKVbUMynafrvkdAvDwYFw5CL2LR31DHUz"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/LogExpMath.sol": {
+        "keccak256": "0xf5d7e3b373595b85286b9a44e92acc297e2bbc9c4bf00866c97718b7e3175ea6",
+        "urls": [
+          "bzz-raw://d0ee84b67f1f56e040168ff81a5adae6654e2d854b6780dabe7289993a9313c4",
+          "dweb:/ipfs/QmbKa7apomK1mwxiDn8N1aohKcuKsZVGNthyhVpDP6gffm"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/testing/PAMMWrongRedeemQuote.sol",
+    "id": 13229,
+    "exportedSymbols": {
+      "DataTypes": [
+        54519
+      ],
+      "Errors": [
+        56056
+      ],
+      "FixedPoint": [
+        56426
+      ],
+      "Governable": [
+        5458
+      ],
+      "GovernableBase": [
+        5552
+      ],
+      "IGovernable": [
+        16176
+      ],
+      "IPAMM": [
+        16632
+      ],
+      "LogExpMath": [
+        57808
+      ],
+      "PAMMWrongRedeemQuote": [
+        13228
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "175:939:38",
+    "nodes": [
+      {
+        "id": 13159,
+        "nodeType": "PragmaDirective",
+        "src": "175:23:38",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 13160,
+        "nodeType": "ImportDirective",
+        "src": "200:36:38",
+        "nodes": [],
+        "absolutePath": "interfaces/IPAMM.sol",
+        "file": "../../interfaces/IPAMM.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 13229,
+        "sourceUnit": 16633,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 13161,
+        "nodeType": "ImportDirective",
+        "src": "237:40:38",
+        "nodes": [],
+        "absolutePath": "libraries/FixedPoint.sol",
+        "file": "../../libraries/FixedPoint.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 13229,
+        "sourceUnit": 56427,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 13228,
+        "nodeType": "ContractDefinition",
+        "src": "279:834:38",
+        "nodes": [
+          {
+            "id": 13166,
+            "nodeType": "UsingForDirective",
+            "src": "324:29:38",
+            "nodes": [],
+            "global": false,
+            "libraryName": {
+              "id": 13164,
+              "name": "FixedPoint",
+              "nameLocations": [
+                "330:10:38"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 56426,
+              "src": "330:10:38"
+            },
+            "typeName": {
+              "id": 13165,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "345:7:38",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            }
+          },
+          {
+            "id": 13178,
+            "nodeType": "FunctionDefinition",
+            "src": "359:164:38",
+            "nodes": [],
+            "body": {
+              "id": 13177,
+              "nodeType": "Block",
+              "src": "490:33:38",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 13175,
+                    "name": "usdAmount",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 13168,
+                    "src": "507:9:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 13174,
+                  "id": 13176,
+                  "nodeType": "Return",
+                  "src": "500:16:38"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16594
+            ],
+            "functionSelector": "616a1ed9",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "computeMintAmount",
+            "nameLocation": "368:17:38",
+            "parameters": {
+              "id": 13171,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 13168,
+                  "mutability": "mutable",
+                  "name": "usdAmount",
+                  "nameLocation": "403:9:38",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13178,
+                  "src": "395:17:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13167,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "395:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 13170,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13178,
+                  "src": "422:7:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13169,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "422:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "385:72:38"
+            },
+            "returnParameters": {
+              "id": 13174,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 13173,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13178,
+                  "src": "481:7:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13172,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "481:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "480:9:38"
+            },
+            "scope": 13228,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 13190,
+            "nodeType": "FunctionDefinition",
+            "src": "529:151:38",
+            "nodes": [],
+            "body": {
+              "id": 13189,
+              "nodeType": "Block",
+              "src": "647:33:38",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 13187,
+                    "name": "usdAmount",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 13180,
+                    "src": "664:9:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 13186,
+                  "id": 13188,
+                  "nodeType": "Return",
+                  "src": "657:16:38"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16604
+            ],
+            "functionSelector": "1b2ef1ca",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "mint",
+            "nameLocation": "538:4:38",
+            "parameters": {
+              "id": 13183,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 13180,
+                  "mutability": "mutable",
+                  "name": "usdAmount",
+                  "nameLocation": "560:9:38",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13190,
+                  "src": "552:17:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13179,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "552:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 13182,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13190,
+                  "src": "579:7:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13181,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "579:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "542:72:38"
+            },
+            "returnParameters": {
+              "id": 13186,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 13185,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13190,
+                  "src": "638:7:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13184,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "638:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "637:9:38"
+            },
+            "scope": 13228,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 13205,
+            "nodeType": "FunctionDefinition",
+            "src": "686:184:38",
+            "nodes": [],
+            "body": {
+              "id": 13204,
+              "nodeType": "Block",
+              "src": "819:51:38",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "hexValue": "312e303031653138",
+                        "id": 13201,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "number",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "854:8:38",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_rational_1001000000000000000_by_1",
+                          "typeString": "int_const 1001000000000000000"
+                        },
+                        "value": "1.001e18"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_rational_1001000000000000000_by_1",
+                          "typeString": "int_const 1001000000000000000"
+                        }
+                      ],
+                      "expression": {
+                        "id": 13199,
+                        "name": "gydAmount",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 13192,
+                        "src": "836:9:38",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "id": 13200,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "846:7:38",
+                      "memberName": "mulDown",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 56110,
+                      "src": "836:17:38",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
+                        "typeString": "function (uint256,uint256) pure returns (uint256)"
+                      }
+                    },
+                    "id": 13202,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "836:27:38",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 13198,
+                  "id": 13203,
+                  "nodeType": "Return",
+                  "src": "829:34:38"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16614
+            ],
+            "functionSelector": "71db63ec",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "computeRedeemAmount",
+            "nameLocation": "695:19:38",
+            "parameters": {
+              "id": 13195,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 13192,
+                  "mutability": "mutable",
+                  "name": "gydAmount",
+                  "nameLocation": "732:9:38",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13205,
+                  "src": "724:17:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13191,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "724:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 13194,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13205,
+                  "src": "751:7:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13193,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "751:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "714:72:38"
+            },
+            "returnParameters": {
+              "id": 13198,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 13197,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13205,
+                  "src": "810:7:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13196,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "810:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "809:9:38"
+            },
+            "scope": 13228,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 13220,
+            "nodeType": "FunctionDefinition",
+            "src": "876:171:38",
+            "nodes": [],
+            "body": {
+              "id": 13219,
+              "nodeType": "Block",
+              "src": "996:51:38",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "hexValue": "312e303031653138",
+                        "id": 13216,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "number",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1031:8:38",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_rational_1001000000000000000_by_1",
+                          "typeString": "int_const 1001000000000000000"
+                        },
+                        "value": "1.001e18"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_rational_1001000000000000000_by_1",
+                          "typeString": "int_const 1001000000000000000"
+                        }
+                      ],
+                      "expression": {
+                        "id": 13214,
+                        "name": "gydAmount",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 13207,
+                        "src": "1013:9:38",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "id": 13215,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1023:7:38",
+                      "memberName": "mulDown",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 56110,
+                      "src": "1013:17:38",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
+                        "typeString": "function (uint256,uint256) pure returns (uint256)"
+                      }
+                    },
+                    "id": 13217,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1013:27:38",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 13213,
+                  "id": 13218,
+                  "nodeType": "Return",
+                  "src": "1006:34:38"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16624
+            ],
+            "functionSelector": "7cbc2373",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "redeem",
+            "nameLocation": "885:6:38",
+            "parameters": {
+              "id": 13210,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 13207,
+                  "mutability": "mutable",
+                  "name": "gydAmount",
+                  "nameLocation": "909:9:38",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13220,
+                  "src": "901:17:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13206,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "901:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 13209,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13220,
+                  "src": "928:7:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13208,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "928:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "891:72:38"
+            },
+            "returnParameters": {
+              "id": 13213,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 13212,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13220,
+                  "src": "987:7:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 13211,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "987:7:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "986:9:38"
+            },
+            "scope": 13228,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 13227,
+            "nodeType": "FunctionDefinition",
+            "src": "1053:58:38",
+            "nodes": [],
+            "body": {
+              "id": 13226,
+              "nodeType": "Block",
+              "src": "1109:2:38",
+              "nodes": [],
+              "statements": []
+            },
+            "baseFunctions": [
+              16631
+            ],
+            "functionSelector": "9e590854",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setSystemParams",
+            "nameLocation": "1062:15:38",
+            "parameters": {
+              "id": 13224,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 13223,
+                  "mutability": "mutable",
+                  "name": "params",
+                  "nameLocation": "1092:6:38",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13227,
+                  "src": "1078:20:38",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Params_$16584_memory_ptr",
+                    "typeString": "struct IPAMM.Params"
+                  },
+                  "typeName": {
+                    "id": 13222,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 13221,
+                      "name": "Params",
+                      "nameLocations": [
+                        "1078:6:38"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 16584,
+                      "src": "1078:6:38"
+                    },
+                    "referencedDeclaration": 16584,
+                    "src": "1078:6:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Params_$16584_storage_ptr",
+                      "typeString": "struct IPAMM.Params"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1077:22:38"
+            },
+            "returnParameters": {
+              "id": 13225,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1109:0:38"
+            },
+            "scope": 13228,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 13162,
+              "name": "IPAMM",
+              "nameLocations": [
+                "312:5:38"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 16632,
+              "src": "312:5:38"
+            },
+            "id": 13163,
+            "nodeType": "InheritanceSpecifier",
+            "src": "312:5:38"
+          }
+        ],
+        "canonicalName": "PAMMWrongRedeemQuote",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "linearizedBaseContracts": [
+          13228,
+          16632
+        ],
+        "name": "PAMMWrongRedeemQuote",
+        "nameLocation": "288:20:38",
+        "scope": 13229,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 38
+}

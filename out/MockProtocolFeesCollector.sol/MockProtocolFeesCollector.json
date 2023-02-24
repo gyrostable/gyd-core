@@ -1,0 +1,274 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getSwapFeePercentage",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x6080604052348015600f57600080fd5b50607e80601d6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c806355c6762814602d575b600080fd5b670de0b6b3a764000060405190815260200160405180910390f3fea26469706673582212207a4f499f29d90bae29d8adca8922f01e0032aba5afed1e30ceb75bc8d378c6f164736f6c63430008110033",
+    "sourceMap": "200:144:55:-:0;;;;;;;;;;;;;;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c806355c6762814602d575b600080fd5b670de0b6b3a764000060405190815260200160405180910390f3fea26469706673582212207a4f499f29d90bae29d8adca8922f01e0032aba5afed1e30ceb75bc8d378c6f164736f6c63430008110033",
+    "sourceMap": "200:144:55:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;241:101;330:4;241:101;;160:25:166;;;148:2;133:18;241:101:55;;;;;;",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getSwapFeePercentage()": "55c67628"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getSwapFeePercentage\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/testing/balancer/MockProtocolFeesCollector.sol\":\"MockProtocolFeesCollector\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"contracts/testing/balancer/MockProtocolFeesCollector.sol\":{\"keccak256\":\"0xa192ef15717675bb6d1a5fb5a14dc23e48cbd4f7c26a7e2ee8f8397287056ec6\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://e8a0fb0104e3356a4b93434fb3476deefabf4204b077dc4768fce22f3caa275e\",\"dweb:/ipfs/QmduSQK9QrZwGr2coQFcKKRQpP7nZBf11cXpNtyPB8gjJB\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "getSwapFeePercentage",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/testing/balancer/MockProtocolFeesCollector.sol": "MockProtocolFeesCollector"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/testing/balancer/MockProtocolFeesCollector.sol": {
+        "keccak256": "0xa192ef15717675bb6d1a5fb5a14dc23e48cbd4f7c26a7e2ee8f8397287056ec6",
+        "urls": [
+          "bzz-raw://e8a0fb0104e3356a4b93434fb3476deefabf4204b077dc4768fce22f3caa275e",
+          "dweb:/ipfs/QmduSQK9QrZwGr2coQFcKKRQpP7nZBf11cXpNtyPB8gjJB"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/testing/balancer/MockProtocolFeesCollector.sol",
+    "id": 15205,
+    "exportedSymbols": {
+      "MockProtocolFeesCollector": [
+        15204
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "175:170:55",
+    "nodes": [
+      {
+        "id": 15192,
+        "nodeType": "PragmaDirective",
+        "src": "175:23:55",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 15204,
+        "nodeType": "ContractDefinition",
+        "src": "200:144:55",
+        "nodes": [
+          {
+            "id": 15203,
+            "nodeType": "FunctionDefinition",
+            "src": "241:101:55",
+            "nodes": [],
+            "body": {
+              "id": 15202,
+              "nodeType": "Block",
+              "src": "305:37:55",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "hexValue": "31653138",
+                        "id": 15199,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "number",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "330:4:55",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_rational_1000000000000000000_by_1",
+                          "typeString": "int_const 1000000000000000000"
+                        },
+                        "value": "1e18"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_rational_1000000000000000000_by_1",
+                          "typeString": "int_const 1000000000000000000"
+                        }
+                      ],
+                      "id": 15198,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "nodeType": "ElementaryTypeNameExpression",
+                      "src": "322:7:55",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_uint256_$",
+                        "typeString": "type(uint256)"
+                      },
+                      "typeName": {
+                        "id": 15197,
+                        "name": "uint256",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "322:7:55",
+                        "typeDescriptions": {}
+                      }
+                    },
+                    "id": 15200,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "typeConversion",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "322:13:55",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 15196,
+                  "id": 15201,
+                  "nodeType": "Return",
+                  "src": "315:20:55"
+                }
+              ]
+            },
+            "functionSelector": "55c67628",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getSwapFeePercentage",
+            "nameLocation": "250:20:55",
+            "parameters": {
+              "id": 15193,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "270:2:55"
+            },
+            "returnParameters": {
+              "id": 15196,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 15195,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 15203,
+                  "src": "296:7:55",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 15194,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "296:7:55",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "295:9:55"
+            },
+            "scope": 15204,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "MockProtocolFeesCollector",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "linearizedBaseContracts": [
+          15204
+        ],
+        "name": "MockProtocolFeesCollector",
+        "nameLocation": "209:25:55",
+        "scope": 15205,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 55
+}

@@ -1,0 +1,366 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "paused",
+          "type": "bool"
+        }
+      ],
+      "name": "PausedStateChanged",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "getPausedState",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "paused",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pauseWindowEndTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "bufferPeriodEndTime",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getPausedState()": "1c0de051"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"paused\",\"type\":\"bool\"}],\"name\":\"PausedStateChanged\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"getPausedState\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"paused\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"pauseWindowEndTime\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"bufferPeriodEndTime\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for the TemporarilyPausable helper.\",\"events\":{\"PausedStateChanged(bool)\":{\"details\":\"Emitted every time the pause state changes by `_setPaused`.\"}},\"kind\":\"dev\",\"methods\":{\"getPausedState()\":{\"details\":\"Returns the current paused state.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/balancer/ITemporarilyPausable.sol\":\"ITemporarilyPausable\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/balancer/ITemporarilyPausable.sol\":{\"keccak256\":\"0xeb68d86c8bf05f164abf5db93937f4e7a574c82193e5b6b72c6722e986fa2e26\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://cd83c8327b77acbfd77fc4c6027a2df39c3257d17b43fe9ca619174b550393dd\",\"dweb:/ipfs/QmXdhoZKTBgnVNgU8efT3jDpXqDJt5rDtrhbag6Qb447AK\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "bool",
+              "name": "paused",
+              "type": "bool",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "PausedStateChanged",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getPausedState",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "paused",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pauseWindowEndTime",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "bufferPeriodEndTime",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "getPausedState()": {
+            "details": "Returns the current paused state."
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/balancer/ITemporarilyPausable.sol": "ITemporarilyPausable"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/balancer/ITemporarilyPausable.sol": {
+        "keccak256": "0xeb68d86c8bf05f164abf5db93937f4e7a574c82193e5b6b72c6722e986fa2e26",
+        "urls": [
+          "bzz-raw://cd83c8327b77acbfd77fc4c6027a2df39c3257d17b43fe9ca619174b550393dd",
+          "dweb:/ipfs/QmXdhoZKTBgnVNgU8efT3jDpXqDJt5rDtrhbag6Qb447AK"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/balancer/ITemporarilyPausable.sol",
+    "id": 17107,
+    "exportedSymbols": {
+      "ITemporarilyPausable": [
+        17106
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "176:510:89",
+    "nodes": [
+      {
+        "id": 17089,
+        "nodeType": "PragmaDirective",
+        "src": "176:23:89",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 17106,
+        "nodeType": "ContractDefinition",
+        "src": "263:422:89",
+        "nodes": [
+          {
+            "id": 17095,
+            "nodeType": "EventDefinition",
+            "src": "388:38:89",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 17091,
+              "nodeType": "StructuredDocumentation",
+              "src": "300:83:89",
+              "text": " @dev Emitted every time the pause state changes by `_setPaused`."
+            },
+            "eventSelector": "9e3a5e37224532dea67b89face185703738a228a6e8a23dee546960180d3be64",
+            "name": "PausedStateChanged",
+            "nameLocation": "394:18:89",
+            "parameters": {
+              "id": 17094,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17093,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "paused",
+                  "nameLocation": "418:6:89",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17095,
+                  "src": "413:11:89",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 17092,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "413:4:89",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "412:13:89"
+            }
+          },
+          {
+            "id": 17105,
+            "nodeType": "FunctionDefinition",
+            "src": "494:189:89",
+            "nodes": [],
+            "documentation": {
+              "id": 17096,
+              "nodeType": "StructuredDocumentation",
+              "src": "432:57:89",
+              "text": " @dev Returns the current paused state."
+            },
+            "functionSelector": "1c0de051",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPausedState",
+            "nameLocation": "503:14:89",
+            "parameters": {
+              "id": 17097,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "517:2:89"
+            },
+            "returnParameters": {
+              "id": 17104,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17099,
+                  "mutability": "mutable",
+                  "name": "paused",
+                  "nameLocation": "585:6:89",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17105,
+                  "src": "580:11:89",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 17098,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "580:4:89",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 17101,
+                  "mutability": "mutable",
+                  "name": "pauseWindowEndTime",
+                  "nameLocation": "613:18:89",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17105,
+                  "src": "605:26:89",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 17100,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "605:7:89",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 17103,
+                  "mutability": "mutable",
+                  "name": "bufferPeriodEndTime",
+                  "nameLocation": "653:19:89",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17105,
+                  "src": "645:27:89",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 17102,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "645:7:89",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "566:116:89"
+            },
+            "scope": 17106,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "ITemporarilyPausable",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 17090,
+          "nodeType": "StructuredDocumentation",
+          "src": "201:61:89",
+          "text": " @dev Interface for the TemporarilyPausable helper."
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          17106
+        ],
+        "name": "ITemporarilyPausable",
+        "nameLocation": "273:20:89",
+        "scope": 17107,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 89
+}

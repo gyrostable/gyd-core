@@ -1,0 +1,325 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "actionId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "where",
+          "type": "address"
+        }
+      ],
+      "name": "canPerform",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "canPerform(bytes32,address,address)": "9be2a884"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"actionId\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"where\",\"type\":\"address\"}],\"name\":\"canPerform\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"canPerform(bytes32,address,address)\":{\"details\":\"Returns true if `account` can perform the action described by `actionId` in the contract `where`.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/balancer/IAuthorizer.sol\":\"IAuthorizer\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/balancer/IAuthorizer.sol\":{\"keccak256\":\"0x9d6ac02e7069ded94f5142e8c5ad7981dad84f9e1e5dcd715da880de08cd080d\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://4045080e6b12749bd82eb1cb24736efdb59c81e044b1b9c4607ac2b6d460ce3f\",\"dweb:/ipfs/Qma1KE11aq8nuNBSMQxW6bY2b7atBoSZr6EBZ8xSP1by28\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "actionId",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "where",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "canPerform",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "canPerform(bytes32,address,address)": {
+            "details": "Returns true if `account` can perform the action described by `actionId` in the contract `where`."
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/balancer/IAuthorizer.sol": "IAuthorizer"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/balancer/IAuthorizer.sol": {
+        "keccak256": "0x9d6ac02e7069ded94f5142e8c5ad7981dad84f9e1e5dcd715da880de08cd080d",
+        "urls": [
+          "bzz-raw://4045080e6b12749bd82eb1cb24736efdb59c81e044b1b9c4607ac2b6d460ce3f",
+          "dweb:/ipfs/Qma1KE11aq8nuNBSMQxW6bY2b7atBoSZr6EBZ8xSP1by28"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/balancer/IAuthorizer.sol",
+    "id": 16880,
+    "exportedSymbols": {
+      "IAuthorizer": [
+        16879
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "176:311:81",
+    "nodes": [
+      {
+        "id": 16866,
+        "nodeType": "PragmaDirective",
+        "src": "176:23:81",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 16879,
+        "nodeType": "ContractDefinition",
+        "src": "201:285:81",
+        "nodes": [
+          {
+            "id": 16878,
+            "nodeType": "FunctionDefinition",
+            "src": "355:129:81",
+            "nodes": [],
+            "documentation": {
+              "id": 16867,
+              "nodeType": "StructuredDocumentation",
+              "src": "229:121:81",
+              "text": " @dev Returns true if `account` can perform the action described by `actionId` in the contract `where`."
+            },
+            "functionSelector": "9be2a884",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "canPerform",
+            "nameLocation": "364:10:81",
+            "parameters": {
+              "id": 16874,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16869,
+                  "mutability": "mutable",
+                  "name": "actionId",
+                  "nameLocation": "392:8:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16878,
+                  "src": "384:16:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 16868,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "384:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16871,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "418:7:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16878,
+                  "src": "410:15:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16870,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "410:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16873,
+                  "mutability": "mutable",
+                  "name": "where",
+                  "nameLocation": "443:5:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16878,
+                  "src": "435:13:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16872,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "435:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "374:80:81"
+            },
+            "returnParameters": {
+              "id": 16877,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16876,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16878,
+                  "src": "478:4:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 16875,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "478:4:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "477:6:81"
+            },
+            "scope": 16879,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IAuthorizer",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          16879
+        ],
+        "name": "IAuthorizer",
+        "nameLocation": "211:11:81",
+        "scope": 16880,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 81
+}

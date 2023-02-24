@@ -1,0 +1,358 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getInvariant",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getLastInvariant",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSqrtParameters",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getInvariant()": "c0ff1a15",
+    "getLastInvariant()": "9b02cdde",
+    "getSqrtParameters()": "707dcd1e",
+    "totalSupply()": "18160ddd"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getInvariant\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getLastInvariant\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSqrtParameters\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/balancer/I2CLP.sol\":\"I2CLP\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/balancer/I2CLP.sol\":{\"keccak256\":\"0x03ac4ce71e3a03c7fcbf47d30b5b2e2925c5a2182a1a17b16e474e46c4a163b5\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://c75b2f71dbe4b96a2ed54f549ac88e37965b7cee26599fe5aee9c9ca0a2a4e52\",\"dweb:/ipfs/QmUh9s5rJtphCnFsNAW7TCJefGaKmd9KtZwxpRt966BD7j\"]},\"interfaces/balancer/IMinimalPoolView.sol\":{\"keccak256\":\"0x1a7e9fb35537abc36556bdef83626fced3a2d6ad0aeb8113e93b2982fb5aa234\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://d87fb2ecb3bd96c17e03f6f65a15737e6b12fedf81b0ed7058aa16f79ec2bea4\",\"dweb:/ipfs/QmQAsJ7XSc8DngGLaNh76SBSuUSeEiyYxR2K56c6Joysmc\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getInvariant",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getLastInvariant",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getSqrtParameters",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "totalSupply",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/balancer/I2CLP.sol": "I2CLP"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/balancer/I2CLP.sol": {
+        "keccak256": "0x03ac4ce71e3a03c7fcbf47d30b5b2e2925c5a2182a1a17b16e474e46c4a163b5",
+        "urls": [
+          "bzz-raw://c75b2f71dbe4b96a2ed54f549ac88e37965b7cee26599fe5aee9c9ca0a2a4e52",
+          "dweb:/ipfs/QmUh9s5rJtphCnFsNAW7TCJefGaKmd9KtZwxpRt966BD7j"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/balancer/IMinimalPoolView.sol": {
+        "keccak256": "0x1a7e9fb35537abc36556bdef83626fced3a2d6ad0aeb8113e93b2982fb5aa234",
+        "urls": [
+          "bzz-raw://d87fb2ecb3bd96c17e03f6f65a15737e6b12fedf81b0ed7058aa16f79ec2bea4",
+          "dweb:/ipfs/QmQAsJ7XSc8DngGLaNh76SBSuUSeEiyYxR2K56c6Joysmc"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/balancer/I2CLP.sol",
+    "id": 16850,
+    "exportedSymbols": {
+      "I2CLP": [
+        16849
+      ],
+      "IMinimalPoolView": [
+        17023
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:174:78",
+    "nodes": [
+      {
+        "id": 16838,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:78",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 16839,
+        "nodeType": "ImportDirective",
+        "src": "199:32:78",
+        "nodes": [],
+        "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
+        "file": "./IMinimalPoolView.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 16850,
+        "sourceUnit": 17024,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 16849,
+        "nodeType": "ContractDefinition",
+        "src": "233:114:78",
+        "nodes": [
+          {
+            "id": 16848,
+            "nodeType": "FunctionDefinition",
+            "src": "275:70:78",
+            "nodes": [],
+            "functionSelector": "707dcd1e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getSqrtParameters",
+            "nameLocation": "284:17:78",
+            "parameters": {
+              "id": 16842,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "301:2:78"
+            },
+            "returnParameters": {
+              "id": 16847,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16844,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16848,
+                  "src": "327:7:78",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16843,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "327:7:78",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16846,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16848,
+                  "src": "336:7:78",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16845,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "336:7:78",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "326:18:78"
+            },
+            "scope": 16849,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 16840,
+              "name": "IMinimalPoolView",
+              "nameLocations": [
+                "252:16:78"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 17023,
+              "src": "252:16:78"
+            },
+            "id": 16841,
+            "nodeType": "InheritanceSpecifier",
+            "src": "252:16:78"
+          }
+        ],
+        "canonicalName": "I2CLP",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          16849,
+          17023
+        ],
+        "name": "I2CLP",
+        "nameLocation": "243:5:78",
+        "scope": 16850,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 78
+}

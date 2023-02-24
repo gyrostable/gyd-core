@@ -1,0 +1,440 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract IGyroVault",
+          "name": "vault",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "bool",
+              "name": "isStable",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct DataTypes.PricedToken[]",
+          "name": "underlyingPricedTokens",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "getPriceUSD",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getPriceUSD(address,(address,bool,uint256)[])": "b7bb2fe0"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract IGyroVault\",\"name\":\"vault\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isStable\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.PricedToken[]\",\"name\":\"underlyingPricedTokens\",\"type\":\"tuple[]\"}],\"name\":\"getPriceUSD\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"getPriceUSD(address,(address,bool,uint256)[])\":{\"params\":{\"vault\":\"the vault of which the price is to be quoted\"},\"returns\":{\"_0\":\"the USD price of the vault token\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getPriceUSD(address,(address,bool,uint256)[])\":{\"notice\":\"Quotes the USD price of `vault` tokens The quoted price is always scaled with 18 decimals regardless of the source used for the oracle.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/oracles/IVaultPriceOracle.sol\":\"IVaultPriceOracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/IGyroVault.sol\":{\"keccak256\":\"0x45c20b3dac7f90b7d0eba2dc9aff1c47d5f140ec78535d6448c9e5dea6f58644\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://e5827a85fc4bb5ef85d332d05d331a5f878c6a96acc2d24eb66e23c82d876fe4\",\"dweb:/ipfs/QmXd8sTdoYFhQTaM5yrFhpHGsTpBa3w4NmLsoX2JSLBHzL\"]},\"interfaces/oracles/IVaultPriceOracle.sol\":{\"keccak256\":\"0x30e382fee81585687181890ea2c2e420dbaaf098ecbe407f84e528ef837ef5f9\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://b8112141542ddab4cfa8904d9cbeed1a4f2cc249f038ccdcbabb094e75e66ee0\",\"dweb:/ipfs/QmWh2MXTL3zpB7mJ3dPeTzXmwX6ePnqnudrmJkVvwwPjjc\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x9750c6b834f7b43000631af5cc30001c5f547b3ceb3635488f140f60e897ea6b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5a7d5b1ef5d8d5889ad2ed89d8619c09383b80b72ab226e0fe7bde1636481e34\",\"dweb:/ipfs/QmebXWgtEfumQGBdVeM6c71McLixYXQP5Bk6kKXuoY4Bmr\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol\":{\"keccak256\":\"0x8de418a5503946cabe331f35fe242d3201a73f67f77aaeb7110acb1f30423aca\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5a376d3dda2cb70536c0a45c208b29b34ac560c4cb4f513a42079f96ba47d2dd\",\"dweb:/ipfs/QmZQg6gn1sUpM8wHzwNvSnihumUCAhxD119MpXeKp8B9s8\"]},\"libraries/DataTypes.sol\":{\"keccak256\":\"0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494\",\"dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC\"]},\"libraries/Vaults.sol\":{\"keccak256\":\"0xca2e1dd312d97f50ac55c8846e3c367e0c1d4b8685153eb328a577767adb569f\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://3ecf23d20dd2863c3bae6e8f57584e90fbc8af676856a6bad8791d4d5c477d3b\",\"dweb:/ipfs/QmRJJu3smYYiCMQrXTXPjCWi3xRvbebi2exDbm9eK739o3\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "contract IGyroVault",
+              "name": "vault",
+              "type": "address"
+            },
+            {
+              "internalType": "struct DataTypes.PricedToken[]",
+              "name": "underlyingPricedTokens",
+              "type": "tuple[]",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "tokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isStable",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getPriceUSD",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "getPriceUSD(address,(address,bool,uint256)[])": {
+            "params": {
+              "vault": "the vault of which the price is to be quoted"
+            },
+            "returns": {
+              "_0": "the USD price of the vault token"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "getPriceUSD(address,(address,bool,uint256)[])": {
+            "notice": "Quotes the USD price of `vault` tokens The quoted price is always scaled with 18 decimals regardless of the source used for the oracle."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/oracles/IVaultPriceOracle.sol": "IVaultPriceOracle"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/IGyroVault.sol": {
+        "keccak256": "0x45c20b3dac7f90b7d0eba2dc9aff1c47d5f140ec78535d6448c9e5dea6f58644",
+        "urls": [
+          "bzz-raw://e5827a85fc4bb5ef85d332d05d331a5f878c6a96acc2d24eb66e23c82d876fe4",
+          "dweb:/ipfs/QmXd8sTdoYFhQTaM5yrFhpHGsTpBa3w4NmLsoX2JSLBHzL"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/oracles/IVaultPriceOracle.sol": {
+        "keccak256": "0x30e382fee81585687181890ea2c2e420dbaaf098ecbe407f84e528ef837ef5f9",
+        "urls": [
+          "bzz-raw://b8112141542ddab4cfa8904d9cbeed1a4f2cc249f038ccdcbabb094e75e66ee0",
+          "dweb:/ipfs/QmWh2MXTL3zpB7mJ3dPeTzXmwX6ePnqnudrmJkVvwwPjjc"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+        "keccak256": "0x9750c6b834f7b43000631af5cc30001c5f547b3ceb3635488f140f60e897ea6b",
+        "urls": [
+          "bzz-raw://5a7d5b1ef5d8d5889ad2ed89d8619c09383b80b72ab226e0fe7bde1636481e34",
+          "dweb:/ipfs/QmebXWgtEfumQGBdVeM6c71McLixYXQP5Bk6kKXuoY4Bmr"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+        "keccak256": "0x8de418a5503946cabe331f35fe242d3201a73f67f77aaeb7110acb1f30423aca",
+        "urls": [
+          "bzz-raw://5a376d3dda2cb70536c0a45c208b29b34ac560c4cb4f513a42079f96ba47d2dd",
+          "dweb:/ipfs/QmZQg6gn1sUpM8wHzwNvSnihumUCAhxD119MpXeKp8B9s8"
+        ],
+        "license": "MIT"
+      },
+      "libraries/DataTypes.sol": {
+        "keccak256": "0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29",
+        "urls": [
+          "bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494",
+          "dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/Vaults.sol": {
+        "keccak256": "0xca2e1dd312d97f50ac55c8846e3c367e0c1d4b8685153eb328a577767adb569f",
+        "urls": [
+          "bzz-raw://3ecf23d20dd2863c3bae6e8f57584e90fbc8af676856a6bad8791d4d5c477d3b",
+          "dweb:/ipfs/QmRJJu3smYYiCMQrXTXPjCWi3xRvbebi2exDbm9eK739o3"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/oracles/IVaultPriceOracle.sol",
+    "id": 17728,
+    "exportedSymbols": {
+      "DataTypes": [
+        54519
+      ],
+      "IERC20": [
+        47531
+      ],
+      "IERC20Metadata": [
+        47556
+      ],
+      "IGyroVault": [
+        16414
+      ],
+      "IVaultPriceOracle": [
+        17727
+      ],
+      "Vaults": [
+        58229
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:565:97",
+    "nodes": [
+      {
+        "id": 17711,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:97",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 17712,
+        "nodeType": "ImportDirective",
+        "src": "199:39:97",
+        "nodes": [],
+        "absolutePath": "libraries/DataTypes.sol",
+        "file": "../../libraries/DataTypes.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 17728,
+        "sourceUnit": 54520,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 17713,
+        "nodeType": "ImportDirective",
+        "src": "240:27:97",
+        "nodes": [],
+        "absolutePath": "interfaces/IGyroVault.sol",
+        "file": "../IGyroVault.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 17728,
+        "sourceUnit": 16415,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 17727,
+        "nodeType": "ContractDefinition",
+        "src": "269:469:97",
+        "nodes": [
+          {
+            "id": 17726,
+            "nodeType": "FunctionDefinition",
+            "src": "586:150:97",
+            "nodes": [],
+            "documentation": {
+              "id": 17714,
+              "nodeType": "StructuredDocumentation",
+              "src": "303:278:97",
+              "text": "@notice Quotes the USD price of `vault` tokens\n The quoted price is always scaled with 18 decimals regardless of the\n source used for the oracle.\n @param vault the vault of which the price is to be quoted\n @return the USD price of the vault token"
+            },
+            "functionSelector": "b7bb2fe0",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPriceUSD",
+            "nameLocation": "595:11:97",
+            "parameters": {
+              "id": 17722,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17717,
+                  "mutability": "mutable",
+                  "name": "vault",
+                  "nameLocation": "618:5:97",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17726,
+                  "src": "607:16:97",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IGyroVault_$16414",
+                    "typeString": "contract IGyroVault"
+                  },
+                  "typeName": {
+                    "id": 17716,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 17715,
+                      "name": "IGyroVault",
+                      "nameLocations": [
+                        "607:10:97"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 16414,
+                      "src": "607:10:97"
+                    },
+                    "referencedDeclaration": 16414,
+                    "src": "607:10:97",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IGyroVault_$16414",
+                      "typeString": "contract IGyroVault"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 17721,
+                  "mutability": "mutable",
+                  "name": "underlyingPricedTokens",
+                  "nameLocation": "656:22:97",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17726,
+                  "src": "625:53:97",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_memory_ptr_$dyn_memory_ptr",
+                    "typeString": "struct DataTypes.PricedToken[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 17719,
+                      "nodeType": "UserDefinedTypeName",
+                      "pathNode": {
+                        "id": 17718,
+                        "name": "DataTypes.PricedToken",
+                        "nameLocations": [
+                          "625:9:97",
+                          "635:11:97"
+                        ],
+                        "nodeType": "IdentifierPath",
+                        "referencedDeclaration": 54388,
+                        "src": "625:21:97"
+                      },
+                      "referencedDeclaration": 54388,
+                      "src": "625:21:97",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_PricedToken_$54388_storage_ptr",
+                        "typeString": "struct DataTypes.PricedToken"
+                      }
+                    },
+                    "id": 17720,
+                    "nodeType": "ArrayTypeName",
+                    "src": "625:23:97",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_storage_$dyn_storage_ptr",
+                      "typeString": "struct DataTypes.PricedToken[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "606:73:97"
+            },
+            "returnParameters": {
+              "id": 17725,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17724,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17726,
+                  "src": "727:7:97",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 17723,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "727:7:97",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "726:9:97"
+            },
+            "scope": 17727,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IVaultPriceOracle",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          17727
+        ],
+        "name": "IVaultPriceOracle",
+        "nameLocation": "279:17:97",
+        "scope": 17728,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 97
+}

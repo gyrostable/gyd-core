@@ -1,0 +1,469 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "baseToken",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "quoteToken",
+          "type": "address"
+        }
+      ],
+      "name": "getRelativePrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "baseToken",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "quoteToken",
+          "type": "address"
+        }
+      ],
+      "name": "isPairSupported",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getRelativePrice(address,address)": "9b56e6a7",
+    "isPairSupported(address,address)": "9446994a"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"quoteToken\",\"type\":\"address\"}],\"name\":\"getRelativePrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"quoteToken\",\"type\":\"address\"}],\"name\":\"isPairSupported\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"getRelativePrice(address,address)\":{\"params\":{\"baseToken\":\"the token of which the price is to be quoted\",\"quoteToken\":\"the token used to denominate the price\"},\"returns\":{\"_0\":\"the number of units of quote token per base token\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getRelativePrice(address,address)\":{\"notice\":\"Quotes the price of `baseToken` relative to `quoteToken` The quoted price is always scaled with 18 decimals regardless of the source used for the oracle.\"},\"isPairSupported(address,address)\":{\"notice\":\"Returns whether the oracle currently supports prices for `baseToken` relative to `quoteToken`\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/oracles/IRelativePriceOracle.sol\":\"IRelativePriceOracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/oracles/IRelativePriceOracle.sol\":{\"keccak256\":\"0x47e9beab64302a573c04b3a113ccd61dfd2ee57a2e26eb20f348ab66eb20fd40\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://9604cf2acace4fa7f81f90f00e878ff941d6dccb403069cdda17a813bb513d5e\",\"dweb:/ipfs/QmZ7nk8ftK2VCqBanBEXaLF4jLTXYx1odhZVaDFqb19AEe\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "baseToken",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "quoteToken",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getRelativePrice",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "baseToken",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "quoteToken",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isPairSupported",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "getRelativePrice(address,address)": {
+            "params": {
+              "baseToken": "the token of which the price is to be quoted",
+              "quoteToken": "the token used to denominate the price"
+            },
+            "returns": {
+              "_0": "the number of units of quote token per base token"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "getRelativePrice(address,address)": {
+            "notice": "Quotes the price of `baseToken` relative to `quoteToken` The quoted price is always scaled with 18 decimals regardless of the source used for the oracle."
+          },
+          "isPairSupported(address,address)": {
+            "notice": "Returns whether the oracle currently supports prices for `baseToken` relative to `quoteToken`"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/oracles/IRelativePriceOracle.sol": "IRelativePriceOracle"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/oracles/IRelativePriceOracle.sol": {
+        "keccak256": "0x47e9beab64302a573c04b3a113ccd61dfd2ee57a2e26eb20f348ab66eb20fd40",
+        "urls": [
+          "bzz-raw://9604cf2acace4fa7f81f90f00e878ff941d6dccb403069cdda17a813bb513d5e",
+          "dweb:/ipfs/QmZ7nk8ftK2VCqBanBEXaLF4jLTXYx1odhZVaDFqb19AEe"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/oracles/IRelativePriceOracle.sol",
+    "id": 17686,
+    "exportedSymbols": {
+      "IRelativePriceOracle": [
+        17685
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:790:94",
+    "nodes": [
+      {
+        "id": 17664,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:94",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 17685,
+        "nodeType": "ContractDefinition",
+        "src": "199:764:94",
+        "nodes": [
+          {
+            "id": 17674,
+            "nodeType": "FunctionDefinition",
+            "src": "623:121:94",
+            "nodes": [],
+            "documentation": {
+              "id": 17665,
+              "nodeType": "StructuredDocumentation",
+              "src": "236:382:94",
+              "text": "@notice Quotes the price of `baseToken` relative to `quoteToken`\n The quoted price is always scaled with 18 decimals regardless of the\n source used for the oracle.\n @param baseToken the token of which the price is to be quoted\n @param quoteToken the token used to denominate the price\n @return the number of units of quote token per base token"
+            },
+            "functionSelector": "9b56e6a7",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getRelativePrice",
+            "nameLocation": "632:16:94",
+            "parameters": {
+              "id": 17670,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17667,
+                  "mutability": "mutable",
+                  "name": "baseToken",
+                  "nameLocation": "657:9:94",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17674,
+                  "src": "649:17:94",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 17666,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "649:7:94",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 17669,
+                  "mutability": "mutable",
+                  "name": "quoteToken",
+                  "nameLocation": "676:10:94",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17674,
+                  "src": "668:18:94",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 17668,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "668:7:94",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "648:39:94"
+            },
+            "returnParameters": {
+              "id": 17673,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17672,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17674,
+                  "src": "735:7:94",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 17671,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "735:7:94",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "734:9:94"
+            },
+            "scope": 17685,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 17684,
+            "nodeType": "FunctionDefinition",
+            "src": "868:93:94",
+            "nodes": [],
+            "documentation": {
+              "id": 17675,
+              "nodeType": "StructuredDocumentation",
+              "src": "750:113:94",
+              "text": "@notice Returns whether the oracle currently supports prices\n for `baseToken` relative to `quoteToken`"
+            },
+            "functionSelector": "9446994a",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isPairSupported",
+            "nameLocation": "877:15:94",
+            "parameters": {
+              "id": 17680,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17677,
+                  "mutability": "mutable",
+                  "name": "baseToken",
+                  "nameLocation": "901:9:94",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17684,
+                  "src": "893:17:94",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 17676,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "893:7:94",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 17679,
+                  "mutability": "mutable",
+                  "name": "quoteToken",
+                  "nameLocation": "920:10:94",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17684,
+                  "src": "912:18:94",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 17678,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "912:7:94",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "892:39:94"
+            },
+            "returnParameters": {
+              "id": 17683,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17682,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17684,
+                  "src": "955:4:94",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 17681,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "955:4:94",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "954:6:94"
+            },
+            "scope": 17685,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IRelativePriceOracle",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          17685
+        ],
+        "name": "IRelativePriceOracle",
+        "nameLocation": "209:20:94",
+        "scope": 17686,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 94
+}

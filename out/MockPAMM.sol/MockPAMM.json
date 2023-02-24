@@ -1,0 +1,1287 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "alphaBar",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "xuBar",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "thetaBar",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "outflowMemory",
+          "type": "uint64"
+        }
+      ],
+      "name": "SystemParamsUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "computeMintAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "computeRedeemAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "redeem",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "alphaBar",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "xuBar",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "thetaBar",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "outflowMemory",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct IPAMM.Params",
+          "name": "params",
+          "type": "tuple"
+        }
+      ],
+      "name": "setSystemParams",
+      "outputs": [],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x608060405234801561001057600080fd5b50610193806100206000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80631b2ef1ca1461005c578063616a1ed91461005c57806371db63ec1461005c5780637cbc23731461005c5780639e59085414610080575b600080fd5b61006e61006a366004610093565b5090565b60405190815260200160405180910390f35b61009161008e3660046100d2565b50565b005b600080604083850312156100a657600080fd5b50508035926020909101359150565b803567ffffffffffffffff811681146100cd57600080fd5b919050565b6000608082840312156100e457600080fd5b6040516080810181811067ffffffffffffffff8211171561011557634e487b7160e01b600052604160045260246000fd5b604052610121836100b5565b815261012f602084016100b5565b6020820152610140604084016100b5565b6040820152610151606084016100b5565b6060820152939250505056fea264697066735822122038ebc2220b0bf03be1f6af2692fc103403a69b91a8a26cdf45558fa7d8ae822464736f6c63430008110033",
+    "sourceMap": "238:780:36:-:0;;;;;;;;;;;;;;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x608060405234801561001057600080fd5b50600436106100575760003560e01c80631b2ef1ca1461005c578063616a1ed91461005c57806371db63ec1461005c5780637cbc23731461005c5780639e59085414610080575b600080fd5b61006e61006a366004610093565b5090565b60405190815260200160405180910390f35b61009161008e3660046100d2565b50565b005b600080604083850312156100a657600080fd5b50508035926020909101359150565b803567ffffffffffffffff811681146100cd57600080fd5b919050565b6000608082840312156100e457600080fd5b6040516080810181811067ffffffffffffffff8211171561011557634e487b7160e01b600052604160045260246000fd5b604052610121836100b5565b815261012f602084016100b5565b6020820152610140604084016100b5565b6040820152610151606084016100b5565b6060820152939250505056fea264697066735822122038ebc2220b0bf03be1f6af2692fc103403a69b91a8a26cdf45558fa7d8ae822464736f6c63430008110033",
+    "sourceMap": "238:780:36:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;452:110;;;;;;:::i;:::-;-1:-1:-1;549:6:36;452:110;;;;413:25:166;;;401:2;386:18;452:110:36;;;;;;;932:84;;;;;;:::i;:::-;;;;;14:248:166;82:6;90;143:2;131:9;122:7;118:23;114:32;111:52;;;159:1;156;149:12;111:52;-1:-1:-1;;182:23:166;;;252:2;237:18;;;224:32;;-1:-1:-1;14:248:166:o;449:171::-;516:20;;576:18;565:30;;555:41;;545:69;;610:1;607;600:12;545:69;449:171;;;:::o;625:755::-;709:6;762:3;750:9;741:7;737:23;733:33;730:53;;;779:1;776;769:12;730:53;812:2;806:9;854:3;846:6;842:16;924:6;912:10;909:22;888:18;876:10;873:34;870:62;867:185;;;974:10;969:3;965:20;962:1;955:31;1009:4;1006:1;999:15;1037:4;1034:1;1027:15;867:185;1068:2;1061:22;1107:28;1125:9;1107:28;:::i;:::-;1099:6;1092:44;1169:37;1202:2;1191:9;1187:18;1169:37;:::i;:::-;1164:2;1156:6;1152:15;1145:62;1240:37;1273:2;1262:9;1258:18;1240:37;:::i;:::-;1235:2;1227:6;1223:15;1216:62;1311:37;1344:2;1333:9;1329:18;1311:37;:::i;:::-;1306:2;1294:15;;1287:62;1298:6;625:755;-1:-1:-1;;;625:755:166:o",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "computeMintAmount(uint256,uint256)": "616a1ed9",
+    "computeRedeemAmount(uint256,uint256)": "71db63ec",
+    "mint(uint256,uint256)": "1b2ef1ca",
+    "redeem(uint256,uint256)": "7cbc2373",
+    "setSystemParams((uint64,uint64,uint64,uint64))": "9e590854"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"alphaBar\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"xuBar\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"thetaBar\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"outflowMemory\",\"type\":\"uint64\"}],\"name\":\"SystemParamsUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"computeMintAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"computeRedeemAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"mint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"redeem\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"alphaBar\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"xuBar\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"thetaBar\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"outflowMemory\",\"type\":\"uint64\"}],\"internalType\":\"struct IPAMM.Params\",\"name\":\"params\",\"type\":\"tuple\"}],\"name\":\"setSystemParams\",\"outputs\":[],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"computeMintAmount(uint256,uint256)\":{\"params\":{\"reserveUSDValue\":\"the current USD value of the reserve\",\"usdAmount\":\"the USD value to add to the reserve\"},\"returns\":{\"_0\":\"the amount of GYD to mint\"}},\"computeRedeemAmount(uint256,uint256)\":{\"params\":{\"gydAmount\":\"the amount GYD to redeem\"},\"returns\":{\"_0\":\"the USD value to redeem\"}},\"mint(uint256,uint256)\":{\"params\":{\"usdAmount\":\"the USD value to add to the reserve\"},\"returns\":{\"_0\":\"the amount of GYD to mint\"}},\"redeem(uint256,uint256)\":{\"params\":{\"gydAmount\":\"the amount GYD to redeem\"},\"returns\":{\"_0\":\"the USD value to redeem\"}}},\"version\":1},\"userdoc\":{\"events\":{\"SystemParamsUpdated(uint64,uint64,uint64,uint64)\":{\"notice\":\"this event is emitted when the system parameters are updated\"}},\"kind\":\"user\",\"methods\":{\"computeMintAmount(uint256,uint256)\":{\"notice\":\"Quotes the amount of GYD to mint for the given USD amount\"},\"computeRedeemAmount(uint256,uint256)\":{\"notice\":\"Quotes the output USD value given an amount of GYD\"},\"mint(uint256,uint256)\":{\"notice\":\"Quotes and records the amount of GYD to mint for the given USD amount. NB that reserveUSDValue is added here to future proof the implementation\"},\"redeem(uint256,uint256)\":{\"notice\":\"Quotes and records the output USD value given an amount of GYD\"},\"setSystemParams((uint64,uint64,uint64,uint64))\":{\"notice\":\"Allows for the system parameters to be updated\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/testing/MockPAMM.sol\":\"MockPAMM\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"contracts/auth/Governable.sol\":{\"keccak256\":\"0x8e35f59c8df176f2f2ec0b27bc567106f419942f28b317c4aeb459572c7cddc9\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://2bbe14ec52921d7a1a67116dbfa1729647f94aded19b4949765f4260c46b99fd\",\"dweb:/ipfs/QmXhqMmvwZRUgAFNCxifNKPE2FkDEDVpCBMQNs2LBEQsFi\"]},\"contracts/auth/GovernableBase.sol\":{\"keccak256\":\"0x076c1535458771c52ae11bdd7747704ff990bb8e778c678c5963d4453c43eff0\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://90296c3c42624636dc61c63dccb91807566d905607e13cf3f85dadde65e4ef9f\",\"dweb:/ipfs/QmNdL6uFNGLgwvgwuGVqp2wmmdsKViQhuFeMGNgHsdCeQ6\"]},\"contracts/testing/MockPAMM.sol\":{\"keccak256\":\"0x273c2dfdebe5371dce463d96ab7410053772c34942832f2a8fd6e7d6a22d5c20\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://779908ca508bc074814dc3193cc2be66eeae6ebe34404391a3e6981f93dc5639\",\"dweb:/ipfs/QmNp41wAqN4PEz5UpViyFWPVHifT13upDQLos1HiFsLTvB\"]},\"interfaces/IGovernable.sol\":{\"keccak256\":\"0x5e0804b45ef3fb3cfd9bf24999ea98307d157dd1e3fb4965ab902f16a8a7a834\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://cc9a2bcf74ff86ae5c89873dd7eea6bb4d9c71bf67f63414cf6519a17bb60066\",\"dweb:/ipfs/QmT45sh3fadFtq6gD1STeTxtFgE1AQ6SNVtCbChoWdRkid\"]},\"interfaces/IPAMM.sol\":{\"keccak256\":\"0x26e4ae598f71529d34a91298ce208c6f34686a4f67360274d20309680f237db2\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://ceda5a304d4c9564cda5c7ac1f0fa5a2ee3933d2843dbdb7ee87b16e75ebb616\",\"dweb:/ipfs/QmV974iH2s27qXvo6Mrx3E5xwAXiHbELCbUtPQzCwj8v3o\"]},\"libraries/DataTypes.sol\":{\"keccak256\":\"0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494\",\"dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC\"]},\"libraries/Errors.sol\":{\"keccak256\":\"0x771ff83586512e92e677f886216cf85fae5441fe40817bc22eda7d46c70b98bd\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://61879ffdaa1d9ef27af0d9da62915059eb44db5d0ba98d3f83a864c517b45a55\",\"dweb:/ipfs/QmX9nfSMgt5LsisqaxWjT4LFsaPirC1h9RfqcLGybFmAzC\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint64",
+              "name": "alphaBar",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "internalType": "uint64",
+              "name": "xuBar",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "internalType": "uint64",
+              "name": "thetaBar",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "internalType": "uint64",
+              "name": "outflowMemory",
+              "type": "uint64",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "SystemParamsUpdated",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "computeMintAmount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "computeRedeemAmount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "mint",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "redeem",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "struct IPAMM.Params",
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "alphaBar",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "xuBar",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "thetaBar",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "outflowMemory",
+                  "type": "uint64"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "setSystemParams"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "computeMintAmount(uint256,uint256)": {
+            "params": {
+              "reserveUSDValue": "the current USD value of the reserve",
+              "usdAmount": "the USD value to add to the reserve"
+            },
+            "returns": {
+              "_0": "the amount of GYD to mint"
+            }
+          },
+          "computeRedeemAmount(uint256,uint256)": {
+            "params": {
+              "gydAmount": "the amount GYD to redeem"
+            },
+            "returns": {
+              "_0": "the USD value to redeem"
+            }
+          },
+          "mint(uint256,uint256)": {
+            "params": {
+              "usdAmount": "the USD value to add to the reserve"
+            },
+            "returns": {
+              "_0": "the amount of GYD to mint"
+            }
+          },
+          "redeem(uint256,uint256)": {
+            "params": {
+              "gydAmount": "the amount GYD to redeem"
+            },
+            "returns": {
+              "_0": "the USD value to redeem"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "computeMintAmount(uint256,uint256)": {
+            "notice": "Quotes the amount of GYD to mint for the given USD amount"
+          },
+          "computeRedeemAmount(uint256,uint256)": {
+            "notice": "Quotes the output USD value given an amount of GYD"
+          },
+          "mint(uint256,uint256)": {
+            "notice": "Quotes and records the amount of GYD to mint for the given USD amount. NB that reserveUSDValue is added here to future proof the implementation"
+          },
+          "redeem(uint256,uint256)": {
+            "notice": "Quotes and records the output USD value given an amount of GYD"
+          },
+          "setSystemParams((uint64,uint64,uint64,uint64))": {
+            "notice": "Allows for the system parameters to be updated"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/testing/MockPAMM.sol": "MockPAMM"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/auth/Governable.sol": {
+        "keccak256": "0x8e35f59c8df176f2f2ec0b27bc567106f419942f28b317c4aeb459572c7cddc9",
+        "urls": [
+          "bzz-raw://2bbe14ec52921d7a1a67116dbfa1729647f94aded19b4949765f4260c46b99fd",
+          "dweb:/ipfs/QmXhqMmvwZRUgAFNCxifNKPE2FkDEDVpCBMQNs2LBEQsFi"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "contracts/auth/GovernableBase.sol": {
+        "keccak256": "0x076c1535458771c52ae11bdd7747704ff990bb8e778c678c5963d4453c43eff0",
+        "urls": [
+          "bzz-raw://90296c3c42624636dc61c63dccb91807566d905607e13cf3f85dadde65e4ef9f",
+          "dweb:/ipfs/QmNdL6uFNGLgwvgwuGVqp2wmmdsKViQhuFeMGNgHsdCeQ6"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "contracts/testing/MockPAMM.sol": {
+        "keccak256": "0x273c2dfdebe5371dce463d96ab7410053772c34942832f2a8fd6e7d6a22d5c20",
+        "urls": [
+          "bzz-raw://779908ca508bc074814dc3193cc2be66eeae6ebe34404391a3e6981f93dc5639",
+          "dweb:/ipfs/QmNp41wAqN4PEz5UpViyFWPVHifT13upDQLos1HiFsLTvB"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/IGovernable.sol": {
+        "keccak256": "0x5e0804b45ef3fb3cfd9bf24999ea98307d157dd1e3fb4965ab902f16a8a7a834",
+        "urls": [
+          "bzz-raw://cc9a2bcf74ff86ae5c89873dd7eea6bb4d9c71bf67f63414cf6519a17bb60066",
+          "dweb:/ipfs/QmT45sh3fadFtq6gD1STeTxtFgE1AQ6SNVtCbChoWdRkid"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/IPAMM.sol": {
+        "keccak256": "0x26e4ae598f71529d34a91298ce208c6f34686a4f67360274d20309680f237db2",
+        "urls": [
+          "bzz-raw://ceda5a304d4c9564cda5c7ac1f0fa5a2ee3933d2843dbdb7ee87b16e75ebb616",
+          "dweb:/ipfs/QmV974iH2s27qXvo6Mrx3E5xwAXiHbELCbUtPQzCwj8v3o"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/DataTypes.sol": {
+        "keccak256": "0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29",
+        "urls": [
+          "bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494",
+          "dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/Errors.sol": {
+        "keccak256": "0x771ff83586512e92e677f886216cf85fae5441fe40817bc22eda7d46c70b98bd",
+        "urls": [
+          "bzz-raw://61879ffdaa1d9ef27af0d9da62915059eb44db5d0ba98d3f83a864c517b45a55",
+          "dweb:/ipfs/QmX9nfSMgt5LsisqaxWjT4LFsaPirC1h9RfqcLGybFmAzC"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/testing/MockPAMM.sol",
+    "id": 12876,
+    "exportedSymbols": {
+      "DataTypes": [
+        54519
+      ],
+      "Errors": [
+        56056
+      ],
+      "Governable": [
+        5458
+      ],
+      "GovernableBase": [
+        5552
+      ],
+      "IGovernable": [
+        16176
+      ],
+      "IPAMM": [
+        16632
+      ],
+      "MockPAMM": [
+        12875
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "175:844:36",
+    "nodes": [
+      {
+        "id": 12806,
+        "nodeType": "PragmaDirective",
+        "src": "175:23:36",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 12807,
+        "nodeType": "ImportDirective",
+        "src": "200:36:36",
+        "nodes": [],
+        "absolutePath": "interfaces/IPAMM.sol",
+        "file": "../../interfaces/IPAMM.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 12876,
+        "sourceUnit": 16633,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 12875,
+        "nodeType": "ContractDefinition",
+        "src": "238:780:36",
+        "nodes": [
+          {
+            "id": 12823,
+            "nodeType": "FunctionDefinition",
+            "src": "297:123:36",
+            "nodes": [],
+            "body": {
+              "id": 12822,
+              "nodeType": "Block",
+              "src": "390:30:36",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 12820,
+                    "name": "amount",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 12812,
+                    "src": "407:6:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 12819,
+                  "id": 12821,
+                  "nodeType": "Return",
+                  "src": "400:13:36"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16594
+            ],
+            "documentation": {
+              "id": 12810,
+              "nodeType": "StructuredDocumentation",
+              "src": "271:21:36",
+              "text": "@inheritdoc IPAMM"
+            },
+            "functionSelector": "616a1ed9",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "computeMintAmount",
+            "nameLocation": "306:17:36",
+            "overrides": {
+              "id": 12816,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "363:8:36"
+            },
+            "parameters": {
+              "id": 12815,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12812,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "332:6:36",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12823,
+                  "src": "324:14:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12811,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "324:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12814,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12823,
+                  "src": "340:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12813,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "340:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "323:25:36"
+            },
+            "returnParameters": {
+              "id": 12819,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12818,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12823,
+                  "src": "381:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12817,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "381:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "380:9:36"
+            },
+            "scope": 12875,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 12837,
+            "nodeType": "FunctionDefinition",
+            "src": "452:110:36",
+            "nodes": [],
+            "body": {
+              "id": 12836,
+              "nodeType": "Block",
+              "src": "532:30:36",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 12834,
+                    "name": "amount",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 12826,
+                    "src": "549:6:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 12833,
+                  "id": 12835,
+                  "nodeType": "Return",
+                  "src": "542:13:36"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16604
+            ],
+            "documentation": {
+              "id": 12824,
+              "nodeType": "StructuredDocumentation",
+              "src": "426:21:36",
+              "text": "@inheritdoc IPAMM"
+            },
+            "functionSelector": "1b2ef1ca",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "mint",
+            "nameLocation": "461:4:36",
+            "overrides": {
+              "id": 12830,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "505:8:36"
+            },
+            "parameters": {
+              "id": 12829,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12826,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "474:6:36",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12837,
+                  "src": "466:14:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12825,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "466:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12828,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12837,
+                  "src": "482:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12827,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "482:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "465:25:36"
+            },
+            "returnParameters": {
+              "id": 12833,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12832,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12837,
+                  "src": "523:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12831,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "523:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "522:9:36"
+            },
+            "scope": 12875,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 12851,
+            "nodeType": "FunctionDefinition",
+            "src": "594:125:36",
+            "nodes": [],
+            "body": {
+              "id": 12850,
+              "nodeType": "Block",
+              "src": "689:30:36",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 12848,
+                    "name": "amount",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 12840,
+                    "src": "706:6:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 12847,
+                  "id": 12849,
+                  "nodeType": "Return",
+                  "src": "699:13:36"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16614
+            ],
+            "documentation": {
+              "id": 12838,
+              "nodeType": "StructuredDocumentation",
+              "src": "568:21:36",
+              "text": "@inheritdoc IPAMM"
+            },
+            "functionSelector": "71db63ec",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "computeRedeemAmount",
+            "nameLocation": "603:19:36",
+            "overrides": {
+              "id": 12844,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "662:8:36"
+            },
+            "parameters": {
+              "id": 12843,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12840,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "631:6:36",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12851,
+                  "src": "623:14:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12839,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "623:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12842,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12851,
+                  "src": "639:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12841,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "639:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "622:25:36"
+            },
+            "returnParameters": {
+              "id": 12847,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12846,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12851,
+                  "src": "680:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12845,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "680:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "679:9:36"
+            },
+            "scope": 12875,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 12865,
+            "nodeType": "FunctionDefinition",
+            "src": "751:112:36",
+            "nodes": [],
+            "body": {
+              "id": 12864,
+              "nodeType": "Block",
+              "src": "833:30:36",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 12862,
+                    "name": "amount",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 12854,
+                    "src": "850:6:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 12861,
+                  "id": 12863,
+                  "nodeType": "Return",
+                  "src": "843:13:36"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16624
+            ],
+            "documentation": {
+              "id": 12852,
+              "nodeType": "StructuredDocumentation",
+              "src": "725:21:36",
+              "text": "@inheritdoc IPAMM"
+            },
+            "functionSelector": "7cbc2373",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "redeem",
+            "nameLocation": "760:6:36",
+            "overrides": {
+              "id": 12858,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "806:8:36"
+            },
+            "parameters": {
+              "id": 12857,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12854,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "775:6:36",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12865,
+                  "src": "767:14:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12853,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "767:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12856,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12865,
+                  "src": "783:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12855,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "783:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "766:25:36"
+            },
+            "returnParameters": {
+              "id": 12861,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12860,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12865,
+                  "src": "824:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12859,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "824:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "823:9:36"
+            },
+            "scope": 12875,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 12874,
+            "nodeType": "FunctionDefinition",
+            "src": "932:84:36",
+            "nodes": [],
+            "body": {
+              "id": 12873,
+              "nodeType": "Block",
+              "src": "993:23:36",
+              "nodes": [],
+              "statements": [
+                {
+                  "functionReturnParameters": 12871,
+                  "id": 12872,
+                  "nodeType": "Return",
+                  "src": "1003:7:36"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16631
+            ],
+            "documentation": {
+              "id": 12866,
+              "nodeType": "StructuredDocumentation",
+              "src": "869:58:36",
+              "text": "@notice Allows for the system parameters to be updated"
+            },
+            "functionSelector": "9e590854",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setSystemParams",
+            "nameLocation": "941:15:36",
+            "parameters": {
+              "id": 12870,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12869,
+                  "mutability": "mutable",
+                  "name": "params",
+                  "nameLocation": "971:6:36",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12874,
+                  "src": "957:20:36",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Params_$16584_memory_ptr",
+                    "typeString": "struct IPAMM.Params"
+                  },
+                  "typeName": {
+                    "id": 12868,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 12867,
+                      "name": "Params",
+                      "nameLocations": [
+                        "957:6:36"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 16584,
+                      "src": "957:6:36"
+                    },
+                    "referencedDeclaration": 16584,
+                    "src": "957:6:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Params_$16584_storage_ptr",
+                      "typeString": "struct IPAMM.Params"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "956:22:36"
+            },
+            "returnParameters": {
+              "id": 12871,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "993:0:36"
+            },
+            "scope": 12875,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 12808,
+              "name": "IPAMM",
+              "nameLocations": [
+                "259:5:36"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 16632,
+              "src": "259:5:36"
+            },
+            "id": 12809,
+            "nodeType": "InheritanceSpecifier",
+            "src": "259:5:36"
+          }
+        ],
+        "canonicalName": "MockPAMM",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "linearizedBaseContracts": [
+          12875,
+          16632
+        ],
+        "name": "MockPAMM",
+        "nameLocation": "247:8:36",
+        "scope": 12876,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 36
+}

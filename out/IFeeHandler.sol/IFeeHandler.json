@@ -1,0 +1,872 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "address",
+                      "name": "vault",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint8",
+                      "name": "decimals",
+                      "type": "uint8"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "underlying",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "price",
+                      "type": "uint256"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint256",
+                          "name": "initialPrice",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "initialWeight",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "shortFlowMemory",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "shortFlowThreshold",
+                          "type": "uint256"
+                        }
+                      ],
+                      "internalType": "struct DataTypes.PersistedVaultMetadata",
+                      "name": "persistedMetadata",
+                      "type": "tuple"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "reserveBalance",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "currentWeight",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "idealWeight",
+                      "type": "uint256"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "address",
+                          "name": "tokenAddress",
+                          "type": "address"
+                        },
+                        {
+                          "internalType": "bool",
+                          "name": "isStable",
+                          "type": "bool"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "price",
+                          "type": "uint256"
+                        }
+                      ],
+                      "internalType": "struct DataTypes.PricedToken[]",
+                      "name": "pricedTokens",
+                      "type": "tuple[]"
+                    }
+                  ],
+                  "internalType": "struct DataTypes.VaultInfo",
+                  "name": "vaultInfo",
+                  "type": "tuple"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct DataTypes.VaultWithAmount[]",
+              "name": "vaultsWithAmount",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "bool",
+              "name": "mint",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct DataTypes.Order",
+          "name": "order",
+          "type": "tuple"
+        }
+      ],
+      "name": "applyFees",
+      "outputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "address",
+                      "name": "vault",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint8",
+                      "name": "decimals",
+                      "type": "uint8"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "underlying",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "price",
+                      "type": "uint256"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint256",
+                          "name": "initialPrice",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "initialWeight",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "shortFlowMemory",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "shortFlowThreshold",
+                          "type": "uint256"
+                        }
+                      ],
+                      "internalType": "struct DataTypes.PersistedVaultMetadata",
+                      "name": "persistedMetadata",
+                      "type": "tuple"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "reserveBalance",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "currentWeight",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "idealWeight",
+                      "type": "uint256"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "address",
+                          "name": "tokenAddress",
+                          "type": "address"
+                        },
+                        {
+                          "internalType": "bool",
+                          "name": "isStable",
+                          "type": "bool"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "price",
+                          "type": "uint256"
+                        }
+                      ],
+                      "internalType": "struct DataTypes.PricedToken[]",
+                      "name": "pricedTokens",
+                      "type": "tuple[]"
+                    }
+                  ],
+                  "internalType": "struct DataTypes.VaultInfo",
+                  "name": "vaultInfo",
+                  "type": "tuple"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct DataTypes.VaultWithAmount[]",
+              "name": "vaultsWithAmount",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "bool",
+              "name": "mint",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct DataTypes.Order",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "vaultAddress",
+          "type": "address"
+        }
+      ],
+      "name": "isVaultSupported",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "applyFees((((address,uint8,address,uint256,(uint256,uint256,uint256,uint256),uint256,uint256,uint256,(address,bool,uint256)[]),uint256)[],bool))": "aa52e2b4",
+    "isVaultSupported(address)": "240825cb"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"components\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"initialPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"initialWeight\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"shortFlowMemory\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"shortFlowThreshold\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.PersistedVaultMetadata\",\"name\":\"persistedMetadata\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"reserveBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"currentWeight\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"idealWeight\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isStable\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.PricedToken[]\",\"name\":\"pricedTokens\",\"type\":\"tuple[]\"}],\"internalType\":\"struct DataTypes.VaultInfo\",\"name\":\"vaultInfo\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.VaultWithAmount[]\",\"name\":\"vaultsWithAmount\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"mint\",\"type\":\"bool\"}],\"internalType\":\"struct DataTypes.Order\",\"name\":\"order\",\"type\":\"tuple\"}],\"name\":\"applyFees\",\"outputs\":[{\"components\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"initialPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"initialWeight\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"shortFlowMemory\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"shortFlowThreshold\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.PersistedVaultMetadata\",\"name\":\"persistedMetadata\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"reserveBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"currentWeight\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"idealWeight\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isStable\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.PricedToken[]\",\"name\":\"pricedTokens\",\"type\":\"tuple[]\"}],\"internalType\":\"struct DataTypes.VaultInfo\",\"name\":\"vaultInfo\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.VaultWithAmount[]\",\"name\":\"vaultsWithAmount\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"mint\",\"type\":\"bool\"}],\"internalType\":\"struct DataTypes.Order\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"vaultAddress\",\"type\":\"address\"}],\"name\":\"isVaultSupported\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"applyFees((((address,uint8,address,uint256,(uint256,uint256,uint256,uint256),uint256,uint256,uint256,(address,bool,uint256)[]),uint256)[],bool))\":{\"returns\":{\"_0\":\"an order with the fees applied\"}},\"isVaultSupported(address)\":{\"returns\":{\"_0\":\"if the given vault is supported\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/IFeeHandler.sol\":\"IFeeHandler\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/IFeeHandler.sol\":{\"keccak256\":\"0xde93a9b9dfb064121286c7c9880731e0dccac42f6cb2f02f43efb26aedd140ed\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://ff075e4e83ec190266798b45d3f525a80cc5d17afa828d353f07ff8c234e5d1b\",\"dweb:/ipfs/QmYuQEAiZm9fCnuKpcCknMmMF9vLnMzjpyHALrCyqLYScc\"]},\"libraries/DataTypes.sol\":{\"keccak256\":\"0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494\",\"dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "struct DataTypes.Order",
+              "name": "order",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "struct DataTypes.VaultWithAmount[]",
+                  "name": "vaultsWithAmount",
+                  "type": "tuple[]",
+                  "components": [
+                    {
+                      "internalType": "struct DataTypes.VaultInfo",
+                      "name": "vaultInfo",
+                      "type": "tuple",
+                      "components": [
+                        {
+                          "internalType": "address",
+                          "name": "vault",
+                          "type": "address"
+                        },
+                        {
+                          "internalType": "uint8",
+                          "name": "decimals",
+                          "type": "uint8"
+                        },
+                        {
+                          "internalType": "address",
+                          "name": "underlying",
+                          "type": "address"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "price",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "struct DataTypes.PersistedVaultMetadata",
+                          "name": "persistedMetadata",
+                          "type": "tuple",
+                          "components": [
+                            {
+                              "internalType": "uint256",
+                              "name": "initialPrice",
+                              "type": "uint256"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "initialWeight",
+                              "type": "uint256"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "shortFlowMemory",
+                              "type": "uint256"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "shortFlowThreshold",
+                              "type": "uint256"
+                            }
+                          ]
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "reserveBalance",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "currentWeight",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "idealWeight",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "struct DataTypes.PricedToken[]",
+                          "name": "pricedTokens",
+                          "type": "tuple[]",
+                          "components": [
+                            {
+                              "internalType": "address",
+                              "name": "tokenAddress",
+                              "type": "address"
+                            },
+                            {
+                              "internalType": "bool",
+                              "name": "isStable",
+                              "type": "bool"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "price",
+                              "type": "uint256"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "amount",
+                      "type": "uint256"
+                    }
+                  ]
+                },
+                {
+                  "internalType": "bool",
+                  "name": "mint",
+                  "type": "bool"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "applyFees",
+          "outputs": [
+            {
+              "internalType": "struct DataTypes.Order",
+              "name": "",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "struct DataTypes.VaultWithAmount[]",
+                  "name": "vaultsWithAmount",
+                  "type": "tuple[]",
+                  "components": [
+                    {
+                      "internalType": "struct DataTypes.VaultInfo",
+                      "name": "vaultInfo",
+                      "type": "tuple",
+                      "components": [
+                        {
+                          "internalType": "address",
+                          "name": "vault",
+                          "type": "address"
+                        },
+                        {
+                          "internalType": "uint8",
+                          "name": "decimals",
+                          "type": "uint8"
+                        },
+                        {
+                          "internalType": "address",
+                          "name": "underlying",
+                          "type": "address"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "price",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "struct DataTypes.PersistedVaultMetadata",
+                          "name": "persistedMetadata",
+                          "type": "tuple",
+                          "components": [
+                            {
+                              "internalType": "uint256",
+                              "name": "initialPrice",
+                              "type": "uint256"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "initialWeight",
+                              "type": "uint256"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "shortFlowMemory",
+                              "type": "uint256"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "shortFlowThreshold",
+                              "type": "uint256"
+                            }
+                          ]
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "reserveBalance",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "currentWeight",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "idealWeight",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "struct DataTypes.PricedToken[]",
+                          "name": "pricedTokens",
+                          "type": "tuple[]",
+                          "components": [
+                            {
+                              "internalType": "address",
+                              "name": "tokenAddress",
+                              "type": "address"
+                            },
+                            {
+                              "internalType": "bool",
+                              "name": "isStable",
+                              "type": "bool"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "price",
+                              "type": "uint256"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "amount",
+                      "type": "uint256"
+                    }
+                  ]
+                },
+                {
+                  "internalType": "bool",
+                  "name": "mint",
+                  "type": "bool"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "vaultAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isVaultSupported",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "applyFees((((address,uint8,address,uint256,(uint256,uint256,uint256,uint256),uint256,uint256,uint256,(address,bool,uint256)[]),uint256)[],bool))": {
+            "returns": {
+              "_0": "an order with the fees applied"
+            }
+          },
+          "isVaultSupported(address)": {
+            "returns": {
+              "_0": "if the given vault is supported"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/IFeeHandler.sol": "IFeeHandler"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/IFeeHandler.sol": {
+        "keccak256": "0xde93a9b9dfb064121286c7c9880731e0dccac42f6cb2f02f43efb26aedd140ed",
+        "urls": [
+          "bzz-raw://ff075e4e83ec190266798b45d3f525a80cc5d17afa828d353f07ff8c234e5d1b",
+          "dweb:/ipfs/QmYuQEAiZm9fCnuKpcCknMmMF9vLnMzjpyHALrCyqLYScc"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/DataTypes.sol": {
+        "keccak256": "0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29",
+        "urls": [
+          "bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494",
+          "dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/IFeeHandler.sol",
+    "id": 16099,
+    "exportedSymbols": {
+      "DataTypes": [
+        54519
+      ],
+      "IFeeHandler": [
+        16098
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:368:65",
+    "nodes": [
+      {
+        "id": 16078,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:65",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 16079,
+        "nodeType": "ImportDirective",
+        "src": "199:36:65",
+        "nodes": [],
+        "absolutePath": "libraries/DataTypes.sol",
+        "file": "../libraries/DataTypes.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 16099,
+        "sourceUnit": 54520,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 16098,
+        "nodeType": "ContractDefinition",
+        "src": "237:304:65",
+        "nodes": [
+          {
+            "id": 16089,
+            "nodeType": "FunctionDefinition",
+            "src": "312:96:65",
+            "nodes": [],
+            "documentation": {
+              "id": 16080,
+              "nodeType": "StructuredDocumentation",
+              "src": "265:42:65",
+              "text": "@return an order with the fees applied"
+            },
+            "functionSelector": "aa52e2b4",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "applyFees",
+            "nameLocation": "321:9:65",
+            "parameters": {
+              "id": 16084,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16083,
+                  "mutability": "mutable",
+                  "name": "order",
+                  "nameLocation": "354:5:65",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16089,
+                  "src": "331:28:65",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Order_$54505_memory_ptr",
+                    "typeString": "struct DataTypes.Order"
+                  },
+                  "typeName": {
+                    "id": 16082,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 16081,
+                      "name": "DataTypes.Order",
+                      "nameLocations": [
+                        "331:9:65",
+                        "341:5:65"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 54505,
+                      "src": "331:15:65"
+                    },
+                    "referencedDeclaration": 54505,
+                    "src": "331:15:65",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Order_$54505_storage_ptr",
+                      "typeString": "struct DataTypes.Order"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "330:30:65"
+            },
+            "returnParameters": {
+              "id": 16088,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16087,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16089,
+                  "src": "384:22:65",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Order_$54505_memory_ptr",
+                    "typeString": "struct DataTypes.Order"
+                  },
+                  "typeName": {
+                    "id": 16086,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 16085,
+                      "name": "DataTypes.Order",
+                      "nameLocations": [
+                        "384:9:65",
+                        "394:5:65"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 54505,
+                      "src": "384:15:65"
+                    },
+                    "referencedDeclaration": 54505,
+                    "src": "384:15:65",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Order_$54505_storage_ptr",
+                      "typeString": "struct DataTypes.Order"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "383:24:65"
+            },
+            "scope": 16098,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16097,
+            "nodeType": "FunctionDefinition",
+            "src": "462:77:65",
+            "nodes": [],
+            "documentation": {
+              "id": 16090,
+              "nodeType": "StructuredDocumentation",
+              "src": "414:43:65",
+              "text": "@return if the given vault is supported"
+            },
+            "functionSelector": "240825cb",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isVaultSupported",
+            "nameLocation": "471:16:65",
+            "parameters": {
+              "id": 16093,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16092,
+                  "mutability": "mutable",
+                  "name": "vaultAddress",
+                  "nameLocation": "496:12:65",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16097,
+                  "src": "488:20:65",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16091,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "488:7:65",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "487:22:65"
+            },
+            "returnParameters": {
+              "id": 16096,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16095,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16097,
+                  "src": "533:4:65",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 16094,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "533:4:65",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "532:6:65"
+            },
+            "scope": 16098,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IFeeHandler",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          16098
+        ],
+        "name": "IFeeHandler",
+        "nameLocation": "247:11:65",
+        "scope": 16099,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 65
+}

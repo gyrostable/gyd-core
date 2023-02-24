@@ -1,0 +1,714 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "oldOracle",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOracle",
+          "type": "address"
+        }
+      ],
+      "name": "NewPriceOracle",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "oldManager",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newManager",
+          "type": "address"
+        }
+      ],
+      "name": "NewVaultWeightManager",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "getReserveState",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "totalUSDValue",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "vault",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "decimals",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "address",
+                  "name": "underlying",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256",
+                      "name": "initialPrice",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "initialWeight",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "shortFlowMemory",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "shortFlowThreshold",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct DataTypes.PersistedVaultMetadata",
+                  "name": "persistedMetadata",
+                  "type": "tuple"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "reserveBalance",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "currentWeight",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "idealWeight",
+                  "type": "uint256"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "address",
+                      "name": "tokenAddress",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "bool",
+                      "name": "isStable",
+                      "type": "bool"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "price",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct DataTypes.PricedToken[]",
+                  "name": "pricedTokens",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct DataTypes.VaultInfo[]",
+              "name": "vaults",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct DataTypes.ReserveState",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getReserveState()": "ef5bac25"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"oldOracle\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOracle\",\"type\":\"address\"}],\"name\":\"NewPriceOracle\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"oldManager\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newManager\",\"type\":\"address\"}],\"name\":\"NewVaultWeightManager\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"getReserveState\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"totalUSDValue\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"initialPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"initialWeight\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"shortFlowMemory\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"shortFlowThreshold\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.PersistedVaultMetadata\",\"name\":\"persistedMetadata\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"reserveBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"currentWeight\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"idealWeight\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isStable\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"internalType\":\"struct DataTypes.PricedToken[]\",\"name\":\"pricedTokens\",\"type\":\"tuple[]\"}],\"internalType\":\"struct DataTypes.VaultInfo[]\",\"name\":\"vaults\",\"type\":\"tuple[]\"}],\"internalType\":\"struct DataTypes.ReserveState\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getReserveState()\":{\"notice\":\"Returns a list of vaults including metadata such as price and weights\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/IReserveManager.sol\":\"IReserveManager\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/IReserveManager.sol\":{\"keccak256\":\"0x2434d806c0b3e8b18f9a01abdf11abe2efef2adfb158d7a3dd30d467a99ccba7\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://a8fada4480c2cfb92849ddb641e82a617fd1432264db494c03b9aef501ae9d73\",\"dweb:/ipfs/QmNXWQmV6ixeq1MBr2NX1B3bGyN8k4Q1UQ6WwmpmcvAsS9\"]},\"interfaces/IVaultWeightManager.sol\":{\"keccak256\":\"0x23bda085a1f274154856f6927d56940389b1d040cab914bee575c0762a04ac35\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://b26e4a17d3e64f5206d5b6fe00acf0e418bf3daeb6fd4bd0fdde6e69f164bd13\",\"dweb:/ipfs/QmTqtYzwzN8m1K9e1h5wX5Ufv7DdEVJZjDbUs9bkXSBNby\"]},\"interfaces/oracles/IUSDPriceOracle.sol\":{\"keccak256\":\"0xf5b9d5cff4b98ffdfda85702a4cc32ae27f9bf0c690f3640a959f7479ba72f41\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://88e1c960b489590938b68c879581c7809986348d504a5ed67dba6ef464ba227c\",\"dweb:/ipfs/QmY8mNgbN7GZnMeuVh2M4z1bp2swWbfVFgFU59RHUqUM5j\"]},\"libraries/DataTypes.sol\":{\"keccak256\":\"0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494\",\"dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "oldOracle",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "newOracle",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "NewPriceOracle",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "oldManager",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "newManager",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "NewVaultWeightManager",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getReserveState",
+          "outputs": [
+            {
+              "internalType": "struct DataTypes.ReserveState",
+              "name": "",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "totalUSDValue",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "struct DataTypes.VaultInfo[]",
+                  "name": "vaults",
+                  "type": "tuple[]",
+                  "components": [
+                    {
+                      "internalType": "address",
+                      "name": "vault",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint8",
+                      "name": "decimals",
+                      "type": "uint8"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "underlying",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "price",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "struct DataTypes.PersistedVaultMetadata",
+                      "name": "persistedMetadata",
+                      "type": "tuple",
+                      "components": [
+                        {
+                          "internalType": "uint256",
+                          "name": "initialPrice",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "initialWeight",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "shortFlowMemory",
+                          "type": "uint256"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "shortFlowThreshold",
+                          "type": "uint256"
+                        }
+                      ]
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "reserveBalance",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "currentWeight",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "idealWeight",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "struct DataTypes.PricedToken[]",
+                      "name": "pricedTokens",
+                      "type": "tuple[]",
+                      "components": [
+                        {
+                          "internalType": "address",
+                          "name": "tokenAddress",
+                          "type": "address"
+                        },
+                        {
+                          "internalType": "bool",
+                          "name": "isStable",
+                          "type": "bool"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "price",
+                          "type": "uint256"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "getReserveState()": {
+            "notice": "Returns a list of vaults including metadata such as price and weights"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/IReserveManager.sol": "IReserveManager"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/IReserveManager.sol": {
+        "keccak256": "0x2434d806c0b3e8b18f9a01abdf11abe2efef2adfb158d7a3dd30d467a99ccba7",
+        "urls": [
+          "bzz-raw://a8fada4480c2cfb92849ddb641e82a617fd1432264db494c03b9aef501ae9d73",
+          "dweb:/ipfs/QmNXWQmV6ixeq1MBr2NX1B3bGyN8k4Q1UQ6WwmpmcvAsS9"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/IVaultWeightManager.sol": {
+        "keccak256": "0x23bda085a1f274154856f6927d56940389b1d040cab914bee575c0762a04ac35",
+        "urls": [
+          "bzz-raw://b26e4a17d3e64f5206d5b6fe00acf0e418bf3daeb6fd4bd0fdde6e69f164bd13",
+          "dweb:/ipfs/QmTqtYzwzN8m1K9e1h5wX5Ufv7DdEVJZjDbUs9bkXSBNby"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "interfaces/oracles/IUSDPriceOracle.sol": {
+        "keccak256": "0xf5b9d5cff4b98ffdfda85702a4cc32ae27f9bf0c690f3640a959f7479ba72f41",
+        "urls": [
+          "bzz-raw://88e1c960b489590938b68c879581c7809986348d504a5ed67dba6ef464ba227c",
+          "dweb:/ipfs/QmY8mNgbN7GZnMeuVh2M4z1bp2swWbfVFgFU59RHUqUM5j"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      },
+      "libraries/DataTypes.sol": {
+        "keccak256": "0xa4d3c14e22a3a2fe30d590e9693876f7c9ebc9fb636ba068bd1b1fec8b22ec29",
+        "urls": [
+          "bzz-raw://f29fbfbcb8a97bf3b280831e5735dfb26616a41c981b1648244f77d74c469494",
+          "dweb:/ipfs/Qme48mo4T2CfVKRXKVMmX6x5VE4j2BmAErt9tPeacw4PPC"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/IReserveManager.sol",
+    "id": 16721,
+    "exportedSymbols": {
+      "DataTypes": [
+        54519
+      ],
+      "IReserveManager": [
+        16720
+      ],
+      "IUSDPriceOracle": [
+        17709
+      ],
+      "IVaultWeightManager": [
+        16836
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:535:74",
+    "nodes": [
+      {
+        "id": 16697,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:74",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 16698,
+        "nodeType": "ImportDirective",
+        "src": "199:47:74",
+        "nodes": [],
+        "absolutePath": "interfaces/IVaultWeightManager.sol",
+        "file": "../interfaces/IVaultWeightManager.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 16721,
+        "sourceUnit": 16837,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 16699,
+        "nodeType": "ImportDirective",
+        "src": "247:51:74",
+        "nodes": [],
+        "absolutePath": "interfaces/oracles/IUSDPriceOracle.sol",
+        "file": "../interfaces/oracles/IUSDPriceOracle.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 16721,
+        "sourceUnit": 17710,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 16700,
+        "nodeType": "ImportDirective",
+        "src": "299:36:74",
+        "nodes": [],
+        "absolutePath": "libraries/DataTypes.sol",
+        "file": "../libraries/DataTypes.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 16721,
+        "sourceUnit": 54520,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 16720,
+        "nodeType": "ContractDefinition",
+        "src": "337:371:74",
+        "nodes": [
+          {
+            "id": 16706,
+            "nodeType": "EventDefinition",
+            "src": "369:84:74",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "64606b26a66c25bc07fea2203c004119f9f5e1b13d50fef2961b5501ad675592",
+            "name": "NewVaultWeightManager",
+            "nameLocation": "375:21:74",
+            "parameters": {
+              "id": 16705,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16702,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "oldManager",
+                  "nameLocation": "413:10:74",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16706,
+                  "src": "397:26:74",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16701,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "397:7:74",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16704,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "newManager",
+                  "nameLocation": "441:10:74",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16706,
+                  "src": "425:26:74",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16703,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "425:7:74",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "396:56:74"
+            }
+          },
+          {
+            "id": 16712,
+            "nodeType": "EventDefinition",
+            "src": "458:75:74",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "d52b2b9b7e9ee655fcb95d2e5b9e0c9f69e7ef2b8e9d2d0ea78402d576d22e22",
+            "name": "NewPriceOracle",
+            "nameLocation": "464:14:74",
+            "parameters": {
+              "id": 16711,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16708,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "oldOracle",
+                  "nameLocation": "495:9:74",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16712,
+                  "src": "479:25:74",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16707,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "479:7:74",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16710,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "newOracle",
+                  "nameLocation": "522:9:74",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16712,
+                  "src": "506:25:74",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16709,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "506:7:74",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "478:54:74"
+            }
+          },
+          {
+            "id": 16719,
+            "nodeType": "FunctionDefinition",
+            "src": "625:81:74",
+            "nodes": [],
+            "documentation": {
+              "id": 16713,
+              "nodeType": "StructuredDocumentation",
+              "src": "539:81:74",
+              "text": "@notice Returns a list of vaults including metadata such as price and weights"
+            },
+            "functionSelector": "ef5bac25",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getReserveState",
+            "nameLocation": "634:15:74",
+            "parameters": {
+              "id": 16714,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "649:2:74"
+            },
+            "returnParameters": {
+              "id": 16718,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16717,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16719,
+                  "src": "675:29:74",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_ReserveState_$54518_memory_ptr",
+                    "typeString": "struct DataTypes.ReserveState"
+                  },
+                  "typeName": {
+                    "id": 16716,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 16715,
+                      "name": "DataTypes.ReserveState",
+                      "nameLocations": [
+                        "675:9:74",
+                        "685:12:74"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 54518,
+                      "src": "675:22:74"
+                    },
+                    "referencedDeclaration": 54518,
+                    "src": "675:22:74",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_ReserveState_$54518_storage_ptr",
+                      "typeString": "struct DataTypes.ReserveState"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "674:31:74"
+            },
+            "scope": 16720,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IReserveManager",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          16720
+        ],
+        "name": "IReserveManager",
+        "nameLocation": "347:15:74",
+        "scope": 16721,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 74
+}

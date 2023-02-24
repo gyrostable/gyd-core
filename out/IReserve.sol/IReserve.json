@@ -1,0 +1,1130 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Deposit",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "manager",
+          "type": "address"
+        }
+      ],
+      "name": "ManagerAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "manager",
+          "type": "address"
+        }
+      ],
+      "name": "ManagerRemoved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Withdraw",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "manager",
+          "type": "address"
+        }
+      ],
+      "name": "addManager",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "depositToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "managers",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "manager",
+          "type": "address"
+        }
+      ],
+      "name": "removeManager",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdrawToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "addManager(address)": "2d06177a",
+    "depositToken(address,uint256)": "338b5dea",
+    "managers()": "72311705",
+    "removeManager(address)": "ac18de43",
+    "withdrawToken(address,uint256)": "9e281a98"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"manager\",\"type\":\"address\"}],\"name\":\"ManagerAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"manager\",\"type\":\"address\"}],\"name\":\"ManagerRemoved\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"manager\",\"type\":\"address\"}],\"name\":\"addManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"depositToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"managers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"manager\",\"type\":\"address\"}],\"name\":\"removeManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"withdrawToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"depositToken(address,uint256)\":{\"params\":{\"amount\":\"amount of the vault tokens to deposit\",\"token\":\"address of the vault tokens\"}},\"withdrawToken(address,uint256)\":{\"params\":{\"amount\":\"amount of the vault tokens to deposit\",\"token\":\"address of the vault tokens\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addManager(address)\":{\"notice\":\"Adds a manager, who will be allowed to withdraw from this reserve\"},\"depositToken(address,uint256)\":{\"notice\":\"Deposits vault tokens in the reserve\"},\"managers()\":{\"notice\":\"the address of the reserve managers, the only entities allowed to withdraw from this reserve\"},\"removeManager(address)\":{\"notice\":\"Removes manager\"},\"withdrawToken(address,uint256)\":{\"notice\":\"Withdraws vault tokens from the reserve\"}},\"notice\":\"IReserve allows an authorized contract to deposit and withdraw tokens\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"interfaces/IReserve.sol\":\"IReserve\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"interfaces/IReserve.sol\":{\"keccak256\":\"0xd9d9d8f44fb69ae14c1f51bdc88ab20cf356422ca9de17209cbba9e3024861d7\",\"license\":\"LicenseRef-Gyro-1.0\",\"urls\":[\"bzz-raw://6fa4b7a768d16c840ec24063fe921eae94094f3fc639ec8695ef0bc7d6cc11d7\",\"dweb:/ipfs/QmboDFRYZDgWhMobsU3XJKpuykrxJ6d5FCke85Q485f8H3\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "Deposit",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "manager",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "ManagerAdded",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "manager",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "ManagerRemoved",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "Withdraw",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "manager",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addManager"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "depositToken"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "managers",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "manager",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "removeManager"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "withdrawToken"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "depositToken(address,uint256)": {
+            "params": {
+              "amount": "amount of the vault tokens to deposit",
+              "token": "address of the vault tokens"
+            }
+          },
+          "withdrawToken(address,uint256)": {
+            "params": {
+              "amount": "amount of the vault tokens to deposit",
+              "token": "address of the vault tokens"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "addManager(address)": {
+            "notice": "Adds a manager, who will be allowed to withdraw from this reserve"
+          },
+          "depositToken(address,uint256)": {
+            "notice": "Deposits vault tokens in the reserve"
+          },
+          "managers()": {
+            "notice": "the address of the reserve managers, the only entities allowed to withdraw from this reserve"
+          },
+          "removeManager(address)": {
+            "notice": "Removes manager"
+          },
+          "withdrawToken(address,uint256)": {
+            "notice": "Withdraws vault tokens from the reserve"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "interfaces/IReserve.sol": "IReserve"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "interfaces/IReserve.sol": {
+        "keccak256": "0xd9d9d8f44fb69ae14c1f51bdc88ab20cf356422ca9de17209cbba9e3024861d7",
+        "urls": [
+          "bzz-raw://6fa4b7a768d16c840ec24063fe921eae94094f3fc639ec8695ef0bc7d6cc11d7",
+          "dweb:/ipfs/QmboDFRYZDgWhMobsU3XJKpuykrxJ6d5FCke85Q485f8H3"
+        ],
+        "license": "LicenseRef-Gyro-1.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "interfaces/IReserve.sol",
+    "id": 16696,
+    "exportedSymbols": {
+      "IReserve": [
+        16695
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "174:1261:73",
+    "nodes": [
+      {
+        "id": 16634,
+        "nodeType": "PragmaDirective",
+        "src": "174:23:73",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ]
+      },
+      {
+        "id": 16695,
+        "nodeType": "ContractDefinition",
+        "src": "281:1153:73",
+        "nodes": [
+          {
+            "id": 16643,
+            "nodeType": "EventDefinition",
+            "src": "306:75:73",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "5548c837ab068cf56a2c2479df0882a4922fd203edb7517321831d95078c5f62",
+            "name": "Deposit",
+            "nameLocation": "312:7:73",
+            "parameters": {
+              "id": 16642,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16637,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "from",
+                  "nameLocation": "336:4:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16643,
+                  "src": "320:20:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16636,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "320:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16639,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "token",
+                  "nameLocation": "358:5:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16643,
+                  "src": "342:21:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16638,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "342:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16641,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "373:6:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16643,
+                  "src": "365:14:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16640,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "365:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "319:61:73"
+            }
+          },
+          {
+            "id": 16651,
+            "nodeType": "EventDefinition",
+            "src": "386:76:73",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "9b1bfa7fa9ee420a16e124f794c35ac9f90472acc99140eb2f6447c714cad8eb",
+            "name": "Withdraw",
+            "nameLocation": "392:8:73",
+            "parameters": {
+              "id": 16650,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16645,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "from",
+                  "nameLocation": "417:4:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16651,
+                  "src": "401:20:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16644,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "401:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16647,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "token",
+                  "nameLocation": "439:5:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16651,
+                  "src": "423:21:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16646,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "423:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16649,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "454:6:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16651,
+                  "src": "446:14:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16648,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "446:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "400:61:73"
+            }
+          },
+          {
+            "id": 16655,
+            "nodeType": "EventDefinition",
+            "src": "468:44:73",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "3b4a40cccf2058c593542587329dd385be4f0b588db5471fbd9598e56dd7093a",
+            "name": "ManagerAdded",
+            "nameLocation": "474:12:73",
+            "parameters": {
+              "id": 16654,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16653,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "manager",
+                  "nameLocation": "503:7:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16655,
+                  "src": "487:23:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16652,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "487:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "486:25:73"
+            }
+          },
+          {
+            "id": 16659,
+            "nodeType": "EventDefinition",
+            "src": "517:46:73",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "ef69f7d97228658c92417be1b16b19058315de71fecb435d07b7d23728b6bd31",
+            "name": "ManagerRemoved",
+            "nameLocation": "523:14:73",
+            "parameters": {
+              "id": 16658,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16657,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "manager",
+                  "nameLocation": "554:7:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16659,
+                  "src": "538:23:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16656,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "538:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "537:25:73"
+            }
+          },
+          {
+            "id": 16666,
+            "nodeType": "FunctionDefinition",
+            "src": "686:61:73",
+            "nodes": [],
+            "documentation": {
+              "id": 16660,
+              "nodeType": "StructuredDocumentation",
+              "src": "569:112:73",
+              "text": "@notice the address of the reserve managers, the only entities allowed to withdraw\n from this reserve"
+            },
+            "functionSelector": "72311705",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "managers",
+            "nameLocation": "695:8:73",
+            "parameters": {
+              "id": 16661,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "703:2:73"
+            },
+            "returnParameters": {
+              "id": 16665,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16664,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16666,
+                  "src": "729:16:73",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 16662,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "729:7:73",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 16663,
+                    "nodeType": "ArrayTypeName",
+                    "src": "729:9:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "728:18:73"
+            },
+            "scope": 16695,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16672,
+            "nodeType": "FunctionDefinition",
+            "src": "835:46:73",
+            "nodes": [],
+            "documentation": {
+              "id": 16667,
+              "nodeType": "StructuredDocumentation",
+              "src": "753:77:73",
+              "text": "@notice Adds a manager, who will be allowed to withdraw from this reserve"
+            },
+            "functionSelector": "2d06177a",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addManager",
+            "nameLocation": "844:10:73",
+            "parameters": {
+              "id": 16670,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16669,
+                  "mutability": "mutable",
+                  "name": "manager",
+                  "nameLocation": "863:7:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16672,
+                  "src": "855:15:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16668,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "855:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "854:17:73"
+            },
+            "returnParameters": {
+              "id": 16671,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "880:0:73"
+            },
+            "scope": 16695,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16678,
+            "nodeType": "FunctionDefinition",
+            "src": "919:49:73",
+            "nodes": [],
+            "documentation": {
+              "id": 16673,
+              "nodeType": "StructuredDocumentation",
+              "src": "887:27:73",
+              "text": "@notice Removes manager"
+            },
+            "functionSelector": "ac18de43",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "removeManager",
+            "nameLocation": "928:13:73",
+            "parameters": {
+              "id": 16676,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16675,
+                  "mutability": "mutable",
+                  "name": "manager",
+                  "nameLocation": "950:7:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16678,
+                  "src": "942:15:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16674,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "942:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "941:17:73"
+            },
+            "returnParameters": {
+              "id": 16677,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "967:0:73"
+            },
+            "scope": 16695,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16686,
+            "nodeType": "FunctionDefinition",
+            "src": "1136:62:73",
+            "nodes": [],
+            "documentation": {
+              "id": 16679,
+              "nodeType": "StructuredDocumentation",
+              "src": "974:157:73",
+              "text": "@notice Deposits vault tokens in the reserve\n @param token address of the vault tokens\n @param amount amount of the vault tokens to deposit"
+            },
+            "functionSelector": "338b5dea",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "depositToken",
+            "nameLocation": "1145:12:73",
+            "parameters": {
+              "id": 16684,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16681,
+                  "mutability": "mutable",
+                  "name": "token",
+                  "nameLocation": "1166:5:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16686,
+                  "src": "1158:13:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16680,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1158:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16683,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "1181:6:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16686,
+                  "src": "1173:14:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16682,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1173:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1157:31:73"
+            },
+            "returnParameters": {
+              "id": 16685,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1197:0:73"
+            },
+            "scope": 16695,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16694,
+            "nodeType": "FunctionDefinition",
+            "src": "1369:63:73",
+            "nodes": [],
+            "documentation": {
+              "id": 16687,
+              "nodeType": "StructuredDocumentation",
+              "src": "1204:160:73",
+              "text": "@notice Withdraws vault tokens from the reserve\n @param token address of the vault tokens\n @param amount amount of the vault tokens to deposit"
+            },
+            "functionSelector": "9e281a98",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "withdrawToken",
+            "nameLocation": "1378:13:73",
+            "parameters": {
+              "id": 16692,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16689,
+                  "mutability": "mutable",
+                  "name": "token",
+                  "nameLocation": "1400:5:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16694,
+                  "src": "1392:13:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16688,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1392:7:73",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16691,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "1415:6:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16694,
+                  "src": "1407:14:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16690,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1407:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1391:31:73"
+            },
+            "returnParameters": {
+              "id": 16693,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1431:0:73"
+            },
+            "scope": 16695,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IReserve",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 16635,
+          "nodeType": "StructuredDocumentation",
+          "src": "199:82:73",
+          "text": "@notice IReserve allows an authorized contract to deposit and withdraw tokens"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          16695
+        ],
+        "name": "IReserve",
+        "nameLocation": "291:8:73",
+        "scope": 16696,
+        "usedErrors": []
+      }
+    ],
+    "license": "LicenseRef-Gyro-1.0"
+  },
+  "id": 73
+}
