@@ -12,7 +12,9 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./LiquidityMining.sol";
 
-contract GydRecovery is Governable, LiquidityMining {
+import "../interfaces/IGydRecovery.sol";
+
+contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     using FixedPoint for uint256;
     using ConfigHelpers for IGyroConfig;
     using SafeERC20 for IGYDToken;
