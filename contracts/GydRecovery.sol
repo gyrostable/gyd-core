@@ -46,18 +46,18 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         uint256 totalStakedIntegral;
     }
     // Full burn ID -> Data at that point in time
-    mapping (uint256 => FullBurnInfo) internal fullBurnHistory;
-    uint256 nextFullBurnId = 1;  // 0 is invalid; we use this to detect unset data.
+    mapping(uint256 => FullBurnInfo) internal fullBurnHistory;
+    uint256 nextFullBurnId = 1; // 0 is invalid; we use this to detect unset data.
 
     uint256 public adjustmentFactor = 1e18;
 
     struct PendingWithdrawal {
         uint256 createdFullBurnId;
         uint256 adjustedAmount;
-        uint256 withdrawableAt;  // timestamp
+        uint256 withdrawableAt; // timestamp
         address to;
     }
-    mapping (uint256 => PendingWithdrawal) internal pendingWithdrawals;
+    mapping(uint256 => PendingWithdrawal) internal pendingWithdrawals;
     // address -> pending withdrawal ids. Mostly a convenience feature.
     mapping(address => EnumerableSet.UintSet) internal userPendingWithdrawalIds;
     uint256 internal nextWithdrawalId;
@@ -71,7 +71,13 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     IERC20 public immutable rewardToken;
 
     event Deposit(address beneficiary, uint256 adjustedAmount, uint256 amount);
-    event WithdrawalQueued(uint256 id, address to, uint256 withdrawalAt, uint256 adjustedAmount, uint256 amount);
+    event WithdrawalQueued(
+        uint256 id,
+        address to,
+        uint256 withdrawalAt,
+        uint256 adjustedAmount,
+        uint256 amount
+    );
     event WithdrawalCompleted(uint256 id, address to, uint256 adjustedAmount, uint256 amount);
     event RecoveryExecuted(uint256 tokensBurned, bool isFullBurn, uint256 newAdjustmentFactor);
 
@@ -80,8 +86,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         address _gyroConfig,
         address _rewardToken,
         uint256 _withdrawalWaitDuration
-    ) Governable(_governor)
-    {
+    ) Governable(_governor) {
         gyroConfig = IGyroConfig(_gyroConfig);
         gydToken = gyroConfig.getGYDToken();
         rewardToken = IERC20(_rewardToken);
@@ -93,62 +98,58 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     }
 
     /// @dev Total amount available for burning. Includes amounts marked for withdrawal but not yet withdrawn.
-    function totalUnderlying() public view returns(uint256)
-    {
+    function totalUnderlying() public view returns (uint256) {
         return gydToken.balanceOf(address(this));
     }
 
     /// @notice Balance of given account that is available for withdrawal.
-    function balanceOf(address account) public view returns(uint256)
-    {
+    function balanceOf(address account) public view returns (uint256) {
         return balanceAdjustedOf(account).mulDown(adjustmentFactor);
     }
 
     /// @notice Like balanceOf() but in adjusted amounts.
-    function balanceAdjustedOf(address account) public view returns (uint256 adjustedAmount)
-    {
-        adjustedAmount = positions[account].lastUpdatedFullBurnId < nextFullBurnId ? 0 : _perUserStaked[account];
+    function balanceAdjustedOf(address account) public view returns (uint256 adjustedAmount) {
+        adjustedAmount = positions[account].lastUpdatedFullBurnId < nextFullBurnId
+            ? 0
+            : _perUserStaked[account];
     }
 
-    function adjustedAmountToAmount(uint256 adjustedAmount) external view returns (uint256 amount)
-    {
+    function adjustedAmountToAmount(uint256 adjustedAmount) external view returns (uint256 amount) {
         return adjustedAmount.mulDown(adjustmentFactor);
     }
 
-    function amountToAdjustedAmount(uint256 amount) external view returns (uint256 adjustedAmount)
-    {
+    function amountToAdjustedAmount(uint256 amount) external view returns (uint256 adjustedAmount) {
         return amount.divDown(adjustmentFactor);
     }
 
-    function deposit(uint256 amount) external
-    {
+    function deposit(uint256 amount) external {
         return depositFor(msg.sender, amount);
     }
 
-    function depositFor(address beneficiary, uint256 amount) public
-    {
+    function depositFor(address beneficiary, uint256 amount) public {
         gydToken.safeTransferFrom(msg.sender, address(this), amount);
 
         uint256 adjustedAmount = amount.divDown(adjustmentFactor);
-        _stake(beneficiary, adjustedAmount);  // This also handles full burns, which is important for the next line.
+        _stake(beneficiary, adjustedAmount); // This also handles full burns, which is important for the next line.
         positions[beneficiary].adjustedAmount += adjustedAmount;
 
         emit Deposit(beneficiary, adjustedAmount, amount);
     }
 
-    function initiateWithdrawal(uint256 amount) external returns (uint256 withdrawalId)
-    {
+    function initiateWithdrawal(uint256 amount) external returns (uint256 withdrawalId) {
         return initiateWithdrawalAdjusted(amount.divDown(adjustmentFactor));
     }
 
     /// @notice Like initiateWithdrawal() but operates on adjusted amounts. Convenient to withdraw all funds
     /// via `initiateWithdrawalAdjusted(balanceAdjustedOf(account))` without worrying about rounding issues.
-    function initiateWithdrawalAdjusted(uint256 adjustedAmount) public returns (uint256 withdrawalId)
+    function initiateWithdrawalAdjusted(uint256 adjustedAmount)
+        public
+        returns (uint256 withdrawalId)
     {
         // redundant with _unstake() but we want a better error message.
         require(adjustedAmount <= balanceOf(msg.sender), "not enough to withdraw");
 
-        _unstake(msg.sender, adjustedAmount);  // This also handles full burns, which is important below.
+        _unstake(msg.sender, adjustedAmount); // This also handles full burns, which is important below.
 
         withdrawalId = nextWithdrawalId;
         ++nextWithdrawalId;
@@ -170,16 +171,10 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         );
     }
 
-    function withdraw(uint256 withdrawalId) external returns (uint256 amount)
-    {
+    function withdraw(uint256 withdrawalId) external returns (uint256 amount) {
         PendingWithdrawal memory pending = pendingWithdrawals[withdrawalId];
-        require(
-            pending.to == msg.sender,
-            "matching withdrawal does not exist");
-        require(
-            pending.withdrawableAt <= block.timestamp,
-            "not yet withdrawable"
-        );
+        require(pending.to == msg.sender, "matching withdrawal does not exist");
+        require(pending.withdrawableAt <= block.timestamp, "not yet withdrawable");
 
         if (pending.createdFullBurnId < nextFullBurnId) {
             delete pendingWithdrawals[withdrawalId];
@@ -198,9 +193,11 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         emit WithdrawalCompleted(withdrawalId, pending.to, adjustedAmount, amount);
     }
 
-    function listPendingWithdrawals(
-        address _user
-    ) external view returns (PendingWithdrawal[] memory) {
+    function listPendingWithdrawals(address _user)
+        external
+        view
+        returns (PendingWithdrawal[] memory)
+    {
         EnumerableSet.UintSet storage ids = userPendingWithdrawalIds[_user];
         PendingWithdrawal[] memory pending = new PendingWithdrawal[](ids.length());
         for (uint256 i = 0; i < ids.length(); i++) {
@@ -212,8 +209,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     /// @dev Update rewards accounting for user (see LiquidityMining.userCheckpoint()) and also update their
     /// position data in case of a full burn. It may look a bit ugly that these two things are mixed here but it's
     /// important to update them at the same time.
-    function userCheckpoint(address account) public override
-    {
+    function userCheckpoint(address account) public override {
         globalCheckpoint();
 
         Position storage position = positions[account];
@@ -240,8 +236,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         _perUserStakedIntegral[account] = totalStakedIntegral;
     }
 
-    function claimableRewards(address beneficiary) external view override returns (uint256)
-    {
+    function claimableRewards(address beneficiary) external view override returns (uint256) {
         uint256 lastUpdatedFullBurnId = positions[beneficiary].lastUpdatedFullBurnId;
 
         uint256 totalStakedIntegral;
@@ -262,8 +257,11 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
             );
     }
 
-    function startLiquidityMining(address rewardsFrom, uint256 amount, uint256 endTime) external governanceOnly
-    {
+    function startLiquidityMining(
+        address rewardsFrom,
+        uint256 amount,
+        uint256 endTime
+    ) external governanceOnly {
         globalCheckpoint();
         rewardToken.safeTransferFrom(rewardsFrom, address(this), amount);
         _rewardsEmissionRate = amount / (endTime - block.timestamp);
@@ -271,28 +269,24 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     }
 
     /// @dev To stop liquidity mining early and/or have the amount reimbursed when liquidity mining was paused when the pool was empty for a while.
-    function stopLiquidityMining(address reimbursementTo) external governanceOnly
-    {
+    function stopLiquidityMining(address reimbursementTo) external governanceOnly {
         globalCheckpoint();
         uint256 reimbursementAmount = rewardToken.balanceOf(address(this)) - _totalUnclaimedRewards;
         rewardToken.safeTransfer(reimbursementTo, reimbursementAmount);
         rewardsEmissionEndTime = 0;
     }
 
-    function rewardsEmissionRate() public view override returns (uint256)
-    {
+    function rewardsEmissionRate() public view override returns (uint256) {
         return block.timestamp <= rewardsEmissionEndTime ? _rewardsEmissionRate : 0;
     }
 
-    function _mintRewards(address beneficiary, uint256 amount) internal override returns (uint256)
-    {
+    function _mintRewards(address beneficiary, uint256 amount) internal override returns (uint256) {
         rewardToken.safeTransfer(beneficiary, amount);
         return amount;
     }
 
     /// @dev Whether or not the recovery module should run and would run next time it's called.
-    function shouldRun(DataTypes.ReserveState memory reserveState) public view returns (bool)
-    {
+    function shouldRun(DataTypes.ReserveState memory reserveState) public view returns (bool) {
         if (totalUnderlying() == 0) {
             // *Not* a corner case! This happens after a full burn!
             return false;
@@ -304,10 +298,8 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
 
     /** @dev Check if the recovery module should run; do it if needed. Can be called by anyone.
      * @return has run? */
-    function checkAndRun(DataTypes.ReserveState memory reserveState) public returns (bool)
-    {
-        if (!shouldRun(reserveState))
-            return false;
+    function checkAndRun(DataTypes.ReserveState memory reserveState) public returns (bool) {
+        if (!shouldRun(reserveState)) return false;
 
         // Compute amount to burn to reach target CR.
         uint256 targetCR = gyroConfig.getUint(ConfigKeys.GYD_RECOVERY_TARGET_CR);
@@ -324,8 +316,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         return true;
     }
 
-    function checkAndRun() external returns (bool)
-    {
+    function checkAndRun() external returns (bool) {
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
@@ -333,12 +324,12 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     }
 
     /// @dev Burn `amountToBurn` or the whole pool, whichever is smaller. Do proper accounting.
-    function executeBurn(uint256 amountToBurn) internal
-    {
+    function executeBurn(uint256 amountToBurn) internal {
         globalCheckpoint();
 
         uint256 _totalUnderlying = totalUnderlying();
-        bool isFullBurn = amountToBurn >= _totalUnderlying.mulDown(FixedPoint.ONE - MAX_PARTIAL_BURN_FACTOR);
+        bool isFullBurn = amountToBurn >=
+            _totalUnderlying.mulDown(FixedPoint.ONE - MAX_PARTIAL_BURN_FACTOR);
 
         if (isFullBurn) {
             amountToBurn = _totalUnderlying;
@@ -351,7 +342,9 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
             // The following makes totalStaked inconsistent with _perUserStaked but this is accounted for in userCheckpoint(), balanceAdjustedOf(), etc.
             totalStaked = 0;
         } else {
-            adjustmentFactor = adjustmentFactor.mulDown(_totalUnderlying - amountToBurn).divDown(_totalUnderlying);
+            adjustmentFactor = adjustmentFactor.mulDown(_totalUnderlying - amountToBurn).divDown(
+                _totalUnderlying
+            );
             // NB In extreme cases, when many large partial burns occurred, this may make adjustmentFactor = 0 due to numerical
             // error. In this case, no further deposits or withdrawals are possible. This situation is hard to avoid while
             // keeping the contract's accounting right. Governance should monitor adjustmentFactor to notice this condition

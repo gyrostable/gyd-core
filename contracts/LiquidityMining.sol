@@ -31,13 +31,11 @@ abstract contract LiquidityMining is ILiquidityMining {
         return _mintRewards(msg.sender, amount);
     }
 
-    function claimableRewards(
-        address beneficiary
-    ) external view virtual returns (uint256) {
+    function claimableRewards(address beneficiary) external view virtual returns (uint256) {
         uint256 totalStakedIntegral = _totalStakedIntegral;
         if (totalStaked > 0) {
-            totalStakedIntegral += (rewardsEmissionRate() *
-                (block.timestamp - _lastCheckpointTime)).divDown(totalStaked);
+            totalStakedIntegral += (rewardsEmissionRate() * (block.timestamp - _lastCheckpointTime))
+                .divDown(totalStaked);
         }
 
         return
@@ -91,8 +89,5 @@ abstract contract LiquidityMining is ILiquidityMining {
 
     function rewardsEmissionRate() public view virtual returns (uint256);
 
-    function _mintRewards(
-        address beneficiary,
-        uint256 amount
-    ) internal virtual returns (uint256);
+    function _mintRewards(address beneficiary, uint256 amount) internal virtual returns (uint256);
 }
