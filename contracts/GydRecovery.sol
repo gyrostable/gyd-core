@@ -60,7 +60,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     // user's address -> pending withdrawal ids. Convenience feature.
     mapping(address => EnumerableSet.UintSet) internal userPendingWithdrawalIds;
     uint256 internal nextWithdrawalId;
-    uint256 internal withdrawalWaitDuration;
+    uint256 public withdrawalWaitDuration;
 
     uint256 internal _rewardsEmissionRate;
     uint256 public rewardsEmissionEndTime;
