@@ -74,9 +74,4 @@ interface IMotherboard {
     function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] memory assets)
         external
         returns (uint256[] memory outputAmounts, string memory err);
-
-    /// @notice Checks if the GYD recovery module should be run and runs it. Optional, this also happens on every mint
-    /// and redeem.
-    /// @return whether the safety module has burnt any GYD.
-    function checkAndRunGydRecovery() external returns (bool);
 }

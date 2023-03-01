@@ -197,14 +197,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return _computeRedeemOutputAmounts(assets, orderAfterFees);
     }
 
-    function checkAndRunGydRecovery() external override returns (bool)
-    {
-        DataTypes.ReserveState memory reserveState = gyroConfig
-            .getReserveManager()
-            .getReserveState();
-        return gyroConfig.getGydRecovery().checkAndRun(reserveState);
-    }
-
     /// @inheritdoc IMotherboard
     function pamm() public view override returns (IPAMM) {
         return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
