@@ -300,9 +300,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         return currentCR < triggerCR;
     }
 
-    /** @dev Check if the recovery module should run; do it if needed. Can be called by anyone.
-     * @return has run? */
-    function checkAndRun(DataTypes.ReserveState memory reserveState) public returns (bool) {
+    function _checkAndRun(DataTypes.ReserveState memory reserveState) internal returns (bool) {
         if (!shouldRun(reserveState)) return false;
 
         // Compute amount to burn to reach target CR.
@@ -320,11 +318,16 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         return true;
     }
 
+    function checkAndRun(DataTypes.ReserveState memory reserveState) public returns (bool) {
+        require(msg.sender == address(gyroConfig.getMotherboard()), "not authorized");
+        return _checkAndRun(reserveState);
+    }
+
     function checkAndRun() external returns (bool) {
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
-        return checkAndRun(reserveState);
+        return _checkAndRun(reserveState);
     }
 
     /// @dev Burn `amountToBurn` or the whole pool, whichever is smaller. Do proper accounting.
