@@ -80,6 +80,8 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     );
     event WithdrawalCompleted(uint256 id, address to, uint256 adjustedAmount, uint256 amount);
     event RecoveryExecuted(uint256 tokensBurned, bool isFullBurn, uint256 newAdjustmentFactor);
+    event MiningStarted(uint256 amount, uint256 endTime);
+    event MiningStopped();
 
     constructor(
         address _governor,
@@ -266,6 +268,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         rewardToken.safeTransferFrom(rewardsFrom, address(this), amount);
         _rewardsEmissionRate = amount / (endTime - block.timestamp);
         rewardsEmissionEndTime = endTime;
+        emit MiningStarted(amount, endTime);
     }
 
     /// @dev To stop liquidity mining early and/or have the amount reimbursed when liquidity mining was paused when the pool was empty for a while.
@@ -274,6 +277,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         uint256 reimbursementAmount = rewardToken.balanceOf(address(this)) - _totalUnclaimedRewards;
         rewardToken.safeTransfer(reimbursementTo, reimbursementAmount);
         rewardsEmissionEndTime = 0;
+        emit MiningStopped();
     }
 
     function rewardsEmissionRate() public view override returns (uint256) {
