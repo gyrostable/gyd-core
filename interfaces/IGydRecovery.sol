@@ -10,6 +10,9 @@ interface IGydRecovery {
     /// @return didRun Whether the safety module ran.
     function checkAndRun() external returns (bool didRun);
 
+    /// @notice Whether the reserve should run under current conditions, i.e., whether it would run if `checkAndRun()` was called.
+    function shouldRun() external view returns (bool);
+
     /// @notice Variant of checkAndRun() where the reserve state is passed in; only callable by Motherboard.
     function checkAndRun(DataTypes.ReserveState memory reserveState) external returns (bool didRun);
 }

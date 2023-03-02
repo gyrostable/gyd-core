@@ -41,9 +41,6 @@ interface IMotherboard {
     /// @notice Main redemption function to be called by a withdrawer
     /// This redeems using at most `maxRedeemedAmount` of GYD and returns the
     /// exact outputs as specified by `tokens` and `amounts`
-    ///
-    /// Note: This does *not* include the action of the recovery module, if any!
-    ///
     /// @param gydToRedeem the maximum amount of GYD to redeem
     /// @param assets the output tokens and associated amounts to return against GYD
     /// @return outputAmounts the amounts receivd against the redeemed GYD
@@ -67,6 +64,9 @@ interface IMotherboard {
 
     /// @notice Dry version of the `redeem` function
     /// exact outputs as specified by `tokens` and `amounts`
+    ///
+    /// Note: This does *not* include the action of the recovery module, if any!
+    ///
     /// @param gydToRedeem the maximum amount of GYD to redeem
     /// @param assets the output tokens and associated amounts to return against GYD
     /// @return outputAmounts the amounts receivd against the redeemed GYD

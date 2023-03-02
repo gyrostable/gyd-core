@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.17;
 
+// NOTE: This is the same code as ILiquidityMining.sol in the governance repo.
+
 interface ILiquidityMining {
     event Stake(address indexed account, uint256 amount);
     event Unstake(address indexed account, uint256 amount);

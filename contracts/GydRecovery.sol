@@ -42,11 +42,8 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     // owner -> Position
     mapping(address => Position) internal positions;
 
-    struct FullBurnInfo {
-        uint256 totalStakedIntegral;
-    }
-    // Full burn ID -> Data at that point in time
-    mapping(uint256 => FullBurnInfo) internal fullBurnHistory;
+    // Full burn ID -> totalStakedIntegral at that point in time
+    mapping(uint256 => uint256) internal fullBurnHistory;
     uint256 nextFullBurnId = 1; // 0 is invalid; we use this to detect unset data.
 
     uint256 public adjustmentFactor = 1e18;
@@ -62,6 +59,10 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     mapping(address => EnumerableSet.UintSet) internal userPendingWithdrawalIds;
     uint256 internal nextWithdrawalId;
     uint256 public withdrawalWaitDuration;
+
+    // We bound two variables by immutables to provide some certainty for fund providers vs governance actions.
+    uint256 public immutable maxWithdrawalWaitDuration;
+    uint256 public immutable maxTriggerCR;
 
     IGyroConfig public immutable gyroConfig;
     IGYDToken public immutable gydToken;
@@ -81,11 +82,16 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         address _governor,
         address _gyroConfig,
         address _rewardToken,
-        uint256 _withdrawalWaitDuration
+        uint256 _withdrawalWaitDuration,
+        uint256 _maxWithdrawalWaitDuration,
+        uint256 _maxTriggerCR
     ) Governable(_governor) LiquidityMining(_rewardToken) {
         gyroConfig = IGyroConfig(_gyroConfig);
         gydToken = gyroConfig.getGYDToken();
+        require(_withdrawalWaitDuration <= _maxWithdrawalWaitDuration, "invalid withdrawal wait duration");
         withdrawalWaitDuration = _withdrawalWaitDuration;
+        maxWithdrawalWaitDuration = _maxWithdrawalWaitDuration;
+        maxTriggerCR = _maxTriggerCR;
     }
 
     function startMining(
@@ -101,6 +107,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     }
 
     function setWithdrawalWaitDuration(uint256 _duration) external governanceOnly {
+        require(_duration <= maxWithdrawalWaitDuration, "invalid withdrawal wait duration");
         withdrawalWaitDuration = _duration;
     }
 
@@ -227,7 +234,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         if (lastUpdatedFullBurnId > 0 && lastUpdatedFullBurnId < nextFullBurnId) {
             // The user receives rewards for their staked (= not withdrawal-initiated) amount until the first burn after
             // the last userCheckpoint() and we update their position going forward.
-            totalStakedIntegral = fullBurnHistory[lastUpdatedFullBurnId].totalStakedIntegral;
+            totalStakedIntegral = fullBurnHistory[lastUpdatedFullBurnId];
 
             position.adjustedAmount = 0;
             position.lastUpdatedFullBurnId = nextFullBurnId;
@@ -248,7 +255,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
 
         uint256 totalStakedIntegral;
         if (lastUpdatedFullBurnId > 0 && lastUpdatedFullBurnId < nextFullBurnId) {
-            totalStakedIntegral = fullBurnHistory[lastUpdatedFullBurnId].totalStakedIntegral;
+            totalStakedIntegral = fullBurnHistory[lastUpdatedFullBurnId];
         } else {
             totalStakedIntegral = _totalStakedIntegral;
             if (totalStaked > 0) {
@@ -264,6 +271,10 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
             );
     }
 
+    function shouldRun() external view returns (bool) {
+        return shouldRun(gyroConfig.getReserveManager().getReserveState());
+    }
+
     /// @dev Whether or not the recovery module should run and would run next time it's called.
     function shouldRun(DataTypes.ReserveState memory reserveState) public view returns (bool) {
         if (totalUnderlying() == 0) {
@@ -272,6 +283,9 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         }
         uint256 currentCR = reserveState.totalUSDValue.divDown(gydToken.totalSupply());
         uint256 triggerCR = gyroConfig.getUint(ConfigKeys.GYD_RECOVERY_TRIGGER_CR);
+        uint256 maxTriggerCR_ = maxTriggerCR;
+        if (triggerCR > maxTriggerCR_)
+            triggerCR = maxTriggerCR_;
         return currentCR < triggerCR;
     }
 
@@ -289,8 +303,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         }
         uint256 amountToBurn = currentGYDSupply - targetGYDSupply;
 
-        executeBurn(amountToBurn);
-        return true;
+        return executeBurn(amountToBurn);
     }
 
     function checkAndRun(DataTypes.ReserveState memory reserveState) external returns (bool) {
@@ -306,7 +319,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     }
 
     /// @dev Burn `amountToBurn` or the whole pool, whichever is smaller. Do proper accounting.
-    function executeBurn(uint256 amountToBurn) internal {
+    function executeBurn(uint256 amountToBurn) internal returns (bool) {
         globalCheckpoint();
 
         uint256 _totalUnderlying = totalUnderlying();
@@ -315,26 +328,28 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
 
         if (isFullBurn) {
             amountToBurn = _totalUnderlying;
-            fullBurnHistory[nextFullBurnId] = FullBurnInfo({
-                totalStakedIntegral: _totalStakedIntegral
-            });
+            fullBurnHistory[nextFullBurnId] = _totalStakedIntegral;
             ++nextFullBurnId;
             adjustmentFactor = FixedPoint.ONE;
 
             // The following makes totalStaked inconsistent with _perUserStaked but this is accounted for in userCheckpoint(), balanceAdjustedOf(), etc.
             totalStaked = 0;
         } else {
-            adjustmentFactor = adjustmentFactor.mulDown(_totalUnderlying - amountToBurn).divDown(
+            uint256 nextAdjustmentFactor = adjustmentFactor.mulDown(_totalUnderlying - amountToBurn).divDown(
                 _totalUnderlying
             );
-            // NB In extreme cases, when many large partial burns occurred, this may make adjustmentFactor = 0 due to numerical
-            // error. In this case, no further deposits or withdrawals are possible. This situation is hard to avoid while
-            // keeping the contract's accounting right. Governance should monitor adjustmentFactor to notice this condition
-            // ahead of time, then ask contributors to withdraw funds, and deploy a new instance of the contract.
-            // TODO ^ To be discussed.
+            if (nextAdjustmentFactor == 0) {
+                // Handle a potential numerical error when many large partial burns occurred over time. We then prevent
+                // the burn from running to make sure withdrawals don't lock up. This code should never run. Instead,
+                // governance should monitor adjustmentFactor to notice this condition ahead of time, then ask
+                // contributors to withdraw funds, and deploy a new instance of the contract.
+                return false;
+            }
+            adjustmentFactor = nextAdjustmentFactor;
         }
 
         gydToken.burn(amountToBurn);
         emit RecoveryExecuted(amountToBurn, isFullBurn, adjustmentFactor);
+        return true;
     }
 }

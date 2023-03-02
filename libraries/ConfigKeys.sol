@@ -26,5 +26,5 @@ library ConfigKeys {
     bytes32 internal constant GYD_USER_CAP = "GYD_USER_CAP";
 
     bytes32 internal constant GYD_RECOVERY_TRIGGER_CR = "GYD_RECOVERY_TRIGGER_CR";
-    bytes32 internal constant GYD_RECOVERY_TARGET_CR = "GYD_RECOVERY_TARGETh_CR";
+    bytes32 internal constant GYD_RECOVERY_TARGET_CR = "GYD_RECOVERY_TARGET_CR";
 }
