@@ -70,7 +70,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             .getReserveManager()
             .getReserveState();
 
-        // TODO implement an interface and getGydRecovery() when interface is final.
         gyroConfig.getGydRecovery().checkAndRun(reserveState);
 
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(
