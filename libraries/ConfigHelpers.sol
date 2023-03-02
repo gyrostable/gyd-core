@@ -87,6 +87,10 @@ library ConfigHelpers {
         return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_DURATION);
     }
 
+    function getGovTreasuryAddress(IGyroConfig gyroConfig) internal view returns (address) {
+        return gyroConfig.getAddress(ConfigKeys.GOV_TREASURY_ADDRESS);
+    }
+
     function getPerUserSupplyCap(IGyroConfig gyroConfig, bool authenticated)
         internal
         view

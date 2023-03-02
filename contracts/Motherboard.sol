@@ -200,12 +200,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
     }
 
-    function mintStewardshipIncRewards(address account, uint256 amount) external override {
+    function mintStewardshipIncRewards(uint256 amount) external override {
         require(
             msg.sender == address(gyroConfig.getReserveStewardshipIncentives()),
             "not authorized"
         );
-        gydToken.mint(account, amount);
+        address treasury = gyroConfig.getGovTreasuryAddress();
+        gydToken.mint(treasury, amount);
     }
 
     function _dryConvertMintInputAssetsToVaultTokens(DataTypes.MintAsset[] calldata assets)

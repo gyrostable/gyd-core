@@ -23,6 +23,8 @@ library ConfigKeys {
     bytes32 internal constant STEWARDSHIP_INC_MIN_CR = "STEWARDSHIP_INC_MIN_CR";
     bytes32 internal constant STEWARDSHIP_INC_DURATION = "STEWARDSHIP_INC_DURATION";
 
+    bytes32 internal constant GOV_TREASURY_ADDRESS = "GOV_TREASURY_ADDRESS";
+
     // Uints
     bytes32 internal constant GYD_GLOBAL_SUPPLY_CAP = "GYD_GLOBAL_SUPPLY_CAP";
     bytes32 internal constant GYD_AUTHENTICATED_USER_CAP = "GYD_AUTHENTICATED_USER_CAP";

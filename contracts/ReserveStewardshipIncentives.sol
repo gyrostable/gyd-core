@@ -82,7 +82,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         emit InitiativeCanceled();
     }
 
-    function completeInitiative(address rewardTo) external governanceOnly {
+    function completeInitiative() external governanceOnly {
         uint256 endTime = activeInitiative.endTime;
         require(endTime > 0, "no active initiative");
         require(endTime <= block.timestamp, "initiative not yet complete");
@@ -116,8 +116,8 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
             reward = reduction < reward ? reward - reduction : 0;
         }
 
-        gyroConfig.getMotherboard().mintStewardshipIncRewards(rewardTo, reward);
-        emit InitiativeCompleted(startTime, rewardTo, reward);
+        gyroConfig.getMotherboard().mintStewardshipIncRewards(reward);
+        emit InitiativeCompleted(initiative.startTime, reward);
 
         activeInitiative.endTime = 0;
     }

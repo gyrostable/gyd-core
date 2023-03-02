@@ -69,7 +69,6 @@ interface IMotherboard {
         external
         returns (uint256[] memory outputAmounts, string memory err);
 
-    /// @notice Only callable from the reserve stewardship incentives module. Mints new GYD.
-    /// @param account address the rewards should be credited to. Typically a governance treasury account.
-    function mintStewardshipIncRewards(address account, uint256 amount) external;
+    /// @notice Only callable from the reserve stewardship incentives module. Mints new GYD to the governance treasury.
+    function mintStewardshipIncRewards(uint256 amount) external;
 }
