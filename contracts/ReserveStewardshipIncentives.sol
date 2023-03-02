@@ -83,9 +83,10 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
     }
 
     function completeInitiative() external governanceOnly {
-        uint256 endTime = activeInitiative.endTime;
-        require(endTime > 0, "no active initiative");
-        require(endTime <= block.timestamp, "initiative not yet complete");
+        Initiative memory initiative = activeInitiative;
+
+        require(initiative.endTime > 0, "no active initiative");
+        require(initiative.endTime <= block.timestamp, "initiative not yet complete");
 
         // TODO add view methods for easier checking by others. Then use these functions, too, here.
         
@@ -93,17 +94,16 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         require(reserveHealthViolations.nViolations <= MAX_HEALTH_VIOLATIONS, "initiative failed: too many health violations");
 
         // Compute target reward
-        uint256 startTime = activeInitiative.startTime;
-        uint256 initiativeLength = aggSupply.lastUpdatedTime - startTime;
-        uint256 avgGYDSupply = aggSupply.aggSupply / initiativeLength;
-        uint256 targetReward = activeInitiative.rewardPercentage.mulDown(avgGYDSupply);
+        uint256 gydSupply = gydToken.totalSupply();
+        uint256 aggSupply_ = aggSupply.aggSupply + (initiative.endTime - aggSupply.lastUpdatedTime) * gydSupply;
+        uint256 initiativeLength = initiative.endTime - initiative.startTime;
+        uint256 avgGYDSupply = aggSupply_ / initiativeLength;
+        uint256 targetReward = initiative.rewardPercentage.mulDown(avgGYDSupply);
 
         // Compute max available reward
         DataTypes.ReserveState memory reserveState = gyroConfig.getReserveManager().getReserveState();
-        uint256 gydSupply = gydToken.totalSupply();
-        // TODO discuss: should this pull the *current* min collateralization ratio from config instead in case it was changed?
-        uint256 maxAllowedGYDSupply = reserveState.totalUSDValue.divDown(activeInitiative.minCollateralRatio);
-        // If the following fails, collateralization ratio fell too low between the last update and now.
+        uint256 maxAllowedGYDSupply = reserveState.totalUSDValue.divDown(initiative.minCollateralRatio);
+
         require(gydSupply < maxAllowedGYDSupply, "collateral ratio too low");
         uint256 maxReward = maxAllowedGYDSupply - gydSupply;
 
