@@ -70,6 +70,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             .getReserveManager()
             .getReserveState();
 
+        gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
+
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(
             vaultAmounts,
             reserveState.vaults
@@ -92,9 +94,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         require(!_isOverCap(msg.sender, mintedGYDAmount), Errors.SUPPLY_CAP_EXCEEDED);
 
         gydToken.mint(msg.sender, mintedGYDAmount);
-
-        // TODO write this getter and config key
-        gyroConfig.getReserveStewardshipIncentives().updateTrackedVariables(reserveState);
     }
 
     /// @inheritdoc IMotherboard
@@ -109,6 +108,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
+
+        gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
 
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveState.totalUSDValue);
         require(
@@ -125,8 +126,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         outputAmounts = _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
-
-        gyroConfig.getReserveStewardshipIncentives().updateTrackedVariables(reserveState);
     }
 
     /// @inheritdoc IMotherboard
@@ -199,6 +198,11 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     /// @inheritdoc IMotherboard
     function pamm() public view override returns (IPAMM) {
         return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
+    }
+
+    function mintStewardshipIncRewards(address account, uint256 amount) external override {
+        require(msg.sender == address(gyroConfig.getReserveStewardshipIncentives()), "not authorized");
+        gydToken.mint(account, amount);
     }
 
     function _dryConvertMintInputAssetsToVaultTokens(DataTypes.MintAsset[] calldata assets)

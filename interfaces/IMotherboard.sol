@@ -68,4 +68,8 @@ interface IMotherboard {
     function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] memory assets)
         external
         returns (uint256[] memory outputAmounts, string memory err);
+
+    /// @notice Only callable from the reserve stewardship incentives module. Mints new GYD.
+    /// @param account address the rewards should be credited to. Typically a governance treasury account.
+    function mintStewardshipIncRewards(address account, uint256 amount) external;
 }

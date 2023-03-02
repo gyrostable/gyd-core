@@ -3,38 +3,37 @@ pragma solidity ^0.8.0;
 import "./auth/Governable.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
+import "../interfaces/IReserveStewardshipIncentives.sol";
 import "../libraries/ConfigHelpers.sol";
 import "../libraries/FixedPoint.sol";
 
-contract ReserveStewardshipIncentives is Governable {
+contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governable {
     using ConfigHelpers for IGyroConfig;
     using FixedPoint for uint256;
 
-    uint internal constant SECONDS_PER_DAY = 24 * 60 * 60;
-
     uint internal constant MAX_REWARD_PERCENTAGE = 0.5e18;
     uint internal constant OVERESTIMATION_PENALTY_FACTOR = 0.1e18;
-    uint internal constant MAX_HEALTH_VIOLATIONS = 1;  // TODO could be configurable
+    uint internal constant MAX_HEALTH_VIOLATIONS = 1;  // TODO should this be configurable?
 
-    struct Proposal {
-        uint256 startTime;  // timestamp (not block)
-        uint256 endTime;  // timestamp (not block)
-        // SOMEDAY optimization: could be stored with fewer bits to save a slot
+    /// @dev We call the collection of incentive start and end times and parameters an "initiative".
+    struct Initiative {
+        uint256 startTime;  // timestamp
+        uint256 endTime;  // timestamp
         uint256 minCollateralRatio;
         uint256 rewardPercentage;
     }
-    Proposal public activeProposal;  // .endTime = 0 means none is there.
+    Initiative public activeInitiative;  // .endTime = 0 means none is there.
 
     struct ReserveHealthViolations {
         // SOMEDAY optimization: could be stored with fewer bits to save a slot
         uint256 lastViolatedDate;  // date
         uint256 nViolations;
     }
-    ReserveHealthViolations reserveHealthViolations;
+    ReserveHealthViolations public reserveHealthViolations;
 
-    // We store the time integral of the GYD supply to compute the reward at the end based on avg supply.
+    /// @dev We store the time integral of the GYD supply to compute the reward at the end based on avg supply.
     struct AggSupply {
-        uint256 lastUpdatedTimestamp;
+        uint256 lastUpdatedTime;
         uint256 aggSupply;
     }
     AggSupply public aggSupply;
@@ -42,104 +41,99 @@ contract ReserveStewardshipIncentives is Governable {
     IGyroConfig public immutable gyroConfig;
     IGYDToken public immutable gydToken;
 
-    // TODO some events, raise below.
-
     constructor(address _governor, address _gyroConfig) Governable(_governor)
     {
         gyroConfig = IGyroConfig(_gyroConfig);
         gydToken = gyroConfig.getGYDToken();
     }
 
-    // TODO should the rewardPercentage be an argument to this fct or a GyroConfig variable? I feel *probably* here but
-    // flagging.
-    /** @dev Create new incentive proposal.
-     * @param rewardPercentage Share of the average GYD supply over time that should be paid as a reward.
-    */
-    function createProposal(uint256 rewardPercentage) external governanceOnly
+    function startInitiative(uint256 rewardPercentage) external governanceOnly
     {
-        require(rewardPercentage <= MAX_REWARD_PERCENTAGE);
-        require(!activeProposal.endTime);
+        require(rewardPercentage <= MAX_REWARD_PERCENTAGE, "reward percentage too high");
+        require(activeInitiative.endTime == 0, "active initiative already present");
 
-        // TODO code these config keys and access methods
-        uint256 minCollateralRatio = gyroConfig.getIncentiveMinCollateralRatio();
-        uint256 duration = gyroConfig.getIncentiveDuration();
+        uint256 minCollateralRatio = gyroConfig.getStewardshipIncMinCollateralRatio();
+        uint256 duration = gyroConfig.getStewardshipIncDuration();
 
         DataTypes.ReserveState memory reserveState = gyroConfig.getReserveManager().getReserveState();
         uint256 gydSupply = gydToken.totalSupply();
 
         uint256 collateralRatio = reserveState.totalUSDValue.divDown(gydSupply);
-        require(collateralRatio >= minCollateralRatio);
+        require(collateralRatio >= minCollateralRatio, "collateral ratio too low");
 
         uint256 today = timestampToDatestamp(block.timestamp);
         reserveHealthViolations = ReserveHealthViolations(0, 0);
 
-        aggSupply = AggSupply(block.timestamp, 0);  // init at 0 because it's aggregate over time.
+        aggSupply = AggSupply(block.timestamp, 0);
 
-        activeProposal = Proposal({
+        Initiative memory initiative = Initiative({
             startTime: block.timestamp,
             endTime: block.timestamp + duration,
+            // TODO discuss: alternatively, we could always use the *current* min collateralization ratio, instead of the one from when the initiative was set up.
             minCollateralRatio: minCollateralRatio,
             rewardPercentage: rewardPercentage
         });
+        activeInitiative = initiative;
+        emit InitiativeStarted(initiative.endTime, initiative.minCollateralRatio, initiative.rewardPercentage);
     }
 
-    function cancelActiveProposal() external governanceOnly {
-        activeProposal.endTime = 0;
+    function cancelInitiative() external governanceOnly {
+        activeInitiative.endTime = 0;
+        emit InitiativeCanceled();
     }
 
-    // TODO should this be governanceOnly? Should it an address to send the funds to as an argument?
-    function completeActiveProposal() external {
-        uint256 endTime = activeProposal.endTime;
-        require(endTime > 0 && endTime <= block.timestamp);
+    function completeInitiative(address rewardTo) external governanceOnly {
+        uint256 endTime = activeInitiative.endTime;
+        require(endTime > 0, "no active initiative");
+        require(endTime <= block.timestamp, "initiative not yet complete");
 
         // TODO add view methods for easier checking by others. Then use these functions, too, here.
         
         // Check incentive success
-        require(reserveHealthViolations.nViolations <= MAX_HEALTH_VIOLATIONS);
+        require(reserveHealthViolations.nViolations <= MAX_HEALTH_VIOLATIONS, "initiative failed: too many health violations");
 
         // Compute target reward
-        uint256 proposalLength = aggSupply.lastUpdatedTimestamp - activeProposal.startTime;
-        uint256 avgGYDSupply = aggSupply.aggSupply / proposalLength;
-        uint256 targetReward = activeProposal.rewardPercentage.mulDown(avgGYDSupply);
+        uint256 startTime = activeInitiative.startTime;
+        uint256 initiativeLength = aggSupply.lastUpdatedTime - startTime;
+        uint256 avgGYDSupply = aggSupply.aggSupply / initiativeLength;
+        uint256 targetReward = activeInitiative.rewardPercentage.mulDown(avgGYDSupply);
 
         // Compute max available reward
-        DataTypes.ReserveState reserveState = gyroConfig.getReserveManager().getReserveState();
+        DataTypes.ReserveState memory reserveState = gyroConfig.getReserveManager().getReserveState();
         uint256 gydSupply = gydToken.totalSupply();
-        // TODO should this pull the *current* min collateralization ratio from config instead in case it was changed?
-        uint256 maxAllowedGYDSupply = reserveState.totalUSDValue.divDown(activeProposal.minCollateralRatio);
+        // TODO discuss: should this pull the *current* min collateralization ratio from config instead in case it was changed?
+        uint256 maxAllowedGYDSupply = reserveState.totalUSDValue.divDown(activeInitiative.minCollateralRatio);
         // If the following fails, collateralization ratio fell too low between the last update and now.
-        require(gydSupply < maxAllowedGYDSupply);
+        require(gydSupply < maxAllowedGYDSupply, "collateral ratio too low");
         uint256 maxReward = maxAllowedGYDSupply - gydSupply;
 
         // Marry target reward with max available reward. We could take the minimum here but we use a slightly different
-        // function to incentivize governance towards moderation when choosing rewardPercentage.
-        // TODO still a bit open what exactly the formula should be. This one introduces a linear penalty for over-estimation.
+        // function to incentivize governance towards moderation when choosing rewardPercentage. We introduce a linear
+        // penalty for over-estimation here.
         uint256 reward = targetReward;
         if (reward > maxReward) {
             uint256 reduction = (FixedPoint.ONE + OVERESTIMATION_PENALTY_FACTOR).mulDown(reward - maxReward);
             reward = reduction < reward ? reward - reduction : 0;
         }
 
-        // TODO mint `reward` new GYD out of thin air and credit them to governance treasury (tbd)
+        gyroConfig.getMotherboard().mintStewardshipIncRewards(rewardTo, reward);
+        emit InitiativeCompleted(startTime, rewardTo, reward);
 
-        activeProposal.endTime = 0;
+        activeInitiative.endTime = 0;
     }
 
-    function updateTrackedVariables(DataTypes.ReserveState memory reserveState) public
+    function _checkpoint(DataTypes.ReserveState memory reserveState) internal
     {
-        if (!activeProposal.endTime || activeProposal.endTime <= block.timestamp)
-            // NB it's important to not track anything after the proposal has ended: may introduce manipulability.
+        if (activeInitiative.endTime == 0 || activeInitiative.endTime <= block.timestamp)
+            // NB it's important to not track anything after the initiative has ended: may introduce manipulability.
             return;
 
         uint256 gydSupply = gydToken.totalSupply();
-        uint256 lastUpdated = aggSupply.lastUpdatedTimestamp;
-        if (block.timestamp > lastUpdated) {  // Check to handle timestamp fluctuations
-            aggSupply.aggSupply += (block.timestamp - lastUpdated) * gydSupply;
-            aggSupply.lastUpdatedTimestamp = block.timestamp;
-        }
-        
+        aggSupply.aggSupply += (block.timestamp - aggSupply.lastUpdatedTime) * gydSupply;
+        aggSupply.lastUpdatedTime = block.timestamp;
+
         uint256 collateralRatio = reserveState.totalUSDValue.divDown(gydSupply);
-        if (collateralRatio < activeProposal.minCollateralRatio) {
+        if (collateralRatio < activeInitiative.minCollateralRatio) {
             uint256 today = timestampToDatestamp(block.timestamp);
             if (reserveHealthViolations.lastViolatedDate < today) {
                 ++reserveHealthViolations.nViolations;
@@ -148,17 +142,23 @@ contract ReserveStewardshipIncentives is Governable {
         }
     }
 
-    function updateTrackedVariables() external
+    function checkpoint(DataTypes.ReserveState memory reserveState) external {
+        require(msg.sender == address(gyroConfig.getMotherboard()), "not authorized");
+        return _checkpoint(reserveState);
+    }
+
+    function checkpoint() external
     {
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
-        updateTrackedVariables(reserveState);
+        _checkpoint(reserveState);
     }
-    /// @dev Approximately days since epoch. Not quite correct but good enough to distinguish different
-    /// days, which is all we need here.
-    function timestampToDatestamp(uint256 timestamp) returns (uint256)
+
+    /// @dev Approximately days since epoch. Not quite correct but good enough to distinguish different days, which is
+    /// all we need here.
+    function timestampToDatestamp(uint256 timestamp) internal returns (uint256)
     {
-        return timestamp / SECONDS_PER_DAY;
+        return timestamp / 1 days;
     }
 }
