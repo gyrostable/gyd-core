@@ -17,6 +17,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
 
     /// @dev We call the collection of incentive start and end times and parameters an "initiative".
     struct Initiative {
+        // SOMEDAY optimization: could be stored with fewer bits to save a slot
         uint256 startTime;  // timestamp
         uint256 endTime;  // timestamp
         uint256 minCollateralRatio;
