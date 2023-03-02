@@ -201,7 +201,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     }
 
     function mintStewardshipIncRewards(address account, uint256 amount) external override {
-        require(msg.sender == address(gyroConfig.getReserveStewardshipIncentives()), "not authorized");
+        require(
+            msg.sender == address(gyroConfig.getReserveStewardshipIncentives()),
+            "not authorized"
+        );
         gydToken.mint(account, amount);
     }
 
