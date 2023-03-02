@@ -190,7 +190,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         delete pendingWithdrawals[withdrawalId];
         userPendingWithdrawalIds[pending.to].remove(withdrawalId);
 
-        emit WithdrawalCompleted(withdrawalId, pending.to, adjustedAmount, amount);
+        emit WithdrawalCompleted(withdrawalId, pending.to, pending.adjustedAmount, amount);
     }
 
     function listPendingWithdrawals(address _user)
