@@ -63,12 +63,8 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     uint256 internal nextWithdrawalId;
     uint256 public withdrawalWaitDuration;
 
-    uint256 internal _rewardsEmissionRate;
-    uint256 public rewardsEmissionEndTime;
-
     IGyroConfig public immutable gyroConfig;
     IGYDToken public immutable gydToken;
-    IERC20 public immutable rewardToken;
 
     event Deposit(address beneficiary, uint256 adjustedAmount, uint256 amount);
     event WithdrawalQueued(
@@ -80,19 +76,23 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     );
     event WithdrawalCompleted(uint256 id, address to, uint256 adjustedAmount, uint256 amount);
     event RecoveryExecuted(uint256 tokensBurned, bool isFullBurn, uint256 newAdjustmentFactor);
-    event MiningStarted(uint256 amount, uint256 endTime);
-    event MiningStopped();
 
     constructor(
         address _governor,
         address _gyroConfig,
         address _rewardToken,
         uint256 _withdrawalWaitDuration
-    ) Governable(_governor) {
+    ) Governable(_governor) LiquidityMining(_rewardToken) {
         gyroConfig = IGyroConfig(_gyroConfig);
         gydToken = gyroConfig.getGYDToken();
-        rewardToken = IERC20(_rewardToken);
         withdrawalWaitDuration = _withdrawalWaitDuration;
+    }
+
+    function startMining(address rewardsFrom, uint256 amount, uint256 endTime) external override governanceOnly {
+        _startMining(rewardsFrom, amount, endTime);
+    }
+    function stopMining(address reimbursementTo) external override governanceOnly {
+        _stopMining(reimbursementTo);
     }
 
     function setWithdrawalWaitDuration(uint256 _duration) external governanceOnly {
@@ -257,36 +257,6 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
             _perUserStaked[beneficiary].mulDown(
                 totalStakedIntegral - _perUserStakedIntegral[beneficiary]
             );
-    }
-
-    function startLiquidityMining(
-        address rewardsFrom,
-        uint256 amount,
-        uint256 endTime
-    ) external governanceOnly {
-        globalCheckpoint();
-        rewardToken.safeTransferFrom(rewardsFrom, address(this), amount);
-        _rewardsEmissionRate = amount / (endTime - block.timestamp);
-        rewardsEmissionEndTime = endTime;
-        emit MiningStarted(amount, endTime);
-    }
-
-    /// @dev To stop liquidity mining early and/or have the amount reimbursed when liquidity mining was paused when the pool was empty for a while.
-    function stopLiquidityMining(address reimbursementTo) external governanceOnly {
-        globalCheckpoint();
-        uint256 reimbursementAmount = rewardToken.balanceOf(address(this)) - _totalUnclaimedRewards;
-        rewardToken.safeTransfer(reimbursementTo, reimbursementAmount);
-        rewardsEmissionEndTime = 0;
-        emit MiningStopped();
-    }
-
-    function rewardsEmissionRate() public view override returns (uint256) {
-        return block.timestamp <= rewardsEmissionEndTime ? _rewardsEmissionRate : 0;
-    }
-
-    function _mintRewards(address beneficiary, uint256 amount) internal override returns (uint256) {
-        rewardToken.safeTransfer(beneficiary, amount);
-        return amount;
     }
 
     /// @dev Whether or not the recovery module should run and would run next time it's called.

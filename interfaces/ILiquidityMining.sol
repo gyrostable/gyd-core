@@ -6,6 +6,9 @@ interface ILiquidityMining {
     event Unstake(address indexed account, uint256 amount);
     event Claim(address indexed beneficiary, uint256 amount);
 
+    event StartMining(uint256 amount, uint256 endTime);
+    event StopMining();
+
     /// @notice claims rewards for caller
     function claimRewards() external returns (uint256);
 
@@ -24,9 +27,18 @@ interface ILiquidityMining {
     /// This emission will be given to all stakers in the contract proportionally to their stake
     function rewardsEmissionRate() external view returns (uint256);
 
+    /// @notice time when rewards emission ends
+    function rewardsEmissionEndTime() external view returns (uint256);
+
     /// @dev these functions will be called internally but can typically be called by anyone
     /// to update the internal tracking state of the contract
     function globalCheckpoint() external;
 
     function userCheckpoint(address account) external;
+
+    /// @notice Deposit `amount` of the reward token from `rewardsFrom` and enable rewards until `endTime`. Typically governanceOnly. `amount` is spread evenly over the time period.
+    function startMining(address rewardsFrom, uint256 amount, uint256 endTime) external;
+
+    /// @notice Stop liquidity mining early and reimburse leftover rewards to `reimbursementTo`. This may also be needed after the mining period has ended when we had `totalStaked() == 0` for a while, where no rewards accrue.
+    function stopMining(address reimbursementTo) external;
 }
