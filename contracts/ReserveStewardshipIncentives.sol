@@ -82,7 +82,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         emit InitiativeCanceled();
     }
 
-    function completeInitiative() external governanceOnly {
+    function completeInitiative() external {
         Initiative memory initiative = activeInitiative;
 
         require(initiative.endTime > 0, "no active initiative");

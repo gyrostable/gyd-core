@@ -19,7 +19,7 @@ interface IReserveStewardshipIncentives {
 
     /// @notice Complete the active initiative and claim rewards. Rewards are sent to the governance treasury address.
     /// The initiative period must have passed while the reserve health conditions have held, and they must currently
-    /// still hold.
+    /// still hold. Callable by anyone.
     function completeInitiative() external;
 
     /// @notice Update the internally tracked variables. Called internally but can also be called by anyone.
