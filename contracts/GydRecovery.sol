@@ -88,9 +88,14 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         withdrawalWaitDuration = _withdrawalWaitDuration;
     }
 
-    function startMining(address rewardsFrom, uint256 amount, uint256 endTime) external override governanceOnly {
+    function startMining(
+        address rewardsFrom,
+        uint256 amount,
+        uint256 endTime
+    ) external override governanceOnly {
         _startMining(rewardsFrom, amount, endTime);
     }
+
     function stopMining(address reimbursementTo) external override governanceOnly {
         _stopMining(reimbursementTo);
     }

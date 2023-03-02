@@ -130,6 +130,11 @@ abstract contract LiquidityMining is ILiquidityMining {
 
     /// @dev These functions would typically be overloaded by the calling contract to perform its own authorization and
     /// then call the underscore versions.
-    function startMining(address rewardsFrom, uint256 amount, uint256 endTime) external virtual;
+    function startMining(
+        address rewardsFrom,
+        uint256 amount,
+        uint256 endTime
+    ) external virtual;
+
     function stopMining(address reimbursementTo) external virtual;
 }
