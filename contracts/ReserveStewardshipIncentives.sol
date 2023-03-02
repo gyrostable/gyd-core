@@ -70,7 +70,6 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         Initiative memory initiative = Initiative({
             startTime: block.timestamp,
             endTime: block.timestamp + duration,
-            // TODO discuss: alternatively, we could always use the *current* min collateralization ratio, instead of the one from when the initiative was set up.
             minCollateralRatio: minCollateralRatio,
             rewardPercentage: rewardPercentage
         });
