@@ -88,7 +88,10 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     ) Governable(_governor) LiquidityMining(_rewardToken) {
         gyroConfig = IGyroConfig(_gyroConfig);
         gydToken = gyroConfig.getGYDToken();
-        require(_withdrawalWaitDuration <= _maxWithdrawalWaitDuration, "invalid withdrawal wait duration");
+        require(
+            _withdrawalWaitDuration <= _maxWithdrawalWaitDuration,
+            "invalid withdrawal wait duration"
+        );
         withdrawalWaitDuration = _withdrawalWaitDuration;
         maxWithdrawalWaitDuration = _maxWithdrawalWaitDuration;
         maxTriggerCR = _maxTriggerCR;
@@ -284,8 +287,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         uint256 currentCR = reserveState.totalUSDValue.divDown(gydToken.totalSupply());
         uint256 triggerCR = gyroConfig.getUint(ConfigKeys.GYD_RECOVERY_TRIGGER_CR);
         uint256 maxTriggerCR_ = maxTriggerCR;
-        if (triggerCR > maxTriggerCR_)
-            triggerCR = maxTriggerCR_;
+        if (triggerCR > maxTriggerCR_) triggerCR = maxTriggerCR_;
         return currentCR < triggerCR;
     }
 
@@ -335,9 +337,9 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
             // The following makes totalStaked inconsistent with _perUserStaked but this is accounted for in userCheckpoint(), balanceAdjustedOf(), etc.
             totalStaked = 0;
         } else {
-            uint256 nextAdjustmentFactor = adjustmentFactor.mulDown(_totalUnderlying - amountToBurn).divDown(
-                _totalUnderlying
-            );
+            uint256 nextAdjustmentFactor = adjustmentFactor
+                .mulDown(_totalUnderlying - amountToBurn)
+                .divDown(_totalUnderlying);
             if (nextAdjustmentFactor == 0) {
                 // Handle a potential numerical error when many large partial burns occurred over time. We then prevent
                 // the burn from running to make sure withdrawals don't lock up. This code should never run. Instead,
