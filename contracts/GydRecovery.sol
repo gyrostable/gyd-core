@@ -318,7 +318,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         return true;
     }
 
-    function checkAndRun(DataTypes.ReserveState memory reserveState) public returns (bool) {
+    function checkAndRun(DataTypes.ReserveState memory reserveState) external returns (bool) {
         require(msg.sender == address(gyroConfig.getMotherboard()), "not authorized");
         return _checkAndRun(reserveState);
     }
