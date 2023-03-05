@@ -218,7 +218,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
 
     /// @dev Approximately days since epoch. Not quite correct but good enough to distinguish different days, which is
     /// all we need here.
-    function timestampToDatestamp(uint256 timestamp) internal returns (uint256) {
+    function timestampToDatestamp(uint256 timestamp) pure internal returns (uint256) {
         return timestamp / 1 days;
     }
 }
