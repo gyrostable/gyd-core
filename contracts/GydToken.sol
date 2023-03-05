@@ -36,4 +36,8 @@ contract GydToken is ERC20Upgradeable {
         }
         _burn(account, amount);
     }
+
+    function burn(uint256 amount) external {
+        _burn(_msgSender(), amount);
+    }
 }
