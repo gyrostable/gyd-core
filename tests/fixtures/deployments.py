@@ -125,6 +125,16 @@ def asset_registry(admin, AssetRegistry, gyro_config):
     )
     return asset_registry
 
+@pytest.fixture(scope="module")
+def stewardship_incentives(ReserveStewardshipIncentives, admin, gyro_config, gyd_token):
+    stewardship_incentives = admin.deploy(ReserveStewardshipIncentives, admin, gyro_config)
+    gyro_config.setAddress(
+        config_keys.STEWARDSHIP_INC_ADDRESS, stewardship_incentives, {'from': admin}
+    )
+
+    gyro_config.setUint(config_keys.STEWARDSHIP_INC_MIN_CR, constants.STEWARDSHIP_INC_MIN_CR)
+    gyro_config.setUint(config_keys.STEWARDSHIP_INC_DURATION, constants.STEWARDSHIP_INC_DURATION)
+    gyro_config.setUint(config_keys.STEWARDSHIP_INC_MAX_VIOLATIONS, constants.STEWARDSHIP_INC_MAX_VIOLATIONS)
 
 @pytest.fixture(scope="module")
 def coinbase_price_oracle(admin, TestingTrustedSignerPriceOracle, asset_registry):
@@ -210,6 +220,7 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
         "static_percentage_fee_handler",
         "mock_balancer_vault",
         "gyd_token",
+        "stewardship_incentives"
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
