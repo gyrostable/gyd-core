@@ -1,6 +1,7 @@
 import pytest
 
 from brownie.test.managers.runner import RevertContextManager as reverts
+from brownie import chain
 
 from tests.support.types import MintAsset
 from tests.support.utils import scale
@@ -47,6 +48,7 @@ def test_deposit(alice, gyd_recovery, gyd_token):
     assert gyd_recovery.balanceOf(alice) == gyd_amount
 
 
+@pytest.mark.usefixtures("gyd_alice")
 def test_initiate_withdrawal(gyd_token, gyd_recovery, alice):
     gyd_amount = scale(2)
     gyd_token.approve(gyd_recovery, gyd_amount, {"from": alice})
@@ -60,3 +62,31 @@ def test_initiate_withdrawal(gyd_token, gyd_recovery, alice):
     end_bal = gyd_recovery.balanceOf(alice)
     assert end_bal == start_bal - 10
     assert gyd_recovery.totalBalanceOf(alice) == end_bal + 10
+
+
+@pytest.mark.usefixtures("gyd_alice")
+def test_withdrawal(alice, gyd_recovery, gyd_token):
+    gyd_amount = scale(2)
+    gyd_token.approve(gyd_recovery, gyd_amount, {"from": alice})
+    gyd_recovery.deposit(gyd_amount, {"from": alice})
+
+    tx = gyd_recovery.initiateWithdrawal(10, {"from": alice})
+    withdrawal_id = tx.events["WithdrawalQueued"]["id"]
+    assert tx.events["WithdrawalQueued"]["to"] == alice
+
+    with reverts(revert_msg="matching withdrawal does not exist"):
+        gyd_recovery.withdraw(10, {"from": alice})
+
+    with reverts(revert_msg="not yet withdrawable"):
+        gyd_recovery.withdraw(withdrawal_id, {"from": alice})
+
+    chain.sleep(constants.GYD_RECOVERY_WITHDRAWAL_WAIT_DURATION)
+    chain.mine()
+
+    start_bal = gyd_token.balanceOf(alice)
+    assert gyd_token.balanceOf(gyd_recovery) == scale(2)
+    gyd_recovery.withdraw(withdrawal_id, {"from": alice})
+    assert gyd_token.balanceOf(alice) - start_bal == 10
+    assert gyd_token.balanceOf(gyd_recovery) == scale(2) - 10
+    assert gyd_recovery.totalBalanceOf(alice) == scale(2) - 10
+    assert gyd_recovery.balanceOf(alice) == scale(2) - 10
