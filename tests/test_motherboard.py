@@ -8,30 +8,9 @@ from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.types import MintAsset, RedeemAsset
 from tests.support.utils import scale
 
-
 @pytest.fixture(scope="module", autouse=True)
-def set_mock_oracle_prices(mock_price_oracle, usdc, usdc_vault, dai, dai_vault, admin):
-    mock_price_oracle.setUSDPrice(usdc, scale(1), {"from": admin})
-    mock_price_oracle.setUSDPrice(usdc_vault, scale(1), {"from": admin})
-    mock_price_oracle.setUSDPrice(dai, scale(1), {"from": admin})
-    mock_price_oracle.setUSDPrice(dai_vault, scale(1), {"from": admin})
-
-
-@pytest.fixture(scope="module", autouse=True)
-def set_fees(static_percentage_fee_handler, usdc_vault, dai_vault, admin):
-    static_percentage_fee_handler.setVaultFees(usdc_vault, 0, 0, {"from": admin})
-    static_percentage_fee_handler.setVaultFees(dai_vault, 0, 0, {"from": admin})
-
-
-@pytest.fixture
-def register_usdc_vault(reserve_manager, usdc_vault, admin):
-    reserve_manager.registerVault(usdc_vault, scale(1), 0, 0, {"from": admin})
-
-
-@pytest.fixture
-def register_usdc_and_dai_vaults(reserve_manager, usdc_vault, dai_vault, admin):
-    reserve_manager.registerVault(dai_vault, scale("0.6"), 0, 0, {"from": admin})
-    reserve_manager.registerVault(usdc_vault, scale("0.4"), 0, 0, {"from": admin})
+def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
+    pass
 
 
 @pytest.mark.usefixtures("register_usdc_vault")

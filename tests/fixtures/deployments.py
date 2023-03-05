@@ -350,3 +350,28 @@ def cap_authentication(admin, CapAuthentication):
     cap_authentication = admin.deploy(CapAuthentication)
     cap_authentication.initialize(admin)
     return cap_authentication
+
+
+@pytest.fixture(scope="module")
+def set_mock_oracle_prices_usdc_dai(mock_price_oracle, usdc, usdc_vault, dai, dai_vault, admin):
+    mock_price_oracle.setUSDPrice(usdc, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(usdc_vault, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(1), {"from": admin})
+
+
+@pytest.fixture(scope="module")
+def set_fees_usdc_dai(static_percentage_fee_handler, usdc_vault, dai_vault, admin):
+    static_percentage_fee_handler.setVaultFees(usdc_vault, 0, 0, {"from": admin})
+    static_percentage_fee_handler.setVaultFees(dai_vault, 0, 0, {"from": admin})
+
+
+@pytest.fixture
+def register_usdc_vault(reserve_manager, usdc_vault, admin):
+    reserve_manager.registerVault(usdc_vault, scale(1), 0, 0, {"from": admin})
+
+
+@pytest.fixture
+def register_usdc_and_dai_vaults(reserve_manager, usdc_vault, dai_vault, admin):
+    reserve_manager.registerVault(dai_vault, scale("0.6"), 0, 0, {"from": admin})
+    reserve_manager.registerVault(usdc_vault, scale("0.4"), 0, 0, {"from": admin})
