@@ -33,4 +33,4 @@ def test_deposit(alice, gyd_recovery, gyd_token):
     gyd_amount = scale(2)
     gyd_token.approve(gyd_recovery, gyd_amount, {'from': alice})
     gyd_recovery.deposit(gyd_amount, {'from': alice})
-    assert gyd_recovery.balanceOf(alice) == 2
+    assert gyd_recovery.balanceOf(alice) == gyd_amount

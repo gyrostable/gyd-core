@@ -164,7 +164,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         gydToken.safeTransferFrom(msg.sender, address(this), amount);
 
         uint256 adjustedAmount = amount.divDown(adjustmentFactor);
-        _stake(beneficiary, adjustedAmount); // This also handles full burns, which is important for the next line.
+        _stake(beneficiary, adjustedAmount); // This also handles full burns and initializes new positions, which is important.
         positions[beneficiary].adjustedAmount += adjustedAmount;
 
         emit Deposit(beneficiary, adjustedAmount, amount);
@@ -251,7 +251,11 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
 
         uint256 perUserStaked = _perUserStaked[account];
         uint256 totalStakedIntegral;
-        if (lastUpdatedFullBurnId > 0 && lastUpdatedFullBurnId < nextFullBurnId) {
+        if (lastUpdatedFullBurnId == 0) {
+            // Empty / new position. Initialize.
+            totalStakedIntegral = _totalStakedIntegral;
+            position.lastUpdatedFullBurnId = nextFullBurnId;
+        } else if (lastUpdatedFullBurnId < nextFullBurnId) {
             // The user receives rewards for their staked (= not withdrawal-initiated) amount until the first burn after
             // the last userCheckpoint() and we update their position going forward.
             totalStakedIntegral = fullBurnHistory[lastUpdatedFullBurnId];
