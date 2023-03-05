@@ -35,8 +35,8 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
      * in userCheckpoint() and in the related view methods.
      */
     struct Position {
+        // SOMEDAY maybe we can save some bits, pack this to save a slot.
         uint256 lastUpdatedFullBurnId;
-        // TODO the following var is currently write-only. Remove unless we want to provide an (optional) view method to read this.
         uint256 adjustedAmount;
     }
     // owner -> Position
@@ -49,6 +49,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     uint256 public adjustmentFactor = 1e18;
 
     struct PendingWithdrawal {
+        // SOMEDAY maybe we can save some bits, pack this to save a slot.
         uint256 createdFullBurnId;
         uint256 adjustedAmount;
         uint256 withdrawableAt; // timestamp
@@ -129,6 +130,22 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         adjustedAmount = positions[account].lastUpdatedFullBurnId < nextFullBurnId
             ? 0
             : _perUserStaked[account];
+    }
+
+    /// @notice Total amount contributed of a given account, consisting of the amount available for withdrawal and the
+    /// amount that has already been marked for withdrawal.
+    function totalBalanceOf(address account) public view returns (uint256 amount) {
+        // SOMEDAY Perhaps remove this actually; it's not clear people want to see it. If so, we can completely remove
+        // Position.adjustedAmount. We don't use that anywhere else.
+        return totalBalanceOf(account).mulDown(adjustmentFactor);
+    }
+
+    /// @notice Like `totalBalanceOf()` but in adjusted amounts.
+    function totalBalanceAdjustedOf(address account) public iew returns (uint256 adjustedAmount) {
+        Position memory position = positions[account];
+        adjustedAmount = position.lastUpdatedFullBurnId < nextFullBurnId
+            ? 0
+            : position.adjustedAmount;
     }
 
     function adjustedAmountToAmount(uint256 adjustedAmount) external view returns (uint256 amount) {
