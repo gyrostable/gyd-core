@@ -15,7 +15,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
     uint256 internal constant OVERESTIMATION_PENALTY_FACTOR = 0.1e18;  // SOMEDAY maybe review
     uint256 internal constant MAX_MAX_HEALTH_VIOLATIONS = 10;
     uint256 internal constant MIN_MIN_COLLATERAL_RATIO = 1e18;
-    uint256 internal constant MIN_INITIATIVE_DURATION = 1 years;
+    uint256 internal constant MIN_INITIATIVE_DURATION = 365 days;
 
     /// @dev We call the collection of incentive start and end times and parameters an "initiative".
     struct Initiative {
