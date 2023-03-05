@@ -141,7 +141,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     }
 
     /// @notice Like `totalBalanceOf()` but in adjusted amounts.
-    function totalBalanceAdjustedOf(address account) public iew returns (uint256 adjustedAmount) {
+    function totalBalanceAdjustedOf(address account) public view returns (uint256 adjustedAmount) {
         Position memory position = positions[account];
         adjustedAmount = position.lastUpdatedFullBurnId < nextFullBurnId
             ? 0
