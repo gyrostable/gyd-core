@@ -7,6 +7,7 @@ from tests.support.utils import scale
 
 from tests.support import config_keys, constants
 
+
 @pytest.fixture(scope="module", autouse=True)
 def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
     pass
@@ -18,7 +19,16 @@ def register_usdc_vault_module(reserve_manager, usdc_vault, admin):
 
 
 @pytest.fixture(scope="module")
-def gyd_alice(motherboard, usdc, usdc_vault, alice, register_usdc_vault_module, set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai, gyro_config):
+def gyd_alice(
+    motherboard,
+    usdc,
+    usdc_vault,
+    alice,
+    register_usdc_vault_module,
+    set_mock_oracle_prices_usdc_dai,
+    set_fees_usdc_dai,
+    gyro_config,
+):
     """Puts alice's USDC into GYD. Alice will hold 10 GYD afterwards."""
     usdc_amount = scale(10, usdc.decimals())
     usdc.approve(motherboard, usdc_amount, {"from": alice})
@@ -27,10 +37,26 @@ def gyd_alice(motherboard, usdc, usdc_vault, alice, register_usdc_vault_module, 
     )
     motherboard.mint([mint_asset], 0, {"from": alice})
 
+
 @pytest.mark.usefixtures("gyd_alice")
 def test_deposit(alice, gyd_recovery, gyd_token):
     # Simple "dummy" test
     gyd_amount = scale(2)
-    gyd_token.approve(gyd_recovery, gyd_amount, {'from': alice})
-    gyd_recovery.deposit(gyd_amount, {'from': alice})
+    gyd_token.approve(gyd_recovery, gyd_amount, {"from": alice})
+    gyd_recovery.deposit(gyd_amount, {"from": alice})
     assert gyd_recovery.balanceOf(alice) == gyd_amount
+
+
+def test_initiate_withdrawal(gyd_token, gyd_recovery, alice):
+    gyd_amount = scale(2)
+    gyd_token.approve(gyd_recovery, gyd_amount, {"from": alice})
+    gyd_recovery.deposit(gyd_amount, {"from": alice})
+
+    start_bal = gyd_recovery.balanceOf(alice)
+    with reverts(revert_msg="not enough to withdraw"):
+        gyd_recovery.initiateWithdrawal(start_bal + 10, {"from": alice})
+
+    gyd_recovery.initiateWithdrawal(10, {"from": alice})
+    end_bal = gyd_recovery.balanceOf(alice)
+    assert end_bal == start_bal - 10
+    assert gyd_recovery.totalBalanceOf(alice) == end_bal + 10
