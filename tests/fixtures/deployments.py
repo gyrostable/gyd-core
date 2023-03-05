@@ -70,6 +70,22 @@ def reserve(admin, Reserve, gyro_config):
     gyro_config.setAddress(config_keys.RESERVE_ADDRESS, reserve, {"from": admin})
     return reserve
 
+@pytest.fixture(scope="module")
+def gyd_recovery(admin, GydRecovery, gyro_config, mock_gyfi):
+    gyd_recovery = admin.deploy(GydRecovery,
+        admin,
+        gyro_config,
+        mock_gyfi,
+        constants.GYD_RECOVERY_WITHDRAWAL_WAIT_DURATION,
+        constants.GYD_RECOVERY_MAX_WITHDRAWAL_WAIT_DURATION,
+        constants.GYD_RECOVERY_MAX_TRIGGER_CR,
+    )
+    gyro_config.setAddress(config_keys.GYD_RECOVERY_ADDRESS, gyd_recovery, {'from': admin})
+
+    gyro_config.setUint(config_keys.GYD_RECOVERY_TRIGGER_CR, constants.GYD_RECOVERY_TRIGGER_CR)
+    gyro_config.setUint(config_keys.GYD_RECOVERY_TARGET_CR, constants.GYD_RECOVERY_TARGET_CR)
+
+    return gyd_recovery
 
 @pytest.fixture(scope="module")
 def mock_balancer_pool(admin, MockBalancerPool):
@@ -210,6 +226,7 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
         "static_percentage_fee_handler",
         "mock_balancer_vault",
         "gyd_token",
+        "gyd_recovery",
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
@@ -339,3 +356,28 @@ def cap_authentication(admin, CapAuthentication):
     cap_authentication = admin.deploy(CapAuthentication)
     cap_authentication.initialize(admin)
     return cap_authentication
+
+
+@pytest.fixture(scope="module")
+def set_mock_oracle_prices_usdc_dai(mock_price_oracle, usdc, usdc_vault, dai, dai_vault, admin):
+    mock_price_oracle.setUSDPrice(usdc, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(usdc_vault, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(1), {"from": admin})
+
+
+@pytest.fixture(scope="module")
+def set_fees_usdc_dai(static_percentage_fee_handler, usdc_vault, dai_vault, admin):
+    static_percentage_fee_handler.setVaultFees(usdc_vault, 0, 0, {"from": admin})
+    static_percentage_fee_handler.setVaultFees(dai_vault, 0, 0, {"from": admin})
+
+
+@pytest.fixture
+def register_usdc_vault(reserve_manager, usdc_vault, admin):
+    reserve_manager.registerVault(usdc_vault, scale(1), 0, 0, {"from": admin})
+
+
+@pytest.fixture
+def register_usdc_and_dai_vaults(reserve_manager, usdc_vault, dai_vault, admin):
+    reserve_manager.registerVault(dai_vault, scale("0.6"), 0, 0, {"from": admin})
+    reserve_manager.registerVault(usdc_vault, scale("0.4"), 0, 0, {"from": admin})
