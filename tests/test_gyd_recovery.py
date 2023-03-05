@@ -8,6 +8,8 @@ from tests.support.utils import scale
 
 from tests.support import config_keys, constants
 
+from decimal import Decimal as D
+
 
 @pytest.fixture(scope="module", autouse=True)
 def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
@@ -90,3 +92,27 @@ def test_withdrawal(alice, gyd_recovery, gyd_token):
     assert gyd_token.balanceOf(gyd_recovery) == scale(2) - 10
     assert gyd_recovery.totalBalanceOf(alice) == scale(2) - 10
     assert gyd_recovery.balanceOf(alice) == scale(2) - 10
+
+
+@pytest.mark.usefixtures("gyd_alice")
+def test_full_burn(
+    alice, gyd_recovery, gyd_token, mock_price_oracle, usdc, usdc_vault, admin
+):
+    gyd_amount = scale(2)
+    gyd_token.approve(gyd_recovery, gyd_amount, {"from": alice})
+    gyd_recovery.deposit(gyd_amount, {"from": alice})
+
+    tx = gyd_recovery.initiateWithdrawal(10, {"from": alice})
+    withdrawal_id = tx.events["WithdrawalQueued"]["id"]
+
+    mock_price_oracle.setUSDPrice(usdc, scale(D("0.6")), {"from": admin})
+    mock_price_oracle.setUSDPrice(usdc_vault, scale(D("0.6")), {"from": admin})
+
+    assert gyd_recovery.shouldRun() == True
+    start_gyd_supply = gyd_token.totalSupply()
+    gyd_recovery.checkAndRun()
+    end_gyd_supply = gyd_token.totalSupply()
+    assert start_gyd_supply - end_gyd_supply == gyd_amount
+
+    with reverts(revert_msg="not enough to withdraw"):
+        gyd_recovery.initiateWithdrawal(10, {"from": alice})
