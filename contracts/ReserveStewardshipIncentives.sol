@@ -106,41 +106,14 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         require(initiative.endTime > 0, "no active initiative");
         require(initiative.endTime <= block.timestamp, "initiative not yet complete");
 
-        // TODO add view methods for easier checking by others. Then use these functions, too, here.
-
         // Check incentive success
         require(
             reserveHealthViolations.nViolations <= initiative.maxHealthViolations,
             "initiative failed: too many health violations"
         );
 
-        // Compute target reward
-        uint256 gydSupply = gydToken.totalSupply();
-        uint256 initiativeLength = initiative.endTime - initiative.startTime;
-        uint256 avgGYDSupply = aggSupply.aggSupply / initiativeLength;
-        uint256 targetReward = initiative.rewardPercentage.mulDown(avgGYDSupply);
-
-        // Compute max available reward
-        uint256 maxAllowedGYDSupply = reserveState.totalUSDValue.divDown(
-            initiative.minCollateralRatio
-        );
-
-        // The following fails if the current collateral ratio is below the minimum set in the incentive. This is almost
-        // but not quite redundant with _checkpoint() above: it might be that now is the first time we're below the
-        // minimum, but we wouldn't allow incentive completion in this situation.
-        require(gydSupply < maxAllowedGYDSupply, "collateral ratio too low");
-        uint256 maxReward = maxAllowedGYDSupply - gydSupply;
-
-        // Marry target reward with max available reward. We could take the minimum here but we use a slightly different
-        // function to incentivize governance towards moderation when choosing rewardPercentage. We introduce a linear
-        // penalty for over-estimation here.
-        uint256 reward = targetReward;
-        if (reward > maxReward) {
-            uint256 reduction = (FixedPoint.ONE + OVERESTIMATION_PENALTY_FACTOR).mulDown(
-                reward - maxReward
-            );
-            reward = reduction < reward ? reward - reduction : 0;
-        }
+        (uint256 reward, bool success) = _initiativeRewards(reserveState, initiative);
+        require(success, "collateral ratio too low");
 
         gyroConfig.getMotherboard().mintStewardshipIncRewards(reward);
         emit InitiativeCompleted(initiative.startTime, reward);
@@ -191,6 +164,56 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
             .getReserveManager()
             .getReserveState();
         _checkpoint(reserveState);
+    }
+
+    function hasActiveInitiative() public view returns (bool) {
+        return activeInitiative.endTime > 0;
+    }
+
+    function hasFailed() public view returns (bool) {
+        return activeInitiative.endTime > 0 && reserveHealthViolations.nViolations > activeInitiative.maxHealthViolations;
+    }
+
+    /// @dev This does *not* do a full check whether the initiative was successful!
+    function _initiativeRewards(DataTypes.ReserveState memory reserveState, Initiative memory initiative) internal view returns (uint256 reward, bool success) {
+        // Compute target reward
+        uint256 gydSupply = gydToken.totalSupply();
+        uint256 initiativeLength = initiative.endTime - initiative.startTime;
+        uint256 avgGYDSupply = aggSupply.aggSupply / initiativeLength;
+        uint256 targetReward = initiative.rewardPercentage.mulDown(avgGYDSupply);
+
+        // Compute max available reward
+        uint256 maxAllowedGYDSupply = reserveState.totalUSDValue.divDown(
+            initiative.minCollateralRatio
+        );
+
+        // The following fails if the current collateral ratio is below the minimum set in the incentive. This is almost
+        // but not quite redundant with _checkpoint(): it might be that now is the first time we're below the
+        // minimum, but we wouldn't allow incentive completion in this situation.
+        if (gydSupply > maxAllowedGYDSupply)
+            return (0, false);
+        uint256 maxReward = maxAllowedGYDSupply - gydSupply;
+
+        // Marry target reward with max available reward. We could take the minimum here but we use a slightly different
+        // function to incentivize governance towards moderation when choosing rewardPercentage. We introduce a linear
+        // penalty for over-estimation here.
+        reward = targetReward;
+        if (reward > maxReward) {
+            uint256 reduction = (FixedPoint.ONE + OVERESTIMATION_PENALTY_FACTOR).mulDown(
+                reward - maxReward
+            );
+            reward = reduction < reward ? reward - reduction : 0;
+        }
+        return (reward, true);
+    }
+
+    function tentativeRewards() external view returns (uint256 gydAmount) {
+        if (activeInitiative.endTime == 0)
+            return 0;
+        if (hasFailed())
+            return 0;
+        DataTypes.ReserveState memory reserveState = gyroConfig.getReserveManager().getReserveState();
+        (gydAmount, ) = _initiativeRewards(reserveState, activeInitiative);
     }
 
     /// @dev Approximately days since epoch. Not quite correct but good enough to distinguish different days, which is

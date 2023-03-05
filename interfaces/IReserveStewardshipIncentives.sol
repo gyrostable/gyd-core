@@ -27,4 +27,15 @@ interface IReserveStewardshipIncentives {
 
     /// @notice Variant of `checkpoint()` where the reserve state is passed in; only callable by Motherboard.
     function checkpoint(DataTypes.ReserveState memory reserveState) external;
+
+    /// @notice Whether there is an active initiative.
+    function hasActiveInitiative() external view returns (bool);
+
+    /// @notice Whether the initiative has already failed. This does *not* include any information based on the current
+    /// state that would be included when `checkpoint()` is called. `false` if there is no active initiative.
+    function hasFailed() external view returns (bool);
+
+    /// @notice Rewards (in GYD) that the governance treasury would receive if the initiative had ended and
+    /// `completeInitiative()` was called now.
+    function tentativeRewards() external view returns (uint256 gydAmount);
 }
