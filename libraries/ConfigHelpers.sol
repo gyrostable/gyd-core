@@ -83,6 +83,10 @@ library ConfigHelpers {
         return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MIN_CR);
     }
 
+    function getStewardshipIncMaxHealthViolations(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MAX_VIOLATIONS);
+    }
+
     function getStewardshipIncDuration(IGyroConfig gyroConfig) internal view returns (uint256) {
         return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_DURATION);
     }

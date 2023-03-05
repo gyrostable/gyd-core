@@ -22,6 +22,7 @@ library ConfigKeys {
     bytes32 internal constant STEWARDSHIP_INC_ADDRESS = "STEWARDSHIP_INC_ADDRESS";
     bytes32 internal constant STEWARDSHIP_INC_MIN_CR = "STEWARDSHIP_INC_MIN_CR";
     bytes32 internal constant STEWARDSHIP_INC_DURATION = "STEWARDSHIP_INC_DURATION";
+    bytes32 internal constant STEWARDSHIP_INC_MAX_VIOLATIONS = "STEWARDSHIP_INC_MAX_VIOLATIONS";
 
     bytes32 internal constant GOV_TREASURY_ADDRESS = "GOV_TREASURY_ADDRESS";
 
