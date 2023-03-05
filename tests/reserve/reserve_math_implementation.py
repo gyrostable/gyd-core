@@ -1,5 +1,5 @@
-from curses import meta
-from importlib.metadata import metadata
+# from curses import meta
+# from importlib.metadata import metadata
 from typing import Dict, Iterable, List, Tuple
 
 from tests.support import constants
