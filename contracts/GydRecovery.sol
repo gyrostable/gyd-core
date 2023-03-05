@@ -137,7 +137,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     function totalBalanceOf(address account) public view returns (uint256 amount) {
         // SOMEDAY Perhaps remove this actually; it's not clear people want to see it. If so, we can completely remove
         // Position.adjustedAmount. We don't use that anywhere else.
-        return totalBalanceOf(account).mulDown(adjustmentFactor);
+        return totalBalanceAdjustedOf(account).mulDown(adjustmentFactor);
     }
 
     /// @notice Like `totalBalanceOf()` but in adjusted amounts.
