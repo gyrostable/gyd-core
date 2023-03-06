@@ -44,7 +44,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
 
     // Full burn ID -> totalStakedIntegral at that point in time
     mapping(uint256 => uint256) internal fullBurnHistory;
-    uint256 nextFullBurnId = 1; // 0 is invalid; we use this to detect unset data.
+    uint256 internal nextFullBurnId = 1; // 0 is invalid; we use this to detect unset data.
 
     uint256 public adjustmentFactor = 1e18;
 
