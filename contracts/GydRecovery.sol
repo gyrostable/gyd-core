@@ -339,7 +339,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         // supply until now (and also the reserve ratio). Motherboard does this itself before it calls
         // checkAndRun(ReserveState).
         // SOMEDAY gas optimization: Share reserveState between this function and checkpoint(); it's computed twice rn.
-        gyroConfig.getStewardshipInc().checkpoint();
+        gyroConfig.getReserveStewardshipIncentives().checkpoint();
 
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()

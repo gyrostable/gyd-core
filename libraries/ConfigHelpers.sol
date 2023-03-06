@@ -19,6 +19,7 @@ import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/ICapAuthentication.sol";
 import "../interfaces/IGydRecovery.sol";
+import "../interfaces/IReserveStewardshipIncentives.sol";
 import "../interfaces/balancer/IVault.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
