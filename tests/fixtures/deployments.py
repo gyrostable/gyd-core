@@ -136,6 +136,8 @@ def stewardship_incentives(ReserveStewardshipIncentives, admin, gyro_config, gyd
     gyro_config.setUint(config_keys.STEWARDSHIP_INC_DURATION, constants.STEWARDSHIP_INC_DURATION)
     gyro_config.setUint(config_keys.STEWARDSHIP_INC_MAX_VIOLATIONS, constants.STEWARDSHIP_INC_MAX_VIOLATIONS)
 
+    return stewardship_incentives
+
 @pytest.fixture(scope="module")
 def coinbase_price_oracle(admin, TestingTrustedSignerPriceOracle, asset_registry):
     return admin.deploy(
