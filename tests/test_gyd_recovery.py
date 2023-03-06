@@ -22,9 +22,18 @@ def register_dai_vault_module(reserve_manager, dai_vault, admin):
 
 
 @pytest.fixture(scope="module")
-def gyd_alice(motherboard, dai, dai_vault, alice, register_dai_vault_module, set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai, gyro_config):
+def gyd_alice(
+    motherboard,
+    dai,
+    dai_vault,
+    alice,
+    register_dai_vault_module,
+    set_mock_oracle_prices_usdc_dai,
+    set_fees_usdc_dai,
+    gyro_config,
+):
     """Puts alice's DAI into GYD. Alice will hold 10 GYD afterwards."""
-    dai_amount = scale(5, dai.decimals())
+    dai_amount = scale(10, dai.decimals())
     dai.approve(motherboard, dai_amount, {"from": alice})
     mint_asset = MintAsset(
         inputToken=dai, inputAmount=dai_amount, destinationVault=dai_vault
@@ -96,6 +105,8 @@ def test_full_burn(
     tx = gyd_recovery.initiateWithdrawal(10, {"from": alice})
     withdrawal_id = tx.events["WithdrawalQueued"]["id"]
 
+    assert gyd_recovery.shouldRun() == False
+
     mock_price_oracle.setUSDPrice(dai, scale(D("0.6")), {"from": admin})
     mock_price_oracle.setUSDPrice(dai_vault, scale(D("0.6")), {"from": admin})
 
@@ -107,3 +118,53 @@ def test_full_burn(
 
     with reverts(revert_msg="not enough to withdraw"):
         gyd_recovery.initiateWithdrawal(10, {"from": alice})
+    assert gyd_recovery.balanceOf(alice) == 0
+    assert gyd_recovery.totalBalanceOf(alice) == 0
+    assert gyd_token.balanceOf(gyd_recovery) == 0
+
+    chain.sleep(constants.GYD_RECOVERY_WITHDRAWAL_WAIT_DURATION)
+    chain.mine()
+
+    start_bal = gyd_token.balanceOf(alice)
+    gyd_recovery.withdraw(withdrawal_id, {"from": alice})
+    end_bal = gyd_token.balanceOf(alice)
+    assert start_bal == end_bal
+
+
+@pytest.mark.usefixtures("gyd_alice")
+def test_partial_burn(
+    alice, gyd_recovery, gyd_token, mock_price_oracle, dai, dai_vault, admin
+):
+    gyd_amount = scale(8)
+    gyd_token.approve(gyd_recovery, gyd_amount, {"from": alice})
+    gyd_recovery.deposit(gyd_amount, {"from": alice})
+
+    start_gyd_supply = gyd_token.totalSupply()
+    assert start_gyd_supply == scale(10)
+
+    tx = gyd_recovery.initiateWithdrawal(scale(1), {"from": alice})
+    withdrawal_id = tx.events["WithdrawalQueued"]["id"]
+
+    mock_price_oracle.setUSDPrice(dai, scale(D("0.75")), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(D("0.75")), {"from": admin})
+
+    burn_amount = scale(D("2.5"))
+    assert gyd_recovery.shouldRun() == True
+    gyd_recovery.checkAndRun()
+    end_gyd_supply = gyd_token.totalSupply()
+    assert start_gyd_supply - end_gyd_supply == burn_amount
+
+    assert gyd_token.balanceOf(gyd_recovery) == scale(8) - burn_amount
+    assert gyd_recovery.totalBalanceOf(alice) == scale(8) - burn_amount
+
+    adjustment_factor = scale(1) * (scale(8) - burn_amount) / scale(8)
+    assert gyd_recovery.adjustedAmountToAmount(scale(1)) == adjustment_factor
+    assert gyd_recovery.balanceOf(alice) == 7 * adjustment_factor
+
+    chain.sleep(constants.GYD_RECOVERY_WITHDRAWAL_WAIT_DURATION)
+    chain.mine()
+
+    start_bal = gyd_token.balanceOf(alice)
+    gyd_recovery.withdraw(withdrawal_id, {"from": alice})
+    end_bal = gyd_token.balanceOf(alice)
+    assert end_bal - start_bal == adjustment_factor
