@@ -49,6 +49,7 @@ def test_start(stewardship_incentives, gyd_token, admin, mock_price_oracle, dai,
 
     assert stewardship_incentives.activeInitiative() == (start_time, end_time, constants.STEWARDSHIP_INC_MIN_CR, constants.STEWARDSHIP_INC_MAX_VIOLATIONS, reward_percentage)
 
+
 @pytest.mark.usefixtures("gyd_alice")
 def test_start_end_const(stewardship_incentives, gyd_token, admin, mock_price_oracle, dai, dai_vault, reserve_manager, gyro_config, gov_treasury_registered):
     """Test from start to end without any shock or supply change"""
@@ -72,9 +73,10 @@ def test_start_end_const(stewardship_incentives, gyd_token, admin, mock_price_or
     assert tx.events['Transfer']['to'] == gov_treasury_registered
     assert tx.events['Transfer']['value'] == reward_expd_scaled
 
+
 @pytest.mark.usefixtures("gyd_alice")
 def test_start_end_supplychange(stewardship_incentives, gyd_token, admin, mock_price_oracle, dai, dai_vault, reserve_manager, gyro_config, gov_treasury_registered, motherboard, alice):
-    """Test from start to end, change supply in the middle."""
+    """Test from start to end, change supply in the middle and match avg supply."""
     mock_price_oracle.setUSDPrice(dai, scale("1.2"), {"from": admin})
     mock_price_oracle.setUSDPrice(dai_vault, scale("1.2"), {"from": admin})
 
@@ -103,6 +105,11 @@ def test_start_end_supplychange(stewardship_incentives, gyd_token, admin, mock_p
     mock_price_oracle.setUSDPrice(dai, scale("1.2"), {"from": admin})
     mock_price_oracle.setUSDPrice(dai_vault, scale("1.2"), {"from": admin})
 
+    # If we try to complete now, that's gonna fail
+    with reverts("initiative not yet complete"):
+        stewardship_incentives.completeInitiative()
+
+
     gyd_supply1 = unscale(gyd_token.totalSupply())
     chain.sleep(constants.STEWARDSHIP_INC_DURATION // 2)
     chain.mine()
@@ -116,3 +123,43 @@ def test_start_end_supplychange(stewardship_incentives, gyd_token, admin, mock_p
     reward_actual = unscale(tx.events['InitiativeCompleted']['rewardGYDAmount'])
     assert reward_actual <= reward_expected and reward_actual == reward_expected.approxed()
     assert stewardship_incentives.reserveHealthViolations()[1] == 1  # nViolations
+
+
+@pytest.mark.usefixtures("gyd_alice")
+def test_violations(stewardship_incentives, gyd_token, admin, mock_price_oracle, dai, dai_vault, reserve_manager, gyro_config, gov_treasury_registered, motherboard, alice):
+    """Test with multiple reserve violations so withdrawal fails."""
+    """Test from start to end, change supply in the middle and match avg supply."""
+    mock_price_oracle.setUSDPrice(dai, scale("1.2"), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale("1.2"), {"from": admin})
+
+    # Start incentive (same as above)
+    reward_percentage = to_decimal("0.01")
+    reward_percentage_scaled = scale(reward_percentage)
+    stewardship_incentives.startInitiative(reward_percentage_scaled, {'from': admin})
+
+    gyd_supply0 = unscale(gyd_token.totalSupply())
+
+    chain.sleep(25 * 60 * 60)
+    chain.mine()
+
+    # We set reserve ratio to 1, which is < 1.05 = min reserve ratio. We then let two days pass and call checkpoint() to update.
+    mock_price_oracle.setUSDPrice(dai, scale("1.0"), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale("1.0"), {"from": admin})
+
+    stewardship_incentives.checkpoint()
+    chain.sleep(25 * 60 * 60)
+    chain.mine()
+
+    stewardship_incentives.checkpoint()
+    chain.sleep(25 * 60 * 60)
+    chain.mine()
+
+    assert stewardship_incentives.reserveHealthViolations()[1] == 2
+    assert stewardship_incentives.hasFailed()
+
+    # Let enough time pass and try to complete. This will fail.
+    chain.sleep(constants.STEWARDSHIP_INC_DURATION)
+    chain.mine()
+
+    with reverts("initiative failed: too many health violations"):
+        stewardship_incentives.completeInitiative()
