@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-Gyro-1.0
+// for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 pragma solidity ^0.8.0;
 
 import "./auth/Governable.sol";
@@ -70,7 +72,6 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         uint256 collateralRatio = reserveState.totalUSDValue.divDown(gydSupply);
         require(collateralRatio >= minCollateralRatio, "collateral ratio too low");
 
-        uint256 today = timestampToDatestamp(block.timestamp);
         reserveHealthViolations = ReserveHealthViolations(0, 0);
 
         aggSupply = AggSupply(block.timestamp, 0);
@@ -122,11 +123,6 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
     }
 
     function _checkpoint(DataTypes.ReserveState memory reserveState) internal {
-        /*
-        if (activeInitiative.endTime == 0 || activeInitiative.endTime <= block.timestamp)
-            // NB it's important to not track anything after the initiative has ended: may introduce manipulability.
-            return;
-        */
         uint256 endTime = activeInitiative.endTime;
         if (endTime == 0) return;
 
