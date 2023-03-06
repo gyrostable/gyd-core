@@ -82,21 +82,23 @@ contract ReserveSafetyManagerTest is Test {
         assertEq("52", errString);
     }
 
-    // function testMintFailsWhenVaultOutsideEpsilonAndUnsafeToExecute(uint256 amount) public {
-    //     DataTypes.Order memory order = _buildIdealOrder(true);
+    function testMintFailsWhenVaultOutsideEpsilonAndUnsafeToExecute(uint256 amount) public {
+        DataTypes.Order memory order = _buildIdealOrder(true);
 
-    //     vm.assume(amount > 350_000e18 && amount < 1e30); // Upper bound some large number but << 1e256
-    //     order.vaultsWithAmount[3].amount = amount;
+        uint256 lowerBound = 515_000e18; // Lower bound such that resulting weight ~41.6% for this vault
 
-    //     // Zero amount for other vaults, ensures vault weight rises for offpeg vault
-    //     order.vaultsWithAmount[1].amount = 0;
-    //     order.vaultsWithAmount[2].amount = 0;
-    //     order.vaultsWithAmount[3].amount = 0;
+        vm.assume(amount > lowerBound && amount < 1e30); // Upper bound some large number but << 1e256
+        order.vaultsWithAmount[0].amount = amount;
 
-    //     string memory errString = reserveSafetyManager.isMintSafe(order);
+        // Zero amount for other vaults, ensures vault weight rises for offpeg vault
+        order.vaultsWithAmount[1].amount = 0;
+        order.vaultsWithAmount[2].amount = 0;
+        order.vaultsWithAmount[3].amount = 0;
 
-    //     assertEq("52", errString);
-    // }
+        string memory errString = reserveSafetyManager.isMintSafe(order);
+
+        assertEq("52", errString);
+    }
 
     function testRedeemFailsWhenOutsideEpsilonAndDivergesFromIdealWeight() public {
         DataTypes.Order memory order = _buildIdealOrder(false);
