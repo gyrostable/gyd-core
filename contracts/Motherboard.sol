@@ -208,7 +208,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     function mintStewardshipIncRewards(uint256 amount) external override {
         require(
             msg.sender == address(gyroConfig.getReserveStewardshipIncentives()),
-            "not authorized"
+            Errors.NOT_AUTHORIZED
         );
         address treasury = gyroConfig.getGovTreasuryAddress();
         gydToken.mint(treasury, amount);
