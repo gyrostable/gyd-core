@@ -127,6 +127,29 @@ def asset_registry(admin, AssetRegistry, gyro_config):
 
 
 @pytest.fixture(scope="module")
+def stewardship_incentives(ReserveStewardshipIncentives, admin, gyro_config, gyd_token):
+    stewardship_incentives = admin.deploy(
+        ReserveStewardshipIncentives, admin, gyro_config
+    )
+    gyro_config.setAddress(
+        config_keys.STEWARDSHIP_INC_ADDRESS, stewardship_incentives, {"from": admin}
+    )
+
+    gyro_config.setUint(
+        config_keys.STEWARDSHIP_INC_MIN_CR, constants.STEWARDSHIP_INC_MIN_CR
+    )
+    gyro_config.setUint(
+        config_keys.STEWARDSHIP_INC_DURATION, constants.STEWARDSHIP_INC_DURATION
+    )
+    gyro_config.setUint(
+        config_keys.STEWARDSHIP_INC_MAX_VIOLATIONS,
+        constants.STEWARDSHIP_INC_MAX_VIOLATIONS,
+    )
+
+    return stewardship_incentives
+
+
+@pytest.fixture(scope="module")
 def coinbase_price_oracle(admin, TestingTrustedSignerPriceOracle, asset_registry):
     return admin.deploy(
         TestingTrustedSignerPriceOracle,
@@ -210,6 +233,7 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
         "static_percentage_fee_handler",
         "mock_balancer_vault",
         "gyd_token",
+        "stewardship_incentives",
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
@@ -339,3 +363,36 @@ def cap_authentication(admin, CapAuthentication):
     cap_authentication = admin.deploy(CapAuthentication)
     cap_authentication.initialize(admin)
     return cap_authentication
+
+
+@pytest.fixture(scope="module")
+def set_mock_oracle_prices_usdc_dai(
+    mock_price_oracle, usdc, usdc_vault, dai, dai_vault, admin
+):
+    mock_price_oracle.setUSDPrice(usdc, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(usdc_vault, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai, scale(1), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(1), {"from": admin})
+
+
+@pytest.fixture(scope="module")
+def set_fees_usdc_dai(static_percentage_fee_handler, usdc_vault, dai_vault, admin):
+    static_percentage_fee_handler.setVaultFees(usdc_vault, 0, 0, {"from": admin})
+    static_percentage_fee_handler.setVaultFees(dai_vault, 0, 0, {"from": admin})
+
+
+@pytest.fixture
+def register_usdc_vault(reserve_manager, usdc_vault, admin):
+    reserve_manager.registerVault(usdc_vault, scale(1), 0, 0, {"from": admin})
+
+
+@pytest.fixture
+def register_usdc_and_dai_vaults(reserve_manager, usdc_vault, dai_vault, admin):
+    reserve_manager.registerVault(dai_vault, scale("0.6"), 0, 0, {"from": admin})
+    reserve_manager.registerVault(usdc_vault, scale("0.4"), 0, 0, {"from": admin})
+
+
+@pytest.fixture(scope="module")
+def gov_treasury_registered(gov, gyro_config):
+    gyro_config.setAddress(config_keys.GOV_TREASURY_ADDRESS, gov)
+    return gov

@@ -19,6 +19,7 @@ import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/ICapAuthentication.sol";
 import "../interfaces/balancer/IVault.sol";
+import "../interfaces/IReserveStewardshipIncentives.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
 library ConfigHelpers {
@@ -66,12 +67,32 @@ library ConfigHelpers {
         return IMotherboard(gyroConfig.getAddress(ConfigKeys.MOTHERBOARD_ADDRESS));
     }
 
+    function getReserveStewardshipIncentives(IGyroConfig gyroConfig) internal view returns (IReserveStewardshipIncentives) {
+        return IReserveStewardshipIncentives(gyroConfig.getAddress(ConfigKeys.STEWARDSHIP_INC_ADDRESS));
+    }
+
     function getBalancerVault(IGyroConfig gyroConfig) internal view returns (IVault) {
         return IVault(gyroConfig.getAddress(ConfigKeys.BALANCER_VAULT_ADDRESS));
     }
 
     function getGlobalSupplyCap(IGyroConfig gyroConfig) internal view returns (uint256) {
         return gyroConfig.getUint(ConfigKeys.GYD_GLOBAL_SUPPLY_CAP, type(uint256).max);
+    }
+
+    function getStewardshipIncMinCollateralRatio(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MIN_CR);
+    }
+
+    function getStewardshipIncMaxHealthViolations(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MAX_VIOLATIONS);
+    }
+
+    function getStewardshipIncDuration(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_DURATION);
+    }
+
+    function getGovTreasuryAddress(IGyroConfig gyroConfig) internal view returns (address) {
+        return gyroConfig.getAddress(ConfigKeys.GOV_TREASURY_ADDRESS);
     }
 
     function getPerUserSupplyCap(IGyroConfig gyroConfig, bool authenticated)

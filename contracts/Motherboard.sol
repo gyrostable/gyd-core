@@ -70,6 +70,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             .getReserveManager()
             .getReserveState();
 
+        gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
+
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(
             vaultAmounts,
             reserveState.vaults
@@ -98,7 +100,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     function redeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
         external
         override
-        returns (uint256[] memory)
+        returns (uint256[] memory outputAmounts)
     {
         _ensureBalancerVaultNotReentrant();
 
@@ -106,6 +108,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
+
+        gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
 
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveState.totalUSDValue);
         require(
@@ -121,7 +125,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         gyroConfig.getRootSafetyCheck().checkAndPersistRedeem(order);
 
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
-        return _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
+        outputAmounts = _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
     }
 
     /// @inheritdoc IMotherboard
@@ -194,6 +198,15 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     /// @inheritdoc IMotherboard
     function pamm() public view override returns (IPAMM) {
         return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
+    }
+
+    function mintStewardshipIncRewards(uint256 amount) external override {
+        require(
+            msg.sender == address(gyroConfig.getReserveStewardshipIncentives()),
+            "not authorized"
+        );
+        address treasury = gyroConfig.getGovTreasuryAddress();
+        gydToken.mint(treasury, amount);
     }
 
     function _dryConvertMintInputAssetsToVaultTokens(DataTypes.MintAsset[] calldata assets)
