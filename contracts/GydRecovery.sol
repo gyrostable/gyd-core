@@ -213,6 +213,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         if (pending.createdFullBurnId < nextFullBurnId) {
             delete pendingWithdrawals[withdrawalId];
             userPendingWithdrawalIds[pending.to].remove(withdrawalId);
+            emit WithdrawalCompleted(withdrawalId, pending.to, 0, 0);
             return 0;
         }
 
