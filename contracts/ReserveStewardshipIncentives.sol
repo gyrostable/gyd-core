@@ -12,7 +12,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
     using FixedPoint for uint256;
 
     uint256 internal constant MAX_REWARD_PERCENTAGE = 0.5e18;
-    uint256 internal constant OVERESTIMATION_PENALTY_FACTOR = 0.1e18;  // SOMEDAY maybe review
+    uint256 internal constant OVERESTIMATION_PENALTY_FACTOR = 0.1e18; // SOMEDAY maybe review
     uint256 internal constant MAX_MAX_HEALTH_VIOLATIONS = 10;
     uint256 internal constant MIN_MIN_COLLATERAL_RATIO = 1e18;
     uint256 internal constant MIN_INITIATIVE_DURATION = 365 days;
@@ -128,8 +128,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
             return;
         */
         uint256 endTime = activeInitiative.endTime;
-        if (endTime == 0)
-            return;
+        if (endTime == 0) return;
 
         uint256 nowTime = block.timestamp;
 
@@ -140,8 +139,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         aggSupply.aggSupply += (aggSupplyUpdateTime - aggSupply.lastUpdatedTime) * gydSupply;
         aggSupply.lastUpdatedTime = aggSupplyUpdateTime;
 
-        if (nowTime > endTime)
-            return;
+        if (nowTime > endTime) return;
 
         // Update reserveHealthViolations. (only if the active initiative is still running)
         uint256 collateralRatio = reserveState.totalUSDValue.divDown(gydSupply);
@@ -171,11 +169,16 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
     }
 
     function hasFailed() public view returns (bool) {
-        return activeInitiative.endTime > 0 && reserveHealthViolations.nViolations > activeInitiative.maxHealthViolations;
+        return
+            activeInitiative.endTime > 0 &&
+            reserveHealthViolations.nViolations > activeInitiative.maxHealthViolations;
     }
 
     /// @dev This does *not* do a full check whether the initiative was successful!
-    function _initiativeRewards(DataTypes.ReserveState memory reserveState, Initiative memory initiative) internal view returns (uint256 reward, bool success) {
+    function _initiativeRewards(
+        DataTypes.ReserveState memory reserveState,
+        Initiative memory initiative
+    ) internal view returns (uint256 reward, bool success) {
         // Compute target reward
         uint256 gydSupply = gydToken.totalSupply();
         uint256 initiativeLength = initiative.endTime - initiative.startTime;
@@ -190,8 +193,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         // The following fails if the current collateral ratio is below the minimum set in the incentive. This is almost
         // but not quite redundant with _checkpoint(): it might be that now is the first time we're below the
         // minimum, but we wouldn't allow incentive completion in this situation.
-        if (gydSupply > maxAllowedGYDSupply)
-            return (0, false);
+        if (gydSupply > maxAllowedGYDSupply) return (0, false);
         uint256 maxReward = maxAllowedGYDSupply - gydSupply;
 
         // Marry target reward with max available reward. We could take the minimum here but we use a slightly different
@@ -208,17 +210,17 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
     }
 
     function tentativeRewards() external view returns (uint256 gydAmount) {
-        if (activeInitiative.endTime == 0)
-            return 0;
-        if (hasFailed())
-            return 0;
-        DataTypes.ReserveState memory reserveState = gyroConfig.getReserveManager().getReserveState();
+        if (activeInitiative.endTime == 0) return 0;
+        if (hasFailed()) return 0;
+        DataTypes.ReserveState memory reserveState = gyroConfig
+            .getReserveManager()
+            .getReserveState();
         (gydAmount, ) = _initiativeRewards(reserveState, activeInitiative);
     }
 
     /// @dev Approximately days since epoch. Not quite correct but good enough to distinguish different days, which is
     /// all we need here.
-    function timestampToDatestamp(uint256 timestamp) pure internal returns (uint256) {
+    function timestampToDatestamp(uint256 timestamp) internal pure returns (uint256) {
         return timestamp / 1 days;
     }
 }
