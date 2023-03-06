@@ -17,26 +17,17 @@ def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
 
 
 @pytest.fixture(scope="module")
-def register_usdc_vault_module(reserve_manager, usdc_vault, admin):
-    reserve_manager.registerVault(usdc_vault, scale(1), 0, 0, {"from": admin})
+def register_dai_vault_module(reserve_manager, dai_vault, admin):
+    reserve_manager.registerVault(dai_vault, scale(1), 0, 0, {"from": admin})
 
 
 @pytest.fixture(scope="module")
-def gyd_alice(
-    motherboard,
-    usdc,
-    usdc_vault,
-    alice,
-    register_usdc_vault_module,
-    set_mock_oracle_prices_usdc_dai,
-    set_fees_usdc_dai,
-    gyro_config,
-):
-    """Puts alice's USDC into GYD. Alice will hold 10 GYD afterwards."""
-    usdc_amount = scale(10, usdc.decimals())
-    usdc.approve(motherboard, usdc_amount, {"from": alice})
+def gyd_alice(motherboard, dai, dai_vault, alice, register_dai_vault_module, set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai, gyro_config):
+    """Puts alice's DAI into GYD. Alice will hold 10 GYD afterwards."""
+    dai_amount = scale(5, dai.decimals())
+    dai.approve(motherboard, dai_amount, {"from": alice})
     mint_asset = MintAsset(
-        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+        inputToken=dai, inputAmount=dai_amount, destinationVault=dai_vault
     )
     motherboard.mint([mint_asset], 0, {"from": alice})
 
@@ -96,7 +87,7 @@ def test_withdrawal(alice, gyd_recovery, gyd_token):
 
 @pytest.mark.usefixtures("gyd_alice")
 def test_full_burn(
-    alice, gyd_recovery, gyd_token, mock_price_oracle, usdc, usdc_vault, admin
+    alice, gyd_recovery, gyd_token, mock_price_oracle, dai, dai_vault, admin
 ):
     gyd_amount = scale(2)
     gyd_token.approve(gyd_recovery, gyd_amount, {"from": alice})
@@ -105,8 +96,8 @@ def test_full_burn(
     tx = gyd_recovery.initiateWithdrawal(10, {"from": alice})
     withdrawal_id = tx.events["WithdrawalQueued"]["id"]
 
-    mock_price_oracle.setUSDPrice(usdc, scale(D("0.6")), {"from": admin})
-    mock_price_oracle.setUSDPrice(usdc_vault, scale(D("0.6")), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai, scale(D("0.6")), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(D("0.6")), {"from": admin})
 
     assert gyd_recovery.shouldRun() == True
     start_gyd_supply = gyd_token.totalSupply()
