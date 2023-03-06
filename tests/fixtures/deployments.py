@@ -377,3 +377,9 @@ def register_usdc_vault(reserve_manager, usdc_vault, admin):
 def register_usdc_and_dai_vaults(reserve_manager, usdc_vault, dai_vault, admin):
     reserve_manager.registerVault(dai_vault, scale("0.6"), 0, 0, {"from": admin})
     reserve_manager.registerVault(usdc_vault, scale("0.4"), 0, 0, {"from": admin})
+
+
+@pytest.fixture(scope="module")
+def gov_treasury_registered(gov, gyro_config):
+    gyro_config.setAddress(config_keys.GOV_TREASURY_ADDRESS, gov)
+    return gov
