@@ -8,7 +8,7 @@ from tests.support.utils import scale
 
 from tests.support import config_keys, constants
 
-from decimal import Decimal as D
+from tests.support.quantized_decimal import QuantizedDecimal as D
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -116,9 +116,9 @@ def test_full_burn(
     end_gyd_supply = gyd_token.totalSupply()
     assert start_gyd_supply - end_gyd_supply == gyd_amount
 
-    assert tx.events['RecoveryExecuted']['tokensBurned'] == gyd_amount
-    assert tx.events['RecoveryExecuted']['isFullBurn']
-    assert tx.events['RecoveryExecuted']['newAdjustmentFactor'] == scale(1)
+    assert tx.events["RecoveryExecuted"]["tokensBurned"] == gyd_amount
+    assert tx.events["RecoveryExecuted"]["isFullBurn"]
+    assert tx.events["RecoveryExecuted"]["newAdjustmentFactor"] == scale(1)
 
     with reverts(revert_msg="not enough to withdraw"):
         gyd_recovery.initiateWithdrawal(10, {"from": alice})
@@ -172,3 +172,75 @@ def test_partial_burn(
     gyd_recovery.withdraw(withdrawal_id, {"from": alice})
     end_bal = gyd_token.balanceOf(alice)
     assert end_bal - start_bal == adjustment_factor
+
+
+@pytest.mark.usefixtures("gyd_alice")
+def test_multiple_burns(
+    alice, gyd_recovery, gyd_token, mock_price_oracle, dai, dai_vault, admin
+):
+    gyd_amount = scale(8)
+    gyd_token.approve(gyd_recovery, gyd_amount, {"from": alice})
+    gyd_recovery.deposit(gyd_amount, {"from": alice})
+
+    mock_price_oracle.setUSDPrice(dai, scale(D("0.75")), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(D("0.75")), {"from": admin})
+
+    burn_amount = D("2.5")
+    adjustment_factor = D(1) * (D(8) - burn_amount) / D(8)
+    gyd_recovery.checkAndRun()
+    gyd_amount_2 = scale(1)
+    gyd_token.approve(gyd_recovery, gyd_amount_2, {"from": alice})
+    gyd_recovery.deposit(gyd_amount_2, {"from": alice})
+
+    assert gyd_recovery.adjustmentFactor() == scale(adjustment_factor)
+    new_bal_adjusted = D(8) + D(1) / adjustment_factor
+    new_bal = new_bal_adjusted * adjustment_factor
+    assert gyd_recovery.balanceAdjustedOf(alice) == scale(new_bal_adjusted)
+    assert gyd_recovery.balanceOf(alice) == scale(new_bal)
+
+    # check trigger condition
+    mock_price_oracle.setUSDPrice(dai, scale(D("0.61")), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(D("0.61")), {"from": admin})
+    assert gyd_recovery.shouldRun() == False
+
+    mock_price_oracle.setUSDPrice(dai, scale(D("0.60")), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(D("0.60")), {"from": admin})
+    assert gyd_recovery.shouldRun() == False
+
+    # perform another burn
+    mock_price_oracle.setUSDPrice(dai, scale(D("0.58")), {"from": admin})
+    mock_price_oracle.setUSDPrice(dai_vault, scale(D("0.58")), {"from": admin})
+    assert gyd_recovery.shouldRun() == True
+
+    target_gyd_supply = D("0.58") * D(10)  # / constants.GYD_RECOVERY_TARGET_CR
+    start_gyd_supply = gyd_token.totalSupply()
+    burn_amount_2 = start_gyd_supply - scale(target_gyd_supply)
+
+    gyd_recovery.checkAndRun()
+    end_gyd_supply = gyd_token.totalSupply()
+
+    assert start_gyd_supply - end_gyd_supply == burn_amount_2
+    adjustment_factor_new = (
+        adjustment_factor * (new_bal - burn_amount_2 / D("1e18")) / new_bal
+    )
+    assert gyd_recovery.adjustmentFactor() == scale(adjustment_factor_new)
+    new_bal = new_bal_adjusted * adjustment_factor_new
+    assert gyd_recovery.balanceAdjustedOf(alice) == scale(new_bal_adjusted)
+    assert gyd_recovery.balanceOf(alice) == scale(new_bal)
+
+    # then try to withdraw
+    tx = gyd_recovery.initiateWithdrawal(scale(1), {"from": alice})
+    withdrawal_id = tx.events["WithdrawalQueued"]["id"]
+
+    chain.sleep(constants.GYD_RECOVERY_WITHDRAWAL_WAIT_DURATION)
+    chain.mine()
+
+    start_bal = gyd_token.balanceOf(alice)
+    gyd_recovery.withdraw(withdrawal_id, {"from": alice})
+    end_bal = gyd_token.balanceOf(alice)
+    withdraw_amount_effective = D(1) / adjustment_factor_new * adjustment_factor_new
+    assert end_bal - start_bal == scale(withdraw_amount_effective)
+    end_bal_effective = (
+        new_bal_adjusted - D(1) / adjustment_factor_new
+    ) * adjustment_factor_new
+    assert gyd_recovery.balanceOf(alice) == scale(end_bal_effective)
