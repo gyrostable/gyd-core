@@ -101,9 +101,13 @@ def test_full_burn(
 
     assert gyd_recovery.shouldRun() == True
     start_gyd_supply = gyd_token.totalSupply()
-    gyd_recovery.checkAndRun()
+    tx = gyd_recovery.checkAndRun()
     end_gyd_supply = gyd_token.totalSupply()
     assert start_gyd_supply - end_gyd_supply == gyd_amount
+
+    assert tx.events['RecoveryExecuted']['tokensBurned'] == gyd_amount
+    assert tx.events['RecoveryExecuted']['isFullBurn']
+    assert tx.events['RecoveryExecuted']['newAdjustmentFactor'] == scale(1)
 
     with reverts(revert_msg="not enough to withdraw"):
         gyd_recovery.initiateWithdrawal(10, {"from": alice})
