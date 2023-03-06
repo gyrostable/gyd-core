@@ -71,12 +71,32 @@ library ConfigHelpers {
         return IGydRecovery(gyroConfig.getAddress(ConfigKeys.GYD_RECOVERY_ADDRESS));
     }
 
+    function getReserveStewardshipIncentives(IGyroConfig gyroConfig) internal view returns (IReserveStewardshipIncentives) {
+        return IReserveStewardshipIncentives(gyroConfig.getAddress(ConfigKeys.STEWARDSHIP_INC_ADDRESS));
+    }
+
     function getBalancerVault(IGyroConfig gyroConfig) internal view returns (IVault) {
         return IVault(gyroConfig.getAddress(ConfigKeys.BALANCER_VAULT_ADDRESS));
     }
 
     function getGlobalSupplyCap(IGyroConfig gyroConfig) internal view returns (uint256) {
         return gyroConfig.getUint(ConfigKeys.GYD_GLOBAL_SUPPLY_CAP, type(uint256).max);
+    }
+
+    function getStewardshipIncMinCollateralRatio(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MIN_CR);
+    }
+
+    function getStewardshipIncMaxHealthViolations(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MAX_VIOLATIONS);
+    }
+
+    function getStewardshipIncDuration(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_DURATION);
+    }
+
+    function getGovTreasuryAddress(IGyroConfig gyroConfig) internal view returns (address) {
+        return gyroConfig.getAddress(ConfigKeys.GOV_TREASURY_ADDRESS);
     }
 
     function getPerUserSupplyCap(IGyroConfig gyroConfig, bool authenticated)

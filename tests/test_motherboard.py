@@ -14,7 +14,9 @@ def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
 
 
 @pytest.mark.usefixtures("register_usdc_vault")
-def test_dry_mint_vault_underlying(motherboard, usdc, usdc_vault, alice, mock_balancer_vault):
+def test_dry_mint_vault_underlying(
+    motherboard, usdc, usdc_vault, alice, mock_balancer_vault
+):
     decimals = usdc.decimals()
     usdc_amount = scale(10, decimals)
     usdc.approve(motherboard, usdc_amount, {"from": alice})
