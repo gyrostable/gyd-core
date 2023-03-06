@@ -70,7 +70,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             .getReserveManager()
             .getReserveState();
 
+        // order matters!
         gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
+        gyroConfig.getGydRecovery().checkAndRun(reserveState);
 
         DataTypes.Order memory order = _monetaryAmountsToMintOrder(
             vaultAmounts,
@@ -104,12 +106,15 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     {
         _ensureBalancerVaultNotReentrant();
 
-        gydToken.burnFrom(msg.sender, gydToRedeem);
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
 
+        // order matters!
         gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
+        gyroConfig.getGydRecovery().checkAndRun(reserveState);
+
+        gydToken.burnFrom(msg.sender, gydToRedeem);
 
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveState.totalUSDValue);
         require(

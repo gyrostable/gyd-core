@@ -50,6 +50,9 @@ interface IMotherboard {
 
     /// @notice Simulates a mint to know whether it would succeed and how much would be minted
     /// The parameters are the same as the `mint` function
+    ///
+    /// Note: This does *not* include the action of the recovery module, if any!
+    ///
     /// @param assets the assets and associated amounts used to mint GYD
     /// @param minReceivedAmount the minimum amount of GYD to be minted
     /// @param account the account that wants to mint
@@ -61,6 +64,9 @@ interface IMotherboard {
 
     /// @notice Dry version of the `redeem` function
     /// exact outputs as specified by `tokens` and `amounts`
+    ///
+    /// Note: This does *not* include the action of the recovery module, if any!
+    ///
     /// @param gydToRedeem the maximum amount of GYD to redeem
     /// @param assets the output tokens and associated amounts to return against GYD
     /// @return outputAmounts the amounts receivd against the redeemed GYD
