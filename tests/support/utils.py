@@ -107,3 +107,18 @@ def scale(x, decimals=18):
 
 def scale_scalar(x: DecimalLike, decimals: int = 18) -> QuantizedDecimal:
     return (to_decimal(x) * 10**decimals).floor()
+
+def unscale_scalar(x: DecimalLike, decimals: int = 18) -> QuantizedDecimal:
+    # This is necessary to support very large integers; otherwise, we get an error at
+    # to_decimal(x) already.
+    if isinstance(x, int):
+        return (
+            to_decimal(x // 10**decimals)
+            + to_decimal(x % 10**decimals) / 10**decimals
+        )
+    return to_decimal(x) / 10**decimals
+
+def unscale(x, decimals=18):
+    if isinstance(x, (list, tuple)):
+        return [unscale_scalar(v, decimals) for v in x]
+    return unscale_scalar(x, decimals)
