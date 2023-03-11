@@ -149,17 +149,17 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
-    "id": 17024,
+    "id": 17063,
     "exportedSymbols": {
       "IMinimalPoolView": [
-        17023
+        17062
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:244:85",
     "nodes": [
       {
-        "id": 17007,
+        "id": 17046,
         "nodeType": "PragmaDirective",
         "src": "174:23:85",
         "nodes": [],
@@ -171,12 +171,12 @@
         ]
       },
       {
-        "id": 17023,
+        "id": 17062,
         "nodeType": "ContractDefinition",
         "src": "199:218:85",
         "nodes": [
           {
-            "id": 17012,
+            "id": 17051,
             "nodeType": "FunctionDefinition",
             "src": "232:56:85",
             "nodes": [],
@@ -187,23 +187,23 @@
             "name": "getInvariant",
             "nameLocation": "241:12:85",
             "parameters": {
-              "id": 17008,
+              "id": 17047,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "253:2:85"
             },
             "returnParameters": {
-              "id": 17011,
+              "id": 17050,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17010,
+                  "id": 17049,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17012,
+                  "scope": 17051,
                   "src": "279:7:85",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -212,7 +212,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17009,
+                    "id": 17048,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "279:7:85",
@@ -226,13 +226,13 @@
               ],
               "src": "278:9:85"
             },
-            "scope": 17023,
+            "scope": 17062,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 17017,
+            "id": 17056,
             "nodeType": "FunctionDefinition",
             "src": "294:60:85",
             "nodes": [],
@@ -243,23 +243,23 @@
             "name": "getLastInvariant",
             "nameLocation": "303:16:85",
             "parameters": {
-              "id": 17013,
+              "id": 17052,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "319:2:85"
             },
             "returnParameters": {
-              "id": 17016,
+              "id": 17055,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17015,
+                  "id": 17054,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17017,
+                  "scope": 17056,
                   "src": "345:7:85",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -268,7 +268,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17014,
+                    "id": 17053,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "345:7:85",
@@ -282,13 +282,13 @@
               ],
               "src": "344:9:85"
             },
-            "scope": 17023,
+            "scope": 17062,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 17022,
+            "id": 17061,
             "nodeType": "FunctionDefinition",
             "src": "360:55:85",
             "nodes": [],
@@ -299,23 +299,23 @@
             "name": "totalSupply",
             "nameLocation": "369:11:85",
             "parameters": {
-              "id": 17018,
+              "id": 17057,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "380:2:85"
             },
             "returnParameters": {
-              "id": 17021,
+              "id": 17060,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17020,
+                  "id": 17059,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17022,
+                  "scope": 17061,
                   "src": "406:7:85",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -324,7 +324,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17019,
+                    "id": 17058,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "406:7:85",
@@ -338,7 +338,7 @@
               ],
               "src": "405:9:85"
             },
-            "scope": 17023,
+            "scope": 17062,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -351,11 +351,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17023
+          17062
         ],
         "name": "IMinimalPoolView",
         "nameLocation": "209:16:85",
-        "scope": 17024,
+        "scope": 17063,
         "usedErrors": []
       }
     ],

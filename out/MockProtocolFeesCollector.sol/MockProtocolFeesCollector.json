@@ -21,7 +21,7 @@
   },
   "deployedBytecode": {
     "object": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c806355c6762814602d575b600080fd5b670de0b6b3a764000060405190815260200160405180910390f3fea26469706673582212207a4f499f29d90bae29d8adca8922f01e0032aba5afed1e30ceb75bc8d378c6f164736f6c63430008110033",
-    "sourceMap": "200:144:55:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;241:101;330:4;241:101;;160:25:166;;;148:2;133:18;241:101:55;;;;;;",
+    "sourceMap": "200:144:55:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;241:101;330:4;241:101;;160:25:167;;;148:2;133:18;241:101:55;;;;;;",
     "linkReferences": {}
   },
   "methodIdentifiers": {
@@ -95,17 +95,17 @@
   },
   "ast": {
     "absolutePath": "contracts/testing/balancer/MockProtocolFeesCollector.sol",
-    "id": 15205,
+    "id": 15244,
     "exportedSymbols": {
       "MockProtocolFeesCollector": [
-        15204
+        15243
       ]
     },
     "nodeType": "SourceUnit",
     "src": "175:170:55",
     "nodes": [
       {
-        "id": 15192,
+        "id": 15231,
         "nodeType": "PragmaDirective",
         "src": "175:23:55",
         "nodes": [],
@@ -117,17 +117,17 @@
         ]
       },
       {
-        "id": 15204,
+        "id": 15243,
         "nodeType": "ContractDefinition",
         "src": "200:144:55",
         "nodes": [
           {
-            "id": 15203,
+            "id": 15242,
             "nodeType": "FunctionDefinition",
             "src": "241:101:55",
             "nodes": [],
             "body": {
-              "id": 15202,
+              "id": 15241,
               "nodeType": "Block",
               "src": "305:37:55",
               "nodes": [],
@@ -137,7 +137,7 @@
                     "arguments": [
                       {
                         "hexValue": "31653138",
-                        "id": 15199,
+                        "id": 15238,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -159,7 +159,7 @@
                           "typeString": "int_const 1000000000000000000"
                         }
                       ],
-                      "id": 15198,
+                      "id": 15237,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -171,14 +171,14 @@
                         "typeString": "type(uint256)"
                       },
                       "typeName": {
-                        "id": 15197,
+                        "id": 15236,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
                         "src": "322:7:55",
                         "typeDescriptions": {}
                       }
                     },
-                    "id": 15200,
+                    "id": 15239,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -194,8 +194,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 15196,
-                  "id": 15201,
+                  "functionReturnParameters": 15235,
+                  "id": 15240,
                   "nodeType": "Return",
                   "src": "315:20:55"
                 }
@@ -208,23 +208,23 @@
             "name": "getSwapFeePercentage",
             "nameLocation": "250:20:55",
             "parameters": {
-              "id": 15193,
+              "id": 15232,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "270:2:55"
             },
             "returnParameters": {
-              "id": 15196,
+              "id": 15235,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 15195,
+                  "id": 15234,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 15203,
+                  "scope": 15242,
                   "src": "296:7:55",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -233,7 +233,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 15194,
+                    "id": 15233,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "296:7:55",
@@ -247,7 +247,7 @@
               ],
               "src": "295:9:55"
             },
-            "scope": 15204,
+            "scope": 15243,
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "external"
@@ -260,11 +260,11 @@
         "contractKind": "contract",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          15204
+          15243
         ],
         "name": "MockProtocolFeesCollector",
         "nameLocation": "209:25:55",
-        "scope": 15205,
+        "scope": 15244,
         "usedErrors": []
       }
     ],

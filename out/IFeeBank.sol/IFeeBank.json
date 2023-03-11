@@ -339,20 +339,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/IFeeBank.sol",
-    "id": 16077,
+    "id": 16116,
     "exportedSymbols": {
       "IFeeBank": [
-        16076
+        16115
       ],
       "IGovernable": [
-        16176
+        16215
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:581:64",
     "nodes": [
       {
-        "id": 16053,
+        "id": 16092,
         "nodeType": "PragmaDirective",
         "src": "174:23:64",
         "nodes": [],
@@ -364,30 +364,30 @@
         ]
       },
       {
-        "id": 16054,
+        "id": 16093,
         "nodeType": "ImportDirective",
         "src": "199:27:64",
         "nodes": [],
         "absolutePath": "interfaces/IGovernable.sol",
         "file": "./IGovernable.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16077,
-        "sourceUnit": 16177,
+        "scope": 16116,
+        "sourceUnit": 16216,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16076,
+        "id": 16115,
         "nodeType": "ContractDefinition",
         "src": "282:472:64",
         "nodes": [
           {
-            "id": 16065,
+            "id": 16104,
             "nodeType": "FunctionDefinition",
             "src": "476:66:64",
             "nodes": [],
             "documentation": {
-              "id": 16058,
+              "id": 16097,
               "nodeType": "StructuredDocumentation",
               "src": "322:149:64",
               "text": "@notice Deposits `amount` of `underlying` in the fee bank\n @dev the fee bank should be approved to spend at least `amount` of `underlying`"
@@ -399,17 +399,17 @@
             "name": "depositFees",
             "nameLocation": "485:11:64",
             "parameters": {
-              "id": 16063,
+              "id": 16102,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16060,
+                  "id": 16099,
                   "mutability": "mutable",
                   "name": "underlying",
                   "nameLocation": "505:10:64",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16065,
+                  "scope": 16104,
                   "src": "497:18:64",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -418,7 +418,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16059,
+                    "id": 16098,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "497:7:64",
@@ -432,12 +432,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16062,
+                  "id": 16101,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "525:6:64",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16065,
+                  "scope": 16104,
                   "src": "517:14:64",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -446,7 +446,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16061,
+                    "id": 16100,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "517:7:64",
@@ -461,23 +461,23 @@
               "src": "496:36:64"
             },
             "returnParameters": {
-              "id": 16064,
+              "id": 16103,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "541:0:64"
             },
-            "scope": 16076,
+            "scope": 16115,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16075,
+            "id": 16114,
             "nodeType": "FunctionDefinition",
             "src": "634:118:64",
             "nodes": [],
             "documentation": {
-              "id": 16066,
+              "id": 16105,
               "nodeType": "StructuredDocumentation",
               "src": "548:81:64",
               "text": "@notice Withdraws `amount` of `underlying` from the fee bank to `beneficiary`"
@@ -489,17 +489,17 @@
             "name": "withdrawFees",
             "nameLocation": "643:12:64",
             "parameters": {
-              "id": 16073,
+              "id": 16112,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16068,
+                  "id": 16107,
                   "mutability": "mutable",
                   "name": "underlying",
                   "nameLocation": "673:10:64",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16075,
+                  "scope": 16114,
                   "src": "665:18:64",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -508,7 +508,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16067,
+                    "id": 16106,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "665:7:64",
@@ -522,12 +522,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16070,
+                  "id": 16109,
                   "mutability": "mutable",
                   "name": "beneficiary",
                   "nameLocation": "701:11:64",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16075,
+                  "scope": 16114,
                   "src": "693:19:64",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -536,7 +536,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16069,
+                    "id": 16108,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "693:7:64",
@@ -550,12 +550,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16072,
+                  "id": 16111,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "730:6:64",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16075,
+                  "scope": 16114,
                   "src": "722:14:64",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -564,7 +564,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16071,
+                    "id": 16110,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "722:7:64",
@@ -579,12 +579,12 @@
               "src": "655:87:64"
             },
             "returnParameters": {
-              "id": 16074,
+              "id": 16113,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "751:0:64"
             },
-            "scope": 16076,
+            "scope": 16115,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -594,16 +594,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 16056,
+              "id": 16095,
               "name": "IGovernable",
               "nameLocations": [
                 "304:11:64"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 16176,
+              "referencedDeclaration": 16215,
               "src": "304:11:64"
             },
-            "id": 16057,
+            "id": 16096,
             "nodeType": "InheritanceSpecifier",
             "src": "304:11:64"
           }
@@ -612,19 +612,19 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16055,
+          "id": 16094,
           "nodeType": "StructuredDocumentation",
           "src": "228:54:64",
           "text": "@notice IFeeBank is where the fees will be stored"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16076,
-          16176
+          16115,
+          16215
         ],
         "name": "IFeeBank",
         "nameLocation": "292:8:64",
-        "scope": 16077,
+        "scope": 16116,
         "usedErrors": []
       }
     ],

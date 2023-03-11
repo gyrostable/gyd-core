@@ -183,17 +183,17 @@
   },
   "ast": {
     "absolutePath": "interfaces/oracles/IRelativePriceOracle.sol",
-    "id": 17686,
+    "id": 17725,
     "exportedSymbols": {
       "IRelativePriceOracle": [
-        17685
+        17724
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:790:94",
     "nodes": [
       {
-        "id": 17664,
+        "id": 17703,
         "nodeType": "PragmaDirective",
         "src": "174:23:94",
         "nodes": [],
@@ -205,17 +205,17 @@
         ]
       },
       {
-        "id": 17685,
+        "id": 17724,
         "nodeType": "ContractDefinition",
         "src": "199:764:94",
         "nodes": [
           {
-            "id": 17674,
+            "id": 17713,
             "nodeType": "FunctionDefinition",
             "src": "623:121:94",
             "nodes": [],
             "documentation": {
-              "id": 17665,
+              "id": 17704,
               "nodeType": "StructuredDocumentation",
               "src": "236:382:94",
               "text": "@notice Quotes the price of `baseToken` relative to `quoteToken`\n The quoted price is always scaled with 18 decimals regardless of the\n source used for the oracle.\n @param baseToken the token of which the price is to be quoted\n @param quoteToken the token used to denominate the price\n @return the number of units of quote token per base token"
@@ -227,17 +227,17 @@
             "name": "getRelativePrice",
             "nameLocation": "632:16:94",
             "parameters": {
-              "id": 17670,
+              "id": 17709,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17667,
+                  "id": 17706,
                   "mutability": "mutable",
                   "name": "baseToken",
                   "nameLocation": "657:9:94",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17674,
+                  "scope": 17713,
                   "src": "649:17:94",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -246,7 +246,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 17666,
+                    "id": 17705,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "649:7:94",
@@ -260,12 +260,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 17669,
+                  "id": 17708,
                   "mutability": "mutable",
                   "name": "quoteToken",
                   "nameLocation": "676:10:94",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17674,
+                  "scope": 17713,
                   "src": "668:18:94",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -274,7 +274,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 17668,
+                    "id": 17707,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "668:7:94",
@@ -290,17 +290,17 @@
               "src": "648:39:94"
             },
             "returnParameters": {
-              "id": 17673,
+              "id": 17712,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17672,
+                  "id": 17711,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17674,
+                  "scope": 17713,
                   "src": "735:7:94",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -309,7 +309,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17671,
+                    "id": 17710,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "735:7:94",
@@ -323,18 +323,18 @@
               ],
               "src": "734:9:94"
             },
-            "scope": 17685,
+            "scope": 17724,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 17684,
+            "id": 17723,
             "nodeType": "FunctionDefinition",
             "src": "868:93:94",
             "nodes": [],
             "documentation": {
-              "id": 17675,
+              "id": 17714,
               "nodeType": "StructuredDocumentation",
               "src": "750:113:94",
               "text": "@notice Returns whether the oracle currently supports prices\n for `baseToken` relative to `quoteToken`"
@@ -346,17 +346,17 @@
             "name": "isPairSupported",
             "nameLocation": "877:15:94",
             "parameters": {
-              "id": 17680,
+              "id": 17719,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17677,
+                  "id": 17716,
                   "mutability": "mutable",
                   "name": "baseToken",
                   "nameLocation": "901:9:94",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17684,
+                  "scope": 17723,
                   "src": "893:17:94",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -365,7 +365,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 17676,
+                    "id": 17715,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "893:7:94",
@@ -379,12 +379,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 17679,
+                  "id": 17718,
                   "mutability": "mutable",
                   "name": "quoteToken",
                   "nameLocation": "920:10:94",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17684,
+                  "scope": 17723,
                   "src": "912:18:94",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -393,7 +393,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 17678,
+                    "id": 17717,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "912:7:94",
@@ -409,17 +409,17 @@
               "src": "892:39:94"
             },
             "returnParameters": {
-              "id": 17683,
+              "id": 17722,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17682,
+                  "id": 17721,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17684,
+                  "scope": 17723,
                   "src": "955:4:94",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -428,7 +428,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 17681,
+                    "id": 17720,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "955:4:94",
@@ -442,7 +442,7 @@
               ],
               "src": "954:6:94"
             },
-            "scope": 17685,
+            "scope": 17724,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -455,11 +455,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17685
+          17724
         ],
         "name": "IRelativePriceOracle",
         "nameLocation": "209:20:94",
-        "scope": 17686,
+        "scope": 17725,
         "usedErrors": []
       }
     ],

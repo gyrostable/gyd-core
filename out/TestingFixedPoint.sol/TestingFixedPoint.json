@@ -32,7 +32,7 @@
   },
   "deployedBytecode": {
     "object": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c806349eab4bd14610030575b600080fd5b61004361003e3660046100e2565b610055565b60405190815260200160405180910390f35b6000610061838361006a565b90505b92915050565b6000670de0b6b3a76400005b82156100615761008760028461011a565b60010361009b5761009881856100b9565b90505b6100a660028461012e565b92506100b284856100b9565b9350610076565b6000806100c68385610142565b90506100da670de0b6b3a76400008261012e565b949350505050565b600080604083850312156100f557600080fd5b50508035926020909101359150565b634e487b7160e01b600052601260045260246000fd5b60008261012957610129610104565b500690565b60008261013d5761013d610104565b500490565b808202811582820484141761006457634e487b7160e01b600052601160045260246000fdfea26469706673582212207da9f11ca095c8b014ef751bc8d4b726062f0edf3991209eef10cff44c5ff86b64736f6c63430008110033",
-    "sourceMap": "241:197:43:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;309:127;;;;;;:::i;:::-;;:::i;:::-;;;413:25:166;;;401:2;386:18;309:127:43;;;;;;;;383:7;409:20;:4;425:3;409:15;:20::i;:::-;402:27;;309:127;;;;;:::o;4522:342:158:-;4592:7;364:4;4652:183;4659:7;;4652:183;;4686:7;4692:1;4686:3;:7;:::i;:::-;4697:1;4686:12;4682:81;;4727:21;4735:6;4743:4;4727:7;:21::i;:::-;4718:30;;4682:81;4776:8;4783:1;4776:8;;:::i;:::-;;;4805:19;4813:4;4819;4805:7;:19::i;:::-;4798:26;;4652:183;;750:142;812:7;;849:5;853:1;849;:5;:::i;:::-;831:23;-1:-1:-1;872:13:158;364:4;831:23;872:13;:::i;:::-;865:20;750:142;-1:-1:-1;;;;750:142:158:o;14:248:166:-;82:6;90;143:2;131:9;122:7;118:23;114:32;111:52;;;159:1;156;149:12;111:52;-1:-1:-1;;182:23:166;;;252:2;237:18;;;224:32;;-1:-1:-1;14:248:166:o;449:127::-;510:10;505:3;501:20;498:1;491:31;541:4;538:1;531:15;565:4;562:1;555:15;581:112;613:1;639;629:35;;644:18;;:::i;:::-;-1:-1:-1;678:9:166;;581:112::o;698:120::-;738:1;764;754:35;;769:18;;:::i;:::-;-1:-1:-1;803:9:166;;698:120::o;823:265::-;896:9;;;927;;944:15;;;938:22;;924:37;914:168;;1004:10;999:3;995:20;992:1;985:31;1039:4;1036:1;1029:15;1067:4;1064:1;1057:15",
+    "sourceMap": "241:197:43:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;309:127;;;;;;:::i;:::-;;:::i;:::-;;;413:25:167;;;401:2;386:18;309:127:43;;;;;;;;383:7;409:20;:4;425:3;409:15;:20::i;:::-;402:27;;309:127;;;;;:::o;4522:342:158:-;4592:7;364:4;4652:183;4659:7;;4652:183;;4686:7;4692:1;4686:3;:7;:::i;:::-;4697:1;4686:12;4682:81;;4727:21;4735:6;4743:4;4727:7;:21::i;:::-;4718:30;;4682:81;4776:8;4783:1;4776:8;;:::i;:::-;;;4805:19;4813:4;4819;4805:7;:19::i;:::-;4798:26;;4652:183;;750:142;812:7;;849:5;853:1;849;:5;:::i;:::-;831:23;-1:-1:-1;872:13:158;364:4;831:23;872:13;:::i;:::-;865:20;750:142;-1:-1:-1;;;;750:142:158:o;14:248:167:-;82:6;90;143:2;131:9;122:7;118:23;114:32;111:52;;;159:1;156;149:12;111:52;-1:-1:-1;;182:23:167;;;252:2;237:18;;;224:32;;-1:-1:-1;14:248:167:o;449:127::-;510:10;505:3;501:20;498:1;491:31;541:4;538:1;531:15;565:4;562:1;555:15;581:112;613:1;639;629:35;;644:18;;:::i;:::-;-1:-1:-1;678:9:167;;581:112::o;698:120::-;738:1;764;754:35;;769:18;;:::i;:::-;-1:-1:-1;803:9:167;;698:120::o;823:265::-;896:9;;;927;;944:15;;;938:22;;924:37;914:168;;1004:10;999:3;995:20;992:1;985:31;1039:4;1036:1;1029:15;1067:4;1064:1;1057:15",
     "linkReferences": {}
   },
   "methodIdentifiers": {
@@ -141,26 +141,26 @@
   },
   "ast": {
     "absolutePath": "contracts/testing/TestingFixedPoint.sol",
-    "id": 13518,
+    "id": 13557,
     "exportedSymbols": {
       "Errors": [
-        56056
+        56095
       ],
       "FixedPoint": [
-        56426
+        56465
       ],
       "LogExpMath": [
-        57808
+        57847
       ],
       "TestingFixedPoint": [
-        13517
+        13556
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:265:43",
     "nodes": [
       {
-        "id": 13497,
+        "id": 13536,
         "nodeType": "PragmaDirective",
         "src": "174:23:43",
         "nodes": [],
@@ -172,41 +172,41 @@
         ]
       },
       {
-        "id": 13498,
+        "id": 13537,
         "nodeType": "ImportDirective",
         "src": "199:40:43",
         "nodes": [],
         "absolutePath": "libraries/FixedPoint.sol",
         "file": "../../libraries/FixedPoint.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 13518,
-        "sourceUnit": 56427,
+        "scope": 13557,
+        "sourceUnit": 56466,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 13517,
+        "id": 13556,
         "nodeType": "ContractDefinition",
         "src": "241:197:43",
         "nodes": [
           {
-            "id": 13501,
+            "id": 13540,
             "nodeType": "UsingForDirective",
             "src": "274:29:43",
             "nodes": [],
             "global": false,
             "libraryName": {
-              "id": 13499,
+              "id": 13538,
               "name": "FixedPoint",
               "nameLocations": [
                 "280:10:43"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 56426,
+              "referencedDeclaration": 56465,
               "src": "280:10:43"
             },
             "typeName": {
-              "id": 13500,
+              "id": 13539,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "295:7:43",
@@ -217,12 +217,12 @@
             }
           },
           {
-            "id": 13516,
+            "id": 13555,
             "nodeType": "FunctionDefinition",
             "src": "309:127:43",
             "nodes": [],
             "body": {
-              "id": 13515,
+              "id": 13554,
               "nodeType": "Block",
               "src": "392:44:43",
               "nodes": [],
@@ -231,11 +231,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 13512,
+                        "id": 13551,
                         "name": "exp",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 13505,
+                        "referencedDeclaration": 13544,
                         "src": "425:3:43",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -251,18 +251,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 13510,
+                        "id": 13549,
                         "name": "base",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 13503,
+                        "referencedDeclaration": 13542,
                         "src": "409:4:43",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
                         }
                       },
-                      "id": 13511,
+                      "id": 13550,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -270,14 +270,14 @@
                       "memberLocation": "414:10:43",
                       "memberName": "intPowDown",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 56425,
+                      "referencedDeclaration": 56464,
                       "src": "409:15:43",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
                         "typeString": "function (uint256,uint256) pure returns (uint256)"
                       }
                     },
-                    "id": 13513,
+                    "id": 13552,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -293,8 +293,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 13509,
-                  "id": 13514,
+                  "functionReturnParameters": 13548,
+                  "id": 13553,
                   "nodeType": "Return",
                   "src": "402:27:43"
                 }
@@ -307,17 +307,17 @@
             "name": "intPowDownTest",
             "nameLocation": "318:14:43",
             "parameters": {
-              "id": 13506,
+              "id": 13545,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 13503,
+                  "id": 13542,
                   "mutability": "mutable",
                   "name": "base",
                   "nameLocation": "341:4:43",
                   "nodeType": "VariableDeclaration",
-                  "scope": 13516,
+                  "scope": 13555,
                   "src": "333:12:43",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -326,7 +326,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 13502,
+                    "id": 13541,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "333:7:43",
@@ -339,12 +339,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 13505,
+                  "id": 13544,
                   "mutability": "mutable",
                   "name": "exp",
                   "nameLocation": "355:3:43",
                   "nodeType": "VariableDeclaration",
-                  "scope": 13516,
+                  "scope": 13555,
                   "src": "347:11:43",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -353,7 +353,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 13504,
+                    "id": 13543,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "347:7:43",
@@ -368,17 +368,17 @@
               "src": "332:27:43"
             },
             "returnParameters": {
-              "id": 13509,
+              "id": 13548,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 13508,
+                  "id": 13547,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 13516,
+                  "scope": 13555,
                   "src": "383:7:43",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -387,7 +387,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 13507,
+                    "id": 13546,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "383:7:43",
@@ -401,7 +401,7 @@
               ],
               "src": "382:9:43"
             },
-            "scope": 13517,
+            "scope": 13556,
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "external"
@@ -414,11 +414,11 @@
         "contractKind": "contract",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          13517
+          13556
         ],
         "name": "TestingFixedPoint",
         "nameLocation": "250:17:43",
-        "scope": 13518,
+        "scope": 13557,
         "usedErrors": []
       }
     ],

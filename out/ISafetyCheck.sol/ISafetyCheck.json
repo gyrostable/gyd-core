@@ -1110,20 +1110,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/ISafetyCheck.sol",
-    "id": 16757,
+    "id": 16796,
     "exportedSymbols": {
       "DataTypes": [
-        54519
+        54558
       ],
       "ISafetyCheck": [
-        16756
+        16795
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:1151:75",
     "nodes": [
       {
-        "id": 16722,
+        "id": 16761,
         "nodeType": "PragmaDirective",
         "src": "174:23:75",
         "nodes": [],
@@ -1135,30 +1135,30 @@
         ]
       },
       {
-        "id": 16723,
+        "id": 16762,
         "nodeType": "ImportDirective",
         "src": "199:36:75",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "../libraries/DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16757,
-        "sourceUnit": 54520,
+        "scope": 16796,
+        "sourceUnit": 54559,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16756,
+        "id": 16795,
         "nodeType": "ContractDefinition",
         "src": "237:1087:75",
         "nodes": [
           {
-            "id": 16732,
+            "id": 16771,
             "nodeType": "FunctionDefinition",
             "src": "406:88:75",
             "nodes": [],
             "documentation": {
-              "id": 16724,
+              "id": 16763,
               "nodeType": "StructuredDocumentation",
               "src": "266:135:75",
               "text": "@notice Checks whether a mint operation is safe\n @return empty string if it is safe, otherwise the reason why it is not safe"
@@ -1170,42 +1170,42 @@
             "name": "isMintSafe",
             "nameLocation": "415:10:75",
             "parameters": {
-              "id": 16728,
+              "id": 16767,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16727,
+                  "id": 16766,
                   "mutability": "mutable",
                   "name": "order",
                   "nameLocation": "449:5:75",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16732,
+                  "scope": 16771,
                   "src": "426:28:75",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$54505_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$54544_memory_ptr",
                     "typeString": "struct DataTypes.Order"
                   },
                   "typeName": {
-                    "id": 16726,
+                    "id": 16765,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16725,
+                      "id": 16764,
                       "name": "DataTypes.Order",
                       "nameLocations": [
                         "426:9:75",
                         "436:5:75"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54505,
+                      "referencedDeclaration": 54544,
                       "src": "426:15:75"
                     },
-                    "referencedDeclaration": 54505,
+                    "referencedDeclaration": 54544,
                     "src": "426:15:75",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$54505_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$54544_storage_ptr",
                       "typeString": "struct DataTypes.Order"
                     }
                   },
@@ -1215,17 +1215,17 @@
               "src": "425:30:75"
             },
             "returnParameters": {
-              "id": 16731,
+              "id": 16770,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16730,
+                  "id": 16769,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16732,
+                  "scope": 16771,
                   "src": "479:13:75",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -1234,7 +1234,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 16729,
+                    "id": 16768,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "479:6:75",
@@ -1248,18 +1248,18 @@
               ],
               "src": "478:15:75"
             },
-            "scope": 16756,
+            "scope": 16795,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16741,
+            "id": 16780,
             "nodeType": "FunctionDefinition",
             "src": "642:90:75",
             "nodes": [],
             "documentation": {
-              "id": 16733,
+              "id": 16772,
               "nodeType": "StructuredDocumentation",
               "src": "500:137:75",
               "text": "@notice Checks whether a redeem operation is safe\n @return empty string if it is safe, otherwise the reason why it is not safe"
@@ -1271,42 +1271,42 @@
             "name": "isRedeemSafe",
             "nameLocation": "651:12:75",
             "parameters": {
-              "id": 16737,
+              "id": 16776,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16736,
+                  "id": 16775,
                   "mutability": "mutable",
                   "name": "order",
                   "nameLocation": "687:5:75",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16741,
+                  "scope": 16780,
                   "src": "664:28:75",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$54505_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$54544_memory_ptr",
                     "typeString": "struct DataTypes.Order"
                   },
                   "typeName": {
-                    "id": 16735,
+                    "id": 16774,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16734,
+                      "id": 16773,
                       "name": "DataTypes.Order",
                       "nameLocations": [
                         "664:9:75",
                         "674:5:75"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54505,
+                      "referencedDeclaration": 54544,
                       "src": "664:15:75"
                     },
-                    "referencedDeclaration": 54505,
+                    "referencedDeclaration": 54544,
                     "src": "664:15:75",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$54505_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$54544_storage_ptr",
                       "typeString": "struct DataTypes.Order"
                     }
                   },
@@ -1316,17 +1316,17 @@
               "src": "663:30:75"
             },
             "returnParameters": {
-              "id": 16740,
+              "id": 16779,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16739,
+                  "id": 16778,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16741,
+                  "scope": 16780,
                   "src": "717:13:75",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -1335,7 +1335,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 16738,
+                    "id": 16777,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "717:6:75",
@@ -1349,18 +1349,18 @@
               ],
               "src": "716:15:75"
             },
-            "scope": 16756,
+            "scope": 16795,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16748,
+            "id": 16787,
             "nodeType": "FunctionDefinition",
             "src": "961:70:75",
             "nodes": [],
             "documentation": {
-              "id": 16742,
+              "id": 16781,
               "nodeType": "StructuredDocumentation",
               "src": "738:218:75",
               "text": "@notice Checks whether a redeem operation is safe and reverts otherwise\n This is only called when an actual redeem is performed\n The implementation should store any relevant information for the redeem"
@@ -1372,42 +1372,42 @@
             "name": "checkAndPersistRedeem",
             "nameLocation": "970:21:75",
             "parameters": {
-              "id": 16746,
+              "id": 16785,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16745,
+                  "id": 16784,
                   "mutability": "mutable",
                   "name": "order",
                   "nameLocation": "1015:5:75",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16748,
+                  "scope": 16787,
                   "src": "992:28:75",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$54505_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$54544_memory_ptr",
                     "typeString": "struct DataTypes.Order"
                   },
                   "typeName": {
-                    "id": 16744,
+                    "id": 16783,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16743,
+                      "id": 16782,
                       "name": "DataTypes.Order",
                       "nameLocations": [
                         "992:9:75",
                         "1002:5:75"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54505,
+                      "referencedDeclaration": 54544,
                       "src": "992:15:75"
                     },
-                    "referencedDeclaration": 54505,
+                    "referencedDeclaration": 54544,
                     "src": "992:15:75",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$54505_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$54544_storage_ptr",
                       "typeString": "struct DataTypes.Order"
                     }
                   },
@@ -1417,23 +1417,23 @@
               "src": "991:30:75"
             },
             "returnParameters": {
-              "id": 16747,
+              "id": 16786,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1030:0:75"
             },
-            "scope": 16756,
+            "scope": 16795,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16755,
+            "id": 16794,
             "nodeType": "FunctionDefinition",
             "src": "1254:68:75",
             "nodes": [],
             "documentation": {
-              "id": 16749,
+              "id": 16788,
               "nodeType": "StructuredDocumentation",
               "src": "1037:212:75",
               "text": "@notice Checks whether a mint operation is safe and reverts otherwise\n This is only called when an actual mint is performed\n The implementation should store any relevant information for the mint"
@@ -1445,42 +1445,42 @@
             "name": "checkAndPersistMint",
             "nameLocation": "1263:19:75",
             "parameters": {
-              "id": 16753,
+              "id": 16792,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16752,
+                  "id": 16791,
                   "mutability": "mutable",
                   "name": "order",
                   "nameLocation": "1306:5:75",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16755,
+                  "scope": 16794,
                   "src": "1283:28:75",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$54505_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$54544_memory_ptr",
                     "typeString": "struct DataTypes.Order"
                   },
                   "typeName": {
-                    "id": 16751,
+                    "id": 16790,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16750,
+                      "id": 16789,
                       "name": "DataTypes.Order",
                       "nameLocations": [
                         "1283:9:75",
                         "1293:5:75"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54505,
+                      "referencedDeclaration": 54544,
                       "src": "1283:15:75"
                     },
-                    "referencedDeclaration": 54505,
+                    "referencedDeclaration": 54544,
                     "src": "1283:15:75",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$54505_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$54544_storage_ptr",
                       "typeString": "struct DataTypes.Order"
                     }
                   },
@@ -1490,12 +1490,12 @@
               "src": "1282:30:75"
             },
             "returnParameters": {
-              "id": 16754,
+              "id": 16793,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1321:0:75"
             },
-            "scope": 16756,
+            "scope": 16795,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -1508,11 +1508,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16756
+          16795
         ],
         "name": "ISafetyCheck",
         "nameLocation": "247:12:75",
-        "scope": 16757,
+        "scope": 16796,
         "usedErrors": []
       }
     ],

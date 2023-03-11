@@ -65,17 +65,17 @@
   },
   "ast": {
     "absolutePath": "libraries/Vaults.sol",
-    "id": 58230,
+    "id": 58269,
     "exportedSymbols": {
       "Vaults": [
-        58229
+        58268
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:174:164",
     "nodes": [
       {
-        "id": 58222,
+        "id": 58261,
         "nodeType": "PragmaDirective",
         "src": "174:23:164",
         "nodes": [],
@@ -87,47 +87,47 @@
         ]
       },
       {
-        "id": 58229,
+        "id": 58268,
         "nodeType": "ContractDefinition",
         "src": "199:148:164",
         "nodes": [
           {
-            "id": 58228,
+            "id": 58267,
             "nodeType": "EnumDefinition",
             "src": "220:125:164",
             "nodes": [],
             "canonicalName": "Vaults.Type",
             "members": [
               {
-                "id": 58223,
+                "id": 58262,
                 "name": "GENERIC",
                 "nameLocation": "240:7:164",
                 "nodeType": "EnumValue",
                 "src": "240:7:164"
               },
               {
-                "id": 58224,
+                "id": 58263,
                 "name": "BALANCER_CPMM",
                 "nameLocation": "257:13:164",
                 "nodeType": "EnumValue",
                 "src": "257:13:164"
               },
               {
-                "id": 58225,
+                "id": 58264,
                 "name": "BALANCER_2CLP",
                 "nameLocation": "280:13:164",
                 "nodeType": "EnumValue",
                 "src": "280:13:164"
               },
               {
-                "id": 58226,
+                "id": 58265,
                 "name": "BALANCER_3CLP",
                 "nameLocation": "303:13:164",
                 "nodeType": "EnumValue",
                 "src": "303:13:164"
               },
               {
-                "id": 58227,
+                "id": 58266,
                 "name": "BALANCER_ECLP",
                 "nameLocation": "326:13:164",
                 "nodeType": "EnumValue",
@@ -145,11 +145,11 @@
         "contractKind": "library",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          58229
+          58268
         ],
         "name": "Vaults",
         "nameLocation": "207:6:164",
-        "scope": 58230,
+        "scope": 58269,
         "usedErrors": []
       }
     ],

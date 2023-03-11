@@ -141,17 +141,17 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/ISignaturesValidator.sol",
-    "id": 17088,
+    "id": 17127,
     "exportedSymbols": {
       "ISignaturesValidator": [
-        17087
+        17126
       ]
     },
     "nodeType": "SourceUnit",
     "src": "175:450:88",
     "nodes": [
       {
-        "id": 17071,
+        "id": 17110,
         "nodeType": "PragmaDirective",
         "src": "175:23:88",
         "nodes": [],
@@ -163,17 +163,17 @@
         ]
       },
       {
-        "id": 17087,
+        "id": 17126,
         "nodeType": "ContractDefinition",
         "src": "296:328:88",
         "nodes": [
           {
-            "id": 17078,
+            "id": 17117,
             "nodeType": "FunctionDefinition",
             "src": "398:62:88",
             "nodes": [],
             "documentation": {
-              "id": 17073,
+              "id": 17112,
               "nodeType": "StructuredDocumentation",
               "src": "333:60:88",
               "text": " @dev Returns the EIP712 domain separator."
@@ -185,23 +185,23 @@
             "name": "getDomainSeparator",
             "nameLocation": "407:18:88",
             "parameters": {
-              "id": 17074,
+              "id": 17113,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "425:2:88"
             },
             "returnParameters": {
-              "id": 17077,
+              "id": 17116,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17076,
+                  "id": 17115,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17078,
+                  "scope": 17117,
                   "src": "451:7:88",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -210,7 +210,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 17075,
+                    "id": 17114,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "451:7:88",
@@ -224,18 +224,18 @@
               ],
               "src": "450:9:88"
             },
-            "scope": 17087,
+            "scope": 17126,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 17086,
+            "id": 17125,
             "nodeType": "FunctionDefinition",
             "src": "554:68:88",
             "nodes": [],
             "documentation": {
-              "id": 17079,
+              "id": 17118,
               "nodeType": "StructuredDocumentation",
               "src": "466:83:88",
               "text": " @dev Returns the next nonce used by an address to sign messages."
@@ -247,17 +247,17 @@
             "name": "getNextNonce",
             "nameLocation": "563:12:88",
             "parameters": {
-              "id": 17082,
+              "id": 17121,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17081,
+                  "id": 17120,
                   "mutability": "mutable",
                   "name": "user",
                   "nameLocation": "584:4:88",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17086,
+                  "scope": 17125,
                   "src": "576:12:88",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -266,7 +266,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 17080,
+                    "id": 17119,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "576:7:88",
@@ -282,17 +282,17 @@
               "src": "575:14:88"
             },
             "returnParameters": {
-              "id": 17085,
+              "id": 17124,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17084,
+                  "id": 17123,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17086,
+                  "scope": 17125,
                   "src": "613:7:88",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -301,7 +301,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17083,
+                    "id": 17122,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "613:7:88",
@@ -315,7 +315,7 @@
               ],
               "src": "612:9:88"
             },
-            "scope": 17087,
+            "scope": 17126,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -327,18 +327,18 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 17072,
+          "id": 17111,
           "nodeType": "StructuredDocumentation",
           "src": "200:95:88",
           "text": " @dev Interface for the SignatureValidator helper, used to support meta-transactions."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17087
+          17126
         ],
         "name": "ISignaturesValidator",
         "nameLocation": "306:20:88",
-        "scope": 17088,
+        "scope": 17127,
         "usedErrors": []
       }
     ],

@@ -395,26 +395,26 @@
   },
   "ast": {
     "absolutePath": "interfaces/IReserveManager.sol",
-    "id": 16721,
+    "id": 16760,
     "exportedSymbols": {
       "DataTypes": [
-        54519
+        54558
       ],
       "IReserveManager": [
-        16720
+        16759
       ],
       "IUSDPriceOracle": [
-        17709
+        17748
       ],
       "IVaultWeightManager": [
-        16836
+        16875
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:535:74",
     "nodes": [
       {
-        "id": 16697,
+        "id": 16736,
         "nodeType": "PragmaDirective",
         "src": "174:23:74",
         "nodes": [],
@@ -426,51 +426,51 @@
         ]
       },
       {
-        "id": 16698,
+        "id": 16737,
         "nodeType": "ImportDirective",
         "src": "199:47:74",
         "nodes": [],
         "absolutePath": "interfaces/IVaultWeightManager.sol",
         "file": "../interfaces/IVaultWeightManager.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16721,
-        "sourceUnit": 16837,
+        "scope": 16760,
+        "sourceUnit": 16876,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16699,
+        "id": 16738,
         "nodeType": "ImportDirective",
         "src": "247:51:74",
         "nodes": [],
         "absolutePath": "interfaces/oracles/IUSDPriceOracle.sol",
         "file": "../interfaces/oracles/IUSDPriceOracle.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16721,
-        "sourceUnit": 17710,
+        "scope": 16760,
+        "sourceUnit": 17749,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16700,
+        "id": 16739,
         "nodeType": "ImportDirective",
         "src": "299:36:74",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "../libraries/DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16721,
-        "sourceUnit": 54520,
+        "scope": 16760,
+        "sourceUnit": 54559,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16720,
+        "id": 16759,
         "nodeType": "ContractDefinition",
         "src": "337:371:74",
         "nodes": [
           {
-            "id": 16706,
+            "id": 16745,
             "nodeType": "EventDefinition",
             "src": "369:84:74",
             "nodes": [],
@@ -479,18 +479,18 @@
             "name": "NewVaultWeightManager",
             "nameLocation": "375:21:74",
             "parameters": {
-              "id": 16705,
+              "id": 16744,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16702,
+                  "id": 16741,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "oldManager",
                   "nameLocation": "413:10:74",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16706,
+                  "scope": 16745,
                   "src": "397:26:74",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -499,7 +499,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16701,
+                    "id": 16740,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "397:7:74",
@@ -513,13 +513,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16704,
+                  "id": 16743,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "newManager",
                   "nameLocation": "441:10:74",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16706,
+                  "scope": 16745,
                   "src": "425:26:74",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -528,7 +528,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16703,
+                    "id": 16742,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "425:7:74",
@@ -545,7 +545,7 @@
             }
           },
           {
-            "id": 16712,
+            "id": 16751,
             "nodeType": "EventDefinition",
             "src": "458:75:74",
             "nodes": [],
@@ -554,18 +554,18 @@
             "name": "NewPriceOracle",
             "nameLocation": "464:14:74",
             "parameters": {
-              "id": 16711,
+              "id": 16750,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16708,
+                  "id": 16747,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "oldOracle",
                   "nameLocation": "495:9:74",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16712,
+                  "scope": 16751,
                   "src": "479:25:74",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -574,7 +574,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16707,
+                    "id": 16746,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "479:7:74",
@@ -588,13 +588,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16710,
+                  "id": 16749,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "newOracle",
                   "nameLocation": "522:9:74",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16712,
+                  "scope": 16751,
                   "src": "506:25:74",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -603,7 +603,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16709,
+                    "id": 16748,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "506:7:74",
@@ -620,12 +620,12 @@
             }
           },
           {
-            "id": 16719,
+            "id": 16758,
             "nodeType": "FunctionDefinition",
             "src": "625:81:74",
             "nodes": [],
             "documentation": {
-              "id": 16713,
+              "id": 16752,
               "nodeType": "StructuredDocumentation",
               "src": "539:81:74",
               "text": "@notice Returns a list of vaults including metadata such as price and weights"
@@ -637,48 +637,48 @@
             "name": "getReserveState",
             "nameLocation": "634:15:74",
             "parameters": {
-              "id": 16714,
+              "id": 16753,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "649:2:74"
             },
             "returnParameters": {
-              "id": 16718,
+              "id": 16757,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16717,
+                  "id": 16756,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16719,
+                  "scope": 16758,
                   "src": "675:29:74",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_ReserveState_$54518_memory_ptr",
+                    "typeIdentifier": "t_struct$_ReserveState_$54557_memory_ptr",
                     "typeString": "struct DataTypes.ReserveState"
                   },
                   "typeName": {
-                    "id": 16716,
+                    "id": 16755,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16715,
+                      "id": 16754,
                       "name": "DataTypes.ReserveState",
                       "nameLocations": [
                         "675:9:74",
                         "685:12:74"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54518,
+                      "referencedDeclaration": 54557,
                       "src": "675:22:74"
                     },
-                    "referencedDeclaration": 54518,
+                    "referencedDeclaration": 54557,
                     "src": "675:22:74",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ReserveState_$54518_storage_ptr",
+                      "typeIdentifier": "t_struct$_ReserveState_$54557_storage_ptr",
                       "typeString": "struct DataTypes.ReserveState"
                     }
                   },
@@ -687,7 +687,7 @@
               ],
               "src": "674:31:74"
             },
-            "scope": 16720,
+            "scope": 16759,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -700,11 +700,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16720
+          16759
         ],
         "name": "IReserveManager",
         "nameLocation": "347:15:74",
-        "scope": 16721,
+        "scope": 16760,
         "usedErrors": []
       }
     ],

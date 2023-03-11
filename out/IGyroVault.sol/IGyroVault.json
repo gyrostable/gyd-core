@@ -1138,26 +1138,26 @@
   },
   "ast": {
     "absolutePath": "interfaces/IGyroVault.sol",
-    "id": 16415,
+    "id": 16454,
     "exportedSymbols": {
       "IERC20": [
-        47531
+        47570
       ],
       "IERC20Metadata": [
-        47556
+        47595
       ],
       "IGyroVault": [
-        16414
+        16453
       ],
       "Vaults": [
-        58229
+        58268
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:3516:69",
     "nodes": [
       {
-        "id": 16301,
+        "id": 16340,
         "nodeType": "PragmaDirective",
         "src": "174:23:69",
         "nodes": [],
@@ -1169,43 +1169,43 @@
         ]
       },
       {
-        "id": 16302,
+        "id": 16341,
         "nodeType": "ImportDirective",
         "src": "199:33:69",
         "nodes": [],
         "absolutePath": "libraries/Vaults.sol",
         "file": "../libraries/Vaults.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16415,
-        "sourceUnit": 58230,
+        "scope": 16454,
+        "sourceUnit": 58269,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16303,
+        "id": 16342,
         "nodeType": "ImportDirective",
         "src": "234:75:69",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol",
         "file": "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16415,
-        "sourceUnit": 47557,
+        "scope": 16454,
+        "sourceUnit": 47596,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16414,
+        "id": 16453,
         "nodeType": "ContractDefinition",
         "src": "675:3014:69",
         "nodes": [
           {
-            "id": 16313,
+            "id": 16352,
             "nodeType": "FunctionDefinition",
             "src": "758:57:69",
             "nodes": [],
             "documentation": {
-              "id": 16307,
+              "id": 16346,
               "nodeType": "StructuredDocumentation",
               "src": "720:33:69",
               "text": "@return The type of the vault"
@@ -1217,48 +1217,48 @@
             "name": "vaultType",
             "nameLocation": "767:9:69",
             "parameters": {
-              "id": 16308,
+              "id": 16347,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "776:2:69"
             },
             "returnParameters": {
-              "id": 16312,
+              "id": 16351,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16311,
+                  "id": 16350,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16313,
+                  "scope": 16352,
                   "src": "802:11:69",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_Type_$58228",
+                    "typeIdentifier": "t_enum$_Type_$58267",
                     "typeString": "enum Vaults.Type"
                   },
                   "typeName": {
-                    "id": 16310,
+                    "id": 16349,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16309,
+                      "id": 16348,
                       "name": "Vaults.Type",
                       "nameLocations": [
                         "802:6:69",
                         "809:4:69"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 58228,
+                      "referencedDeclaration": 58267,
                       "src": "802:11:69"
                     },
-                    "referencedDeclaration": 58228,
+                    "referencedDeclaration": 58267,
                     "src": "802:11:69",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_Type_$58228",
+                      "typeIdentifier": "t_enum$_Type_$58267",
                       "typeString": "enum Vaults.Type"
                     }
                   },
@@ -1267,18 +1267,18 @@
               ],
               "src": "801:13:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16319,
+            "id": 16358,
             "nodeType": "FunctionDefinition",
             "src": "955:54:69",
             "nodes": [],
             "documentation": {
-              "id": 16314,
+              "id": 16353,
               "nodeType": "StructuredDocumentation",
               "src": "821:129:69",
               "text": "@return The token associated with this vault\n This can be any type of token but will likely be an LP token in practice"
@@ -1290,23 +1290,23 @@
             "name": "underlying",
             "nameLocation": "964:10:69",
             "parameters": {
-              "id": 16315,
+              "id": 16354,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "974:2:69"
             },
             "returnParameters": {
-              "id": 16318,
+              "id": 16357,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16317,
+                  "id": 16356,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16319,
+                  "scope": 16358,
                   "src": "1000:7:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1315,7 +1315,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16316,
+                    "id": 16355,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1000:7:69",
@@ -1330,18 +1330,18 @@
               ],
               "src": "999:9:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16327,
+            "id": 16366,
             "nodeType": "FunctionDefinition",
             "src": "1295:61:69",
             "nodes": [],
             "documentation": {
-              "id": 16320,
+              "id": 16359,
               "nodeType": "StructuredDocumentation",
               "src": "1015:275:69",
               "text": "@return The token associated with this vault\n In the case of an LP token, this will be the underlying tokens\n associated to it (e.g. [ETH, DAI] for a ETH/DAI pool LP token or [USDC] for aUSDC)\n In most cases, the tokens returned will not be LP tokens"
@@ -1353,56 +1353,56 @@
             "name": "getTokens",
             "nameLocation": "1304:9:69",
             "parameters": {
-              "id": 16321,
+              "id": 16360,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1313:2:69"
             },
             "returnParameters": {
-              "id": 16326,
+              "id": 16365,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16325,
+                  "id": 16364,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16327,
+                  "scope": 16366,
                   "src": "1339:15:69",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_contract$_IERC20_$47531_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_contract$_IERC20_$47570_$dyn_memory_ptr",
                     "typeString": "contract IERC20[]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16323,
+                      "id": 16362,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 16322,
+                        "id": 16361,
                         "name": "IERC20",
                         "nameLocations": [
                           "1339:6:69"
                         ],
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 47531,
+                        "referencedDeclaration": 47570,
                         "src": "1339:6:69"
                       },
-                      "referencedDeclaration": 47531,
+                      "referencedDeclaration": 47570,
                       "src": "1339:6:69",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IERC20_$47531",
+                        "typeIdentifier": "t_contract$_IERC20_$47570",
                         "typeString": "contract IERC20"
                       }
                     },
-                    "id": 16324,
+                    "id": 16363,
                     "nodeType": "ArrayTypeName",
                     "src": "1339:8:69",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_contract$_IERC20_$47531_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_contract$_IERC20_$47570_$dyn_storage_ptr",
                       "typeString": "contract IERC20[]"
                     }
                   },
@@ -1411,18 +1411,18 @@
               ],
               "src": "1338:17:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16333,
+            "id": 16372,
             "nodeType": "FunctionDefinition",
             "src": "1429:59:69",
             "nodes": [],
             "documentation": {
-              "id": 16328,
+              "id": 16367,
               "nodeType": "StructuredDocumentation",
               "src": "1362:62:69",
               "text": "@return The total amount of underlying tokens in the vault"
@@ -1434,23 +1434,23 @@
             "name": "totalUnderlying",
             "nameLocation": "1438:15:69",
             "parameters": {
-              "id": 16329,
+              "id": 16368,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1453:2:69"
             },
             "returnParameters": {
-              "id": 16332,
+              "id": 16371,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16331,
+                  "id": 16370,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16333,
+                  "scope": 16372,
                   "src": "1479:7:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1459,7 +1459,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16330,
+                    "id": 16369,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1479:7:69",
@@ -1473,18 +1473,18 @@
               ],
               "src": "1478:9:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16339,
+            "id": 16378,
             "nodeType": "FunctionDefinition",
             "src": "1585:56:69",
             "nodes": [],
             "documentation": {
-              "id": 16334,
+              "id": 16373,
               "nodeType": "StructuredDocumentation",
               "src": "1494:86:69",
               "text": "@return The exchange rate between an underlying tokens and the token of this vault"
@@ -1496,23 +1496,23 @@
             "name": "exchangeRate",
             "nameLocation": "1594:12:69",
             "parameters": {
-              "id": 16335,
+              "id": 16374,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1606:2:69"
             },
             "returnParameters": {
-              "id": 16338,
+              "id": 16377,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16337,
+                  "id": 16376,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16339,
+                  "scope": 16378,
                   "src": "1632:7:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1521,7 +1521,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16336,
+                    "id": 16375,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1632:7:69",
@@ -1535,18 +1535,18 @@
               ],
               "src": "1631:9:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16349,
+            "id": 16388,
             "nodeType": "FunctionDefinition",
             "src": "1899:130:69",
             "nodes": [],
             "documentation": {
-              "id": 16340,
+              "id": 16379,
               "nodeType": "StructuredDocumentation",
               "src": "1647:247:69",
               "text": "@notice Deposits `underlyingAmount` of LP token supported\n and sends back the received vault tokens\n @param underlyingAmount the amount of underlying to deposit\n @return vaultTokenAmount the amount of vault token sent back"
@@ -1558,17 +1558,17 @@
             "name": "deposit",
             "nameLocation": "1908:7:69",
             "parameters": {
-              "id": 16345,
+              "id": 16384,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16342,
+                  "id": 16381,
                   "mutability": "mutable",
                   "name": "underlyingAmount",
                   "nameLocation": "1924:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16349,
+                  "scope": 16388,
                   "src": "1916:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1577,7 +1577,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16341,
+                    "id": 16380,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1916:7:69",
@@ -1590,12 +1590,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16344,
+                  "id": 16383,
                   "mutability": "mutable",
                   "name": "minVaultTokensOut",
                   "nameLocation": "1950:17:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16349,
+                  "scope": 16388,
                   "src": "1942:25:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1604,7 +1604,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16343,
+                    "id": 16382,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1942:7:69",
@@ -1619,17 +1619,17 @@
               "src": "1915:53:69"
             },
             "returnParameters": {
-              "id": 16348,
+              "id": 16387,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16347,
+                  "id": 16386,
                   "mutability": "mutable",
                   "name": "vaultTokenAmount",
                   "nameLocation": "2011:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16349,
+                  "scope": 16388,
                   "src": "2003:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1638,7 +1638,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16346,
+                    "id": 16385,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2003:7:69",
@@ -1652,18 +1652,18 @@
               ],
               "src": "2002:26:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16361,
+            "id": 16400,
             "nodeType": "FunctionDefinition",
             "src": "2169:168:69",
             "nodes": [],
             "documentation": {
-              "id": 16350,
+              "id": 16389,
               "nodeType": "StructuredDocumentation",
               "src": "2035:129:69",
               "text": "@notice Simlar to `deposit(uint256 underlyingAmount)` but credits the tokens\n to `beneficiary` instead of `msg.sender`"
@@ -1675,17 +1675,17 @@
             "name": "depositFor",
             "nameLocation": "2178:10:69",
             "parameters": {
-              "id": 16357,
+              "id": 16396,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16352,
+                  "id": 16391,
                   "mutability": "mutable",
                   "name": "beneficiary",
                   "nameLocation": "2206:11:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16361,
+                  "scope": 16400,
                   "src": "2198:19:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1694,7 +1694,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16351,
+                    "id": 16390,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2198:7:69",
@@ -1708,12 +1708,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16354,
+                  "id": 16393,
                   "mutability": "mutable",
                   "name": "underlyingAmount",
                   "nameLocation": "2235:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16361,
+                  "scope": 16400,
                   "src": "2227:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1722,7 +1722,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16353,
+                    "id": 16392,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2227:7:69",
@@ -1735,12 +1735,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16356,
+                  "id": 16395,
                   "mutability": "mutable",
                   "name": "minVaultTokensOut",
                   "nameLocation": "2269:17:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16361,
+                  "scope": 16400,
                   "src": "2261:25:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1749,7 +1749,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16355,
+                    "id": 16394,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2261:7:69",
@@ -1764,17 +1764,17 @@
               "src": "2188:104:69"
             },
             "returnParameters": {
-              "id": 16360,
+              "id": 16399,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16359,
+                  "id": 16398,
                   "mutability": "mutable",
                   "name": "vaultTokenAmount",
                   "nameLocation": "2319:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16361,
+                  "scope": 16400,
                   "src": "2311:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1783,7 +1783,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16358,
+                    "id": 16397,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2311:7:69",
@@ -1797,18 +1797,18 @@
               ],
               "src": "2310:26:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16373,
+            "id": 16412,
             "nodeType": "FunctionDefinition",
             "src": "2386:167:69",
             "nodes": [],
             "documentation": {
-              "id": 16362,
+              "id": 16401,
               "nodeType": "StructuredDocumentation",
               "src": "2343:38:69",
               "text": "@notice Dry-run version of deposit"
@@ -1820,17 +1820,17 @@
             "name": "dryDeposit",
             "nameLocation": "2395:10:69",
             "parameters": {
-              "id": 16367,
+              "id": 16406,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16364,
+                  "id": 16403,
                   "mutability": "mutable",
                   "name": "underlyingAmount",
                   "nameLocation": "2414:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16373,
+                  "scope": 16412,
                   "src": "2406:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1839,7 +1839,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16363,
+                    "id": 16402,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2406:7:69",
@@ -1852,12 +1852,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16366,
+                  "id": 16405,
                   "mutability": "mutable",
                   "name": "minVaultTokensOut",
                   "nameLocation": "2440:17:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16373,
+                  "scope": 16412,
                   "src": "2432:25:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1866,7 +1866,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16365,
+                    "id": 16404,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2432:7:69",
@@ -1881,17 +1881,17 @@
               "src": "2405:53:69"
             },
             "returnParameters": {
-              "id": 16372,
+              "id": 16411,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16369,
+                  "id": 16408,
                   "mutability": "mutable",
                   "name": "vaultTokenAmount",
                   "nameLocation": "2514:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16373,
+                  "scope": 16412,
                   "src": "2506:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1900,7 +1900,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16368,
+                    "id": 16407,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2506:7:69",
@@ -1913,12 +1913,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16371,
+                  "id": 16410,
                   "mutability": "mutable",
                   "name": "error",
                   "nameLocation": "2546:5:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16373,
+                  "scope": 16412,
                   "src": "2532:19:69",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -1927,7 +1927,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 16370,
+                    "id": 16409,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "2532:6:69",
@@ -1941,18 +1941,18 @@
               ],
               "src": "2505:47:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16383,
+            "id": 16422,
             "nodeType": "FunctionDefinition",
             "src": "2797:130:69",
             "nodes": [],
             "documentation": {
-              "id": 16374,
+              "id": 16413,
               "nodeType": "StructuredDocumentation",
               "src": "2559:233:69",
               "text": "@notice Withdraws `vaultTokenAmount` of LP token supported\n and burns the vault tokens\n @param vaultTokenAmount the amount of vault token to withdraw\n @return underlyingAmount the amount of LP token sent back"
@@ -1964,17 +1964,17 @@
             "name": "withdraw",
             "nameLocation": "2806:8:69",
             "parameters": {
-              "id": 16379,
+              "id": 16418,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16376,
+                  "id": 16415,
                   "mutability": "mutable",
                   "name": "vaultTokenAmount",
                   "nameLocation": "2823:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16383,
+                  "scope": 16422,
                   "src": "2815:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1983,7 +1983,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16375,
+                    "id": 16414,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2815:7:69",
@@ -1996,12 +1996,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16378,
+                  "id": 16417,
                   "mutability": "mutable",
                   "name": "minUnderlyingOut",
                   "nameLocation": "2849:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16383,
+                  "scope": 16422,
                   "src": "2841:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2010,7 +2010,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16377,
+                    "id": 16416,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2841:7:69",
@@ -2025,17 +2025,17 @@
               "src": "2814:52:69"
             },
             "returnParameters": {
-              "id": 16382,
+              "id": 16421,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16381,
+                  "id": 16420,
                   "mutability": "mutable",
                   "name": "underlyingAmount",
                   "nameLocation": "2909:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16383,
+                  "scope": 16422,
                   "src": "2901:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2044,7 +2044,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16380,
+                    "id": 16419,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2901:7:69",
@@ -2058,18 +2058,18 @@
               ],
               "src": "2900:26:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16395,
+            "id": 16434,
             "nodeType": "FunctionDefinition",
             "src": "2979:167:69",
             "nodes": [],
             "documentation": {
-              "id": 16384,
+              "id": 16423,
               "nodeType": "StructuredDocumentation",
               "src": "2933:41:69",
               "text": "@notice Dry-run version of `withdraw`"
@@ -2081,17 +2081,17 @@
             "name": "dryWithdraw",
             "nameLocation": "2988:11:69",
             "parameters": {
-              "id": 16389,
+              "id": 16428,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16386,
+                  "id": 16425,
                   "mutability": "mutable",
                   "name": "vaultTokenAmount",
                   "nameLocation": "3008:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16395,
+                  "scope": 16434,
                   "src": "3000:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2100,7 +2100,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16385,
+                    "id": 16424,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "3000:7:69",
@@ -2113,12 +2113,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16388,
+                  "id": 16427,
                   "mutability": "mutable",
                   "name": "minUnderlyingOut",
                   "nameLocation": "3034:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16395,
+                  "scope": 16434,
                   "src": "3026:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2127,7 +2127,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16387,
+                    "id": 16426,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "3026:7:69",
@@ -2142,17 +2142,17 @@
               "src": "2999:52:69"
             },
             "returnParameters": {
-              "id": 16394,
+              "id": 16433,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16391,
+                  "id": 16430,
                   "mutability": "mutable",
                   "name": "underlyingAmount",
                   "nameLocation": "3107:16:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16395,
+                  "scope": 16434,
                   "src": "3099:24:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2161,7 +2161,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16390,
+                    "id": 16429,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "3099:7:69",
@@ -2174,12 +2174,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16393,
+                  "id": 16432,
                   "mutability": "mutable",
                   "name": "error",
                   "nameLocation": "3139:5:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16395,
+                  "scope": 16434,
                   "src": "3125:19:69",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -2188,7 +2188,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 16392,
+                    "id": 16431,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "3125:6:69",
@@ -2202,18 +2202,18 @@
               ],
               "src": "3098:47:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16401,
+            "id": 16440,
             "nodeType": "FunctionDefinition",
             "src": "3222:52:69",
             "nodes": [],
             "documentation": {
-              "id": 16396,
+              "id": 16435,
               "nodeType": "StructuredDocumentation",
               "src": "3152:65:69",
               "text": "@return The address of the current strategy used by the vault"
@@ -2225,23 +2225,23 @@
             "name": "strategy",
             "nameLocation": "3231:8:69",
             "parameters": {
-              "id": 16397,
+              "id": 16436,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "3239:2:69"
             },
             "returnParameters": {
-              "id": 16400,
+              "id": 16439,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16399,
+                  "id": 16438,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16401,
+                  "scope": 16440,
                   "src": "3265:7:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2250,7 +2250,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16398,
+                    "id": 16437,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "3265:7:69",
@@ -2265,18 +2265,18 @@
               ],
               "src": "3264:9:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16407,
+            "id": 16446,
             "nodeType": "FunctionDefinition",
             "src": "3509:55:69",
             "nodes": [],
             "documentation": {
-              "id": 16402,
+              "id": 16441,
               "nodeType": "StructuredDocumentation",
               "src": "3280:224:69",
               "text": "@notice Sets the address of the strategy to use for this vault\n This will be used through governance\n @param strategyAddress the address of the strategy contract that should follow the `IStrategy` interface"
@@ -2288,17 +2288,17 @@
             "name": "setStrategy",
             "nameLocation": "3518:11:69",
             "parameters": {
-              "id": 16405,
+              "id": 16444,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16404,
+                  "id": 16443,
                   "mutability": "mutable",
                   "name": "strategyAddress",
                   "nameLocation": "3538:15:69",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16407,
+                  "scope": 16446,
                   "src": "3530:23:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2307,7 +2307,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16403,
+                    "id": 16442,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "3530:7:69",
@@ -2323,23 +2323,23 @@
               "src": "3529:25:69"
             },
             "returnParameters": {
-              "id": 16406,
+              "id": 16445,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "3563:0:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16413,
+            "id": 16452,
             "nodeType": "FunctionDefinition",
             "src": "3633:54:69",
             "nodes": [],
             "documentation": {
-              "id": 16408,
+              "id": 16447,
               "nodeType": "StructuredDocumentation",
               "src": "3570:58:69",
               "text": "@return the block at which the vault has been deployed"
@@ -2351,23 +2351,23 @@
             "name": "deployedAt",
             "nameLocation": "3642:10:69",
             "parameters": {
-              "id": 16409,
+              "id": 16448,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "3652:2:69"
             },
             "returnParameters": {
-              "id": 16412,
+              "id": 16451,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16411,
+                  "id": 16450,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16413,
+                  "scope": 16452,
                   "src": "3678:7:69",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2376,7 +2376,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16410,
+                    "id": 16449,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "3678:7:69",
@@ -2390,7 +2390,7 @@
               ],
               "src": "3677:9:69"
             },
-            "scope": 16414,
+            "scope": 16453,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -2400,16 +2400,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 16305,
+              "id": 16344,
               "name": "IERC20Metadata",
               "nameLocations": [
                 "699:14:69"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 47556,
+              "referencedDeclaration": 47595,
               "src": "699:14:69"
             },
-            "id": 16306,
+            "id": 16345,
             "nodeType": "InheritanceSpecifier",
             "src": "699:14:69"
           }
@@ -2418,20 +2418,20 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16304,
+          "id": 16343,
           "nodeType": "StructuredDocumentation",
           "src": "311:364:69",
           "text": "@notice A vault is one of the component of the reserve and has a one-to-one\n mapping to an underlying pool (e.g. Balancer pool, Curve pool, Uniswap pool...)\n It is itself an ERC-20 token that is used to track the ownership of the LP tokens\n deposited in the vault\n A vault can be associated with a strategy to generate yield on the deposited funds"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16414,
-          47556,
-          47531
+          16453,
+          47595,
+          47570
         ],
         "name": "IGyroVault",
         "nameLocation": "685:10:69",
-        "scope": 16415,
+        "scope": 16454,
         "usedErrors": []
       }
     ],

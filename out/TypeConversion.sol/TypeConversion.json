@@ -89,26 +89,26 @@
   },
   "ast": {
     "absolutePath": "libraries/TypeConversion.sol",
-    "id": 58221,
+    "id": 58260,
     "exportedSymbols": {
       "DataTypes": [
-        54519
+        54558
       ],
       "IECLP": [
-        16985
+        17024
       ],
       "IMinimalPoolView": [
-        17023
+        17062
       ],
       "TypeConversion": [
-        58220
+        58259
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:1173:163",
     "nodes": [
       {
-        "id": 58116,
+        "id": 58155,
         "nodeType": "PragmaDirective",
         "src": "174:23:163",
         "nodes": [],
@@ -120,60 +120,60 @@
         ]
       },
       {
-        "id": 58117,
+        "id": 58156,
         "nodeType": "ImportDirective",
         "src": "199:25:163",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "./DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 58221,
-        "sourceUnit": 54520,
+        "scope": 58260,
+        "sourceUnit": 54559,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 58118,
+        "id": 58157,
         "nodeType": "ImportDirective",
         "src": "225:42:163",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IECLP.sol",
         "file": "../interfaces/balancer/IECLP.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 58221,
-        "sourceUnit": 16986,
+        "scope": 58260,
+        "sourceUnit": 17025,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 58220,
+        "id": 58259,
         "nodeType": "ContractDefinition",
         "src": "269:1077:163",
         "nodes": [
           {
-            "id": 58165,
+            "id": 58204,
             "nodeType": "FunctionDefinition",
             "src": "298:352:163",
             "nodes": [],
             "body": {
-              "id": 58164,
+              "id": 58203,
               "nodeType": "Block",
               "src": "433:217:163",
               "nodes": [],
               "statements": [
                 {
                   "assignments": [
-                    58132
+                    58171
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 58132,
+                      "id": 58171,
                       "mutability": "mutable",
                       "name": "prices",
                       "nameLocation": "460:6:163",
                       "nodeType": "VariableDeclaration",
-                      "scope": 58164,
+                      "scope": 58203,
                       "src": "443:23:163",
                       "stateVariable": false,
                       "storageLocation": "memory",
@@ -183,7 +183,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 58130,
+                          "id": 58169,
                           "name": "uint256",
                           "nodeType": "ElementaryTypeName",
                           "src": "443:7:163",
@@ -192,7 +192,7 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 58131,
+                        "id": 58170,
                         "nodeType": "ArrayTypeName",
                         "src": "443:9:163",
                         "typeDescriptions": {
@@ -203,23 +203,23 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 58139,
+                  "id": 58178,
                   "initialValue": {
                     "arguments": [
                       {
                         "expression": {
-                          "id": 58136,
+                          "id": 58175,
                           "name": "pricedTokens",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 58122,
+                          "referencedDeclaration": 58161,
                           "src": "483:12:163",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_memory_ptr_$dyn_memory_ptr",
+                            "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr",
                             "typeString": "struct DataTypes.PricedToken memory[] memory"
                           }
                         },
-                        "id": 58137,
+                        "id": 58176,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -241,7 +241,7 @@
                           "typeString": "uint256"
                         }
                       ],
-                      "id": 58135,
+                      "id": 58174,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -254,7 +254,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 58133,
+                          "id": 58172,
                           "name": "uint256",
                           "nodeType": "ElementaryTypeName",
                           "src": "473:7:163",
@@ -263,7 +263,7 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 58134,
+                        "id": 58173,
                         "nodeType": "ArrayTypeName",
                         "src": "473:9:163",
                         "typeDescriptions": {
@@ -272,7 +272,7 @@
                         }
                       }
                     },
-                    "id": 58138,
+                    "id": 58177,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -293,37 +293,37 @@
                 },
                 {
                   "body": {
-                    "id": 58160,
+                    "id": 58199,
                     "nodeType": "Block",
                     "src": "563:58:163",
                     "statements": [
                       {
                         "expression": {
-                          "id": 58158,
+                          "id": 58197,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftHandSide": {
                             "baseExpression": {
-                              "id": 58151,
+                              "id": 58190,
                               "name": "prices",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 58132,
+                              "referencedDeclaration": 58171,
                               "src": "577:6:163",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
                                 "typeString": "uint256[] memory"
                               }
                             },
-                            "id": 58153,
+                            "id": 58192,
                             "indexExpression": {
-                              "id": 58152,
+                              "id": 58191,
                               "name": "i",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 58141,
+                              "referencedDeclaration": 58180,
                               "src": "584:1:163",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -346,24 +346,24 @@
                           "rightHandSide": {
                             "expression": {
                               "baseExpression": {
-                                "id": 58154,
+                                "id": 58193,
                                 "name": "pricedTokens",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 58122,
+                                "referencedDeclaration": 58161,
                                 "src": "589:12:163",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_memory_ptr_$dyn_memory_ptr",
+                                  "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr",
                                   "typeString": "struct DataTypes.PricedToken memory[] memory"
                                 }
                               },
-                              "id": 58156,
+                              "id": 58195,
                               "indexExpression": {
-                                "id": 58155,
+                                "id": 58194,
                                 "name": "i",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 58141,
+                                "referencedDeclaration": 58180,
                                 "src": "602:1:163",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
@@ -377,11 +377,11 @@
                               "nodeType": "IndexAccess",
                               "src": "589:15:163",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_PricedToken_$54388_memory_ptr",
+                                "typeIdentifier": "t_struct$_PricedToken_$54427_memory_ptr",
                                 "typeString": "struct DataTypes.PricedToken memory"
                               }
                             },
-                            "id": 58157,
+                            "id": 58196,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -389,7 +389,7 @@
                             "memberLocation": "605:5:163",
                             "memberName": "price",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54387,
+                            "referencedDeclaration": 54426,
                             "src": "589:21:163",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -402,7 +402,7 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 58159,
+                        "id": 58198,
                         "nodeType": "ExpressionStatement",
                         "src": "577:33:163"
                       }
@@ -413,17 +413,17 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 58147,
+                    "id": 58186,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftExpression": {
-                      "id": 58144,
+                      "id": 58183,
                       "name": "i",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 58141,
+                      "referencedDeclaration": 58180,
                       "src": "533:1:163",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -434,18 +434,18 @@
                     "operator": "<",
                     "rightExpression": {
                       "expression": {
-                        "id": 58145,
+                        "id": 58184,
                         "name": "pricedTokens",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 58122,
+                        "referencedDeclaration": 58161,
                         "src": "537:12:163",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_memory_ptr_$dyn_memory_ptr",
+                          "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr",
                           "typeString": "struct DataTypes.PricedToken memory[] memory"
                         }
                       },
-                      "id": 58146,
+                      "id": 58185,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -465,20 +465,20 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 58161,
+                  "id": 58200,
                   "initializationExpression": {
                     "assignments": [
-                      58141
+                      58180
                     ],
                     "declarations": [
                       {
                         "constant": false,
-                        "id": 58141,
+                        "id": 58180,
                         "mutability": "mutable",
                         "name": "i",
                         "nameLocation": "526:1:163",
                         "nodeType": "VariableDeclaration",
-                        "scope": 58161,
+                        "scope": 58200,
                         "src": "518:9:163",
                         "stateVariable": false,
                         "storageLocation": "default",
@@ -487,7 +487,7 @@
                           "typeString": "uint256"
                         },
                         "typeName": {
-                          "id": 58140,
+                          "id": 58179,
                           "name": "uint256",
                           "nodeType": "ElementaryTypeName",
                           "src": "518:7:163",
@@ -499,10 +499,10 @@
                         "visibility": "internal"
                       }
                     ],
-                    "id": 58143,
+                    "id": 58182,
                     "initialValue": {
                       "hexValue": "30",
-                      "id": 58142,
+                      "id": 58181,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -521,7 +521,7 @@
                   },
                   "loopExpression": {
                     "expression": {
-                      "id": 58149,
+                      "id": 58188,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -531,11 +531,11 @@
                       "prefix": false,
                       "src": "558:3:163",
                       "subExpression": {
-                        "id": 58148,
+                        "id": 58187,
                         "name": "i",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 58141,
+                        "referencedDeclaration": 58180,
                         "src": "558:1:163",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -547,7 +547,7 @@
                         "typeString": "uint256"
                       }
                     },
-                    "id": 58150,
+                    "id": 58189,
                     "nodeType": "ExpressionStatement",
                     "src": "558:3:163"
                   },
@@ -556,19 +556,19 @@
                 },
                 {
                   "expression": {
-                    "id": 58162,
+                    "id": 58201,
                     "name": "prices",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 58132,
+                    "referencedDeclaration": 58171,
                     "src": "637:6:163",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
                       "typeString": "uint256[] memory"
                     }
                   },
-                  "functionReturnParameters": 58127,
-                  "id": 58163,
+                  "functionReturnParameters": 58166,
+                  "id": 58202,
                   "nodeType": "Return",
                   "src": "630:13:163"
                 }
@@ -580,51 +580,51 @@
             "name": "pluckPrices",
             "nameLocation": "307:11:163",
             "parameters": {
-              "id": 58123,
+              "id": 58162,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 58122,
+                  "id": 58161,
                   "mutability": "mutable",
                   "name": "pricedTokens",
                   "nameLocation": "350:12:163",
                   "nodeType": "VariableDeclaration",
-                  "scope": 58165,
+                  "scope": 58204,
                   "src": "319:43:163",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_memory_ptr_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr",
                     "typeString": "struct DataTypes.PricedToken[]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 58120,
+                      "id": 58159,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 58119,
+                        "id": 58158,
                         "name": "DataTypes.PricedToken",
                         "nameLocations": [
                           "319:9:163",
                           "329:11:163"
                         ],
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 54388,
+                        "referencedDeclaration": 54427,
                         "src": "319:21:163"
                       },
-                      "referencedDeclaration": 54388,
+                      "referencedDeclaration": 54427,
                       "src": "319:21:163",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_PricedToken_$54388_storage_ptr",
+                        "typeIdentifier": "t_struct$_PricedToken_$54427_storage_ptr",
                         "typeString": "struct DataTypes.PricedToken"
                       }
                     },
-                    "id": 58121,
+                    "id": 58160,
                     "nodeType": "ArrayTypeName",
                     "src": "319:23:163",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_storage_$dyn_storage_ptr",
                       "typeString": "struct DataTypes.PricedToken[]"
                     }
                   },
@@ -634,17 +634,17 @@
               "src": "318:45:163"
             },
             "returnParameters": {
-              "id": 58127,
+              "id": 58166,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 58126,
+                  "id": 58165,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 58165,
+                  "scope": 58204,
                   "src": "411:16:163",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -654,7 +654,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 58124,
+                      "id": 58163,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
                       "src": "411:7:163",
@@ -663,7 +663,7 @@
                         "typeString": "uint256"
                       }
                     },
-                    "id": 58125,
+                    "id": 58164,
                     "nodeType": "ArrayTypeName",
                     "src": "411:9:163",
                     "typeDescriptions": {
@@ -676,18 +676,18 @@
               ],
               "src": "410:18:163"
             },
-            "scope": 58220,
+            "scope": 58259,
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 58187,
+            "id": 58226,
             "nodeType": "FunctionDefinition",
             "src": "656:155:163",
             "nodes": [],
             "body": {
-              "id": 58186,
+              "id": 58225,
               "nodeType": "Block",
               "src": "750:61:163",
               "nodes": [],
@@ -700,25 +700,25 @@
                           "typeIdentifier": "t_int256",
                           "typeString": "int256"
                         },
-                        "id": 58179,
+                        "id": 58218,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "expression": {
-                            "id": 58176,
+                            "id": 58215,
                             "name": "v",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 58168,
+                            "referencedDeclaration": 58207,
                             "src": "781:1:163",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                              "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                               "typeString": "struct IECLP.Vector2 memory"
                             }
                           },
-                          "id": 58177,
+                          "id": 58216,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
@@ -726,7 +726,7 @@
                           "memberLocation": "783:1:163",
                           "memberName": "x",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16944,
+                          "referencedDeclaration": 16983,
                           "src": "781:3:163",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
@@ -737,7 +737,7 @@
                         "operator": "/",
                         "rightExpression": {
                           "hexValue": "31653230",
-                          "id": 58178,
+                          "id": 58217,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -762,25 +762,25 @@
                           "typeIdentifier": "t_int256",
                           "typeString": "int256"
                         },
-                        "id": 58183,
+                        "id": 58222,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "expression": {
-                            "id": 58180,
+                            "id": 58219,
                             "name": "v",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 58168,
+                            "referencedDeclaration": 58207,
                             "src": "793:1:163",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                              "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                               "typeString": "struct IECLP.Vector2 memory"
                             }
                           },
-                          "id": 58181,
+                          "id": 58220,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
@@ -788,7 +788,7 @@
                           "memberLocation": "795:1:163",
                           "memberName": "y",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16946,
+                          "referencedDeclaration": 16985,
                           "src": "793:3:163",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
@@ -799,7 +799,7 @@
                         "operator": "/",
                         "rightExpression": {
                           "hexValue": "31653230",
-                          "id": 58182,
+                          "id": 58221,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -832,18 +832,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 58174,
+                        "id": 58213,
                         "name": "IECLP",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 16985,
+                        "referencedDeclaration": 17024,
                         "src": "767:5:163",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_contract$_IECLP_$16985_$",
+                          "typeIdentifier": "t_type$_t_contract$_IECLP_$17024_$",
                           "typeString": "type(contract IECLP)"
                         }
                       },
-                      "id": 58175,
+                      "id": 58214,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -851,14 +851,14 @@
                       "memberLocation": "773:7:163",
                       "memberName": "Vector2",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 16947,
+                      "referencedDeclaration": 16986,
                       "src": "767:13:163",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_struct$_Vector2_$16947_storage_ptr_$",
+                        "typeIdentifier": "t_type$_t_struct$_Vector2_$16986_storage_ptr_$",
                         "typeString": "type(struct IECLP.Vector2 storage pointer)"
                       }
                     },
-                    "id": 58184,
+                    "id": 58223,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -870,12 +870,12 @@
                     "src": "767:37:163",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                      "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                       "typeString": "struct IECLP.Vector2 memory"
                     }
                   },
-                  "functionReturnParameters": 58173,
-                  "id": 58185,
+                  "functionReturnParameters": 58212,
+                  "id": 58224,
                   "nodeType": "Return",
                   "src": "760:44:163"
                 }
@@ -887,42 +887,42 @@
             "name": "downscaleVector",
             "nameLocation": "665:15:163",
             "parameters": {
-              "id": 58169,
+              "id": 58208,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 58168,
+                  "id": 58207,
                   "mutability": "mutable",
                   "name": "v",
                   "nameLocation": "702:1:163",
                   "nodeType": "VariableDeclaration",
-                  "scope": 58187,
+                  "scope": 58226,
                   "src": "681:22:163",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                    "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                     "typeString": "struct IECLP.Vector2"
                   },
                   "typeName": {
-                    "id": 58167,
+                    "id": 58206,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 58166,
+                      "id": 58205,
                       "name": "IECLP.Vector2",
                       "nameLocations": [
                         "681:5:163",
                         "687:7:163"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16947,
+                      "referencedDeclaration": 16986,
                       "src": "681:13:163"
                     },
-                    "referencedDeclaration": 16947,
+                    "referencedDeclaration": 16986,
                     "src": "681:13:163",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Vector2_$16947_storage_ptr",
+                      "typeIdentifier": "t_struct$_Vector2_$16986_storage_ptr",
                       "typeString": "struct IECLP.Vector2"
                     }
                   },
@@ -932,42 +932,42 @@
               "src": "680:24:163"
             },
             "returnParameters": {
-              "id": 58173,
+              "id": 58212,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 58172,
+                  "id": 58211,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 58187,
+                  "scope": 58226,
                   "src": "728:20:163",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                    "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                     "typeString": "struct IECLP.Vector2"
                   },
                   "typeName": {
-                    "id": 58171,
+                    "id": 58210,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 58170,
+                      "id": 58209,
                       "name": "IECLP.Vector2",
                       "nameLocations": [
                         "728:5:163",
                         "734:7:163"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16947,
+                      "referencedDeclaration": 16986,
                       "src": "728:13:163"
                     },
-                    "referencedDeclaration": 16947,
+                    "referencedDeclaration": 16986,
                     "src": "728:13:163",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Vector2_$16947_storage_ptr",
+                      "typeIdentifier": "t_struct$_Vector2_$16986_storage_ptr",
                       "typeString": "struct IECLP.Vector2"
                     }
                   },
@@ -976,18 +976,18 @@
               ],
               "src": "727:22:163"
             },
-            "scope": 58220,
+            "scope": 58259,
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 58219,
+            "id": 58258,
             "nodeType": "FunctionDefinition",
             "src": "817:527:163",
             "nodes": [],
             "body": {
-              "id": 58218,
+              "id": 58257,
               "nodeType": "Block",
               "src": "963:381:163",
               "nodes": [],
@@ -999,18 +999,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 58199,
+                              "id": 58238,
                               "name": "params",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 58190,
+                              "referencedDeclaration": 58229,
                               "src": "1045:6:163",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                                "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                                 "typeString": "struct IECLP.DerivedParams memory"
                               }
                             },
-                            "id": 58200,
+                            "id": 58239,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -1018,10 +1018,10 @@
                             "memberLocation": "1052:8:163",
                             "memberName": "tauAlpha",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 16961,
+                            "referencedDeclaration": 17000,
                             "src": "1045:15:163",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                              "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                               "typeString": "struct IECLP.Vector2 memory"
                             }
                           }
@@ -1029,22 +1029,22 @@
                         "expression": {
                           "argumentTypes": [
                             {
-                              "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                              "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                               "typeString": "struct IECLP.Vector2 memory"
                             }
                           ],
-                          "id": 58198,
+                          "id": 58237,
                           "name": "downscaleVector",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 58187,
+                          "referencedDeclaration": 58226,
                           "src": "1029:15:163",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_function_internal_pure$_t_struct$_Vector2_$16947_memory_ptr_$returns$_t_struct$_Vector2_$16947_memory_ptr_$",
+                            "typeIdentifier": "t_function_internal_pure$_t_struct$_Vector2_$16986_memory_ptr_$returns$_t_struct$_Vector2_$16986_memory_ptr_$",
                             "typeString": "function (struct IECLP.Vector2 memory) pure returns (struct IECLP.Vector2 memory)"
                           }
                         },
-                        "id": 58201,
+                        "id": 58240,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1056,7 +1056,7 @@
                         "src": "1029:32:163",
                         "tryCall": false,
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                          "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                           "typeString": "struct IECLP.Vector2 memory"
                         }
                       },
@@ -1064,18 +1064,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 58203,
+                              "id": 58242,
                               "name": "params",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 58190,
+                              "referencedDeclaration": 58229,
                               "src": "1095:6:163",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                                "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                                 "typeString": "struct IECLP.DerivedParams memory"
                               }
                             },
-                            "id": 58204,
+                            "id": 58243,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -1083,10 +1083,10 @@
                             "memberLocation": "1102:7:163",
                             "memberName": "tauBeta",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 16964,
+                            "referencedDeclaration": 17003,
                             "src": "1095:14:163",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                              "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                               "typeString": "struct IECLP.Vector2 memory"
                             }
                           }
@@ -1094,22 +1094,22 @@
                         "expression": {
                           "argumentTypes": [
                             {
-                              "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                              "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                               "typeString": "struct IECLP.Vector2 memory"
                             }
                           ],
-                          "id": 58202,
+                          "id": 58241,
                           "name": "downscaleVector",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 58187,
+                          "referencedDeclaration": 58226,
                           "src": "1079:15:163",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_function_internal_pure$_t_struct$_Vector2_$16947_memory_ptr_$returns$_t_struct$_Vector2_$16947_memory_ptr_$",
+                            "typeIdentifier": "t_function_internal_pure$_t_struct$_Vector2_$16986_memory_ptr_$returns$_t_struct$_Vector2_$16986_memory_ptr_$",
                             "typeString": "function (struct IECLP.Vector2 memory) pure returns (struct IECLP.Vector2 memory)"
                           }
                         },
-                        "id": 58205,
+                        "id": 58244,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1121,24 +1121,24 @@
                         "src": "1079:31:163",
                         "tryCall": false,
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                          "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                           "typeString": "struct IECLP.Vector2 memory"
                         }
                       },
                       {
                         "expression": {
-                          "id": 58206,
+                          "id": 58245,
                           "name": "params",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 58190,
+                          "referencedDeclaration": 58229,
                           "src": "1209:6:163",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                            "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                             "typeString": "struct IECLP.DerivedParams memory"
                           }
                         },
-                        "id": 58207,
+                        "id": 58246,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
@@ -1146,7 +1146,7 @@
                         "memberLocation": "1216:1:163",
                         "memberName": "u",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 16966,
+                        "referencedDeclaration": 17005,
                         "src": "1209:8:163",
                         "typeDescriptions": {
                           "typeIdentifier": "t_int256",
@@ -1155,18 +1155,18 @@
                       },
                       {
                         "expression": {
-                          "id": 58208,
+                          "id": 58247,
                           "name": "params",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 58190,
+                          "referencedDeclaration": 58229,
                           "src": "1235:6:163",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                            "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                             "typeString": "struct IECLP.DerivedParams memory"
                           }
                         },
-                        "id": 58209,
+                        "id": 58248,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
@@ -1174,7 +1174,7 @@
                         "memberLocation": "1242:1:163",
                         "memberName": "v",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 16968,
+                        "referencedDeclaration": 17007,
                         "src": "1235:8:163",
                         "typeDescriptions": {
                           "typeIdentifier": "t_int256",
@@ -1183,18 +1183,18 @@
                       },
                       {
                         "expression": {
-                          "id": 58210,
+                          "id": 58249,
                           "name": "params",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 58190,
+                          "referencedDeclaration": 58229,
                           "src": "1261:6:163",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                            "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                             "typeString": "struct IECLP.DerivedParams memory"
                           }
                         },
-                        "id": 58211,
+                        "id": 58250,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
@@ -1202,7 +1202,7 @@
                         "memberLocation": "1268:1:163",
                         "memberName": "w",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 16970,
+                        "referencedDeclaration": 17009,
                         "src": "1261:8:163",
                         "typeDescriptions": {
                           "typeIdentifier": "t_int256",
@@ -1211,18 +1211,18 @@
                       },
                       {
                         "expression": {
-                          "id": 58212,
+                          "id": 58251,
                           "name": "params",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 58190,
+                          "referencedDeclaration": 58229,
                           "src": "1287:6:163",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                            "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                             "typeString": "struct IECLP.DerivedParams memory"
                           }
                         },
-                        "id": 58213,
+                        "id": 58252,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
@@ -1230,7 +1230,7 @@
                         "memberLocation": "1294:1:163",
                         "memberName": "z",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 16972,
+                        "referencedDeclaration": 17011,
                         "src": "1287:8:163",
                         "typeDescriptions": {
                           "typeIdentifier": "t_int256",
@@ -1239,18 +1239,18 @@
                       },
                       {
                         "expression": {
-                          "id": 58214,
+                          "id": 58253,
                           "name": "params",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 58190,
+                          "referencedDeclaration": 58229,
                           "src": "1313:6:163",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                            "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                             "typeString": "struct IECLP.DerivedParams memory"
                           }
                         },
-                        "id": 58215,
+                        "id": 58254,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
@@ -1258,7 +1258,7 @@
                         "memberLocation": "1320:3:163",
                         "memberName": "dSq",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 16974,
+                        "referencedDeclaration": 17013,
                         "src": "1313:10:163",
                         "typeDescriptions": {
                           "typeIdentifier": "t_int256",
@@ -1269,11 +1269,11 @@
                     "expression": {
                       "argumentTypes": [
                         {
-                          "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                          "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                           "typeString": "struct IECLP.Vector2 memory"
                         },
                         {
-                          "typeIdentifier": "t_struct$_Vector2_$16947_memory_ptr",
+                          "typeIdentifier": "t_struct$_Vector2_$16986_memory_ptr",
                           "typeString": "struct IECLP.Vector2 memory"
                         },
                         {
@@ -1298,18 +1298,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 58196,
+                        "id": 58235,
                         "name": "IECLP",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 16985,
+                        "referencedDeclaration": 17024,
                         "src": "992:5:163",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_contract$_IECLP_$16985_$",
+                          "typeIdentifier": "t_type$_t_contract$_IECLP_$17024_$",
                           "typeString": "type(contract IECLP)"
                         }
                       },
-                      "id": 58197,
+                      "id": 58236,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -1317,14 +1317,14 @@
                       "memberLocation": "998:13:163",
                       "memberName": "DerivedParams",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 16975,
+                      "referencedDeclaration": 17014,
                       "src": "992:19:163",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_struct$_DerivedParams_$16975_storage_ptr_$",
+                        "typeIdentifier": "t_type$_t_struct$_DerivedParams_$17014_storage_ptr_$",
                         "typeString": "type(struct IECLP.DerivedParams storage pointer)"
                       }
                     },
-                    "id": 58216,
+                    "id": 58255,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1336,12 +1336,12 @@
                     "src": "992:345:163",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                      "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                       "typeString": "struct IECLP.DerivedParams memory"
                     }
                   },
-                  "functionReturnParameters": 58195,
-                  "id": 58217,
+                  "functionReturnParameters": 58234,
+                  "id": 58256,
                   "nodeType": "Return",
                   "src": "973:364:163"
                 }
@@ -1353,42 +1353,42 @@
             "name": "downscaleDerivedParams",
             "nameLocation": "826:22:163",
             "parameters": {
-              "id": 58191,
+              "id": 58230,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 58190,
+                  "id": 58229,
                   "mutability": "mutable",
                   "name": "params",
                   "nameLocation": "876:6:163",
                   "nodeType": "VariableDeclaration",
-                  "scope": 58219,
+                  "scope": 58258,
                   "src": "849:33:163",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                    "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                     "typeString": "struct IECLP.DerivedParams"
                   },
                   "typeName": {
-                    "id": 58189,
+                    "id": 58228,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 58188,
+                      "id": 58227,
                       "name": "IECLP.DerivedParams",
                       "nameLocations": [
                         "849:5:163",
                         "855:13:163"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16975,
+                      "referencedDeclaration": 17014,
                       "src": "849:19:163"
                     },
-                    "referencedDeclaration": 16975,
+                    "referencedDeclaration": 17014,
                     "src": "849:19:163",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_DerivedParams_$16975_storage_ptr",
+                      "typeIdentifier": "t_struct$_DerivedParams_$17014_storage_ptr",
                       "typeString": "struct IECLP.DerivedParams"
                     }
                   },
@@ -1398,42 +1398,42 @@
               "src": "848:35:163"
             },
             "returnParameters": {
-              "id": 58195,
+              "id": 58234,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 58194,
+                  "id": 58233,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 58219,
+                  "scope": 58258,
                   "src": "931:26:163",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                    "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                     "typeString": "struct IECLP.DerivedParams"
                   },
                   "typeName": {
-                    "id": 58193,
+                    "id": 58232,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 58192,
+                      "id": 58231,
                       "name": "IECLP.DerivedParams",
                       "nameLocations": [
                         "931:5:163",
                         "937:13:163"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16975,
+                      "referencedDeclaration": 17014,
                       "src": "931:19:163"
                     },
-                    "referencedDeclaration": 16975,
+                    "referencedDeclaration": 17014,
                     "src": "931:19:163",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_DerivedParams_$16975_storage_ptr",
+                      "typeIdentifier": "t_struct$_DerivedParams_$17014_storage_ptr",
                       "typeString": "struct IECLP.DerivedParams"
                     }
                   },
@@ -1442,7 +1442,7 @@
               ],
               "src": "930:28:163"
             },
-            "scope": 58220,
+            "scope": 58259,
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "internal"
@@ -1455,11 +1455,11 @@
         "contractKind": "library",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          58220
+          58259
         ],
         "name": "TypeConversion",
         "nameLocation": "277:14:163",
-        "scope": 58221,
+        "scope": 58260,
         "usedErrors": []
       }
     ],

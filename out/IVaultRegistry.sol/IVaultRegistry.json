@@ -396,20 +396,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/IVaultRegistry.sol",
-    "id": 16808,
+    "id": 16847,
     "exportedSymbols": {
       "DataTypes": [
-        54519
+        54558
       ],
       "IVaultRegistry": [
-        16807
+        16846
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:847:76",
     "nodes": [
       {
-        "id": 16758,
+        "id": 16797,
         "nodeType": "PragmaDirective",
         "src": "174:23:76",
         "nodes": [],
@@ -421,25 +421,25 @@
         ]
       },
       {
-        "id": 16759,
+        "id": 16798,
         "nodeType": "ImportDirective",
         "src": "199:36:76",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "../libraries/DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16808,
-        "sourceUnit": 54520,
+        "scope": 16847,
+        "sourceUnit": 54559,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16807,
+        "id": 16846,
         "nodeType": "ContractDefinition",
         "src": "237:783:76",
         "nodes": [
           {
-            "id": 16763,
+            "id": 16802,
             "nodeType": "EventDefinition",
             "src": "268:45:76",
             "nodes": [],
@@ -448,18 +448,18 @@
             "name": "VaultRegistered",
             "nameLocation": "274:15:76",
             "parameters": {
-              "id": 16762,
+              "id": 16801,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16761,
+                  "id": 16800,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "vault",
                   "nameLocation": "306:5:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16763,
+                  "scope": 16802,
                   "src": "290:21:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -468,7 +468,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16760,
+                    "id": 16799,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "290:7:76",
@@ -485,7 +485,7 @@
             }
           },
           {
-            "id": 16767,
+            "id": 16806,
             "nodeType": "EventDefinition",
             "src": "318:47:76",
             "nodes": [],
@@ -494,18 +494,18 @@
             "name": "VaultDeregistered",
             "nameLocation": "324:17:76",
             "parameters": {
-              "id": 16766,
+              "id": 16805,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16765,
+                  "id": 16804,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "vault",
                   "nameLocation": "358:5:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16767,
+                  "scope": 16806,
                   "src": "342:21:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -514,7 +514,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16764,
+                    "id": 16803,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "342:7:76",
@@ -531,12 +531,12 @@
             }
           },
           {
-            "id": 16776,
+            "id": 16815,
             "nodeType": "FunctionDefinition",
             "src": "428:129:76",
             "nodes": [],
             "documentation": {
-              "id": 16768,
+              "id": 16807,
               "nodeType": "StructuredDocumentation",
               "src": "371:52:76",
               "text": "@notice Returns the metadata for the given vault"
@@ -548,17 +548,17 @@
             "name": "getVaultMetadata",
             "nameLocation": "437:16:76",
             "parameters": {
-              "id": 16771,
+              "id": 16810,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16770,
+                  "id": 16809,
                   "mutability": "mutable",
                   "name": "vault",
                   "nameLocation": "462:5:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16776,
+                  "scope": 16815,
                   "src": "454:13:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -567,7 +567,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16769,
+                    "id": 16808,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "454:7:76",
@@ -583,42 +583,42 @@
               "src": "453:15:76"
             },
             "returnParameters": {
-              "id": 16775,
+              "id": 16814,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16774,
+                  "id": 16813,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16776,
+                  "scope": 16815,
                   "src": "516:39:76",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54418_memory_ptr",
+                    "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54457_memory_ptr",
                     "typeString": "struct DataTypes.PersistedVaultMetadata"
                   },
                   "typeName": {
-                    "id": 16773,
+                    "id": 16812,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16772,
+                      "id": 16811,
                       "name": "DataTypes.PersistedVaultMetadata",
                       "nameLocations": [
                         "516:9:76",
                         "526:22:76"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54418,
+                      "referencedDeclaration": 54457,
                       "src": "516:32:76"
                     },
-                    "referencedDeclaration": 54418,
+                    "referencedDeclaration": 54457,
                     "src": "516:32:76",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54418_storage_ptr",
+                      "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54457_storage_ptr",
                       "typeString": "struct DataTypes.PersistedVaultMetadata"
                     }
                   },
@@ -627,18 +627,18 @@
               ],
               "src": "515:41:76"
             },
-            "scope": 16807,
+            "scope": 16846,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16783,
+            "id": 16822,
             "nodeType": "FunctionDefinition",
             "src": "606:63:76",
             "nodes": [],
             "documentation": {
-              "id": 16777,
+              "id": 16816,
               "nodeType": "StructuredDocumentation",
               "src": "563:38:76",
               "text": "@notice Get the list of all vaults"
@@ -650,23 +650,23 @@
             "name": "listVaults",
             "nameLocation": "615:10:76",
             "parameters": {
-              "id": 16778,
+              "id": 16817,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "625:2:76"
             },
             "returnParameters": {
-              "id": 16782,
+              "id": 16821,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16781,
+                  "id": 16820,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16783,
+                  "scope": 16822,
                   "src": "651:16:76",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -676,7 +676,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16779,
+                      "id": 16818,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
                       "src": "651:7:76",
@@ -686,7 +686,7 @@
                         "typeString": "address"
                       }
                     },
-                    "id": 16780,
+                    "id": 16819,
                     "nodeType": "ArrayTypeName",
                     "src": "651:9:76",
                     "typeDescriptions": {
@@ -699,18 +699,18 @@
               ],
               "src": "650:18:76"
             },
-            "scope": 16807,
+            "scope": 16846,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16792,
+            "id": 16831,
             "nodeType": "FunctionDefinition",
             "src": "713:88:76",
             "nodes": [],
             "documentation": {
-              "id": 16784,
+              "id": 16823,
               "nodeType": "StructuredDocumentation",
               "src": "675:33:76",
               "text": "@notice Registers a new vault"
@@ -722,17 +722,17 @@
             "name": "registerVault",
             "nameLocation": "722:13:76",
             "parameters": {
-              "id": 16790,
+              "id": 16829,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16786,
+                  "id": 16825,
                   "mutability": "mutable",
                   "name": "vault",
                   "nameLocation": "744:5:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16792,
+                  "scope": 16831,
                   "src": "736:13:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -741,7 +741,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16785,
+                    "id": 16824,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "736:7:76",
@@ -755,37 +755,37 @@
                 },
                 {
                   "constant": false,
-                  "id": 16789,
+                  "id": 16828,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16792,
+                  "scope": 16831,
                   "src": "751:39:76",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54418_memory_ptr",
+                    "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54457_memory_ptr",
                     "typeString": "struct DataTypes.PersistedVaultMetadata"
                   },
                   "typeName": {
-                    "id": 16788,
+                    "id": 16827,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16787,
+                      "id": 16826,
                       "name": "DataTypes.PersistedVaultMetadata",
                       "nameLocations": [
                         "751:9:76",
                         "761:22:76"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54418,
+                      "referencedDeclaration": 54457,
                       "src": "751:32:76"
                     },
-                    "referencedDeclaration": 54418,
+                    "referencedDeclaration": 54457,
                     "src": "751:32:76",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54418_storage_ptr",
+                      "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54457_storage_ptr",
                       "typeString": "struct DataTypes.PersistedVaultMetadata"
                     }
                   },
@@ -795,23 +795,23 @@
               "src": "735:56:76"
             },
             "returnParameters": {
-              "id": 16791,
+              "id": 16830,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "800:0:76"
             },
-            "scope": 16807,
+            "scope": 16846,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16798,
+            "id": 16837,
             "nodeType": "FunctionDefinition",
             "src": "842:49:76",
             "nodes": [],
             "documentation": {
-              "id": 16793,
+              "id": 16832,
               "nodeType": "StructuredDocumentation",
               "src": "807:30:76",
               "text": "@notice Deregister a vault"
@@ -823,17 +823,17 @@
             "name": "deregisterVault",
             "nameLocation": "851:15:76",
             "parameters": {
-              "id": 16796,
+              "id": 16835,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16795,
+                  "id": 16834,
                   "mutability": "mutable",
                   "name": "vault",
                   "nameLocation": "875:5:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16798,
+                  "scope": 16837,
                   "src": "867:13:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -842,7 +842,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16794,
+                    "id": 16833,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "867:7:76",
@@ -858,23 +858,23 @@
               "src": "866:15:76"
             },
             "returnParameters": {
-              "id": 16797,
+              "id": 16836,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "890:0:76"
             },
-            "scope": 16807,
+            "scope": 16846,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16806,
+            "id": 16845,
             "nodeType": "FunctionDefinition",
             "src": "947:71:76",
             "nodes": [],
             "documentation": {
-              "id": 16799,
+              "id": 16838,
               "nodeType": "StructuredDocumentation",
               "src": "897:45:76",
               "text": "@notice sets the initial price of a vault"
@@ -886,17 +886,17 @@
             "name": "setInitialPrice",
             "nameLocation": "956:15:76",
             "parameters": {
-              "id": 16804,
+              "id": 16843,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16801,
+                  "id": 16840,
                   "mutability": "mutable",
                   "name": "vault",
                   "nameLocation": "980:5:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16806,
+                  "scope": 16845,
                   "src": "972:13:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -905,7 +905,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16800,
+                    "id": 16839,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "972:7:76",
@@ -919,12 +919,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16803,
+                  "id": 16842,
                   "mutability": "mutable",
                   "name": "initialPrice",
                   "nameLocation": "995:12:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16806,
+                  "scope": 16845,
                   "src": "987:20:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -933,7 +933,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16802,
+                    "id": 16841,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "987:7:76",
@@ -948,12 +948,12 @@
               "src": "971:37:76"
             },
             "returnParameters": {
-              "id": 16805,
+              "id": 16844,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1017:0:76"
             },
-            "scope": 16807,
+            "scope": 16846,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -966,11 +966,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16807
+          16846
         ],
         "name": "IVaultRegistry",
         "nameLocation": "247:14:76",
-        "scope": 16808,
+        "scope": 16847,
         "usedErrors": []
       }
     ],

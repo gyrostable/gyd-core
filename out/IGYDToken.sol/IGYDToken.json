@@ -645,20 +645,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/IGYDToken.sol",
-    "id": 16140,
+    "id": 16179,
     "exportedSymbols": {
       "IERC20": [
-        47531
+        47570
       ],
       "IGYDToken": [
-        16139
+        16178
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:954:66",
     "nodes": [
       {
-        "id": 16100,
+        "id": 16139,
         "nodeType": "PragmaDirective",
         "src": "174:23:66",
         "nodes": [],
@@ -670,30 +670,30 @@
         ]
       },
       {
-        "id": 16101,
+        "id": 16140,
         "nodeType": "ImportDirective",
         "src": "199:56:66",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
         "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16140,
-        "sourceUnit": 47532,
+        "scope": 16179,
+        "sourceUnit": 47571,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16139,
+        "id": 16178,
         "nodeType": "ContractDefinition",
         "src": "305:822:66",
         "nodes": [
           {
-            "id": 16110,
+            "id": 16149,
             "nodeType": "FunctionDefinition",
             "src": "587:45:66",
             "nodes": [],
             "documentation": {
-              "id": 16105,
+              "id": 16144,
               "nodeType": "StructuredDocumentation",
               "src": "341:241:66",
               "text": "@notice Set the address allowed to mint new GYD tokens\n @dev This should typically be the motherboard that will mint or burn GYD tokens\n when user interact with it\n @param _minter the address of the authorized minter"
@@ -705,17 +705,17 @@
             "name": "setMinter",
             "nameLocation": "596:9:66",
             "parameters": {
-              "id": 16108,
+              "id": 16147,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16107,
+                  "id": 16146,
                   "mutability": "mutable",
                   "name": "_minter",
                   "nameLocation": "614:7:66",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16110,
+                  "scope": 16149,
                   "src": "606:15:66",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -724,7 +724,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16106,
+                    "id": 16145,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "606:7:66",
@@ -740,23 +740,23 @@
               "src": "605:17:66"
             },
             "returnParameters": {
-              "id": 16109,
+              "id": 16148,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "631:0:66"
             },
-            "scope": 16139,
+            "scope": 16178,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16116,
+            "id": 16155,
             "nodeType": "FunctionDefinition",
             "src": "746:45:66",
             "nodes": [],
             "documentation": {
-              "id": 16111,
+              "id": 16150,
               "nodeType": "StructuredDocumentation",
               "src": "638:103:66",
               "text": "@notice Gets the address for the minter contract\n @return the address of the minter contract"
@@ -768,23 +768,23 @@
             "name": "minter",
             "nameLocation": "755:6:66",
             "parameters": {
-              "id": 16112,
+              "id": 16151,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "761:2:66"
             },
             "returnParameters": {
-              "id": 16115,
+              "id": 16154,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16114,
+                  "id": 16153,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16116,
+                  "scope": 16155,
                   "src": "782:7:66",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -793,7 +793,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16113,
+                    "id": 16152,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "782:7:66",
@@ -808,18 +808,18 @@
               ],
               "src": "781:9:66"
             },
-            "scope": 16139,
+            "scope": 16178,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16124,
+            "id": 16163,
             "nodeType": "FunctionDefinition",
             "src": "855:56:66",
             "nodes": [],
             "documentation": {
-              "id": 16117,
+              "id": 16156,
               "nodeType": "StructuredDocumentation",
               "src": "797:53:66",
               "text": "@notice Mints `amount` of GYD token for `account`"
@@ -831,17 +831,17 @@
             "name": "mint",
             "nameLocation": "864:4:66",
             "parameters": {
-              "id": 16122,
+              "id": 16161,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16119,
+                  "id": 16158,
                   "mutability": "mutable",
                   "name": "account",
                   "nameLocation": "877:7:66",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16124,
+                  "scope": 16163,
                   "src": "869:15:66",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -850,7 +850,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16118,
+                    "id": 16157,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "869:7:66",
@@ -864,12 +864,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16121,
+                  "id": 16160,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "894:6:66",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16124,
+                  "scope": 16163,
                   "src": "886:14:66",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -878,7 +878,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16120,
+                    "id": 16159,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "886:7:66",
@@ -893,23 +893,23 @@
               "src": "868:33:66"
             },
             "returnParameters": {
-              "id": 16123,
+              "id": 16162,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "910:0:66"
             },
-            "scope": 16139,
+            "scope": 16178,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16130,
+            "id": 16169,
             "nodeType": "FunctionDefinition",
             "src": "961:39:66",
             "nodes": [],
             "documentation": {
-              "id": 16125,
+              "id": 16164,
               "nodeType": "StructuredDocumentation",
               "src": "917:39:66",
               "text": "@notice Burns `amount` of GYD token"
@@ -921,17 +921,17 @@
             "name": "burn",
             "nameLocation": "970:4:66",
             "parameters": {
-              "id": 16128,
+              "id": 16167,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16127,
+                  "id": 16166,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "983:6:66",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16130,
+                  "scope": 16169,
                   "src": "975:14:66",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -940,7 +940,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16126,
+                    "id": 16165,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "975:7:66",
@@ -955,23 +955,23 @@
               "src": "974:16:66"
             },
             "returnParameters": {
-              "id": 16129,
+              "id": 16168,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "999:0:66"
             },
-            "scope": 16139,
+            "scope": 16178,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16138,
+            "id": 16177,
             "nodeType": "FunctionDefinition",
             "src": "1065:60:66",
             "nodes": [],
             "documentation": {
-              "id": 16131,
+              "id": 16170,
               "nodeType": "StructuredDocumentation",
               "src": "1006:54:66",
               "text": "@notice Burns `amount` of GYD token from `account`"
@@ -983,17 +983,17 @@
             "name": "burnFrom",
             "nameLocation": "1074:8:66",
             "parameters": {
-              "id": 16136,
+              "id": 16175,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16133,
+                  "id": 16172,
                   "mutability": "mutable",
                   "name": "account",
                   "nameLocation": "1091:7:66",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16138,
+                  "scope": 16177,
                   "src": "1083:15:66",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1002,7 +1002,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16132,
+                    "id": 16171,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1083:7:66",
@@ -1016,12 +1016,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16135,
+                  "id": 16174,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "1108:6:66",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16138,
+                  "scope": 16177,
                   "src": "1100:14:66",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1030,7 +1030,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16134,
+                    "id": 16173,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1100:7:66",
@@ -1045,12 +1045,12 @@
               "src": "1082:33:66"
             },
             "returnParameters": {
-              "id": 16137,
+              "id": 16176,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1124:0:66"
             },
-            "scope": 16139,
+            "scope": 16178,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -1060,16 +1060,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 16103,
+              "id": 16142,
               "name": "IERC20",
               "nameLocations": [
                 "328:6:66"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 47531,
+              "referencedDeclaration": 47570,
               "src": "328:6:66"
             },
-            "id": 16104,
+            "id": 16143,
             "nodeType": "InheritanceSpecifier",
             "src": "328:6:66"
           }
@@ -1078,19 +1078,19 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16102,
+          "id": 16141,
           "nodeType": "StructuredDocumentation",
           "src": "257:48:66",
           "text": "@notice IGYDToken is the GYD token contract"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16139,
-          47531
+          16178,
+          47570
         ],
         "name": "IGYDToken",
         "nameLocation": "315:9:66",
-        "scope": 16140,
+        "scope": 16179,
         "usedErrors": []
       }
     ],

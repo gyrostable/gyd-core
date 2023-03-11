@@ -251,8 +251,8 @@
       }
     },
     "contracts/Motherboard.sol": {
-      "lastModificationDate": 1677240909387,
-      "contentHash": "3ae8a33dd82ae6bb23d26361f8197d99",
+      "lastModificationDate": 1678132235600,
+      "contentHash": "1765831cabbc88f4c268d924b24fd4f4",
       "sourceName": "contracts/Motherboard.sol",
       "solcConfig": {
         "settings": {
@@ -311,6 +311,22 @@
         "interfaces/balancer/IWETH.sol",
         "interfaces/oracles/IBatchVaultPriceOracle.sol",
         "interfaces/oracles/IUSDPriceOracle.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
         "lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol",
@@ -1772,7 +1788,7 @@
       }
     },
     "contracts/safety/ReserveSafetyManager.sol": {
-      "lastModificationDate": 1674036628977,
+      "lastModificationDate": 1678099753620,
       "contentHash": "7c783338228333a5ab067d93f9dfb450",
       "sourceName": "contracts/safety/ReserveSafetyManager.sol",
       "solcConfig": {
@@ -2044,8 +2060,8 @@
       }
     },
     "contracts/testing/MockGyroVault.sol": {
-      "lastModificationDate": 1674036628977,
-      "contentHash": "fd585df72d574a17ad6793d62d83bf34",
+      "lastModificationDate": 1678129823979,
+      "contentHash": "aa6afc4e1329d8a1681e5c84f50014bd",
       "sourceName": "contracts/testing/MockGyroVault.sol",
       "solcConfig": {
         "settings": {
@@ -2677,7 +2693,7 @@
       }
     },
     "contracts/testing/TestingReserveSafetyManager.sol": {
-      "lastModificationDate": 1674036628979,
+      "lastModificationDate": 1678094183470,
       "contentHash": "eb8d1e52d74a2087e2fe1e6ea2ef9f05",
       "sourceName": "contracts/testing/TestingReserveSafetyManager.sol",
       "solcConfig": {
@@ -3656,7 +3672,7 @@
       }
     },
     "interfaces/IGyroConfig.sol": {
-      "lastModificationDate": 1674036628982,
+      "lastModificationDate": 1678100668228,
       "contentHash": "ed1aa1c5b6c13ab06d02ea7f86c113b2",
       "sourceName": "interfaces/IGyroConfig.sol",
       "solcConfig": {
@@ -7828,6 +7844,132 @@
       "artifacts": {
         "Vaults": {
           "0.8.17+commit.8df45f5f.Darwin.appleclang": "Vaults.sol/Vaults.json"
+        }
+      }
+    },
+    "test/foundry/DryMint.t.sol": {
+      "lastModificationDate": 1678284535235,
+      "contentHash": "dd8ee044ad1b3097795e87083feec6b8",
+      "sourceName": "test/foundry/DryMint.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/GydToken.sol",
+        "contracts/GyroConfig.sol",
+        "contracts/Motherboard.sol",
+        "contracts/auth/Governable.sol",
+        "contracts/auth/GovernableBase.sol",
+        "contracts/auth/GovernableUpgradeable.sol",
+        "contracts/safety/ReserveSafetyManager.sol",
+        "contracts/testing/MockGyroVault.sol",
+        "contracts/testing/TestingReserveSafetyManager.sol",
+        "interfaces/IAssetRegistry.sol",
+        "interfaces/ICapAuthentication.sol",
+        "interfaces/IFeeBank.sol",
+        "interfaces/IFeeHandler.sol",
+        "interfaces/IGYDToken.sol",
+        "interfaces/IGovernable.sol",
+        "interfaces/IGyroConfig.sol",
+        "interfaces/IGyroVault.sol",
+        "interfaces/ILPTokenExchanger.sol",
+        "interfaces/IMotherboard.sol",
+        "interfaces/IPAMM.sol",
+        "interfaces/IReserve.sol",
+        "interfaces/IReserveManager.sol",
+        "interfaces/ISafetyCheck.sol",
+        "interfaces/IVaultRegistry.sol",
+        "interfaces/IVaultWeightManager.sol",
+        "interfaces/balancer/IAsset.sol",
+        "interfaces/balancer/IAuthorizer.sol",
+        "interfaces/balancer/IFlashLoanRecipient.sol",
+        "interfaces/balancer/ISignaturesValidator.sol",
+        "interfaces/balancer/ITemporarilyPausable.sol",
+        "interfaces/balancer/IVault.sol",
+        "interfaces/balancer/IWETH.sol",
+        "interfaces/oracles/IBatchVaultPriceOracle.sol",
+        "interfaces/oracles/IUSDPriceOracle.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/draft-IERC20Permit.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Address.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Context.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol",
+        "lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol",
+        "lib/openzeppelin-contracts-upgradeable/contracts/token/ERC20/ERC20Upgradeable.sol",
+        "lib/openzeppelin-contracts-upgradeable/contracts/token/ERC20/IERC20Upgradeable.sol",
+        "lib/openzeppelin-contracts-upgradeable/contracts/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
+        "lib/openzeppelin-contracts-upgradeable/contracts/utils/AddressUpgradeable.sol",
+        "lib/openzeppelin-contracts-upgradeable/contracts/utils/ContextUpgradeable.sol",
+        "libraries/ConfigHelpers.sol",
+        "libraries/ConfigKeys.sol",
+        "libraries/DataTypes.sol",
+        "libraries/DecimalScale.sol",
+        "libraries/EnumerableMapping.sol",
+        "libraries/Errors.sol",
+        "libraries/FixedPoint.sol",
+        "libraries/LogExpMath.sol",
+        "libraries/Vaults.sol"
+      ],
+      "versionRequirement": "^0.8.13",
+      "artifacts": {
+        "DryMint": {
+          "0.8.17+commit.8df45f5f.Darwin.appleclang": "DryMint.t.sol/DryMint.json"
+        },
+        "MockFeeHandler": {
+          "0.8.17+commit.8df45f5f.Darwin.appleclang": "DryMint.t.sol/MockFeeHandler.json"
+        },
+        "MockPAMMV1": {
+          "0.8.17+commit.8df45f5f.Darwin.appleclang": "DryMint.t.sol/MockPAMMV1.json"
+        },
+        "MockReserveManager": {
+          "0.8.17+commit.8df45f5f.Darwin.appleclang": "DryMint.t.sol/MockReserveManager.json"
         }
       }
     },

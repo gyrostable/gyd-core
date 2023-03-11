@@ -605,20 +605,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/IFeeHandler.sol",
-    "id": 16099,
+    "id": 16138,
     "exportedSymbols": {
       "DataTypes": [
-        54519
+        54558
       ],
       "IFeeHandler": [
-        16098
+        16137
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:368:65",
     "nodes": [
       {
-        "id": 16078,
+        "id": 16117,
         "nodeType": "PragmaDirective",
         "src": "174:23:65",
         "nodes": [],
@@ -630,30 +630,30 @@
         ]
       },
       {
-        "id": 16079,
+        "id": 16118,
         "nodeType": "ImportDirective",
         "src": "199:36:65",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "../libraries/DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16099,
-        "sourceUnit": 54520,
+        "scope": 16138,
+        "sourceUnit": 54559,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16098,
+        "id": 16137,
         "nodeType": "ContractDefinition",
         "src": "237:304:65",
         "nodes": [
           {
-            "id": 16089,
+            "id": 16128,
             "nodeType": "FunctionDefinition",
             "src": "312:96:65",
             "nodes": [],
             "documentation": {
-              "id": 16080,
+              "id": 16119,
               "nodeType": "StructuredDocumentation",
               "src": "265:42:65",
               "text": "@return an order with the fees applied"
@@ -665,42 +665,42 @@
             "name": "applyFees",
             "nameLocation": "321:9:65",
             "parameters": {
-              "id": 16084,
+              "id": 16123,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16083,
+                  "id": 16122,
                   "mutability": "mutable",
                   "name": "order",
                   "nameLocation": "354:5:65",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16089,
+                  "scope": 16128,
                   "src": "331:28:65",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$54505_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$54544_memory_ptr",
                     "typeString": "struct DataTypes.Order"
                   },
                   "typeName": {
-                    "id": 16082,
+                    "id": 16121,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16081,
+                      "id": 16120,
                       "name": "DataTypes.Order",
                       "nameLocations": [
                         "331:9:65",
                         "341:5:65"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54505,
+                      "referencedDeclaration": 54544,
                       "src": "331:15:65"
                     },
-                    "referencedDeclaration": 54505,
+                    "referencedDeclaration": 54544,
                     "src": "331:15:65",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$54505_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$54544_storage_ptr",
                       "typeString": "struct DataTypes.Order"
                     }
                   },
@@ -710,42 +710,42 @@
               "src": "330:30:65"
             },
             "returnParameters": {
-              "id": 16088,
+              "id": 16127,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16087,
+                  "id": 16126,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16089,
+                  "scope": 16128,
                   "src": "384:22:65",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$54505_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$54544_memory_ptr",
                     "typeString": "struct DataTypes.Order"
                   },
                   "typeName": {
-                    "id": 16086,
+                    "id": 16125,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16085,
+                      "id": 16124,
                       "name": "DataTypes.Order",
                       "nameLocations": [
                         "384:9:65",
                         "394:5:65"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54505,
+                      "referencedDeclaration": 54544,
                       "src": "384:15:65"
                     },
-                    "referencedDeclaration": 54505,
+                    "referencedDeclaration": 54544,
                     "src": "384:15:65",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$54505_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$54544_storage_ptr",
                       "typeString": "struct DataTypes.Order"
                     }
                   },
@@ -754,18 +754,18 @@
               ],
               "src": "383:24:65"
             },
-            "scope": 16098,
+            "scope": 16137,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16097,
+            "id": 16136,
             "nodeType": "FunctionDefinition",
             "src": "462:77:65",
             "nodes": [],
             "documentation": {
-              "id": 16090,
+              "id": 16129,
               "nodeType": "StructuredDocumentation",
               "src": "414:43:65",
               "text": "@return if the given vault is supported"
@@ -777,17 +777,17 @@
             "name": "isVaultSupported",
             "nameLocation": "471:16:65",
             "parameters": {
-              "id": 16093,
+              "id": 16132,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16092,
+                  "id": 16131,
                   "mutability": "mutable",
                   "name": "vaultAddress",
                   "nameLocation": "496:12:65",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16097,
+                  "scope": 16136,
                   "src": "488:20:65",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -796,7 +796,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16091,
+                    "id": 16130,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "488:7:65",
@@ -812,17 +812,17 @@
               "src": "487:22:65"
             },
             "returnParameters": {
-              "id": 16096,
+              "id": 16135,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16095,
+                  "id": 16134,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16097,
+                  "scope": 16136,
                   "src": "533:4:65",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -831,7 +831,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 16094,
+                    "id": 16133,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "533:4:65",
@@ -845,7 +845,7 @@
               ],
               "src": "532:6:65"
             },
-            "scope": 16098,
+            "scope": 16137,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -858,11 +858,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16098
+          16137
         ],
         "name": "IFeeHandler",
         "nameLocation": "247:11:65",
-        "scope": 16099,
+        "scope": 16138,
         "usedErrors": []
       }
     ],

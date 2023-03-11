@@ -239,17 +239,17 @@
   },
   "ast": {
     "absolutePath": "interfaces/IGovernable.sol",
-    "id": 16177,
+    "id": 16216,
     "exportedSymbols": {
       "IGovernable": [
-        16176
+        16215
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:768:67",
     "nodes": [
       {
-        "id": 16141,
+        "id": 16180,
         "nodeType": "PragmaDirective",
         "src": "174:23:67",
         "nodes": [],
@@ -261,18 +261,18 @@
         ]
       },
       {
-        "id": 16176,
+        "id": 16215,
         "nodeType": "ContractDefinition",
         "src": "199:742:67",
         "nodes": [
           {
-            "id": 16148,
+            "id": 16187,
             "nodeType": "EventDefinition",
             "src": "280:64:67",
             "nodes": [],
             "anonymous": false,
             "documentation": {
-              "id": 16142,
+              "id": 16181,
               "nodeType": "StructuredDocumentation",
               "src": "227:48:67",
               "text": "@notice Emmited when the governor is changed"
@@ -281,18 +281,18 @@
             "name": "GovernorChanged",
             "nameLocation": "286:15:67",
             "parameters": {
-              "id": 16147,
+              "id": 16186,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16144,
+                  "id": 16183,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "oldGovernor",
                   "nameLocation": "310:11:67",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16148,
+                  "scope": 16187,
                   "src": "302:19:67",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -301,7 +301,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16143,
+                    "id": 16182,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "302:7:67",
@@ -315,13 +315,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16146,
+                  "id": 16185,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "newGovernor",
                   "nameLocation": "331:11:67",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16148,
+                  "scope": 16187,
                   "src": "323:19:67",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -330,7 +330,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16145,
+                    "id": 16184,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "323:7:67",
@@ -347,13 +347,13 @@
             }
           },
           {
-            "id": 16153,
+            "id": 16192,
             "nodeType": "EventDefinition",
             "src": "415:51:67",
             "nodes": [],
             "anonymous": false,
             "documentation": {
-              "id": 16149,
+              "id": 16188,
               "nodeType": "StructuredDocumentation",
               "src": "350:60:67",
               "text": "@notice Emmited when the governor is change is requested"
@@ -362,18 +362,18 @@
             "name": "GovernorChangeRequested",
             "nameLocation": "421:23:67",
             "parameters": {
-              "id": 16152,
+              "id": 16191,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16151,
+                  "id": 16190,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "newGovernor",
                   "nameLocation": "453:11:67",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16153,
+                  "scope": 16192,
                   "src": "445:19:67",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -382,7 +382,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16150,
+                    "id": 16189,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "445:7:67",
@@ -399,12 +399,12 @@
             }
           },
           {
-            "id": 16159,
+            "id": 16198,
             "nodeType": "FunctionDefinition",
             "src": "517:52:67",
             "nodes": [],
             "documentation": {
-              "id": 16154,
+              "id": 16193,
               "nodeType": "StructuredDocumentation",
               "src": "472:40:67",
               "text": "@notice Returns the current governor"
@@ -416,23 +416,23 @@
             "name": "governor",
             "nameLocation": "526:8:67",
             "parameters": {
-              "id": 16155,
+              "id": 16194,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "534:2:67"
             },
             "returnParameters": {
-              "id": 16158,
+              "id": 16197,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16157,
+                  "id": 16196,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16159,
+                  "scope": 16198,
                   "src": "560:7:67",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -441,7 +441,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16156,
+                    "id": 16195,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "560:7:67",
@@ -456,18 +456,18 @@
               ],
               "src": "559:9:67"
             },
-            "scope": 16176,
+            "scope": 16215,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16165,
+            "id": 16204,
             "nodeType": "FunctionDefinition",
             "src": "620:59:67",
             "nodes": [],
             "documentation": {
-              "id": 16160,
+              "id": 16199,
               "nodeType": "StructuredDocumentation",
               "src": "575:40:67",
               "text": "@notice Returns the pending governor"
@@ -479,23 +479,23 @@
             "name": "pendingGovernor",
             "nameLocation": "629:15:67",
             "parameters": {
-              "id": 16161,
+              "id": 16200,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "644:2:67"
             },
             "returnParameters": {
-              "id": 16164,
+              "id": 16203,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16163,
+                  "id": 16202,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16165,
+                  "scope": 16204,
                   "src": "670:7:67",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -504,7 +504,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16162,
+                    "id": 16201,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "670:7:67",
@@ -519,18 +519,18 @@
               ],
               "src": "669:9:67"
             },
-            "scope": 16176,
+            "scope": 16215,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16171,
+            "id": 16210,
             "nodeType": "FunctionDefinition",
             "src": "773:54:67",
             "nodes": [],
             "documentation": {
-              "id": 16166,
+              "id": 16205,
               "nodeType": "StructuredDocumentation",
               "src": "685:83:67",
               "text": "@notice Changes the governor\n can only be called by the current governor"
@@ -542,17 +542,17 @@
             "name": "changeGovernor",
             "nameLocation": "782:14:67",
             "parameters": {
-              "id": 16169,
+              "id": 16208,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16168,
+                  "id": 16207,
                   "mutability": "mutable",
                   "name": "newGovernor",
                   "nameLocation": "805:11:67",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16171,
+                  "scope": 16210,
                   "src": "797:19:67",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -561,7 +561,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16167,
+                    "id": 16206,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "797:7:67",
@@ -577,23 +577,23 @@
               "src": "796:21:67"
             },
             "returnParameters": {
-              "id": 16170,
+              "id": 16209,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "826:0:67"
             },
-            "scope": 16176,
+            "scope": 16215,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16175,
+            "id": 16214,
             "nodeType": "FunctionDefinition",
             "src": "902:37:67",
             "nodes": [],
             "documentation": {
-              "id": 16172,
+              "id": 16211,
               "nodeType": "StructuredDocumentation",
               "src": "833:64:67",
               "text": "@notice Called by the pending governor to approve the change"
@@ -605,18 +605,18 @@
             "name": "acceptGovernance",
             "nameLocation": "911:16:67",
             "parameters": {
-              "id": 16173,
+              "id": 16212,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "927:2:67"
             },
             "returnParameters": {
-              "id": 16174,
+              "id": 16213,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "938:0:67"
             },
-            "scope": 16176,
+            "scope": 16215,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -629,11 +629,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16176
+          16215
         ],
         "name": "IGovernable",
         "nameLocation": "209:11:67",
-        "scope": 16177,
+        "scope": 16216,
         "usedErrors": []
       }
     ],

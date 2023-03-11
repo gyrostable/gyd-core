@@ -65,17 +65,17 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IAsset.sol",
-    "id": 16865,
+    "id": 16904,
     "exportedSymbols": {
       "IAsset": [
-        16864
+        16903
       ]
     },
     "nodeType": "SourceUnit",
     "src": "176:409:80",
     "nodes": [
       {
-        "id": 16862,
+        "id": 16901,
         "nodeType": "PragmaDirective",
         "src": "176:23:80",
         "nodes": [],
@@ -87,7 +87,7 @@
         ]
       },
       {
-        "id": 16864,
+        "id": 16903,
         "nodeType": "ContractDefinition",
         "src": "511:73:80",
         "nodes": [],
@@ -97,18 +97,18 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16863,
+          "id": 16902,
           "nodeType": "StructuredDocumentation",
           "src": "201:309:80",
           "text": " @dev This is an empty interface used to represent either ERC20-conforming token contracts or ETH (using the zero\n address sentinel value). We're just relying on the fact that `interface` can be used to declare new address-like\n types.\n This concept is unrelated to a Pool's Asset Managers."
         },
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          16864
+          16903
         ],
         "name": "IAsset",
         "nameLocation": "521:6:80",
-        "scope": 16865,
+        "scope": 16904,
         "usedErrors": []
       }
     ],

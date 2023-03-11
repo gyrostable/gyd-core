@@ -184,20 +184,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/I3CLP.sol",
-    "id": 16861,
+    "id": 16900,
     "exportedSymbols": {
       "I3CLP": [
-        16860
+        16899
       ],
       "IMinimalPoolView": [
-        17023
+        17062
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:161:79",
     "nodes": [
       {
-        "id": 16851,
+        "id": 16890,
         "nodeType": "PragmaDirective",
         "src": "174:23:79",
         "nodes": [],
@@ -209,25 +209,25 @@
         ]
       },
       {
-        "id": 16852,
+        "id": 16891,
         "nodeType": "ImportDirective",
         "src": "199:32:79",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
         "file": "./IMinimalPoolView.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16861,
-        "sourceUnit": 17024,
+        "scope": 16900,
+        "sourceUnit": 17063,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16860,
+        "id": 16899,
         "nodeType": "ContractDefinition",
         "src": "233:101:79",
         "nodes": [
           {
-            "id": 16859,
+            "id": 16898,
             "nodeType": "FunctionDefinition",
             "src": "275:57:79",
             "nodes": [],
@@ -238,23 +238,23 @@
             "name": "getRoot3Alpha",
             "nameLocation": "284:13:79",
             "parameters": {
-              "id": 16855,
+              "id": 16894,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "297:2:79"
             },
             "returnParameters": {
-              "id": 16858,
+              "id": 16897,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16857,
+                  "id": 16896,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16859,
+                  "scope": 16898,
                   "src": "323:7:79",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -263,7 +263,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16856,
+                    "id": 16895,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "323:7:79",
@@ -277,7 +277,7 @@
               ],
               "src": "322:9:79"
             },
-            "scope": 16860,
+            "scope": 16899,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -287,16 +287,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 16853,
+              "id": 16892,
               "name": "IMinimalPoolView",
               "nameLocations": [
                 "252:16:79"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 17023,
+              "referencedDeclaration": 17062,
               "src": "252:16:79"
             },
-            "id": 16854,
+            "id": 16893,
             "nodeType": "InheritanceSpecifier",
             "src": "252:16:79"
           }
@@ -306,12 +306,12 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16860,
-          17023
+          16899,
+          17062
         ],
         "name": "I3CLP",
         "nameLocation": "243:5:79",
-        "scope": 16861,
+        "scope": 16900,
         "usedErrors": []
       }
     ],

@@ -184,20 +184,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IWeightedPool.sol",
-    "id": 17635,
+    "id": 17674,
     "exportedSymbols": {
       "IMinimalPoolView": [
-        17023
+        17062
       ],
       "IWeightedPool": [
-        17634
+        17673
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:185:92",
     "nodes": [
       {
-        "id": 17624,
+        "id": 17663,
         "nodeType": "PragmaDirective",
         "src": "174:23:92",
         "nodes": [],
@@ -209,25 +209,25 @@
         ]
       },
       {
-        "id": 17625,
+        "id": 17664,
         "nodeType": "ImportDirective",
         "src": "199:32:92",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
         "file": "./IMinimalPoolView.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 17635,
-        "sourceUnit": 17024,
+        "scope": 17674,
+        "sourceUnit": 17063,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 17634,
+        "id": 17673,
         "nodeType": "ContractDefinition",
         "src": "233:125:92",
         "nodes": [
           {
-            "id": 17633,
+            "id": 17672,
             "nodeType": "FunctionDefinition",
             "src": "283:73:92",
             "nodes": [],
@@ -238,23 +238,23 @@
             "name": "getNormalizedWeights",
             "nameLocation": "292:20:92",
             "parameters": {
-              "id": 17628,
+              "id": 17667,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "312:2:92"
             },
             "returnParameters": {
-              "id": 17632,
+              "id": 17671,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17631,
+                  "id": 17670,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17633,
+                  "scope": 17672,
                   "src": "338:16:92",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -264,7 +264,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 17629,
+                      "id": 17668,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
                       "src": "338:7:92",
@@ -273,7 +273,7 @@
                         "typeString": "uint256"
                       }
                     },
-                    "id": 17630,
+                    "id": 17669,
                     "nodeType": "ArrayTypeName",
                     "src": "338:9:92",
                     "typeDescriptions": {
@@ -286,7 +286,7 @@
               ],
               "src": "337:18:92"
             },
-            "scope": 17634,
+            "scope": 17673,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -296,16 +296,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 17626,
+              "id": 17665,
               "name": "IMinimalPoolView",
               "nameLocations": [
                 "260:16:92"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 17023,
+              "referencedDeclaration": 17062,
               "src": "260:16:92"
             },
-            "id": 17627,
+            "id": 17666,
             "nodeType": "InheritanceSpecifier",
             "src": "260:16:92"
           }
@@ -315,12 +315,12 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17634,
-          17023
+          17673,
+          17062
         ],
         "name": "IWeightedPool",
         "nameLocation": "243:13:92",
-        "scope": 17635,
+        "scope": 17674,
         "usedErrors": []
       }
     ],

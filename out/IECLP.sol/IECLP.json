@@ -370,20 +370,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IECLP.sol",
-    "id": 16986,
+    "id": 17025,
     "exportedSymbols": {
       "IECLP": [
-        16985
+        17024
       ],
       "IMinimalPoolView": [
-        17023
+        17062
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:1899:83",
     "nodes": [
       {
-        "id": 16939,
+        "id": 16978,
         "nodeType": "PragmaDirective",
         "src": "174:23:83",
         "nodes": [],
@@ -395,25 +395,25 @@
         ]
       },
       {
-        "id": 16940,
+        "id": 16979,
         "nodeType": "ImportDirective",
         "src": "199:32:83",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
         "file": "./IMinimalPoolView.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16986,
-        "sourceUnit": 17024,
+        "scope": 17025,
+        "sourceUnit": 17063,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16985,
+        "id": 17024,
         "nodeType": "ContractDefinition",
         "src": "233:1839:83",
         "nodes": [
           {
-            "id": 16947,
+            "id": 16986,
             "nodeType": "StructDefinition",
             "src": "275:58:83",
             "nodes": [],
@@ -421,12 +421,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 16944,
+                "id": 16983,
                 "mutability": "mutable",
                 "name": "x",
                 "nameLocation": "307:1:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16947,
+                "scope": 16986,
                 "src": "300:8:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -435,7 +435,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16943,
+                  "id": 16982,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "300:6:83",
@@ -448,12 +448,12 @@
               },
               {
                 "constant": false,
-                "id": 16946,
+                "id": 16985,
                 "mutability": "mutable",
                 "name": "y",
                 "nameLocation": "325:1:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16947,
+                "scope": 16986,
                 "src": "318:8:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -462,7 +462,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16945,
+                  "id": 16984,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "318:6:83",
@@ -476,11 +476,11 @@
             ],
             "name": "Vector2",
             "nameLocation": "282:7:83",
-            "scope": 16985,
+            "scope": 17024,
             "visibility": "public"
           },
           {
-            "id": 16958,
+            "id": 16997,
             "nodeType": "StructDefinition",
             "src": "668:664:83",
             "nodes": [],
@@ -488,12 +488,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 16949,
+                "id": 16988,
                 "mutability": "mutable",
                 "name": "alpha",
                 "nameLocation": "759:5:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16958,
+                "scope": 16997,
                 "src": "752:12:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -502,7 +502,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16948,
+                  "id": 16987,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "752:6:83",
@@ -515,12 +515,12 @@
               },
               {
                 "constant": false,
-                "id": 16951,
+                "id": 16990,
                 "mutability": "mutable",
                 "name": "beta",
                 "nameLocation": "781:4:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16958,
+                "scope": 16997,
                 "src": "774:11:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -529,7 +529,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16950,
+                  "id": 16989,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "774:6:83",
@@ -542,12 +542,12 @@
               },
               {
                 "constant": false,
-                "id": 16953,
+                "id": 16992,
                 "mutability": "mutable",
                 "name": "c",
                 "nameLocation": "922:1:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16958,
+                "scope": 16997,
                 "src": "915:8:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -556,7 +556,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16952,
+                  "id": 16991,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "915:6:83",
@@ -569,12 +569,12 @@
               },
               {
                 "constant": false,
-                "id": 16955,
+                "id": 16994,
                 "mutability": "mutable",
                 "name": "s",
                 "nameLocation": "986:1:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16958,
+                "scope": 16997,
                 "src": "979:8:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -583,7 +583,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16954,
+                  "id": 16993,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "979:6:83",
@@ -596,12 +596,12 @@
               },
               {
                 "constant": false,
-                "id": 16957,
+                "id": 16996,
                 "mutability": "mutable",
                 "name": "lambda",
                 "nameLocation": "1271:6:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16958,
+                "scope": 16997,
                 "src": "1264:13:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -610,7 +610,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16956,
+                  "id": 16995,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1264:6:83",
@@ -624,11 +624,11 @@
             ],
             "name": "Params",
             "nameLocation": "675:6:83",
-            "scope": 16985,
+            "scope": 17024,
             "visibility": "public"
           },
           {
-            "id": 16975,
+            "id": 17014,
             "nodeType": "StructDefinition",
             "src": "1442:528:83",
             "nodes": [],
@@ -636,36 +636,36 @@
             "members": [
               {
                 "constant": false,
-                "id": 16961,
+                "id": 17000,
                 "mutability": "mutable",
                 "name": "tauAlpha",
                 "nameLocation": "1481:8:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16975,
+                "scope": 17014,
                 "src": "1473:16:83",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_Vector2_$16947_storage_ptr",
+                  "typeIdentifier": "t_struct$_Vector2_$16986_storage_ptr",
                   "typeString": "struct IECLP.Vector2"
                 },
                 "typeName": {
-                  "id": 16960,
+                  "id": 16999,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 16959,
+                    "id": 16998,
                     "name": "Vector2",
                     "nameLocations": [
                       "1473:7:83"
                     ],
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 16947,
+                    "referencedDeclaration": 16986,
                     "src": "1473:7:83"
                   },
-                  "referencedDeclaration": 16947,
+                  "referencedDeclaration": 16986,
                   "src": "1473:7:83",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Vector2_$16947_storage_ptr",
+                    "typeIdentifier": "t_struct$_Vector2_$16986_storage_ptr",
                     "typeString": "struct IECLP.Vector2"
                   }
                 },
@@ -673,36 +673,36 @@
               },
               {
                 "constant": false,
-                "id": 16964,
+                "id": 17003,
                 "mutability": "mutable",
                 "name": "tauBeta",
                 "nameLocation": "1507:7:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16975,
+                "scope": 17014,
                 "src": "1499:15:83",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_Vector2_$16947_storage_ptr",
+                  "typeIdentifier": "t_struct$_Vector2_$16986_storage_ptr",
                   "typeString": "struct IECLP.Vector2"
                 },
                 "typeName": {
-                  "id": 16963,
+                  "id": 17002,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 16962,
+                    "id": 17001,
                     "name": "Vector2",
                     "nameLocations": [
                       "1499:7:83"
                     ],
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 16947,
+                    "referencedDeclaration": 16986,
                     "src": "1499:7:83"
                   },
-                  "referencedDeclaration": 16947,
+                  "referencedDeclaration": 16986,
                   "src": "1499:7:83",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Vector2_$16947_storage_ptr",
+                    "typeIdentifier": "t_struct$_Vector2_$16986_storage_ptr",
                     "typeString": "struct IECLP.Vector2"
                   }
                 },
@@ -710,12 +710,12 @@
               },
               {
                 "constant": false,
-                "id": 16966,
+                "id": 17005,
                 "mutability": "mutable",
                 "name": "u",
                 "nameLocation": "1531:1:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16975,
+                "scope": 17014,
                 "src": "1524:8:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -724,7 +724,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16965,
+                  "id": 17004,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1524:6:83",
@@ -737,12 +737,12 @@
               },
               {
                 "constant": false,
-                "id": 16968,
+                "id": 17007,
                 "mutability": "mutable",
                 "name": "v",
                 "nameLocation": "1584:1:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16975,
+                "scope": 17014,
                 "src": "1577:8:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -751,7 +751,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16967,
+                  "id": 17006,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1577:6:83",
@@ -764,12 +764,12 @@
               },
               {
                 "constant": false,
-                "id": 16970,
+                "id": 17009,
                 "mutability": "mutable",
                 "name": "w",
                 "nameLocation": "1637:1:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16975,
+                "scope": 17014,
                 "src": "1630:8:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -778,7 +778,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16969,
+                  "id": 17008,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1630:6:83",
@@ -791,12 +791,12 @@
               },
               {
                 "constant": false,
-                "id": 16972,
+                "id": 17011,
                 "mutability": "mutable",
                 "name": "z",
                 "nameLocation": "1690:1:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16975,
+                "scope": 17014,
                 "src": "1683:8:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -805,7 +805,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16971,
+                  "id": 17010,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1683:6:83",
@@ -818,12 +818,12 @@
               },
               {
                 "constant": false,
-                "id": 16974,
+                "id": 17013,
                 "mutability": "mutable",
                 "name": "dSq",
                 "nameLocation": "1743:3:83",
                 "nodeType": "VariableDeclaration",
-                "scope": 16975,
+                "scope": 17014,
                 "src": "1736:10:83",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -832,7 +832,7 @@
                   "typeString": "int256"
                 },
                 "typeName": {
-                  "id": 16973,
+                  "id": 17012,
                   "name": "int256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1736:6:83",
@@ -846,11 +846,11 @@
             ],
             "name": "DerivedParams",
             "nameLocation": "1449:13:83",
-            "scope": 16985,
+            "scope": 17024,
             "visibility": "public"
           },
           {
-            "id": 16984,
+            "id": 17023,
             "nodeType": "FunctionDefinition",
             "src": "1976:94:83",
             "nodes": [],
@@ -861,47 +861,47 @@
             "name": "getECLPParams",
             "nameLocation": "1985:13:83",
             "parameters": {
-              "id": 16976,
+              "id": 17015,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1998:2:83"
             },
             "returnParameters": {
-              "id": 16983,
+              "id": 17022,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16979,
+                  "id": 17018,
                   "mutability": "mutable",
                   "name": "params",
                   "nameLocation": "2038:6:83",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16984,
+                  "scope": 17023,
                   "src": "2024:20:83",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Params_$16958_memory_ptr",
+                    "typeIdentifier": "t_struct$_Params_$16997_memory_ptr",
                     "typeString": "struct IECLP.Params"
                   },
                   "typeName": {
-                    "id": 16978,
+                    "id": 17017,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16977,
+                      "id": 17016,
                       "name": "Params",
                       "nameLocations": [
                         "2024:6:83"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16958,
+                      "referencedDeclaration": 16997,
                       "src": "2024:6:83"
                     },
-                    "referencedDeclaration": 16958,
+                    "referencedDeclaration": 16997,
                     "src": "2024:6:83",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Params_$16958_storage_ptr",
+                      "typeIdentifier": "t_struct$_Params_$16997_storage_ptr",
                       "typeString": "struct IECLP.Params"
                     }
                   },
@@ -909,36 +909,36 @@
                 },
                 {
                   "constant": false,
-                  "id": 16982,
+                  "id": 17021,
                   "mutability": "mutable",
                   "name": "d",
                   "nameLocation": "2067:1:83",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16984,
+                  "scope": 17023,
                   "src": "2046:22:83",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_DerivedParams_$16975_memory_ptr",
+                    "typeIdentifier": "t_struct$_DerivedParams_$17014_memory_ptr",
                     "typeString": "struct IECLP.DerivedParams"
                   },
                   "typeName": {
-                    "id": 16981,
+                    "id": 17020,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16980,
+                      "id": 17019,
                       "name": "DerivedParams",
                       "nameLocations": [
                         "2046:13:83"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16975,
+                      "referencedDeclaration": 17014,
                       "src": "2046:13:83"
                     },
-                    "referencedDeclaration": 16975,
+                    "referencedDeclaration": 17014,
                     "src": "2046:13:83",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_DerivedParams_$16975_storage_ptr",
+                      "typeIdentifier": "t_struct$_DerivedParams_$17014_storage_ptr",
                       "typeString": "struct IECLP.DerivedParams"
                     }
                   },
@@ -947,7 +947,7 @@
               ],
               "src": "2023:46:83"
             },
-            "scope": 16985,
+            "scope": 17024,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -957,16 +957,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 16941,
+              "id": 16980,
               "name": "IMinimalPoolView",
               "nameLocations": [
                 "252:16:83"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 17023,
+              "referencedDeclaration": 17062,
               "src": "252:16:83"
             },
-            "id": 16942,
+            "id": 16981,
             "nodeType": "InheritanceSpecifier",
             "src": "252:16:83"
           }
@@ -976,12 +976,12 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16985,
-          17023
+          17024,
+          17062
         ],
         "name": "IECLP",
         "nameLocation": "243:5:83",
-        "scope": 16986,
+        "scope": 17025,
         "usedErrors": []
       }
     ],

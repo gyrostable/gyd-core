@@ -337,119 +337,119 @@
   },
   "ast": {
     "absolutePath": "libraries/ConfigHelpers.sol",
-    "id": 54322,
+    "id": 54361,
     "exportedSymbols": {
       "ConfigHelpers": [
-        54321
+        54360
       ],
       "ConfigKeys": [
-        54373
+        54412
       ],
       "DataTypes": [
-        54519
+        54558
       ],
       "Errors": [
-        56056
+        56095
       ],
       "Governable": [
-        5458
+        5497
       ],
       "GovernableBase": [
-        5552
+        5591
       ],
       "IAsset": [
-        16864
+        16903
       ],
       "IAssetRegistry": [
-        16039
+        16078
       ],
       "IAuthorizer": [
-        16879
+        16918
       ],
       "IBatchVaultPriceOracle": [
-        17662
+        17701
       ],
       "ICapAuthentication": [
-        16051
+        16090
       ],
       "IERC165": [
-        49602
+        49641
       ],
       "IERC20": [
-        47531
+        47570
       ],
       "IERC20Metadata": [
-        47556
+        47595
       ],
       "IERC721": [
-        48934
+        48973
       ],
       "IFeeBank": [
-        16076
+        16115
       ],
       "IFeeHandler": [
-        16098
+        16137
       ],
       "IFlashLoanRecipient": [
-        17005
+        17044
       ],
       "IGYDToken": [
-        16139
+        16178
       ],
       "IGovernable": [
-        16176
+        16215
       ],
       "IGyroConfig": [
-        16299
+        16338
       ],
       "IGyroVault": [
-        16414
+        16453
       ],
       "IMotherboard": [
-        16559
+        16598
       ],
       "IPAMM": [
-        16632
+        16671
       ],
       "IReserve": [
-        16695
+        16734
       ],
       "IReserveManager": [
-        16720
+        16759
       ],
       "ISafetyCheck": [
-        16756
+        16795
       ],
       "ISignaturesValidator": [
-        17087
+        17126
       ],
       "ITemporarilyPausable": [
-        17106
+        17145
       ],
       "IUSDPriceOracle": [
-        17709
+        17748
       ],
       "IVault": [
-        17607
+        17646
       ],
       "IVaultRegistry": [
-        16807
+        16846
       ],
       "IVaultWeightManager": [
-        16836
+        16875
       ],
       "IWETH": [
-        17622
+        17661
       ],
       "Vaults": [
-        58229
+        58268
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:3712:151",
     "nodes": [
       {
-        "id": 54019,
+        "id": 54058,
         "nodeType": "PragmaDirective",
         "src": "174:23:151",
         "nodes": [],
@@ -461,212 +461,212 @@
         ]
       },
       {
-        "id": 54020,
+        "id": 54059,
         "nodeType": "ImportDirective",
         "src": "199:58:151",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
         "file": "@openzeppelin/contracts/token/ERC721/IERC721.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 48935,
+        "scope": 54361,
+        "sourceUnit": 48974,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54021,
+        "id": 54060,
         "nodeType": "ImportDirective",
         "src": "259:26:151",
         "nodes": [],
         "absolutePath": "libraries/ConfigKeys.sol",
         "file": "./ConfigKeys.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 54374,
+        "scope": 54361,
+        "sourceUnit": 54413,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54022,
+        "id": 54061,
         "nodeType": "ImportDirective",
         "src": "287:58:151",
         "nodes": [],
         "absolutePath": "interfaces/oracles/IBatchVaultPriceOracle.sol",
         "file": "../interfaces/oracles/IBatchVaultPriceOracle.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 17663,
+        "scope": 54361,
+        "sourceUnit": 17702,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54023,
+        "id": 54062,
         "nodeType": "ImportDirective",
         "src": "346:40:151",
         "nodes": [],
         "absolutePath": "interfaces/IMotherboard.sol",
         "file": "../interfaces/IMotherboard.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16560,
+        "scope": 54361,
+        "sourceUnit": 16599,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54024,
+        "id": 54063,
         "nodeType": "ImportDirective",
         "src": "387:40:151",
         "nodes": [],
         "absolutePath": "interfaces/ISafetyCheck.sol",
         "file": "../interfaces/ISafetyCheck.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16757,
+        "scope": 54361,
+        "sourceUnit": 16796,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54025,
+        "id": 54064,
         "nodeType": "ImportDirective",
         "src": "428:39:151",
         "nodes": [],
         "absolutePath": "interfaces/IGyroConfig.sol",
         "file": "../interfaces/IGyroConfig.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16300,
+        "scope": 54361,
+        "sourceUnit": 16339,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54026,
+        "id": 54065,
         "nodeType": "ImportDirective",
         "src": "468:42:151",
         "nodes": [],
         "absolutePath": "interfaces/IVaultRegistry.sol",
         "file": "../interfaces/IVaultRegistry.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16808,
+        "scope": 54361,
+        "sourceUnit": 16847,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54027,
+        "id": 54066,
         "nodeType": "ImportDirective",
         "src": "511:42:151",
         "nodes": [],
         "absolutePath": "interfaces/IAssetRegistry.sol",
         "file": "../interfaces/IAssetRegistry.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16040,
+        "scope": 54361,
+        "sourceUnit": 16079,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54028,
+        "id": 54067,
         "nodeType": "ImportDirective",
         "src": "554:43:151",
         "nodes": [],
         "absolutePath": "interfaces/IReserveManager.sol",
         "file": "../interfaces/IReserveManager.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16721,
+        "scope": 54361,
+        "sourceUnit": 16760,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54029,
+        "id": 54068,
         "nodeType": "ImportDirective",
         "src": "598:36:151",
         "nodes": [],
         "absolutePath": "interfaces/IFeeBank.sol",
         "file": "../interfaces/IFeeBank.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16077,
+        "scope": 54361,
+        "sourceUnit": 16116,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54030,
+        "id": 54069,
         "nodeType": "ImportDirective",
         "src": "635:36:151",
         "nodes": [],
         "absolutePath": "interfaces/IReserve.sol",
         "file": "../interfaces/IReserve.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16696,
+        "scope": 54361,
+        "sourceUnit": 16735,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54031,
+        "id": 54070,
         "nodeType": "ImportDirective",
         "src": "672:37:151",
         "nodes": [],
         "absolutePath": "interfaces/IGYDToken.sol",
         "file": "../interfaces/IGYDToken.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16140,
+        "scope": 54361,
+        "sourceUnit": 16179,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54032,
+        "id": 54071,
         "nodeType": "ImportDirective",
         "src": "710:39:151",
         "nodes": [],
         "absolutePath": "interfaces/IFeeHandler.sol",
         "file": "../interfaces/IFeeHandler.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16099,
+        "scope": 54361,
+        "sourceUnit": 16138,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54033,
+        "id": 54072,
         "nodeType": "ImportDirective",
         "src": "750:46:151",
         "nodes": [],
         "absolutePath": "interfaces/ICapAuthentication.sol",
         "file": "../interfaces/ICapAuthentication.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 16052,
+        "scope": 54361,
+        "sourceUnit": 16091,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54034,
+        "id": 54073,
         "nodeType": "ImportDirective",
         "src": "797:43:151",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IVault.sol",
         "file": "../interfaces/balancer/IVault.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 54322,
-        "sourceUnit": 17608,
+        "scope": 54361,
+        "sourceUnit": 17647,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 54321,
+        "id": 54360,
         "nodeType": "ContractDefinition",
         "src": "928:2957:151",
         "nodes": [
           {
-            "id": 54053,
+            "id": 54092,
             "nodeType": "FunctionDefinition",
             "src": "956:234:151",
             "nodes": [],
             "body": {
-              "id": 54052,
+              "id": 54091,
               "nodeType": "Block",
               "src": "1083:107:151",
               "nodes": [],
@@ -678,18 +678,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54047,
+                              "id": 54086,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "1145:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54048,
+                            "id": 54087,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -697,7 +697,7 @@
                             "memberLocation": "1156:25:151",
                             "memberName": "ROOT_PRICE_ORACLE_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54339,
+                            "referencedDeclaration": 54378,
                             "src": "1145:36:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -713,18 +713,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54045,
+                            "id": 54084,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54038,
+                            "referencedDeclaration": 54077,
                             "src": "1123:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54046,
+                          "id": 54085,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -732,14 +732,14 @@
                           "memberLocation": "1134:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "1123:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54049,
+                        "id": 54088,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -763,18 +763,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54044,
+                      "id": 54083,
                       "name": "IBatchVaultPriceOracle",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 17662,
+                      "referencedDeclaration": 17701,
                       "src": "1100:22:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IBatchVaultPriceOracle_$17662_$",
+                        "typeIdentifier": "t_type$_t_contract$_IBatchVaultPriceOracle_$17701_$",
                         "typeString": "type(contract IBatchVaultPriceOracle)"
                       }
                     },
-                    "id": 54050,
+                    "id": 54089,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -786,12 +786,12 @@
                     "src": "1100:83:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IBatchVaultPriceOracle_$17662",
+                      "typeIdentifier": "t_contract$_IBatchVaultPriceOracle_$17701",
                       "typeString": "contract IBatchVaultPriceOracle"
                     }
                   },
-                  "functionReturnParameters": 54043,
-                  "id": 54051,
+                  "functionReturnParameters": 54082,
+                  "id": 54090,
                   "nodeType": "Return",
                   "src": "1093:90:151"
                 }
@@ -803,41 +803,41 @@
             "name": "getRootPriceOracle",
             "nameLocation": "965:18:151",
             "parameters": {
-              "id": 54039,
+              "id": 54078,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54038,
+                  "id": 54077,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "996:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54053,
+                  "scope": 54092,
                   "src": "984:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54037,
+                    "id": 54076,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54036,
+                      "id": 54075,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "984:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "984:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "984:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -847,41 +847,41 @@
               "src": "983:24:151"
             },
             "returnParameters": {
-              "id": 54043,
+              "id": 54082,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54042,
+                  "id": 54081,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54053,
+                  "scope": 54092,
                   "src": "1055:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IBatchVaultPriceOracle_$17662",
+                    "typeIdentifier": "t_contract$_IBatchVaultPriceOracle_$17701",
                     "typeString": "contract IBatchVaultPriceOracle"
                   },
                   "typeName": {
-                    "id": 54041,
+                    "id": 54080,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54040,
+                      "id": 54079,
                       "name": "IBatchVaultPriceOracle",
                       "nameLocations": [
                         "1055:22:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 17662,
+                      "referencedDeclaration": 17701,
                       "src": "1055:22:151"
                     },
-                    "referencedDeclaration": 17662,
+                    "referencedDeclaration": 17701,
                     "src": "1055:22:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IBatchVaultPriceOracle_$17662",
+                      "typeIdentifier": "t_contract$_IBatchVaultPriceOracle_$17701",
                       "typeString": "contract IBatchVaultPriceOracle"
                     }
                   },
@@ -890,18 +890,18 @@
               ],
               "src": "1054:24:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54071,
+            "id": 54110,
             "nodeType": "FunctionDefinition",
             "src": "1196:186:151",
             "nodes": [],
             "body": {
-              "id": 54070,
+              "id": 54109,
               "nodeType": "Block",
               "src": "1285:97:151",
               "nodes": [],
@@ -913,18 +913,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54065,
+                              "id": 54104,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "1337:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54066,
+                            "id": 54105,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -932,7 +932,7 @@
                             "memberLocation": "1348:25:151",
                             "memberName": "ROOT_SAFETY_CHECK_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54342,
+                            "referencedDeclaration": 54381,
                             "src": "1337:36:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -948,18 +948,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54063,
+                            "id": 54102,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54056,
+                            "referencedDeclaration": 54095,
                             "src": "1315:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54064,
+                          "id": 54103,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -967,14 +967,14 @@
                           "memberLocation": "1326:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "1315:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54067,
+                        "id": 54106,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -998,18 +998,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54062,
+                      "id": 54101,
                       "name": "ISafetyCheck",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 16756,
+                      "referencedDeclaration": 16795,
                       "src": "1302:12:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_ISafetyCheck_$16756_$",
+                        "typeIdentifier": "t_type$_t_contract$_ISafetyCheck_$16795_$",
                         "typeString": "type(contract ISafetyCheck)"
                       }
                     },
-                    "id": 54068,
+                    "id": 54107,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1021,12 +1021,12 @@
                     "src": "1302:73:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ISafetyCheck_$16756",
+                      "typeIdentifier": "t_contract$_ISafetyCheck_$16795",
                       "typeString": "contract ISafetyCheck"
                     }
                   },
-                  "functionReturnParameters": 54061,
-                  "id": 54069,
+                  "functionReturnParameters": 54100,
+                  "id": 54108,
                   "nodeType": "Return",
                   "src": "1295:80:151"
                 }
@@ -1038,41 +1038,41 @@
             "name": "getRootSafetyCheck",
             "nameLocation": "1205:18:151",
             "parameters": {
-              "id": 54057,
+              "id": 54096,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54056,
+                  "id": 54095,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "1236:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54071,
+                  "scope": 54110,
                   "src": "1224:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54055,
+                    "id": 54094,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54054,
+                      "id": 54093,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "1224:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "1224:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "1224:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -1082,41 +1082,41 @@
               "src": "1223:24:151"
             },
             "returnParameters": {
-              "id": 54061,
+              "id": 54100,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54060,
+                  "id": 54099,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54071,
+                  "scope": 54110,
                   "src": "1271:12:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_ISafetyCheck_$16756",
+                    "typeIdentifier": "t_contract$_ISafetyCheck_$16795",
                     "typeString": "contract ISafetyCheck"
                   },
                   "typeName": {
-                    "id": 54059,
+                    "id": 54098,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54058,
+                      "id": 54097,
                       "name": "ISafetyCheck",
                       "nameLocations": [
                         "1271:12:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16756,
+                      "referencedDeclaration": 16795,
                       "src": "1271:12:151"
                     },
-                    "referencedDeclaration": 16756,
+                    "referencedDeclaration": 16795,
                     "src": "1271:12:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ISafetyCheck_$16756",
+                      "typeIdentifier": "t_contract$_ISafetyCheck_$16795",
                       "typeString": "contract ISafetyCheck"
                     }
                   },
@@ -1125,18 +1125,18 @@
               ],
               "src": "1270:14:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54089,
+            "id": 54128,
             "nodeType": "FunctionDefinition",
             "src": "1388:185:151",
             "nodes": [],
             "body": {
-              "id": 54088,
+              "id": 54127,
               "nodeType": "Block",
               "src": "1477:96:151",
               "nodes": [],
@@ -1148,18 +1148,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54083,
+                              "id": 54122,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "1531:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54084,
+                            "id": 54123,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -1167,7 +1167,7 @@
                             "memberLocation": "1542:22:151",
                             "memberName": "VAULT_REGISTRY_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54345,
+                            "referencedDeclaration": 54384,
                             "src": "1531:33:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -1183,18 +1183,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54081,
+                            "id": 54120,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54074,
+                            "referencedDeclaration": 54113,
                             "src": "1509:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54082,
+                          "id": 54121,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1202,14 +1202,14 @@
                           "memberLocation": "1520:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "1509:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54085,
+                        "id": 54124,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1233,18 +1233,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54080,
+                      "id": 54119,
                       "name": "IVaultRegistry",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 16807,
+                      "referencedDeclaration": 16846,
                       "src": "1494:14:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IVaultRegistry_$16807_$",
+                        "typeIdentifier": "t_type$_t_contract$_IVaultRegistry_$16846_$",
                         "typeString": "type(contract IVaultRegistry)"
                       }
                     },
-                    "id": 54086,
+                    "id": 54125,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1256,12 +1256,12 @@
                     "src": "1494:72:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IVaultRegistry_$16807",
+                      "typeIdentifier": "t_contract$_IVaultRegistry_$16846",
                       "typeString": "contract IVaultRegistry"
                     }
                   },
-                  "functionReturnParameters": 54079,
-                  "id": 54087,
+                  "functionReturnParameters": 54118,
+                  "id": 54126,
                   "nodeType": "Return",
                   "src": "1487:79:151"
                 }
@@ -1273,41 +1273,41 @@
             "name": "getVaultRegistry",
             "nameLocation": "1397:16:151",
             "parameters": {
-              "id": 54075,
+              "id": 54114,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54074,
+                  "id": 54113,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "1426:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54089,
+                  "scope": 54128,
                   "src": "1414:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54073,
+                    "id": 54112,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54072,
+                      "id": 54111,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "1414:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "1414:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "1414:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -1317,41 +1317,41 @@
               "src": "1413:24:151"
             },
             "returnParameters": {
-              "id": 54079,
+              "id": 54118,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54078,
+                  "id": 54117,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54089,
+                  "scope": 54128,
                   "src": "1461:14:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IVaultRegistry_$16807",
+                    "typeIdentifier": "t_contract$_IVaultRegistry_$16846",
                     "typeString": "contract IVaultRegistry"
                   },
                   "typeName": {
-                    "id": 54077,
+                    "id": 54116,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54076,
+                      "id": 54115,
                       "name": "IVaultRegistry",
                       "nameLocations": [
                         "1461:14:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16807,
+                      "referencedDeclaration": 16846,
                       "src": "1461:14:151"
                     },
-                    "referencedDeclaration": 16807,
+                    "referencedDeclaration": 16846,
                     "src": "1461:14:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IVaultRegistry_$16807",
+                      "typeIdentifier": "t_contract$_IVaultRegistry_$16846",
                       "typeString": "contract IVaultRegistry"
                     }
                   },
@@ -1360,18 +1360,18 @@
               ],
               "src": "1460:16:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54107,
+            "id": 54146,
             "nodeType": "FunctionDefinition",
             "src": "1579:185:151",
             "nodes": [],
             "body": {
-              "id": 54106,
+              "id": 54145,
               "nodeType": "Block",
               "src": "1668:96:151",
               "nodes": [],
@@ -1383,18 +1383,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54101,
+                              "id": 54140,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "1722:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54102,
+                            "id": 54141,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -1402,7 +1402,7 @@
                             "memberLocation": "1733:22:151",
                             "memberName": "ASSET_REGISTRY_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54348,
+                            "referencedDeclaration": 54387,
                             "src": "1722:33:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -1418,18 +1418,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54099,
+                            "id": 54138,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54092,
+                            "referencedDeclaration": 54131,
                             "src": "1700:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54100,
+                          "id": 54139,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1437,14 +1437,14 @@
                           "memberLocation": "1711:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "1700:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54103,
+                        "id": 54142,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1468,18 +1468,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54098,
+                      "id": 54137,
                       "name": "IAssetRegistry",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 16039,
+                      "referencedDeclaration": 16078,
                       "src": "1685:14:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IAssetRegistry_$16039_$",
+                        "typeIdentifier": "t_type$_t_contract$_IAssetRegistry_$16078_$",
                         "typeString": "type(contract IAssetRegistry)"
                       }
                     },
-                    "id": 54104,
+                    "id": 54143,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1491,12 +1491,12 @@
                     "src": "1685:72:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IAssetRegistry_$16039",
+                      "typeIdentifier": "t_contract$_IAssetRegistry_$16078",
                       "typeString": "contract IAssetRegistry"
                     }
                   },
-                  "functionReturnParameters": 54097,
-                  "id": 54105,
+                  "functionReturnParameters": 54136,
+                  "id": 54144,
                   "nodeType": "Return",
                   "src": "1678:79:151"
                 }
@@ -1508,41 +1508,41 @@
             "name": "getAssetRegistry",
             "nameLocation": "1588:16:151",
             "parameters": {
-              "id": 54093,
+              "id": 54132,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54092,
+                  "id": 54131,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "1617:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54107,
+                  "scope": 54146,
                   "src": "1605:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54091,
+                    "id": 54130,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54090,
+                      "id": 54129,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "1605:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "1605:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "1605:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -1552,41 +1552,41 @@
               "src": "1604:24:151"
             },
             "returnParameters": {
-              "id": 54097,
+              "id": 54136,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54096,
+                  "id": 54135,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54107,
+                  "scope": 54146,
                   "src": "1652:14:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IAssetRegistry_$16039",
+                    "typeIdentifier": "t_contract$_IAssetRegistry_$16078",
                     "typeString": "contract IAssetRegistry"
                   },
                   "typeName": {
-                    "id": 54095,
+                    "id": 54134,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54094,
+                      "id": 54133,
                       "name": "IAssetRegistry",
                       "nameLocations": [
                         "1652:14:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16039,
+                      "referencedDeclaration": 16078,
                       "src": "1652:14:151"
                     },
-                    "referencedDeclaration": 16039,
+                    "referencedDeclaration": 16078,
                     "src": "1652:14:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IAssetRegistry_$16039",
+                      "typeIdentifier": "t_contract$_IAssetRegistry_$16078",
                       "typeString": "contract IAssetRegistry"
                     }
                   },
@@ -1595,18 +1595,18 @@
               ],
               "src": "1651:16:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54125,
+            "id": 54164,
             "nodeType": "FunctionDefinition",
             "src": "1770:189:151",
             "nodes": [],
             "body": {
-              "id": 54124,
+              "id": 54163,
               "nodeType": "Block",
               "src": "1861:98:151",
               "nodes": [],
@@ -1618,18 +1618,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54119,
+                              "id": 54158,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "1916:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54120,
+                            "id": 54159,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -1637,7 +1637,7 @@
                             "memberLocation": "1927:23:151",
                             "memberName": "RESERVE_MANAGER_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54351,
+                            "referencedDeclaration": 54390,
                             "src": "1916:34:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -1653,18 +1653,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54117,
+                            "id": 54156,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54110,
+                            "referencedDeclaration": 54149,
                             "src": "1894:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54118,
+                          "id": 54157,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1672,14 +1672,14 @@
                           "memberLocation": "1905:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "1894:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54121,
+                        "id": 54160,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1703,18 +1703,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54116,
+                      "id": 54155,
                       "name": "IReserveManager",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 16720,
+                      "referencedDeclaration": 16759,
                       "src": "1878:15:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IReserveManager_$16720_$",
+                        "typeIdentifier": "t_type$_t_contract$_IReserveManager_$16759_$",
                         "typeString": "type(contract IReserveManager)"
                       }
                     },
-                    "id": 54122,
+                    "id": 54161,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1726,12 +1726,12 @@
                     "src": "1878:74:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IReserveManager_$16720",
+                      "typeIdentifier": "t_contract$_IReserveManager_$16759",
                       "typeString": "contract IReserveManager"
                     }
                   },
-                  "functionReturnParameters": 54115,
-                  "id": 54123,
+                  "functionReturnParameters": 54154,
+                  "id": 54162,
                   "nodeType": "Return",
                   "src": "1871:81:151"
                 }
@@ -1743,41 +1743,41 @@
             "name": "getReserveManager",
             "nameLocation": "1779:17:151",
             "parameters": {
-              "id": 54111,
+              "id": 54150,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54110,
+                  "id": 54149,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "1809:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54125,
+                  "scope": 54164,
                   "src": "1797:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54109,
+                    "id": 54148,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54108,
+                      "id": 54147,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "1797:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "1797:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "1797:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -1787,41 +1787,41 @@
               "src": "1796:24:151"
             },
             "returnParameters": {
-              "id": 54115,
+              "id": 54154,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54114,
+                  "id": 54153,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54125,
+                  "scope": 54164,
                   "src": "1844:15:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IReserveManager_$16720",
+                    "typeIdentifier": "t_contract$_IReserveManager_$16759",
                     "typeString": "contract IReserveManager"
                   },
                   "typeName": {
-                    "id": 54113,
+                    "id": 54152,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54112,
+                      "id": 54151,
                       "name": "IReserveManager",
                       "nameLocations": [
                         "1844:15:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16720,
+                      "referencedDeclaration": 16759,
                       "src": "1844:15:151"
                     },
-                    "referencedDeclaration": 16720,
+                    "referencedDeclaration": 16759,
                     "src": "1844:15:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IReserveManager_$16720",
+                      "typeIdentifier": "t_contract$_IReserveManager_$16759",
                       "typeString": "contract IReserveManager"
                     }
                   },
@@ -1830,18 +1830,18 @@
               ],
               "src": "1843:17:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54143,
+            "id": 54182,
             "nodeType": "FunctionDefinition",
             "src": "1965:161:151",
             "nodes": [],
             "body": {
-              "id": 54142,
+              "id": 54181,
               "nodeType": "Block",
               "src": "2042:84:151",
               "nodes": [],
@@ -1853,18 +1853,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54137,
+                              "id": 54176,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "2090:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54138,
+                            "id": 54177,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -1872,7 +1872,7 @@
                             "memberLocation": "2101:16:151",
                             "memberName": "FEE_BANK_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54333,
+                            "referencedDeclaration": 54372,
                             "src": "2090:27:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -1888,18 +1888,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54135,
+                            "id": 54174,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54128,
+                            "referencedDeclaration": 54167,
                             "src": "2068:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54136,
+                          "id": 54175,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1907,14 +1907,14 @@
                           "memberLocation": "2079:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "2068:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54139,
+                        "id": 54178,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1938,18 +1938,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54134,
+                      "id": 54173,
                       "name": "IFeeBank",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 16076,
+                      "referencedDeclaration": 16115,
                       "src": "2059:8:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IFeeBank_$16076_$",
+                        "typeIdentifier": "t_type$_t_contract$_IFeeBank_$16115_$",
                         "typeString": "type(contract IFeeBank)"
                       }
                     },
-                    "id": 54140,
+                    "id": 54179,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1961,12 +1961,12 @@
                     "src": "2059:60:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IFeeBank_$16076",
+                      "typeIdentifier": "t_contract$_IFeeBank_$16115",
                       "typeString": "contract IFeeBank"
                     }
                   },
-                  "functionReturnParameters": 54133,
-                  "id": 54141,
+                  "functionReturnParameters": 54172,
+                  "id": 54180,
                   "nodeType": "Return",
                   "src": "2052:67:151"
                 }
@@ -1978,41 +1978,41 @@
             "name": "getFeeBank",
             "nameLocation": "1974:10:151",
             "parameters": {
-              "id": 54129,
+              "id": 54168,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54128,
+                  "id": 54167,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "1997:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54143,
+                  "scope": 54182,
                   "src": "1985:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54127,
+                    "id": 54166,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54126,
+                      "id": 54165,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "1985:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "1985:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "1985:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -2022,41 +2022,41 @@
               "src": "1984:24:151"
             },
             "returnParameters": {
-              "id": 54133,
+              "id": 54172,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54132,
+                  "id": 54171,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54143,
+                  "scope": 54182,
                   "src": "2032:8:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IFeeBank_$16076",
+                    "typeIdentifier": "t_contract$_IFeeBank_$16115",
                     "typeString": "contract IFeeBank"
                   },
                   "typeName": {
-                    "id": 54131,
+                    "id": 54170,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54130,
+                      "id": 54169,
                       "name": "IFeeBank",
                       "nameLocations": [
                         "2032:8:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16076,
+                      "referencedDeclaration": 16115,
                       "src": "2032:8:151"
                     },
-                    "referencedDeclaration": 16076,
+                    "referencedDeclaration": 16115,
                     "src": "2032:8:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IFeeBank_$16076",
+                      "typeIdentifier": "t_contract$_IFeeBank_$16115",
                       "typeString": "contract IFeeBank"
                     }
                   },
@@ -2065,18 +2065,18 @@
               ],
               "src": "2031:10:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54161,
+            "id": 54200,
             "nodeType": "FunctionDefinition",
             "src": "2132:160:151",
             "nodes": [],
             "body": {
-              "id": 54160,
+              "id": 54199,
               "nodeType": "Block",
               "src": "2209:83:151",
               "nodes": [],
@@ -2088,18 +2088,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54155,
+                              "id": 54194,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "2257:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54156,
+                            "id": 54195,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -2107,7 +2107,7 @@
                             "memberLocation": "2268:15:151",
                             "memberName": "RESERVE_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54336,
+                            "referencedDeclaration": 54375,
                             "src": "2257:26:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -2123,18 +2123,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54153,
+                            "id": 54192,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54146,
+                            "referencedDeclaration": 54185,
                             "src": "2235:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54154,
+                          "id": 54193,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2142,14 +2142,14 @@
                           "memberLocation": "2246:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "2235:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54157,
+                        "id": 54196,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -2173,18 +2173,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54152,
+                      "id": 54191,
                       "name": "IReserve",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 16695,
+                      "referencedDeclaration": 16734,
                       "src": "2226:8:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IReserve_$16695_$",
+                        "typeIdentifier": "t_type$_t_contract$_IReserve_$16734_$",
                         "typeString": "type(contract IReserve)"
                       }
                     },
-                    "id": 54158,
+                    "id": 54197,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2196,12 +2196,12 @@
                     "src": "2226:59:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IReserve_$16695",
+                      "typeIdentifier": "t_contract$_IReserve_$16734",
                       "typeString": "contract IReserve"
                     }
                   },
-                  "functionReturnParameters": 54151,
-                  "id": 54159,
+                  "functionReturnParameters": 54190,
+                  "id": 54198,
                   "nodeType": "Return",
                   "src": "2219:66:151"
                 }
@@ -2213,41 +2213,41 @@
             "name": "getReserve",
             "nameLocation": "2141:10:151",
             "parameters": {
-              "id": 54147,
+              "id": 54186,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54146,
+                  "id": 54185,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "2164:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54161,
+                  "scope": 54200,
                   "src": "2152:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54145,
+                    "id": 54184,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54144,
+                      "id": 54183,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "2152:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "2152:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "2152:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -2257,41 +2257,41 @@
               "src": "2151:24:151"
             },
             "returnParameters": {
-              "id": 54151,
+              "id": 54190,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54150,
+                  "id": 54189,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54161,
+                  "scope": 54200,
                   "src": "2199:8:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IReserve_$16695",
+                    "typeIdentifier": "t_contract$_IReserve_$16734",
                     "typeString": "contract IReserve"
                   },
                   "typeName": {
-                    "id": 54149,
+                    "id": 54188,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54148,
+                      "id": 54187,
                       "name": "IReserve",
                       "nameLocations": [
                         "2199:8:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16695,
+                      "referencedDeclaration": 16734,
                       "src": "2199:8:151"
                     },
-                    "referencedDeclaration": 16695,
+                    "referencedDeclaration": 16734,
                     "src": "2199:8:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IReserve_$16695",
+                      "typeIdentifier": "t_contract$_IReserve_$16734",
                       "typeString": "contract IReserve"
                     }
                   },
@@ -2300,18 +2300,18 @@
               ],
               "src": "2198:10:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54179,
+            "id": 54218,
             "nodeType": "FunctionDefinition",
             "src": "2298:165:151",
             "nodes": [],
             "body": {
-              "id": 54178,
+              "id": 54217,
               "nodeType": "Block",
               "src": "2377:86:151",
               "nodes": [],
@@ -2323,18 +2323,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54173,
+                              "id": 54212,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "2426:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54174,
+                            "id": 54213,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -2342,7 +2342,7 @@
                             "memberLocation": "2437:17:151",
                             "memberName": "GYD_TOKEN_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54327,
+                            "referencedDeclaration": 54366,
                             "src": "2426:28:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -2358,18 +2358,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54171,
+                            "id": 54210,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54164,
+                            "referencedDeclaration": 54203,
                             "src": "2404:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54172,
+                          "id": 54211,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2377,14 +2377,14 @@
                           "memberLocation": "2415:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "2404:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54175,
+                        "id": 54214,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -2408,18 +2408,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54170,
+                      "id": 54209,
                       "name": "IGYDToken",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 16139,
+                      "referencedDeclaration": 16178,
                       "src": "2394:9:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IGYDToken_$16139_$",
+                        "typeIdentifier": "t_type$_t_contract$_IGYDToken_$16178_$",
                         "typeString": "type(contract IGYDToken)"
                       }
                     },
-                    "id": 54176,
+                    "id": 54215,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2431,12 +2431,12 @@
                     "src": "2394:62:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGYDToken_$16139",
+                      "typeIdentifier": "t_contract$_IGYDToken_$16178",
                       "typeString": "contract IGYDToken"
                     }
                   },
-                  "functionReturnParameters": 54169,
-                  "id": 54177,
+                  "functionReturnParameters": 54208,
+                  "id": 54216,
                   "nodeType": "Return",
                   "src": "2387:69:151"
                 }
@@ -2448,41 +2448,41 @@
             "name": "getGYDToken",
             "nameLocation": "2307:11:151",
             "parameters": {
-              "id": 54165,
+              "id": 54204,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54164,
+                  "id": 54203,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "2331:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54179,
+                  "scope": 54218,
                   "src": "2319:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54163,
+                    "id": 54202,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54162,
+                      "id": 54201,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "2319:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "2319:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "2319:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -2492,41 +2492,41 @@
               "src": "2318:24:151"
             },
             "returnParameters": {
-              "id": 54169,
+              "id": 54208,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54168,
+                  "id": 54207,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54179,
+                  "scope": 54218,
                   "src": "2366:9:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGYDToken_$16139",
+                    "typeIdentifier": "t_contract$_IGYDToken_$16178",
                     "typeString": "contract IGYDToken"
                   },
                   "typeName": {
-                    "id": 54167,
+                    "id": 54206,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54166,
+                      "id": 54205,
                       "name": "IGYDToken",
                       "nameLocations": [
                         "2366:9:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16139,
+                      "referencedDeclaration": 16178,
                       "src": "2366:9:151"
                     },
-                    "referencedDeclaration": 16139,
+                    "referencedDeclaration": 16178,
                     "src": "2366:9:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGYDToken_$16139",
+                      "typeIdentifier": "t_contract$_IGYDToken_$16178",
                       "typeString": "contract IGYDToken"
                     }
                   },
@@ -2535,18 +2535,18 @@
               ],
               "src": "2365:11:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54197,
+            "id": 54236,
             "nodeType": "FunctionDefinition",
             "src": "2469:173:151",
             "nodes": [],
             "body": {
-              "id": 54196,
+              "id": 54235,
               "nodeType": "Block",
               "src": "2552:90:151",
               "nodes": [],
@@ -2558,18 +2558,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54191,
+                              "id": 54230,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "2603:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54192,
+                            "id": 54231,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -2577,7 +2577,7 @@
                             "memberLocation": "2614:19:151",
                             "memberName": "FEE_HANDLER_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54354,
+                            "referencedDeclaration": 54393,
                             "src": "2603:30:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -2593,18 +2593,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54189,
+                            "id": 54228,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54182,
+                            "referencedDeclaration": 54221,
                             "src": "2581:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54190,
+                          "id": 54229,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2612,14 +2612,14 @@
                           "memberLocation": "2592:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "2581:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54193,
+                        "id": 54232,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -2643,18 +2643,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54188,
+                      "id": 54227,
                       "name": "IFeeHandler",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 16098,
+                      "referencedDeclaration": 16137,
                       "src": "2569:11:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IFeeHandler_$16098_$",
+                        "typeIdentifier": "t_type$_t_contract$_IFeeHandler_$16137_$",
                         "typeString": "type(contract IFeeHandler)"
                       }
                     },
-                    "id": 54194,
+                    "id": 54233,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2666,12 +2666,12 @@
                     "src": "2569:66:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IFeeHandler_$16098",
+                      "typeIdentifier": "t_contract$_IFeeHandler_$16137",
                       "typeString": "contract IFeeHandler"
                     }
                   },
-                  "functionReturnParameters": 54187,
-                  "id": 54195,
+                  "functionReturnParameters": 54226,
+                  "id": 54234,
                   "nodeType": "Return",
                   "src": "2562:73:151"
                 }
@@ -2683,41 +2683,41 @@
             "name": "getFeeHandler",
             "nameLocation": "2478:13:151",
             "parameters": {
-              "id": 54183,
+              "id": 54222,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54182,
+                  "id": 54221,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "2504:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54197,
+                  "scope": 54236,
                   "src": "2492:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54181,
+                    "id": 54220,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54180,
+                      "id": 54219,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "2492:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "2492:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "2492:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -2727,41 +2727,41 @@
               "src": "2491:24:151"
             },
             "returnParameters": {
-              "id": 54187,
+              "id": 54226,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54186,
+                  "id": 54225,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54197,
+                  "scope": 54236,
                   "src": "2539:11:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IFeeHandler_$16098",
+                    "typeIdentifier": "t_contract$_IFeeHandler_$16137",
                     "typeString": "contract IFeeHandler"
                   },
                   "typeName": {
-                    "id": 54185,
+                    "id": 54224,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54184,
+                      "id": 54223,
                       "name": "IFeeHandler",
                       "nameLocations": [
                         "2539:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16098,
+                      "referencedDeclaration": 16137,
                       "src": "2539:11:151"
                     },
-                    "referencedDeclaration": 16098,
+                    "referencedDeclaration": 16137,
                     "src": "2539:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IFeeHandler_$16098",
+                      "typeIdentifier": "t_contract$_IFeeHandler_$16137",
                       "typeString": "contract IFeeHandler"
                     }
                   },
@@ -2770,18 +2770,18 @@
               ],
               "src": "2538:13:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54215,
+            "id": 54254,
             "nodeType": "FunctionDefinition",
             "src": "2648:176:151",
             "nodes": [],
             "body": {
-              "id": 54214,
+              "id": 54253,
               "nodeType": "Block",
               "src": "2733:91:151",
               "nodes": [],
@@ -2793,18 +2793,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54209,
+                              "id": 54248,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "2785:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54210,
+                            "id": 54249,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -2812,7 +2812,7 @@
                             "memberLocation": "2796:19:151",
                             "memberName": "MOTHERBOARD_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54357,
+                            "referencedDeclaration": 54396,
                             "src": "2785:30:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -2828,18 +2828,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54207,
+                            "id": 54246,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54200,
+                            "referencedDeclaration": 54239,
                             "src": "2763:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54208,
+                          "id": 54247,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2847,14 +2847,14 @@
                           "memberLocation": "2774:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "2763:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54211,
+                        "id": 54250,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -2878,18 +2878,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54206,
+                      "id": 54245,
                       "name": "IMotherboard",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 16559,
+                      "referencedDeclaration": 16598,
                       "src": "2750:12:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IMotherboard_$16559_$",
+                        "typeIdentifier": "t_type$_t_contract$_IMotherboard_$16598_$",
                         "typeString": "type(contract IMotherboard)"
                       }
                     },
-                    "id": 54212,
+                    "id": 54251,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2901,12 +2901,12 @@
                     "src": "2750:67:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IMotherboard_$16559",
+                      "typeIdentifier": "t_contract$_IMotherboard_$16598",
                       "typeString": "contract IMotherboard"
                     }
                   },
-                  "functionReturnParameters": 54205,
-                  "id": 54213,
+                  "functionReturnParameters": 54244,
+                  "id": 54252,
                   "nodeType": "Return",
                   "src": "2743:74:151"
                 }
@@ -2918,41 +2918,41 @@
             "name": "getMotherboard",
             "nameLocation": "2657:14:151",
             "parameters": {
-              "id": 54201,
+              "id": 54240,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54200,
+                  "id": 54239,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "2684:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54215,
+                  "scope": 54254,
                   "src": "2672:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54199,
+                    "id": 54238,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54198,
+                      "id": 54237,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "2672:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "2672:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "2672:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -2962,41 +2962,41 @@
               "src": "2671:24:151"
             },
             "returnParameters": {
-              "id": 54205,
+              "id": 54244,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54204,
+                  "id": 54243,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54215,
+                  "scope": 54254,
                   "src": "2719:12:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IMotherboard_$16559",
+                    "typeIdentifier": "t_contract$_IMotherboard_$16598",
                     "typeString": "contract IMotherboard"
                   },
                   "typeName": {
-                    "id": 54203,
+                    "id": 54242,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54202,
+                      "id": 54241,
                       "name": "IMotherboard",
                       "nameLocations": [
                         "2719:12:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16559,
+                      "referencedDeclaration": 16598,
                       "src": "2719:12:151"
                     },
-                    "referencedDeclaration": 16559,
+                    "referencedDeclaration": 16598,
                     "src": "2719:12:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IMotherboard_$16559",
+                      "typeIdentifier": "t_contract$_IMotherboard_$16598",
                       "typeString": "contract IMotherboard"
                     }
                   },
@@ -3005,18 +3005,18 @@
               ],
               "src": "2718:14:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54233,
+            "id": 54272,
             "nodeType": "FunctionDefinition",
             "src": "2830:169:151",
             "nodes": [],
             "body": {
-              "id": 54232,
+              "id": 54271,
               "nodeType": "Block",
               "src": "2911:88:151",
               "nodes": [],
@@ -3028,18 +3028,18 @@
                         "arguments": [
                           {
                             "expression": {
-                              "id": 54227,
+                              "id": 54266,
                               "name": "ConfigKeys",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54373,
+                              "referencedDeclaration": 54412,
                               "src": "2957:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                 "typeString": "type(library ConfigKeys)"
                               }
                             },
-                            "id": 54228,
+                            "id": 54267,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -3047,7 +3047,7 @@
                             "memberLocation": "2968:22:151",
                             "memberName": "BALANCER_VAULT_ADDRESS",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 54363,
+                            "referencedDeclaration": 54402,
                             "src": "2957:33:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -3063,18 +3063,18 @@
                             }
                           ],
                           "expression": {
-                            "id": 54225,
+                            "id": 54264,
                             "name": "gyroConfig",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54218,
+                            "referencedDeclaration": 54257,
                             "src": "2935:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                              "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                               "typeString": "contract IGyroConfig"
                             }
                           },
-                          "id": 54226,
+                          "id": 54265,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3082,14 +3082,14 @@
                           "memberLocation": "2946:10:151",
                           "memberName": "getAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16260,
+                          "referencedDeclaration": 16299,
                           "src": "2935:21:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                             "typeString": "function (bytes32) view external returns (address)"
                           }
                         },
-                        "id": 54229,
+                        "id": 54268,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -3113,18 +3113,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 54224,
+                      "id": 54263,
                       "name": "IVault",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 17607,
+                      "referencedDeclaration": 17646,
                       "src": "2928:6:151",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IVault_$17607_$",
+                        "typeIdentifier": "t_type$_t_contract$_IVault_$17646_$",
                         "typeString": "type(contract IVault)"
                       }
                     },
-                    "id": 54230,
+                    "id": 54269,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3136,12 +3136,12 @@
                     "src": "2928:64:151",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IVault_$17607",
+                      "typeIdentifier": "t_contract$_IVault_$17646",
                       "typeString": "contract IVault"
                     }
                   },
-                  "functionReturnParameters": 54223,
-                  "id": 54231,
+                  "functionReturnParameters": 54262,
+                  "id": 54270,
                   "nodeType": "Return",
                   "src": "2921:71:151"
                 }
@@ -3153,41 +3153,41 @@
             "name": "getBalancerVault",
             "nameLocation": "2839:16:151",
             "parameters": {
-              "id": 54219,
+              "id": 54258,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54218,
+                  "id": 54257,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "2868:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54233,
+                  "scope": 54272,
                   "src": "2856:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54217,
+                    "id": 54256,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54216,
+                      "id": 54255,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "2856:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "2856:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "2856:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -3197,41 +3197,41 @@
               "src": "2855:24:151"
             },
             "returnParameters": {
-              "id": 54223,
+              "id": 54262,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54222,
+                  "id": 54261,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54233,
+                  "scope": 54272,
                   "src": "2903:6:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IVault_$17607",
+                    "typeIdentifier": "t_contract$_IVault_$17646",
                     "typeString": "contract IVault"
                   },
                   "typeName": {
-                    "id": 54221,
+                    "id": 54260,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54220,
+                      "id": 54259,
                       "name": "IVault",
                       "nameLocations": [
                         "2903:6:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 17607,
+                      "referencedDeclaration": 17646,
                       "src": "2903:6:151"
                     },
-                    "referencedDeclaration": 17607,
+                    "referencedDeclaration": 17646,
                     "src": "2903:6:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IVault_$17607",
+                      "typeIdentifier": "t_contract$_IVault_$17646",
                       "typeString": "contract IVault"
                     }
                   },
@@ -3240,18 +3240,18 @@
               ],
               "src": "2902:8:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54253,
+            "id": 54292,
             "nodeType": "FunctionDefinition",
             "src": "3005:179:151",
             "nodes": [],
             "body": {
-              "id": 54252,
+              "id": 54291,
               "nodeType": "Block",
               "src": "3089:95:151",
               "nodes": [],
@@ -3261,18 +3261,18 @@
                     "arguments": [
                       {
                         "expression": {
-                          "id": 54243,
+                          "id": 54282,
                           "name": "ConfigKeys",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 54373,
+                          "referencedDeclaration": 54412,
                           "src": "3125:10:151",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                            "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                             "typeString": "type(library ConfigKeys)"
                           }
                         },
-                        "id": 54244,
+                        "id": 54283,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -3280,7 +3280,7 @@
                         "memberLocation": "3136:21:151",
                         "memberName": "GYD_GLOBAL_SUPPLY_CAP",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 54366,
+                        "referencedDeclaration": 54405,
                         "src": "3125:32:151",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
@@ -3291,7 +3291,7 @@
                         "expression": {
                           "arguments": [
                             {
-                              "id": 54247,
+                              "id": 54286,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -3303,7 +3303,7 @@
                                 "typeString": "type(uint256)"
                               },
                               "typeName": {
-                                "id": 54246,
+                                "id": 54285,
                                 "name": "uint256",
                                 "nodeType": "ElementaryTypeName",
                                 "src": "3164:7:151",
@@ -3318,7 +3318,7 @@
                                 "typeString": "type(uint256)"
                               }
                             ],
-                            "id": 54245,
+                            "id": 54284,
                             "name": "type",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -3329,7 +3329,7 @@
                               "typeString": "function () pure"
                             }
                           },
-                          "id": 54248,
+                          "id": 54287,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -3345,7 +3345,7 @@
                             "typeString": "type(uint256)"
                           }
                         },
-                        "id": 54249,
+                        "id": 54288,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -3372,18 +3372,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 54241,
+                        "id": 54280,
                         "name": "gyroConfig",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 54236,
+                        "referencedDeclaration": 54275,
                         "src": "3106:10:151",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                          "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                           "typeString": "contract IGyroConfig"
                         }
                       },
-                      "id": 54242,
+                      "id": 54281,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -3391,14 +3391,14 @@
                       "memberLocation": "3117:7:151",
                       "memberName": "getUint",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 16252,
+                      "referencedDeclaration": 16291,
                       "src": "3106:18:151",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$_t_bytes32_$_t_uint256_$returns$_t_uint256_$",
                         "typeString": "function (bytes32,uint256) view external returns (uint256)"
                       }
                     },
-                    "id": 54250,
+                    "id": 54289,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3414,8 +3414,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 54240,
-                  "id": 54251,
+                  "functionReturnParameters": 54279,
+                  "id": 54290,
                   "nodeType": "Return",
                   "src": "3099:78:151"
                 }
@@ -3427,41 +3427,41 @@
             "name": "getGlobalSupplyCap",
             "nameLocation": "3014:18:151",
             "parameters": {
-              "id": 54237,
+              "id": 54276,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54236,
+                  "id": 54275,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "3045:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54253,
+                  "scope": 54292,
                   "src": "3033:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54235,
+                    "id": 54274,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54234,
+                      "id": 54273,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "3033:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "3033:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "3033:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -3471,17 +3471,17 @@
               "src": "3032:24:151"
             },
             "returnParameters": {
-              "id": 54240,
+              "id": 54279,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54239,
+                  "id": 54278,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54253,
+                  "scope": 54292,
                   "src": "3080:7:151",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3490,7 +3490,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 54238,
+                    "id": 54277,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "3080:7:151",
@@ -3504,40 +3504,40 @@
               ],
               "src": "3079:9:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54289,
+            "id": 54328,
             "nodeType": "FunctionDefinition",
             "src": "3190:355:151",
             "nodes": [],
             "body": {
-              "id": 54288,
+              "id": 54327,
               "nodeType": "Block",
               "src": "3323:222:151",
               "nodes": [],
               "statements": [
                 {
                   "condition": {
-                    "id": 54263,
+                    "id": 54302,
                     "name": "authenticated",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 54258,
+                    "referencedDeclaration": 54297,
                     "src": "3337:13:151",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "id": 54276,
+                  "id": 54315,
                   "nodeType": "IfStatement",
                   "src": "3333:127:151",
                   "trueBody": {
-                    "id": 54275,
+                    "id": 54314,
                     "nodeType": "Block",
                     "src": "3352:108:151",
                     "statements": [
@@ -3546,18 +3546,18 @@
                           "arguments": [
                             {
                               "expression": {
-                                "id": 54266,
+                                "id": 54305,
                                 "name": "ConfigKeys",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 54373,
+                                "referencedDeclaration": 54412,
                                 "src": "3392:10:151",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                  "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                   "typeString": "type(library ConfigKeys)"
                                 }
                               },
-                              "id": 54267,
+                              "id": 54306,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -3565,7 +3565,7 @@
                               "memberLocation": "3403:26:151",
                               "memberName": "GYD_AUTHENTICATED_USER_CAP",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 54369,
+                              "referencedDeclaration": 54408,
                               "src": "3392:37:151",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_bytes32",
@@ -3576,7 +3576,7 @@
                               "expression": {
                                 "arguments": [
                                   {
-                                    "id": 54270,
+                                    "id": 54309,
                                     "isConstant": false,
                                     "isLValue": false,
                                     "isPure": true,
@@ -3588,7 +3588,7 @@
                                       "typeString": "type(uint256)"
                                     },
                                     "typeName": {
-                                      "id": 54269,
+                                      "id": 54308,
                                       "name": "uint256",
                                       "nodeType": "ElementaryTypeName",
                                       "src": "3436:7:151",
@@ -3603,7 +3603,7 @@
                                       "typeString": "type(uint256)"
                                     }
                                   ],
-                                  "id": 54268,
+                                  "id": 54307,
                                   "name": "type",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
@@ -3614,7 +3614,7 @@
                                     "typeString": "function () pure"
                                   }
                                 },
-                                "id": 54271,
+                                "id": 54310,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -3630,7 +3630,7 @@
                                   "typeString": "type(uint256)"
                                 }
                               },
-                              "id": 54272,
+                              "id": 54311,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -3657,18 +3657,18 @@
                               }
                             ],
                             "expression": {
-                              "id": 54264,
+                              "id": 54303,
                               "name": "gyroConfig",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 54256,
+                              "referencedDeclaration": 54295,
                               "src": "3373:10:151",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                                "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                                 "typeString": "contract IGyroConfig"
                               }
                             },
-                            "id": 54265,
+                            "id": 54304,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -3676,14 +3676,14 @@
                             "memberLocation": "3384:7:151",
                             "memberName": "getUint",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 16252,
+                            "referencedDeclaration": 16291,
                             "src": "3373:18:151",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_external_view$_t_bytes32_$_t_uint256_$returns$_t_uint256_$",
                               "typeString": "function (bytes32,uint256) view external returns (uint256)"
                             }
                           },
-                          "id": 54273,
+                          "id": 54312,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3699,8 +3699,8 @@
                             "typeString": "uint256"
                           }
                         },
-                        "functionReturnParameters": 54262,
-                        "id": 54274,
+                        "functionReturnParameters": 54301,
+                        "id": 54313,
                         "nodeType": "Return",
                         "src": "3366:83:151"
                       }
@@ -3712,18 +3712,18 @@
                     "arguments": [
                       {
                         "expression": {
-                          "id": 54279,
+                          "id": 54318,
                           "name": "ConfigKeys",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 54373,
+                          "referencedDeclaration": 54412,
                           "src": "3495:10:151",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                            "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                             "typeString": "type(library ConfigKeys)"
                           }
                         },
-                        "id": 54280,
+                        "id": 54319,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -3731,7 +3731,7 @@
                         "memberLocation": "3506:12:151",
                         "memberName": "GYD_USER_CAP",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 54372,
+                        "referencedDeclaration": 54411,
                         "src": "3495:23:151",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
@@ -3742,7 +3742,7 @@
                         "expression": {
                           "arguments": [
                             {
-                              "id": 54283,
+                              "id": 54322,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -3754,7 +3754,7 @@
                                 "typeString": "type(uint256)"
                               },
                               "typeName": {
-                                "id": 54282,
+                                "id": 54321,
                                 "name": "uint256",
                                 "nodeType": "ElementaryTypeName",
                                 "src": "3525:7:151",
@@ -3769,7 +3769,7 @@
                                 "typeString": "type(uint256)"
                               }
                             ],
-                            "id": 54281,
+                            "id": 54320,
                             "name": "type",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -3780,7 +3780,7 @@
                               "typeString": "function () pure"
                             }
                           },
-                          "id": 54284,
+                          "id": 54323,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -3796,7 +3796,7 @@
                             "typeString": "type(uint256)"
                           }
                         },
-                        "id": 54285,
+                        "id": 54324,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -3823,18 +3823,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 54277,
+                        "id": 54316,
                         "name": "gyroConfig",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 54256,
+                        "referencedDeclaration": 54295,
                         "src": "3476:10:151",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                          "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                           "typeString": "contract IGyroConfig"
                         }
                       },
-                      "id": 54278,
+                      "id": 54317,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -3842,14 +3842,14 @@
                       "memberLocation": "3487:7:151",
                       "memberName": "getUint",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 16252,
+                      "referencedDeclaration": 16291,
                       "src": "3476:18:151",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$_t_bytes32_$_t_uint256_$returns$_t_uint256_$",
                         "typeString": "function (bytes32,uint256) view external returns (uint256)"
                       }
                     },
-                    "id": 54286,
+                    "id": 54325,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3865,8 +3865,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 54262,
-                  "id": 54287,
+                  "functionReturnParameters": 54301,
+                  "id": 54326,
                   "nodeType": "Return",
                   "src": "3469:69:151"
                 }
@@ -3878,41 +3878,41 @@
             "name": "getPerUserSupplyCap",
             "nameLocation": "3199:19:151",
             "parameters": {
-              "id": 54259,
+              "id": 54298,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54256,
+                  "id": 54295,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "3231:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54289,
+                  "scope": 54328,
                   "src": "3219:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54255,
+                    "id": 54294,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54254,
+                      "id": 54293,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "3219:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "3219:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "3219:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -3920,12 +3920,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 54258,
+                  "id": 54297,
                   "mutability": "mutable",
                   "name": "authenticated",
                   "nameLocation": "3248:13:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54289,
+                  "scope": 54328,
                   "src": "3243:18:151",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3934,7 +3934,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 54257,
+                    "id": 54296,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "3243:4:151",
@@ -3949,17 +3949,17 @@
               "src": "3218:44:151"
             },
             "returnParameters": {
-              "id": 54262,
+              "id": 54301,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54261,
+                  "id": 54300,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54289,
+                  "scope": 54328,
                   "src": "3310:7:151",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3968,7 +3968,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 54260,
+                    "id": 54299,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "3310:7:151",
@@ -3982,25 +3982,25 @@
               ],
               "src": "3309:9:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 54320,
+            "id": 54359,
             "nodeType": "FunctionDefinition",
             "src": "3551:332:151",
             "nodes": [],
             "body": {
-              "id": 54319,
+              "id": 54358,
               "nodeType": "Block",
               "src": "3643:240:151",
               "nodes": [],
               "statements": [
                 {
                   "condition": {
-                    "id": 54304,
+                    "id": 54343,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4013,18 +4013,18 @@
                       "arguments": [
                         {
                           "expression": {
-                            "id": 54301,
+                            "id": 54340,
                             "name": "ConfigKeys",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 54373,
+                            "referencedDeclaration": 54412,
                             "src": "3676:10:151",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                              "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                               "typeString": "type(library ConfigKeys)"
                             }
                           },
-                          "id": 54302,
+                          "id": 54341,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -4032,7 +4032,7 @@
                           "memberLocation": "3687:26:151",
                           "memberName": "CAP_AUTHENTICATION_ADDRESS",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 54360,
+                          "referencedDeclaration": 54399,
                           "src": "3676:37:151",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
@@ -4048,18 +4048,18 @@
                           }
                         ],
                         "expression": {
-                          "id": 54299,
+                          "id": 54338,
                           "name": "gyroConfig",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 54292,
+                          "referencedDeclaration": 54331,
                           "src": "3658:10:151",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                            "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                             "typeString": "contract IGyroConfig"
                           }
                         },
-                        "id": 54300,
+                        "id": 54339,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -4067,14 +4067,14 @@
                         "memberLocation": "3669:6:151",
                         "memberName": "hasKey",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 16224,
+                        "referencedDeclaration": 16263,
                         "src": "3658:17:151",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_bool_$",
                           "typeString": "function (bytes32) view external returns (bool)"
                         }
                       },
-                      "id": 54303,
+                      "id": 54342,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4095,13 +4095,13 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 54307,
+                  "id": 54346,
                   "nodeType": "IfStatement",
                   "src": "3653:75:151",
                   "trueBody": {
                     "expression": {
                       "hexValue": "66616c7365",
-                      "id": 54305,
+                      "id": 54344,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -4115,8 +4115,8 @@
                       },
                       "value": "false"
                     },
-                    "functionReturnParameters": 54298,
-                    "id": 54306,
+                    "functionReturnParameters": 54337,
+                    "id": 54345,
                     "nodeType": "Return",
                     "src": "3716:12:151"
                   }
@@ -4125,11 +4125,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 54316,
+                        "id": 54355,
                         "name": "user",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 54294,
+                        "referencedDeclaration": 54333,
                         "src": "3871:4:151",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -4150,18 +4150,18 @@
                             "arguments": [
                               {
                                 "expression": {
-                                  "id": 54311,
+                                  "id": 54350,
                                   "name": "ConfigKeys",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 54373,
+                                  "referencedDeclaration": 54412,
                                   "src": "3798:10:151",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54373_$",
+                                    "typeIdentifier": "t_type$_t_contract$_ConfigKeys_$54412_$",
                                     "typeString": "type(library ConfigKeys)"
                                   }
                                 },
-                                "id": 54312,
+                                "id": 54351,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -4169,7 +4169,7 @@
                                 "memberLocation": "3809:26:151",
                                 "memberName": "CAP_AUTHENTICATION_ADDRESS",
                                 "nodeType": "MemberAccess",
-                                "referencedDeclaration": 54360,
+                                "referencedDeclaration": 54399,
                                 "src": "3798:37:151",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_bytes32",
@@ -4185,18 +4185,18 @@
                                 }
                               ],
                               "expression": {
-                                "id": 54309,
+                                "id": 54348,
                                 "name": "gyroConfig",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 54292,
+                                "referencedDeclaration": 54331,
                                 "src": "3776:10:151",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                                  "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                                   "typeString": "contract IGyroConfig"
                                 }
                               },
-                              "id": 54310,
+                              "id": 54349,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -4204,14 +4204,14 @@
                               "memberLocation": "3787:10:151",
                               "memberName": "getAddress",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 16260,
+                              "referencedDeclaration": 16299,
                               "src": "3776:21:151",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
                                 "typeString": "function (bytes32) view external returns (address)"
                               }
                             },
-                            "id": 54313,
+                            "id": 54352,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -4235,18 +4235,18 @@
                               "typeString": "address"
                             }
                           ],
-                          "id": 54308,
+                          "id": 54347,
                           "name": "ICapAuthentication",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 16051,
+                          "referencedDeclaration": 16090,
                           "src": "3757:18:151",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_ICapAuthentication_$16051_$",
+                            "typeIdentifier": "t_type$_t_contract$_ICapAuthentication_$16090_$",
                             "typeString": "type(contract ICapAuthentication)"
                           }
                         },
-                        "id": 54314,
+                        "id": 54353,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -4258,11 +4258,11 @@
                         "src": "3757:80:151",
                         "tryCall": false,
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ICapAuthentication_$16051",
+                          "typeIdentifier": "t_contract$_ICapAuthentication_$16090",
                           "typeString": "contract ICapAuthentication"
                         }
                       },
-                      "id": 54315,
+                      "id": 54354,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4270,14 +4270,14 @@
                       "memberLocation": "3855:15:151",
                       "memberName": "isAuthenticated",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 16050,
+                      "referencedDeclaration": 16089,
                       "src": "3757:113:151",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$_t_address_$returns$_t_bool_$",
                         "typeString": "function (address) view external returns (bool)"
                       }
                     },
-                    "id": 54317,
+                    "id": 54356,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4293,8 +4293,8 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 54298,
-                  "id": 54318,
+                  "functionReturnParameters": 54337,
+                  "id": 54357,
                   "nodeType": "Return",
                   "src": "3738:138:151"
                 }
@@ -4306,41 +4306,41 @@
             "name": "isAuthenticated",
             "nameLocation": "3560:15:151",
             "parameters": {
-              "id": 54295,
+              "id": 54334,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54292,
+                  "id": 54331,
                   "mutability": "mutable",
                   "name": "gyroConfig",
                   "nameLocation": "3588:10:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54320,
+                  "scope": 54359,
                   "src": "3576:22:151",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                    "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                     "typeString": "contract IGyroConfig"
                   },
                   "typeName": {
-                    "id": 54291,
+                    "id": 54330,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54290,
+                      "id": 54329,
                       "name": "IGyroConfig",
                       "nameLocations": [
                         "3576:11:151"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16299,
+                      "referencedDeclaration": 16338,
                       "src": "3576:11:151"
                     },
-                    "referencedDeclaration": 16299,
+                    "referencedDeclaration": 16338,
                     "src": "3576:11:151",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroConfig_$16299",
+                      "typeIdentifier": "t_contract$_IGyroConfig_$16338",
                       "typeString": "contract IGyroConfig"
                     }
                   },
@@ -4348,12 +4348,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 54294,
+                  "id": 54333,
                   "mutability": "mutable",
                   "name": "user",
                   "nameLocation": "3608:4:151",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54320,
+                  "scope": 54359,
                   "src": "3600:12:151",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4362,7 +4362,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 54293,
+                    "id": 54332,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "3600:7:151",
@@ -4378,17 +4378,17 @@
               "src": "3575:38:151"
             },
             "returnParameters": {
-              "id": 54298,
+              "id": 54337,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 54297,
+                  "id": 54336,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54320,
+                  "scope": 54359,
                   "src": "3637:4:151",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4397,7 +4397,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 54296,
+                    "id": 54335,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "3637:4:151",
@@ -4411,7 +4411,7 @@
               ],
               "src": "3636:6:151"
             },
-            "scope": 54321,
+            "scope": 54360,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
@@ -4423,18 +4423,18 @@
         "contractDependencies": [],
         "contractKind": "library",
         "documentation": {
-          "id": 54035,
+          "id": 54074,
           "nodeType": "StructuredDocumentation",
           "src": "842:86:151",
           "text": "@notice Defines helpers to allow easy access to common parts of the configuration"
         },
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          54321
+          54360
         ],
         "name": "ConfigHelpers",
         "nameLocation": "936:13:151",
-        "scope": 54322,
+        "scope": 54361,
         "usedErrors": []
       }
     ],

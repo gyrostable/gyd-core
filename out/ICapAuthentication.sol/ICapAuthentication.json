@@ -113,17 +113,17 @@
   },
   "ast": {
     "absolutePath": "interfaces/ICapAuthentication.sol",
-    "id": 16052,
+    "id": 16091,
     "exportedSymbols": {
       "ICapAuthentication": [
-        16051
+        16090
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:271:63",
     "nodes": [
       {
-        "id": 16041,
+        "id": 16080,
         "nodeType": "PragmaDirective",
         "src": "174:23:63",
         "nodes": [],
@@ -135,17 +135,17 @@
         ]
       },
       {
-        "id": 16051,
+        "id": 16090,
         "nodeType": "ContractDefinition",
         "src": "281:163:63",
         "nodes": [
           {
-            "id": 16050,
+            "id": 16089,
             "nodeType": "FunctionDefinition",
             "src": "371:71:63",
             "nodes": [],
             "documentation": {
-              "id": 16043,
+              "id": 16082,
               "nodeType": "StructuredDocumentation",
               "src": "316:50:63",
               "text": "@return `true` if the account is authenticated"
@@ -157,17 +157,17 @@
             "name": "isAuthenticated",
             "nameLocation": "380:15:63",
             "parameters": {
-              "id": 16046,
+              "id": 16085,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16045,
+                  "id": 16084,
                   "mutability": "mutable",
                   "name": "account",
                   "nameLocation": "404:7:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16050,
+                  "scope": 16089,
                   "src": "396:15:63",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -176,7 +176,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16044,
+                    "id": 16083,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "396:7:63",
@@ -192,17 +192,17 @@
               "src": "395:17:63"
             },
             "returnParameters": {
-              "id": 16049,
+              "id": 16088,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16048,
+                  "id": 16087,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16050,
+                  "scope": 16089,
                   "src": "436:4:63",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -211,7 +211,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 16047,
+                    "id": 16086,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "436:4:63",
@@ -225,7 +225,7 @@
               ],
               "src": "435:6:63"
             },
-            "scope": 16051,
+            "scope": 16090,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -237,18 +237,18 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16042,
+          "id": 16081,
           "nodeType": "StructuredDocumentation",
           "src": "199:82:63",
           "text": "@notice ICapAuthentication handles cap authentication for the capped protocol"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16051
+          16090
         ],
         "name": "ICapAuthentication",
         "nameLocation": "291:18:63",
-        "scope": 16052,
+        "scope": 16091,
         "usedErrors": []
       }
     ],

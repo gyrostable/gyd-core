@@ -65,17 +65,17 @@
   },
   "ast": {
     "absolutePath": "libraries/DataTypes.sol",
-    "id": 54520,
+    "id": 54559,
     "exportedSymbols": {
       "DataTypes": [
-        54519
+        54558
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:3278:153",
     "nodes": [
       {
-        "id": 54375,
+        "id": 54414,
         "nodeType": "PragmaDirective",
         "src": "174:23:153",
         "nodes": [],
@@ -87,12 +87,12 @@
         ]
       },
       {
-        "id": 54519,
+        "id": 54558,
         "nodeType": "ContractDefinition",
         "src": "265:3186:153",
         "nodes": [
           {
-            "id": 54381,
+            "id": 54420,
             "nodeType": "StructDefinition",
             "src": "356:83:153",
             "nodes": [],
@@ -100,12 +100,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54378,
+                "id": 54417,
                 "mutability": "mutable",
                 "name": "tokenAddress",
                 "nameLocation": "396:12:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54381,
+                "scope": 54420,
                 "src": "388:20:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -114,7 +114,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54377,
+                  "id": 54416,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "388:7:153",
@@ -128,12 +128,12 @@
               },
               {
                 "constant": false,
-                "id": 54380,
+                "id": 54419,
                 "mutability": "mutable",
                 "name": "amount",
                 "nameLocation": "426:6:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54381,
+                "scope": 54420,
                 "src": "418:14:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -142,7 +142,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54379,
+                  "id": 54418,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "418:7:153",
@@ -156,11 +156,11 @@
             ],
             "name": "MonetaryAmount",
             "nameLocation": "363:14:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54388,
+            "id": 54427,
             "nodeType": "StructDefinition",
             "src": "511:102:153",
             "nodes": [],
@@ -168,12 +168,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54383,
+                "id": 54422,
                 "mutability": "mutable",
                 "name": "tokenAddress",
                 "nameLocation": "548:12:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54388,
+                "scope": 54427,
                 "src": "540:20:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -182,7 +182,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54382,
+                  "id": 54421,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "540:7:153",
@@ -196,12 +196,12 @@
               },
               {
                 "constant": false,
-                "id": 54385,
+                "id": 54424,
                 "mutability": "mutable",
                 "name": "isStable",
                 "nameLocation": "575:8:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54388,
+                "scope": 54427,
                 "src": "570:13:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -210,7 +210,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 54384,
+                  "id": 54423,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "570:4:153",
@@ -223,12 +223,12 @@
               },
               {
                 "constant": false,
-                "id": 54387,
+                "id": 54426,
                 "mutability": "mutable",
                 "name": "price",
                 "nameLocation": "601:5:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54388,
+                "scope": 54427,
                 "src": "593:13:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -237,7 +237,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54386,
+                  "id": 54425,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "593:7:153",
@@ -251,11 +251,11 @@
             ],
             "name": "PricedToken",
             "nameLocation": "518:11:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54393,
+            "id": 54432,
             "nodeType": "StructDefinition",
             "src": "800:85:153",
             "nodes": [],
@@ -263,12 +263,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54390,
+                "id": 54429,
                 "mutability": "mutable",
                 "name": "inputToken",
                 "nameLocation": "845:10:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54393,
+                "scope": 54432,
                 "src": "837:18:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -277,7 +277,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54389,
+                  "id": 54428,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "837:7:153",
@@ -291,12 +291,12 @@
               },
               {
                 "constant": false,
-                "id": 54392,
+                "id": 54431,
                 "mutability": "mutable",
                 "name": "vault",
                 "nameLocation": "873:5:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54393,
+                "scope": 54432,
                 "src": "865:13:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -305,7 +305,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54391,
+                  "id": 54430,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "865:7:153",
@@ -320,11 +320,11 @@
             ],
             "name": "TokenToVaultMapping",
             "nameLocation": "807:19:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54400,
+            "id": 54439,
             "nodeType": "StructDefinition",
             "src": "926:115:153",
             "nodes": [],
@@ -332,12 +332,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54395,
+                "id": 54434,
                 "mutability": "mutable",
                 "name": "inputToken",
                 "nameLocation": "961:10:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54400,
+                "scope": 54439,
                 "src": "953:18:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -346,7 +346,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54394,
+                  "id": 54433,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "953:7:153",
@@ -360,12 +360,12 @@
               },
               {
                 "constant": false,
-                "id": 54397,
+                "id": 54436,
                 "mutability": "mutable",
                 "name": "inputAmount",
                 "nameLocation": "989:11:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54400,
+                "scope": 54439,
                 "src": "981:19:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -374,7 +374,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54396,
+                  "id": 54435,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "981:7:153",
@@ -387,12 +387,12 @@
               },
               {
                 "constant": false,
-                "id": 54399,
+                "id": 54438,
                 "mutability": "mutable",
                 "name": "destinationVault",
                 "nameLocation": "1018:16:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54400,
+                "scope": 54439,
                 "src": "1010:24:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -401,7 +401,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54398,
+                  "id": 54437,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "1010:7:153",
@@ -416,11 +416,11 @@
             ],
             "name": "MintAsset",
             "nameLocation": "933:9:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54409,
+            "id": 54448,
             "nodeType": "StructDefinition",
             "src": "1079:145:153",
             "nodes": [],
@@ -428,12 +428,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54402,
+                "id": 54441,
                 "mutability": "mutable",
                 "name": "outputToken",
                 "nameLocation": "1116:11:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54409,
+                "scope": 54448,
                 "src": "1108:19:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -442,7 +442,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54401,
+                  "id": 54440,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "1108:7:153",
@@ -456,12 +456,12 @@
               },
               {
                 "constant": false,
-                "id": 54404,
+                "id": 54443,
                 "mutability": "mutable",
                 "name": "minOutputAmount",
                 "nameLocation": "1145:15:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54409,
+                "scope": 54448,
                 "src": "1137:23:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -470,7 +470,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54403,
+                  "id": 54442,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1137:7:153",
@@ -483,12 +483,12 @@
               },
               {
                 "constant": false,
-                "id": 54406,
+                "id": 54445,
                 "mutability": "mutable",
                 "name": "valueRatio",
                 "nameLocation": "1178:10:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54409,
+                "scope": 54448,
                 "src": "1170:18:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -497,7 +497,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54405,
+                  "id": 54444,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1170:7:153",
@@ -510,12 +510,12 @@
               },
               {
                 "constant": false,
-                "id": 54408,
+                "id": 54447,
                 "mutability": "mutable",
                 "name": "originVault",
                 "nameLocation": "1206:11:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54409,
+                "scope": 54448,
                 "src": "1198:19:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -524,7 +524,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54407,
+                  "id": 54446,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "1198:7:153",
@@ -539,11 +539,11 @@
             ],
             "name": "RedeemAsset",
             "nameLocation": "1086:11:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54418,
+            "id": 54457,
             "nodeType": "StructDefinition",
             "src": "1281:167:153",
             "nodes": [],
@@ -551,12 +551,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54411,
+                "id": 54450,
                 "mutability": "mutable",
                 "name": "initialPrice",
                 "nameLocation": "1329:12:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54418,
+                "scope": 54457,
                 "src": "1321:20:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -565,7 +565,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54410,
+                  "id": 54449,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1321:7:153",
@@ -578,12 +578,12 @@
               },
               {
                 "constant": false,
-                "id": 54413,
+                "id": 54452,
                 "mutability": "mutable",
                 "name": "initialWeight",
                 "nameLocation": "1359:13:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54418,
+                "scope": 54457,
                 "src": "1351:21:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -592,7 +592,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54412,
+                  "id": 54451,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1351:7:153",
@@ -605,12 +605,12 @@
               },
               {
                 "constant": false,
-                "id": 54415,
+                "id": 54454,
                 "mutability": "mutable",
                 "name": "shortFlowMemory",
                 "nameLocation": "1390:15:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54418,
+                "scope": 54457,
                 "src": "1382:23:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -619,7 +619,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54414,
+                  "id": 54453,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1382:7:153",
@@ -632,12 +632,12 @@
               },
               {
                 "constant": false,
-                "id": 54417,
+                "id": 54456,
                 "mutability": "mutable",
                 "name": "shortFlowThreshold",
                 "nameLocation": "1423:18:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54418,
+                "scope": 54457,
                 "src": "1415:26:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -646,7 +646,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54416,
+                  "id": 54455,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1415:7:153",
@@ -660,11 +660,11 @@
             ],
             "name": "PersistedVaultMetadata",
             "nameLocation": "1288:22:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54425,
+            "id": 54464,
             "nodeType": "StructDefinition",
             "src": "1519:123:153",
             "nodes": [],
@@ -672,12 +672,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54420,
+                "id": 54459,
                 "mutability": "mutable",
                 "name": "shortFlow",
                 "nameLocation": "1564:9:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54425,
+                "scope": 54464,
                 "src": "1556:17:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -686,7 +686,7 @@
                   "typeString": "uint128"
                 },
                 "typeName": {
-                  "id": 54419,
+                  "id": 54458,
                   "name": "uint128",
                   "nodeType": "ElementaryTypeName",
                   "src": "1556:7:153",
@@ -699,12 +699,12 @@
               },
               {
                 "constant": false,
-                "id": 54422,
+                "id": 54461,
                 "mutability": "mutable",
                 "name": "lastSafetyBlock",
                 "nameLocation": "1590:15:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54425,
+                "scope": 54464,
                 "src": "1583:22:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -713,7 +713,7 @@
                   "typeString": "uint64"
                 },
                 "typeName": {
-                  "id": 54421,
+                  "id": 54460,
                   "name": "uint64",
                   "nodeType": "ElementaryTypeName",
                   "src": "1583:6:153",
@@ -726,12 +726,12 @@
               },
               {
                 "constant": false,
-                "id": 54424,
+                "id": 54463,
                 "mutability": "mutable",
                 "name": "lastSeenBlock",
                 "nameLocation": "1622:13:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54425,
+                "scope": 54464,
                 "src": "1615:20:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -740,7 +740,7 @@
                   "typeString": "uint64"
                 },
                 "typeName": {
-                  "id": 54423,
+                  "id": 54462,
                   "name": "uint64",
                   "nodeType": "ElementaryTypeName",
                   "src": "1615:6:153",
@@ -754,11 +754,11 @@
             ],
             "name": "DirectionalFlowData",
             "nameLocation": "1526:19:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54432,
+            "id": 54471,
             "nodeType": "StructDefinition",
             "src": "1694:96:153",
             "nodes": [],
@@ -766,36 +766,36 @@
             "members": [
               {
                 "constant": false,
-                "id": 54428,
+                "id": 54467,
                 "mutability": "mutable",
                 "name": "inFlow",
                 "nameLocation": "1740:6:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54432,
+                "scope": 54471,
                 "src": "1720:26:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_DirectionalFlowData_$54425_storage_ptr",
+                  "typeIdentifier": "t_struct$_DirectionalFlowData_$54464_storage_ptr",
                   "typeString": "struct DataTypes.DirectionalFlowData"
                 },
                 "typeName": {
-                  "id": 54427,
+                  "id": 54466,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 54426,
+                    "id": 54465,
                     "name": "DirectionalFlowData",
                     "nameLocations": [
                       "1720:19:153"
                     ],
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 54425,
+                    "referencedDeclaration": 54464,
                     "src": "1720:19:153"
                   },
-                  "referencedDeclaration": 54425,
+                  "referencedDeclaration": 54464,
                   "src": "1720:19:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_DirectionalFlowData_$54425_storage_ptr",
+                    "typeIdentifier": "t_struct$_DirectionalFlowData_$54464_storage_ptr",
                     "typeString": "struct DataTypes.DirectionalFlowData"
                   }
                 },
@@ -803,36 +803,36 @@
               },
               {
                 "constant": false,
-                "id": 54431,
+                "id": 54470,
                 "mutability": "mutable",
                 "name": "outFlow",
                 "nameLocation": "1776:7:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54432,
+                "scope": 54471,
                 "src": "1756:27:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_DirectionalFlowData_$54425_storage_ptr",
+                  "typeIdentifier": "t_struct$_DirectionalFlowData_$54464_storage_ptr",
                   "typeString": "struct DataTypes.DirectionalFlowData"
                 },
                 "typeName": {
-                  "id": 54430,
+                  "id": 54469,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 54429,
+                    "id": 54468,
                     "name": "DirectionalFlowData",
                     "nameLocations": [
                       "1756:19:153"
                     ],
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 54425,
+                    "referencedDeclaration": 54464,
                     "src": "1756:19:153"
                   },
-                  "referencedDeclaration": 54425,
+                  "referencedDeclaration": 54464,
                   "src": "1756:19:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_DirectionalFlowData_$54425_storage_ptr",
+                    "typeIdentifier": "t_struct$_DirectionalFlowData_$54464_storage_ptr",
                     "typeString": "struct DataTypes.DirectionalFlowData"
                   }
                 },
@@ -841,32 +841,32 @@
             ],
             "name": "FlowData",
             "nameLocation": "1701:8:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54436,
+            "id": 54475,
             "nodeType": "EnumDefinition",
             "src": "1833:60:153",
             "nodes": [],
             "canonicalName": "DataTypes.Direction",
             "members": [
               {
-                "id": 54433,
+                "id": 54472,
                 "name": "In",
                 "nameLocation": "1858:2:153",
                 "nodeType": "EnumValue",
                 "src": "1858:2:153"
               },
               {
-                "id": 54434,
+                "id": 54473,
                 "name": "Out",
                 "nameLocation": "1870:3:153",
                 "nodeType": "EnumValue",
                 "src": "1870:3:153"
               },
               {
-                "id": 54435,
+                "id": 54474,
                 "name": "Both",
                 "nameLocation": "1883:4:153",
                 "nodeType": "EnumValue",
@@ -877,7 +877,7 @@
             "nameLocation": "1838:9:153"
           },
           {
-            "id": 54442,
+            "id": 54481,
             "nodeType": "StructDefinition",
             "src": "1963:87:153",
             "nodes": [],
@@ -885,12 +885,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54438,
+                "id": 54477,
                 "mutability": "mutable",
                 "name": "vaultAddress",
                 "nameLocation": "2002:12:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54442,
+                "scope": 54481,
                 "src": "1994:20:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -899,7 +899,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54437,
+                  "id": 54476,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "1994:7:153",
@@ -913,36 +913,36 @@
               },
               {
                 "constant": false,
-                "id": 54441,
+                "id": 54480,
                 "mutability": "mutable",
                 "name": "direction",
                 "nameLocation": "2034:9:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54442,
+                "scope": 54481,
                 "src": "2024:19:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_Direction_$54436",
+                  "typeIdentifier": "t_enum$_Direction_$54475",
                   "typeString": "enum DataTypes.Direction"
                 },
                 "typeName": {
-                  "id": 54440,
+                  "id": 54479,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 54439,
+                    "id": 54478,
                     "name": "Direction",
                     "nameLocations": [
                       "2024:9:153"
                     ],
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 54436,
+                    "referencedDeclaration": 54475,
                     "src": "2024:9:153"
                   },
-                  "referencedDeclaration": 54436,
+                  "referencedDeclaration": 54475,
                   "src": "2024:9:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_Direction_$54436",
+                    "typeIdentifier": "t_enum$_Direction_$54475",
                     "typeString": "enum DataTypes.Direction"
                   }
                 },
@@ -951,11 +951,11 @@
             ],
             "name": "GuardedVaults",
             "nameLocation": "1970:13:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54464,
+            "id": 54503,
             "nodeType": "StructDefinition",
             "src": "2092:300:153",
             "nodes": [],
@@ -963,12 +963,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54444,
+                "id": 54483,
                 "mutability": "mutable",
                 "name": "vault",
                 "nameLocation": "2127:5:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54464,
+                "scope": 54503,
                 "src": "2119:13:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -977,7 +977,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54443,
+                  "id": 54482,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "2119:7:153",
@@ -991,12 +991,12 @@
               },
               {
                 "constant": false,
-                "id": 54446,
+                "id": 54485,
                 "mutability": "mutable",
                 "name": "decimals",
                 "nameLocation": "2148:8:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54464,
+                "scope": 54503,
                 "src": "2142:14:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1005,7 +1005,7 @@
                   "typeString": "uint8"
                 },
                 "typeName": {
-                  "id": 54445,
+                  "id": 54484,
                   "name": "uint8",
                   "nodeType": "ElementaryTypeName",
                   "src": "2142:5:153",
@@ -1018,12 +1018,12 @@
               },
               {
                 "constant": false,
-                "id": 54448,
+                "id": 54487,
                 "mutability": "mutable",
                 "name": "underlying",
                 "nameLocation": "2174:10:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54464,
+                "scope": 54503,
                 "src": "2166:18:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1032,7 +1032,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54447,
+                  "id": 54486,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "2166:7:153",
@@ -1046,12 +1046,12 @@
               },
               {
                 "constant": false,
-                "id": 54450,
+                "id": 54489,
                 "mutability": "mutable",
                 "name": "price",
                 "nameLocation": "2202:5:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54464,
+                "scope": 54503,
                 "src": "2194:13:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1060,7 +1060,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54449,
+                  "id": 54488,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "2194:7:153",
@@ -1073,36 +1073,36 @@
               },
               {
                 "constant": false,
-                "id": 54453,
+                "id": 54492,
                 "mutability": "mutable",
                 "name": "persistedMetadata",
                 "nameLocation": "2240:17:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54464,
+                "scope": 54503,
                 "src": "2217:40:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54418_storage_ptr",
+                  "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54457_storage_ptr",
                   "typeString": "struct DataTypes.PersistedVaultMetadata"
                 },
                 "typeName": {
-                  "id": 54452,
+                  "id": 54491,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 54451,
+                    "id": 54490,
                     "name": "PersistedVaultMetadata",
                     "nameLocations": [
                       "2217:22:153"
                     ],
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 54418,
+                    "referencedDeclaration": 54457,
                     "src": "2217:22:153"
                   },
-                  "referencedDeclaration": 54418,
+                  "referencedDeclaration": 54457,
                   "src": "2217:22:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54418_storage_ptr",
+                    "typeIdentifier": "t_struct$_PersistedVaultMetadata_$54457_storage_ptr",
                     "typeString": "struct DataTypes.PersistedVaultMetadata"
                   }
                 },
@@ -1110,12 +1110,12 @@
               },
               {
                 "constant": false,
-                "id": 54455,
+                "id": 54494,
                 "mutability": "mutable",
                 "name": "reserveBalance",
                 "nameLocation": "2275:14:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54464,
+                "scope": 54503,
                 "src": "2267:22:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1124,7 +1124,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54454,
+                  "id": 54493,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "2267:7:153",
@@ -1137,12 +1137,12 @@
               },
               {
                 "constant": false,
-                "id": 54457,
+                "id": 54496,
                 "mutability": "mutable",
                 "name": "currentWeight",
                 "nameLocation": "2307:13:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54464,
+                "scope": 54503,
                 "src": "2299:21:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1151,7 +1151,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54456,
+                  "id": 54495,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "2299:7:153",
@@ -1164,12 +1164,12 @@
               },
               {
                 "constant": false,
-                "id": 54459,
+                "id": 54498,
                 "mutability": "mutable",
                 "name": "idealWeight",
                 "nameLocation": "2338:11:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54464,
+                "scope": 54503,
                 "src": "2330:19:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1178,7 +1178,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54458,
+                  "id": 54497,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "2330:7:153",
@@ -1191,45 +1191,45 @@
               },
               {
                 "constant": false,
-                "id": 54463,
+                "id": 54502,
                 "mutability": "mutable",
                 "name": "pricedTokens",
                 "nameLocation": "2373:12:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54464,
+                "scope": 54503,
                 "src": "2359:26:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_storage_$dyn_storage_ptr",
+                  "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_storage_$dyn_storage_ptr",
                   "typeString": "struct DataTypes.PricedToken[]"
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 54461,
+                    "id": 54500,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54460,
+                      "id": 54499,
                       "name": "PricedToken",
                       "nameLocations": [
                         "2359:11:153"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54388,
+                      "referencedDeclaration": 54427,
                       "src": "2359:11:153"
                     },
-                    "referencedDeclaration": 54388,
+                    "referencedDeclaration": 54427,
                     "src": "2359:11:153",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_PricedToken_$54388_storage_ptr",
+                      "typeIdentifier": "t_struct$_PricedToken_$54427_storage_ptr",
                       "typeString": "struct DataTypes.PricedToken"
                     }
                   },
-                  "id": 54462,
+                  "id": 54501,
                   "nodeType": "ArrayTypeName",
                   "src": "2359:13:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_storage_$dyn_storage_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_storage_$dyn_storage_ptr",
                     "typeString": "struct DataTypes.PricedToken[]"
                   }
                 },
@@ -1238,11 +1238,11 @@
             ],
             "name": "VaultInfo",
             "nameLocation": "2099:9:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54485,
+            "id": 54524,
             "nodeType": "StructDefinition",
             "src": "2429:311:153",
             "nodes": [],
@@ -1250,12 +1250,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54466,
+                "id": 54505,
                 "mutability": "mutable",
                 "name": "vault",
                 "nameLocation": "2468:5:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54485,
+                "scope": 54524,
                 "src": "2460:13:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1264,7 +1264,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 54465,
+                  "id": 54504,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "2460:7:153",
@@ -1278,12 +1278,12 @@
               },
               {
                 "constant": false,
-                "id": 54468,
+                "id": 54507,
                 "mutability": "mutable",
                 "name": "idealWeight",
                 "nameLocation": "2491:11:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54485,
+                "scope": 54524,
                 "src": "2483:19:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1292,7 +1292,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54467,
+                  "id": 54506,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "2483:7:153",
@@ -1305,12 +1305,12 @@
               },
               {
                 "constant": false,
-                "id": 54470,
+                "id": 54509,
                 "mutability": "mutable",
                 "name": "currentWeight",
                 "nameLocation": "2520:13:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54485,
+                "scope": 54524,
                 "src": "2512:21:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1319,7 +1319,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54469,
+                  "id": 54508,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "2512:7:153",
@@ -1332,12 +1332,12 @@
               },
               {
                 "constant": false,
-                "id": 54472,
+                "id": 54511,
                 "mutability": "mutable",
                 "name": "resultingWeight",
                 "nameLocation": "2551:15:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54485,
+                "scope": 54524,
                 "src": "2543:23:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1346,7 +1346,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54471,
+                  "id": 54510,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "2543:7:153",
@@ -1359,12 +1359,12 @@
               },
               {
                 "constant": false,
-                "id": 54474,
+                "id": 54513,
                 "mutability": "mutable",
                 "name": "price",
                 "nameLocation": "2584:5:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54485,
+                "scope": 54524,
                 "src": "2576:13:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1373,7 +1373,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54473,
+                  "id": 54512,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "2576:7:153",
@@ -1386,12 +1386,12 @@
               },
               {
                 "constant": false,
-                "id": 54476,
+                "id": 54515,
                 "mutability": "mutable",
                 "name": "allStablecoinsOnPeg",
                 "nameLocation": "2604:19:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54485,
+                "scope": 54524,
                 "src": "2599:24:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1400,7 +1400,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 54475,
+                  "id": 54514,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "2599:4:153",
@@ -1413,12 +1413,12 @@
               },
               {
                 "constant": false,
-                "id": 54478,
+                "id": 54517,
                 "mutability": "mutable",
                 "name": "atLeastOnePriceLargeEnough",
                 "nameLocation": "2638:26:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54485,
+                "scope": 54524,
                 "src": "2633:31:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1427,7 +1427,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 54477,
+                  "id": 54516,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "2633:4:153",
@@ -1440,12 +1440,12 @@
               },
               {
                 "constant": false,
-                "id": 54480,
+                "id": 54519,
                 "mutability": "mutable",
                 "name": "vaultWithinEpsilon",
                 "nameLocation": "2679:18:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54485,
+                "scope": 54524,
                 "src": "2674:23:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1454,7 +1454,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 54479,
+                  "id": 54518,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "2674:4:153",
@@ -1467,45 +1467,45 @@
               },
               {
                 "constant": false,
-                "id": 54484,
+                "id": 54523,
                 "mutability": "mutable",
                 "name": "pricedTokens",
                 "nameLocation": "2721:12:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54485,
+                "scope": 54524,
                 "src": "2707:26:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_storage_$dyn_storage_ptr",
+                  "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_storage_$dyn_storage_ptr",
                   "typeString": "struct DataTypes.PricedToken[]"
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 54482,
+                    "id": 54521,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54481,
+                      "id": 54520,
                       "name": "PricedToken",
                       "nameLocations": [
                         "2707:11:153"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54388,
+                      "referencedDeclaration": 54427,
                       "src": "2707:11:153"
                     },
-                    "referencedDeclaration": 54388,
+                    "referencedDeclaration": 54427,
                     "src": "2707:11:153",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_PricedToken_$54388_storage_ptr",
+                      "typeIdentifier": "t_struct$_PricedToken_$54427_storage_ptr",
                       "typeString": "struct DataTypes.PricedToken"
                     }
                   },
-                  "id": 54483,
+                  "id": 54522,
                   "nodeType": "ArrayTypeName",
                   "src": "2707:13:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54388_storage_$dyn_storage_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_storage_$dyn_storage_ptr",
                     "typeString": "struct DataTypes.PricedToken[]"
                   }
                 },
@@ -1514,11 +1514,11 @@
             ],
             "name": "VaultMetadata",
             "nameLocation": "2436:13:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54498,
+            "id": 54537,
             "nodeType": "StructDefinition",
             "src": "2798:207:153",
             "nodes": [],
@@ -1526,45 +1526,45 @@
             "members": [
               {
                 "constant": false,
-                "id": 54489,
+                "id": 54528,
                 "mutability": "mutable",
                 "name": "vaultMetadata",
                 "nameLocation": "2840:13:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54498,
+                "scope": 54537,
                 "src": "2824:29:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_array$_t_struct$_VaultMetadata_$54485_storage_$dyn_storage_ptr",
+                  "typeIdentifier": "t_array$_t_struct$_VaultMetadata_$54524_storage_$dyn_storage_ptr",
                   "typeString": "struct DataTypes.VaultMetadata[]"
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 54487,
+                    "id": 54526,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54486,
+                      "id": 54525,
                       "name": "VaultMetadata",
                       "nameLocations": [
                         "2824:13:153"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54485,
+                      "referencedDeclaration": 54524,
                       "src": "2824:13:153"
                     },
-                    "referencedDeclaration": 54485,
+                    "referencedDeclaration": 54524,
                     "src": "2824:13:153",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_VaultMetadata_$54485_storage_ptr",
+                      "typeIdentifier": "t_struct$_VaultMetadata_$54524_storage_ptr",
                       "typeString": "struct DataTypes.VaultMetadata"
                     }
                   },
-                  "id": 54488,
+                  "id": 54527,
                   "nodeType": "ArrayTypeName",
                   "src": "2824:15:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_VaultMetadata_$54485_storage_$dyn_storage_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_VaultMetadata_$54524_storage_$dyn_storage_ptr",
                     "typeString": "struct DataTypes.VaultMetadata[]"
                   }
                 },
@@ -1572,12 +1572,12 @@
               },
               {
                 "constant": false,
-                "id": 54491,
+                "id": 54530,
                 "mutability": "mutable",
                 "name": "allVaultsWithinEpsilon",
                 "nameLocation": "2868:22:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54498,
+                "scope": 54537,
                 "src": "2863:27:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1586,7 +1586,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 54490,
+                  "id": 54529,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "2863:4:153",
@@ -1599,12 +1599,12 @@
               },
               {
                 "constant": false,
-                "id": 54493,
+                "id": 54532,
                 "mutability": "mutable",
                 "name": "allStablecoinsAllVaultsOnPeg",
                 "nameLocation": "2905:28:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54498,
+                "scope": 54537,
                 "src": "2900:33:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1613,7 +1613,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 54492,
+                  "id": 54531,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "2900:4:153",
@@ -1626,12 +1626,12 @@
               },
               {
                 "constant": false,
-                "id": 54495,
+                "id": 54534,
                 "mutability": "mutable",
                 "name": "allVaultsUsingLargeEnoughPrices",
                 "nameLocation": "2948:31:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54498,
+                "scope": 54537,
                 "src": "2943:36:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1640,7 +1640,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 54494,
+                  "id": 54533,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "2943:4:153",
@@ -1653,12 +1653,12 @@
               },
               {
                 "constant": false,
-                "id": 54497,
+                "id": 54536,
                 "mutability": "mutable",
                 "name": "mint",
                 "nameLocation": "2994:4:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54498,
+                "scope": 54537,
                 "src": "2989:9:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1667,7 +1667,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 54496,
+                  "id": 54535,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "2989:4:153",
@@ -1681,11 +1681,11 @@
             ],
             "name": "Metadata",
             "nameLocation": "2805:8:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54505,
+            "id": 54544,
             "nodeType": "StructDefinition",
             "src": "3055:83:153",
             "nodes": [],
@@ -1693,45 +1693,45 @@
             "members": [
               {
                 "constant": false,
-                "id": 54502,
+                "id": 54541,
                 "mutability": "mutable",
                 "name": "vaultsWithAmount",
                 "nameLocation": "3096:16:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54505,
+                "scope": 54544,
                 "src": "3078:34:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_array$_t_struct$_VaultWithAmount_$54511_storage_$dyn_storage_ptr",
+                  "typeIdentifier": "t_array$_t_struct$_VaultWithAmount_$54550_storage_$dyn_storage_ptr",
                   "typeString": "struct DataTypes.VaultWithAmount[]"
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 54500,
+                    "id": 54539,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54499,
+                      "id": 54538,
                       "name": "VaultWithAmount",
                       "nameLocations": [
                         "3078:15:153"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54511,
+                      "referencedDeclaration": 54550,
                       "src": "3078:15:153"
                     },
-                    "referencedDeclaration": 54511,
+                    "referencedDeclaration": 54550,
                     "src": "3078:15:153",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_VaultWithAmount_$54511_storage_ptr",
+                      "typeIdentifier": "t_struct$_VaultWithAmount_$54550_storage_ptr",
                       "typeString": "struct DataTypes.VaultWithAmount"
                     }
                   },
-                  "id": 54501,
+                  "id": 54540,
                   "nodeType": "ArrayTypeName",
                   "src": "3078:17:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_VaultWithAmount_$54511_storage_$dyn_storage_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_VaultWithAmount_$54550_storage_$dyn_storage_ptr",
                     "typeString": "struct DataTypes.VaultWithAmount[]"
                   }
                 },
@@ -1739,12 +1739,12 @@
               },
               {
                 "constant": false,
-                "id": 54504,
+                "id": 54543,
                 "mutability": "mutable",
                 "name": "mint",
                 "nameLocation": "3127:4:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54505,
+                "scope": 54544,
                 "src": "3122:9:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1753,7 +1753,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 54503,
+                  "id": 54542,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "3122:4:153",
@@ -1767,11 +1767,11 @@
             ],
             "name": "Order",
             "nameLocation": "3062:5:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54511,
+            "id": 54550,
             "nodeType": "StructDefinition",
             "src": "3214:83:153",
             "nodes": [],
@@ -1779,36 +1779,36 @@
             "members": [
               {
                 "constant": false,
-                "id": 54508,
+                "id": 54547,
                 "mutability": "mutable",
                 "name": "vaultInfo",
                 "nameLocation": "3257:9:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54511,
+                "scope": 54550,
                 "src": "3247:19:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_VaultInfo_$54464_storage_ptr",
+                  "typeIdentifier": "t_struct$_VaultInfo_$54503_storage_ptr",
                   "typeString": "struct DataTypes.VaultInfo"
                 },
                 "typeName": {
-                  "id": 54507,
+                  "id": 54546,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 54506,
+                    "id": 54545,
                     "name": "VaultInfo",
                     "nameLocations": [
                       "3247:9:153"
                     ],
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 54464,
+                    "referencedDeclaration": 54503,
                     "src": "3247:9:153"
                   },
-                  "referencedDeclaration": 54464,
+                  "referencedDeclaration": 54503,
                   "src": "3247:9:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_VaultInfo_$54464_storage_ptr",
+                    "typeIdentifier": "t_struct$_VaultInfo_$54503_storage_ptr",
                     "typeString": "struct DataTypes.VaultInfo"
                   }
                 },
@@ -1816,12 +1816,12 @@
               },
               {
                 "constant": false,
-                "id": 54510,
+                "id": 54549,
                 "mutability": "mutable",
                 "name": "amount",
                 "nameLocation": "3284:6:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54511,
+                "scope": 54550,
                 "src": "3276:14:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1830,7 +1830,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54509,
+                  "id": 54548,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "3276:7:153",
@@ -1844,11 +1844,11 @@
             ],
             "name": "VaultWithAmount",
             "nameLocation": "3221:15:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           },
           {
-            "id": 54518,
+            "id": 54557,
             "nodeType": "StructDefinition",
             "src": "3363:86:153",
             "nodes": [],
@@ -1856,12 +1856,12 @@
             "members": [
               {
                 "constant": false,
-                "id": 54513,
+                "id": 54552,
                 "mutability": "mutable",
                 "name": "totalUSDValue",
                 "nameLocation": "3401:13:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54518,
+                "scope": 54557,
                 "src": "3393:21:153",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1870,7 +1870,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 54512,
+                  "id": 54551,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "3393:7:153",
@@ -1883,45 +1883,45 @@
               },
               {
                 "constant": false,
-                "id": 54517,
+                "id": 54556,
                 "mutability": "mutable",
                 "name": "vaults",
                 "nameLocation": "3436:6:153",
                 "nodeType": "VariableDeclaration",
-                "scope": 54518,
+                "scope": 54557,
                 "src": "3424:18:153",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54464_storage_$dyn_storage_ptr",
+                  "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54503_storage_$dyn_storage_ptr",
                   "typeString": "struct DataTypes.VaultInfo[]"
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 54515,
+                    "id": 54554,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 54514,
+                      "id": 54553,
                       "name": "VaultInfo",
                       "nameLocations": [
                         "3424:9:153"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54464,
+                      "referencedDeclaration": 54503,
                       "src": "3424:9:153"
                     },
-                    "referencedDeclaration": 54464,
+                    "referencedDeclaration": 54503,
                     "src": "3424:9:153",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_VaultInfo_$54464_storage_ptr",
+                      "typeIdentifier": "t_struct$_VaultInfo_$54503_storage_ptr",
                       "typeString": "struct DataTypes.VaultInfo"
                     }
                   },
-                  "id": 54516,
+                  "id": 54555,
                   "nodeType": "ArrayTypeName",
                   "src": "3424:11:153",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54464_storage_$dyn_storage_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54503_storage_$dyn_storage_ptr",
                     "typeString": "struct DataTypes.VaultInfo[]"
                   }
                 },
@@ -1930,7 +1930,7 @@
             ],
             "name": "ReserveState",
             "nameLocation": "3370:12:153",
-            "scope": 54519,
+            "scope": 54558,
             "visibility": "public"
           }
         ],
@@ -1940,18 +1940,18 @@
         "contractDependencies": [],
         "contractKind": "library",
         "documentation": {
-          "id": 54376,
+          "id": 54415,
           "nodeType": "StructuredDocumentation",
           "src": "199:66:153",
           "text": "@notice Contains the data structures to express token routing"
         },
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          54519
+          54558
         ],
         "name": "DataTypes",
         "nameLocation": "273:9:153",
-        "scope": 54520,
+        "scope": 54559,
         "usedErrors": []
       }
     ],

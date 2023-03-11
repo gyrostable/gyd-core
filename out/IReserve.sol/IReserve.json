@@ -400,17 +400,17 @@
   },
   "ast": {
     "absolutePath": "interfaces/IReserve.sol",
-    "id": 16696,
+    "id": 16735,
     "exportedSymbols": {
       "IReserve": [
-        16695
+        16734
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:1261:73",
     "nodes": [
       {
-        "id": 16634,
+        "id": 16673,
         "nodeType": "PragmaDirective",
         "src": "174:23:73",
         "nodes": [],
@@ -422,12 +422,12 @@
         ]
       },
       {
-        "id": 16695,
+        "id": 16734,
         "nodeType": "ContractDefinition",
         "src": "281:1153:73",
         "nodes": [
           {
-            "id": 16643,
+            "id": 16682,
             "nodeType": "EventDefinition",
             "src": "306:75:73",
             "nodes": [],
@@ -436,18 +436,18 @@
             "name": "Deposit",
             "nameLocation": "312:7:73",
             "parameters": {
-              "id": 16642,
+              "id": 16681,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16637,
+                  "id": 16676,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "from",
                   "nameLocation": "336:4:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16643,
+                  "scope": 16682,
                   "src": "320:20:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -456,7 +456,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16636,
+                    "id": 16675,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "320:7:73",
@@ -470,13 +470,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16639,
+                  "id": 16678,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "token",
                   "nameLocation": "358:5:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16643,
+                  "scope": 16682,
                   "src": "342:21:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -485,7 +485,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16638,
+                    "id": 16677,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "342:7:73",
@@ -499,13 +499,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16641,
+                  "id": 16680,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "373:6:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16643,
+                  "scope": 16682,
                   "src": "365:14:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -514,7 +514,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16640,
+                    "id": 16679,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "365:7:73",
@@ -530,7 +530,7 @@
             }
           },
           {
-            "id": 16651,
+            "id": 16690,
             "nodeType": "EventDefinition",
             "src": "386:76:73",
             "nodes": [],
@@ -539,18 +539,18 @@
             "name": "Withdraw",
             "nameLocation": "392:8:73",
             "parameters": {
-              "id": 16650,
+              "id": 16689,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16645,
+                  "id": 16684,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "from",
                   "nameLocation": "417:4:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16651,
+                  "scope": 16690,
                   "src": "401:20:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -559,7 +559,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16644,
+                    "id": 16683,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "401:7:73",
@@ -573,13 +573,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16647,
+                  "id": 16686,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "token",
                   "nameLocation": "439:5:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16651,
+                  "scope": 16690,
                   "src": "423:21:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -588,7 +588,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16646,
+                    "id": 16685,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "423:7:73",
@@ -602,13 +602,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16649,
+                  "id": 16688,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "454:6:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16651,
+                  "scope": 16690,
                   "src": "446:14:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -617,7 +617,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16648,
+                    "id": 16687,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "446:7:73",
@@ -633,7 +633,7 @@
             }
           },
           {
-            "id": 16655,
+            "id": 16694,
             "nodeType": "EventDefinition",
             "src": "468:44:73",
             "nodes": [],
@@ -642,18 +642,18 @@
             "name": "ManagerAdded",
             "nameLocation": "474:12:73",
             "parameters": {
-              "id": 16654,
+              "id": 16693,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16653,
+                  "id": 16692,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "manager",
                   "nameLocation": "503:7:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16655,
+                  "scope": 16694,
                   "src": "487:23:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -662,7 +662,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16652,
+                    "id": 16691,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "487:7:73",
@@ -679,7 +679,7 @@
             }
           },
           {
-            "id": 16659,
+            "id": 16698,
             "nodeType": "EventDefinition",
             "src": "517:46:73",
             "nodes": [],
@@ -688,18 +688,18 @@
             "name": "ManagerRemoved",
             "nameLocation": "523:14:73",
             "parameters": {
-              "id": 16658,
+              "id": 16697,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16657,
+                  "id": 16696,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "manager",
                   "nameLocation": "554:7:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16659,
+                  "scope": 16698,
                   "src": "538:23:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -708,7 +708,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16656,
+                    "id": 16695,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "538:7:73",
@@ -725,12 +725,12 @@
             }
           },
           {
-            "id": 16666,
+            "id": 16705,
             "nodeType": "FunctionDefinition",
             "src": "686:61:73",
             "nodes": [],
             "documentation": {
-              "id": 16660,
+              "id": 16699,
               "nodeType": "StructuredDocumentation",
               "src": "569:112:73",
               "text": "@notice the address of the reserve managers, the only entities allowed to withdraw\n from this reserve"
@@ -742,23 +742,23 @@
             "name": "managers",
             "nameLocation": "695:8:73",
             "parameters": {
-              "id": 16661,
+              "id": 16700,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "703:2:73"
             },
             "returnParameters": {
-              "id": 16665,
+              "id": 16704,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16664,
+                  "id": 16703,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16666,
+                  "scope": 16705,
                   "src": "729:16:73",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -768,7 +768,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16662,
+                      "id": 16701,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
                       "src": "729:7:73",
@@ -778,7 +778,7 @@
                         "typeString": "address"
                       }
                     },
-                    "id": 16663,
+                    "id": 16702,
                     "nodeType": "ArrayTypeName",
                     "src": "729:9:73",
                     "typeDescriptions": {
@@ -791,18 +791,18 @@
               ],
               "src": "728:18:73"
             },
-            "scope": 16695,
+            "scope": 16734,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16672,
+            "id": 16711,
             "nodeType": "FunctionDefinition",
             "src": "835:46:73",
             "nodes": [],
             "documentation": {
-              "id": 16667,
+              "id": 16706,
               "nodeType": "StructuredDocumentation",
               "src": "753:77:73",
               "text": "@notice Adds a manager, who will be allowed to withdraw from this reserve"
@@ -814,17 +814,17 @@
             "name": "addManager",
             "nameLocation": "844:10:73",
             "parameters": {
-              "id": 16670,
+              "id": 16709,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16669,
+                  "id": 16708,
                   "mutability": "mutable",
                   "name": "manager",
                   "nameLocation": "863:7:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16672,
+                  "scope": 16711,
                   "src": "855:15:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -833,7 +833,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16668,
+                    "id": 16707,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "855:7:73",
@@ -849,23 +849,23 @@
               "src": "854:17:73"
             },
             "returnParameters": {
-              "id": 16671,
+              "id": 16710,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "880:0:73"
             },
-            "scope": 16695,
+            "scope": 16734,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16678,
+            "id": 16717,
             "nodeType": "FunctionDefinition",
             "src": "919:49:73",
             "nodes": [],
             "documentation": {
-              "id": 16673,
+              "id": 16712,
               "nodeType": "StructuredDocumentation",
               "src": "887:27:73",
               "text": "@notice Removes manager"
@@ -877,17 +877,17 @@
             "name": "removeManager",
             "nameLocation": "928:13:73",
             "parameters": {
-              "id": 16676,
+              "id": 16715,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16675,
+                  "id": 16714,
                   "mutability": "mutable",
                   "name": "manager",
                   "nameLocation": "950:7:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16678,
+                  "scope": 16717,
                   "src": "942:15:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -896,7 +896,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16674,
+                    "id": 16713,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "942:7:73",
@@ -912,23 +912,23 @@
               "src": "941:17:73"
             },
             "returnParameters": {
-              "id": 16677,
+              "id": 16716,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "967:0:73"
             },
-            "scope": 16695,
+            "scope": 16734,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16686,
+            "id": 16725,
             "nodeType": "FunctionDefinition",
             "src": "1136:62:73",
             "nodes": [],
             "documentation": {
-              "id": 16679,
+              "id": 16718,
               "nodeType": "StructuredDocumentation",
               "src": "974:157:73",
               "text": "@notice Deposits vault tokens in the reserve\n @param token address of the vault tokens\n @param amount amount of the vault tokens to deposit"
@@ -940,17 +940,17 @@
             "name": "depositToken",
             "nameLocation": "1145:12:73",
             "parameters": {
-              "id": 16684,
+              "id": 16723,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16681,
+                  "id": 16720,
                   "mutability": "mutable",
                   "name": "token",
                   "nameLocation": "1166:5:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16686,
+                  "scope": 16725,
                   "src": "1158:13:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -959,7 +959,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16680,
+                    "id": 16719,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1158:7:73",
@@ -973,12 +973,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16683,
+                  "id": 16722,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "1181:6:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16686,
+                  "scope": 16725,
                   "src": "1173:14:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -987,7 +987,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16682,
+                    "id": 16721,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1173:7:73",
@@ -1002,23 +1002,23 @@
               "src": "1157:31:73"
             },
             "returnParameters": {
-              "id": 16685,
+              "id": 16724,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1197:0:73"
             },
-            "scope": 16695,
+            "scope": 16734,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16694,
+            "id": 16733,
             "nodeType": "FunctionDefinition",
             "src": "1369:63:73",
             "nodes": [],
             "documentation": {
-              "id": 16687,
+              "id": 16726,
               "nodeType": "StructuredDocumentation",
               "src": "1204:160:73",
               "text": "@notice Withdraws vault tokens from the reserve\n @param token address of the vault tokens\n @param amount amount of the vault tokens to deposit"
@@ -1030,17 +1030,17 @@
             "name": "withdrawToken",
             "nameLocation": "1378:13:73",
             "parameters": {
-              "id": 16692,
+              "id": 16731,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16689,
+                  "id": 16728,
                   "mutability": "mutable",
                   "name": "token",
                   "nameLocation": "1400:5:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16694,
+                  "scope": 16733,
                   "src": "1392:13:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1049,7 +1049,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16688,
+                    "id": 16727,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1392:7:73",
@@ -1063,12 +1063,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16691,
+                  "id": 16730,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "1415:6:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16694,
+                  "scope": 16733,
                   "src": "1407:14:73",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1077,7 +1077,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16690,
+                    "id": 16729,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1407:7:73",
@@ -1092,12 +1092,12 @@
               "src": "1391:31:73"
             },
             "returnParameters": {
-              "id": 16693,
+              "id": 16732,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1431:0:73"
             },
-            "scope": 16695,
+            "scope": 16734,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -1109,18 +1109,18 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16635,
+          "id": 16674,
           "nodeType": "StructuredDocumentation",
           "src": "199:82:73",
           "text": "@notice IReserve allows an authorized contract to deposit and withdraw tokens"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16695
+          16734
         ],
         "name": "IReserve",
         "nameLocation": "291:8:73",
-        "scope": 16696,
+        "scope": 16735,
         "usedErrors": []
       }
     ],

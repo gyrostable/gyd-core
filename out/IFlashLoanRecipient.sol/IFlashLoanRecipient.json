@@ -136,20 +136,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IFlashLoanRecipient.sol",
-    "id": 17006,
+    "id": 17045,
     "exportedSymbols": {
       "IERC20": [
-        47531
+        47570
       ],
       "IFlashLoanRecipient": [
-        17005
+        17044
       ]
     },
     "nodeType": "SourceUnit",
     "src": "176:850:84",
     "nodes": [
       {
-        "id": 16987,
+        "id": 17026,
         "nodeType": "PragmaDirective",
         "src": "176:23:84",
         "nodes": [],
@@ -161,30 +161,30 @@
         ]
       },
       {
-        "id": 16988,
+        "id": 17027,
         "nodeType": "ImportDirective",
         "src": "253:56:84",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
         "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 17006,
-        "sourceUnit": 47532,
+        "scope": 17045,
+        "sourceUnit": 47571,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 17005,
+        "id": 17044,
         "nodeType": "ContractDefinition",
         "src": "311:714:84",
         "nodes": [
           {
-            "id": 17004,
+            "id": 17043,
             "nodeType": "FunctionDefinition",
             "src": "848:175:84",
             "nodes": [],
             "documentation": {
-              "id": 16989,
+              "id": 17028,
               "nodeType": "StructuredDocumentation",
               "src": "347:496:84",
               "text": " @dev When `flashLoan` is called on the Vault, it invokes the `receiveFlashLoan` hook on the recipient.\n At the time of the call, the Vault will have transferred `amounts` for `tokens` to the recipient. Before this\n call returns, the recipient must have transferred `amounts` plus `feeAmounts` for each token back to the\n Vault, or else the entire flash loan will revert.\n `userData` is the same value passed in the `IVault.flashLoan` call."
@@ -196,50 +196,50 @@
             "name": "receiveFlashLoan",
             "nameLocation": "857:16:84",
             "parameters": {
-              "id": 17002,
+              "id": 17041,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16993,
+                  "id": 17032,
                   "mutability": "mutable",
                   "name": "tokens",
                   "nameLocation": "899:6:84",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17004,
+                  "scope": 17043,
                   "src": "883:22:84",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_contract$_IERC20_$47531_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_contract$_IERC20_$47570_$dyn_memory_ptr",
                     "typeString": "contract IERC20[]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16991,
+                      "id": 17030,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 16990,
+                        "id": 17029,
                         "name": "IERC20",
                         "nameLocations": [
                           "883:6:84"
                         ],
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 47531,
+                        "referencedDeclaration": 47570,
                         "src": "883:6:84"
                       },
-                      "referencedDeclaration": 47531,
+                      "referencedDeclaration": 47570,
                       "src": "883:6:84",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IERC20_$47531",
+                        "typeIdentifier": "t_contract$_IERC20_$47570",
                         "typeString": "contract IERC20"
                       }
                     },
-                    "id": 16992,
+                    "id": 17031,
                     "nodeType": "ArrayTypeName",
                     "src": "883:8:84",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_contract$_IERC20_$47531_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_contract$_IERC20_$47570_$dyn_storage_ptr",
                       "typeString": "contract IERC20[]"
                     }
                   },
@@ -247,12 +247,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16996,
+                  "id": 17035,
                   "mutability": "mutable",
                   "name": "amounts",
                   "nameLocation": "932:7:84",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17004,
+                  "scope": 17043,
                   "src": "915:24:84",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -262,7 +262,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16994,
+                      "id": 17033,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
                       "src": "915:7:84",
@@ -271,7 +271,7 @@
                         "typeString": "uint256"
                       }
                     },
-                    "id": 16995,
+                    "id": 17034,
                     "nodeType": "ArrayTypeName",
                     "src": "915:9:84",
                     "typeDescriptions": {
@@ -283,12 +283,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16999,
+                  "id": 17038,
                   "mutability": "mutable",
                   "name": "feeAmounts",
                   "nameLocation": "966:10:84",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17004,
+                  "scope": 17043,
                   "src": "949:27:84",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -298,7 +298,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16997,
+                      "id": 17036,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
                       "src": "949:7:84",
@@ -307,7 +307,7 @@
                         "typeString": "uint256"
                       }
                     },
-                    "id": 16998,
+                    "id": 17037,
                     "nodeType": "ArrayTypeName",
                     "src": "949:9:84",
                     "typeDescriptions": {
@@ -319,12 +319,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 17001,
+                  "id": 17040,
                   "mutability": "mutable",
                   "name": "userData",
                   "nameLocation": "999:8:84",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17004,
+                  "scope": 17043,
                   "src": "986:21:84",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -333,7 +333,7 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 17000,
+                    "id": 17039,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
                     "src": "986:5:84",
@@ -348,12 +348,12 @@
               "src": "873:140:84"
             },
             "returnParameters": {
-              "id": 17003,
+              "id": 17042,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1022:0:84"
             },
-            "scope": 17005,
+            "scope": 17044,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -366,11 +366,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17005
+          17044
         ],
         "name": "IFlashLoanRecipient",
         "nameLocation": "321:19:84",
-        "scope": 17006,
+        "scope": 17045,
         "usedErrors": []
       }
     ],

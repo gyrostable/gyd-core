@@ -65,17 +65,17 @@
   },
   "ast": {
     "absolutePath": "libraries/ConfigKeys.sol",
-    "id": 54374,
+    "id": 54413,
     "exportedSymbols": {
       "ConfigKeys": [
-        54373
+        54412
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:1393:152",
     "nodes": [
       {
-        "id": 54323,
+        "id": 54362,
         "nodeType": "PragmaDirective",
         "src": "174:23:152",
         "nodes": [],
@@ -87,12 +87,12 @@
         ]
       },
       {
-        "id": 54373,
+        "id": 54412,
         "nodeType": "ContractDefinition",
         "src": "277:1289:152",
         "nodes": [
           {
-            "id": 54327,
+            "id": 54366,
             "nodeType": "VariableDeclaration",
             "src": "319:65:152",
             "nodes": [],
@@ -100,7 +100,7 @@
             "mutability": "constant",
             "name": "GYD_TOKEN_ADDRESS",
             "nameLocation": "345:17:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -108,7 +108,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54325,
+              "id": 54364,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "319:7:152",
@@ -119,7 +119,7 @@
             },
             "value": {
               "hexValue": "4759445f544f4b454e5f41444452455353",
-              "id": 54326,
+              "id": 54365,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -136,7 +136,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54330,
+            "id": 54369,
             "nodeType": "VariableDeclaration",
             "src": "390:55:152",
             "nodes": [],
@@ -144,7 +144,7 @@
             "mutability": "constant",
             "name": "PAMM_ADDRESS",
             "nameLocation": "416:12:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -152,7 +152,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54328,
+              "id": 54367,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "390:7:152",
@@ -163,7 +163,7 @@
             },
             "value": {
               "hexValue": "50414d4d5f41444452455353",
-              "id": 54329,
+              "id": 54368,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -180,7 +180,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54333,
+            "id": 54372,
             "nodeType": "VariableDeclaration",
             "src": "451:63:152",
             "nodes": [],
@@ -188,7 +188,7 @@
             "mutability": "constant",
             "name": "FEE_BANK_ADDRESS",
             "nameLocation": "477:16:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -196,7 +196,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54331,
+              "id": 54370,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "451:7:152",
@@ -207,7 +207,7 @@
             },
             "value": {
               "hexValue": "4645455f42414e4b5f41444452455353",
-              "id": 54332,
+              "id": 54371,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -224,7 +224,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54336,
+            "id": 54375,
             "nodeType": "VariableDeclaration",
             "src": "520:61:152",
             "nodes": [],
@@ -232,7 +232,7 @@
             "mutability": "constant",
             "name": "RESERVE_ADDRESS",
             "nameLocation": "546:15:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -240,7 +240,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54334,
+              "id": 54373,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "520:7:152",
@@ -251,7 +251,7 @@
             },
             "value": {
               "hexValue": "524553455256455f41444452455353",
-              "id": 54335,
+              "id": 54374,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -268,7 +268,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54339,
+            "id": 54378,
             "nodeType": "VariableDeclaration",
             "src": "587:81:152",
             "nodes": [],
@@ -276,7 +276,7 @@
             "mutability": "constant",
             "name": "ROOT_PRICE_ORACLE_ADDRESS",
             "nameLocation": "613:25:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -284,7 +284,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54337,
+              "id": 54376,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "587:7:152",
@@ -295,7 +295,7 @@
             },
             "value": {
               "hexValue": "524f4f545f50524943455f4f5241434c455f41444452455353",
-              "id": 54338,
+              "id": 54377,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -312,7 +312,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54342,
+            "id": 54381,
             "nodeType": "VariableDeclaration",
             "src": "674:81:152",
             "nodes": [],
@@ -320,7 +320,7 @@
             "mutability": "constant",
             "name": "ROOT_SAFETY_CHECK_ADDRESS",
             "nameLocation": "700:25:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -328,7 +328,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54340,
+              "id": 54379,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "674:7:152",
@@ -339,7 +339,7 @@
             },
             "value": {
               "hexValue": "524f4f545f5341464554595f434845434b5f41444452455353",
-              "id": 54341,
+              "id": 54380,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -356,7 +356,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54345,
+            "id": 54384,
             "nodeType": "VariableDeclaration",
             "src": "761:75:152",
             "nodes": [],
@@ -364,7 +364,7 @@
             "mutability": "constant",
             "name": "VAULT_REGISTRY_ADDRESS",
             "nameLocation": "787:22:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -372,7 +372,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54343,
+              "id": 54382,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "761:7:152",
@@ -383,7 +383,7 @@
             },
             "value": {
               "hexValue": "5641554c545f52454749535452595f41444452455353",
-              "id": 54344,
+              "id": 54383,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -400,7 +400,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54348,
+            "id": 54387,
             "nodeType": "VariableDeclaration",
             "src": "842:75:152",
             "nodes": [],
@@ -408,7 +408,7 @@
             "mutability": "constant",
             "name": "ASSET_REGISTRY_ADDRESS",
             "nameLocation": "868:22:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -416,7 +416,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54346,
+              "id": 54385,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "842:7:152",
@@ -427,7 +427,7 @@
             },
             "value": {
               "hexValue": "41535345545f52454749535452595f41444452455353",
-              "id": 54347,
+              "id": 54386,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -444,7 +444,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54351,
+            "id": 54390,
             "nodeType": "VariableDeclaration",
             "src": "923:77:152",
             "nodes": [],
@@ -452,7 +452,7 @@
             "mutability": "constant",
             "name": "RESERVE_MANAGER_ADDRESS",
             "nameLocation": "949:23:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -460,7 +460,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54349,
+              "id": 54388,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "923:7:152",
@@ -471,7 +471,7 @@
             },
             "value": {
               "hexValue": "524553455256455f4d414e414745525f41444452455353",
-              "id": 54350,
+              "id": 54389,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -488,7 +488,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54354,
+            "id": 54393,
             "nodeType": "VariableDeclaration",
             "src": "1006:69:152",
             "nodes": [],
@@ -496,7 +496,7 @@
             "mutability": "constant",
             "name": "FEE_HANDLER_ADDRESS",
             "nameLocation": "1032:19:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -504,7 +504,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54352,
+              "id": 54391,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "1006:7:152",
@@ -515,7 +515,7 @@
             },
             "value": {
               "hexValue": "4645455f48414e444c45525f41444452455353",
-              "id": 54353,
+              "id": 54392,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -532,7 +532,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54357,
+            "id": 54396,
             "nodeType": "VariableDeclaration",
             "src": "1081:69:152",
             "nodes": [],
@@ -540,7 +540,7 @@
             "mutability": "constant",
             "name": "MOTHERBOARD_ADDRESS",
             "nameLocation": "1107:19:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -548,7 +548,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54355,
+              "id": 54394,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "1081:7:152",
@@ -559,7 +559,7 @@
             },
             "value": {
               "hexValue": "4d4f54484552424f4152445f41444452455353",
-              "id": 54356,
+              "id": 54395,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -576,7 +576,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54360,
+            "id": 54399,
             "nodeType": "VariableDeclaration",
             "src": "1156:83:152",
             "nodes": [],
@@ -584,7 +584,7 @@
             "mutability": "constant",
             "name": "CAP_AUTHENTICATION_ADDRESS",
             "nameLocation": "1182:26:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -592,7 +592,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54358,
+              "id": 54397,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "1156:7:152",
@@ -603,7 +603,7 @@
             },
             "value": {
               "hexValue": "4341505f41555448454e5449434154494f4e5f41444452455353",
-              "id": 54359,
+              "id": 54398,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -620,7 +620,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54363,
+            "id": 54402,
             "nodeType": "VariableDeclaration",
             "src": "1245:75:152",
             "nodes": [],
@@ -628,7 +628,7 @@
             "mutability": "constant",
             "name": "BALANCER_VAULT_ADDRESS",
             "nameLocation": "1271:22:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -636,7 +636,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54361,
+              "id": 54400,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "1245:7:152",
@@ -647,7 +647,7 @@
             },
             "value": {
               "hexValue": "42414c414e4345525f5641554c545f41444452455353",
-              "id": 54362,
+              "id": 54401,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -664,7 +664,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54366,
+            "id": 54405,
             "nodeType": "VariableDeclaration",
             "src": "1340:73:152",
             "nodes": [],
@@ -672,7 +672,7 @@
             "mutability": "constant",
             "name": "GYD_GLOBAL_SUPPLY_CAP",
             "nameLocation": "1366:21:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -680,7 +680,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54364,
+              "id": 54403,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "1340:7:152",
@@ -691,7 +691,7 @@
             },
             "value": {
               "hexValue": "4759445f474c4f42414c5f535550504c595f434150",
-              "id": 54365,
+              "id": 54404,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -708,7 +708,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54369,
+            "id": 54408,
             "nodeType": "VariableDeclaration",
             "src": "1419:83:152",
             "nodes": [],
@@ -716,7 +716,7 @@
             "mutability": "constant",
             "name": "GYD_AUTHENTICATED_USER_CAP",
             "nameLocation": "1445:26:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -724,7 +724,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54367,
+              "id": 54406,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "1419:7:152",
@@ -735,7 +735,7 @@
             },
             "value": {
               "hexValue": "4759445f41555448454e544943415445445f555345525f434150",
-              "id": 54368,
+              "id": 54407,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -752,7 +752,7 @@
             "visibility": "internal"
           },
           {
-            "id": 54372,
+            "id": 54411,
             "nodeType": "VariableDeclaration",
             "src": "1508:55:152",
             "nodes": [],
@@ -760,7 +760,7 @@
             "mutability": "constant",
             "name": "GYD_USER_CAP",
             "nameLocation": "1534:12:152",
-            "scope": 54373,
+            "scope": 54412,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -768,7 +768,7 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 54370,
+              "id": 54409,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
               "src": "1508:7:152",
@@ -779,7 +779,7 @@
             },
             "value": {
               "hexValue": "4759445f555345525f434150",
-              "id": 54371,
+              "id": 54410,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -802,18 +802,18 @@
         "contractDependencies": [],
         "contractKind": "library",
         "documentation": {
-          "id": 54324,
+          "id": 54363,
           "nodeType": "StructuredDocumentation",
           "src": "199:78:152",
           "text": "@notice Defines different configuration keys used in the Gyroscope system"
         },
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          54373
+          54412
         ],
         "name": "ConfigKeys",
         "nameLocation": "285:10:152",
-        "scope": 54374,
+        "scope": 54413,
         "usedErrors": []
       }
     ],

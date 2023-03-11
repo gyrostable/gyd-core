@@ -194,20 +194,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/I2CLP.sol",
-    "id": 16850,
+    "id": 16889,
     "exportedSymbols": {
       "I2CLP": [
-        16849
+        16888
       ],
       "IMinimalPoolView": [
-        17023
+        17062
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:174:78",
     "nodes": [
       {
-        "id": 16838,
+        "id": 16877,
         "nodeType": "PragmaDirective",
         "src": "174:23:78",
         "nodes": [],
@@ -219,25 +219,25 @@
         ]
       },
       {
-        "id": 16839,
+        "id": 16878,
         "nodeType": "ImportDirective",
         "src": "199:32:78",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
         "file": "./IMinimalPoolView.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16850,
-        "sourceUnit": 17024,
+        "scope": 16889,
+        "sourceUnit": 17063,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16849,
+        "id": 16888,
         "nodeType": "ContractDefinition",
         "src": "233:114:78",
         "nodes": [
           {
-            "id": 16848,
+            "id": 16887,
             "nodeType": "FunctionDefinition",
             "src": "275:70:78",
             "nodes": [],
@@ -248,23 +248,23 @@
             "name": "getSqrtParameters",
             "nameLocation": "284:17:78",
             "parameters": {
-              "id": 16842,
+              "id": 16881,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "301:2:78"
             },
             "returnParameters": {
-              "id": 16847,
+              "id": 16886,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16844,
+                  "id": 16883,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16848,
+                  "scope": 16887,
                   "src": "327:7:78",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -273,7 +273,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16843,
+                    "id": 16882,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "327:7:78",
@@ -286,12 +286,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 16846,
+                  "id": 16885,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16848,
+                  "scope": 16887,
                   "src": "336:7:78",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -300,7 +300,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16845,
+                    "id": 16884,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "336:7:78",
@@ -314,7 +314,7 @@
               ],
               "src": "326:18:78"
             },
-            "scope": 16849,
+            "scope": 16888,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -324,16 +324,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 16840,
+              "id": 16879,
               "name": "IMinimalPoolView",
               "nameLocations": [
                 "252:16:78"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 17023,
+              "referencedDeclaration": 17062,
               "src": "252:16:78"
             },
-            "id": 16841,
+            "id": 16880,
             "nodeType": "InheritanceSpecifier",
             "src": "252:16:78"
           }
@@ -343,12 +343,12 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16849,
-          17023
+          16888,
+          17062
         ],
         "name": "I2CLP",
         "nameLocation": "243:5:78",
-        "scope": 16850,
+        "scope": 16889,
         "usedErrors": []
       }
     ],

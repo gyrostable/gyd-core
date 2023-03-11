@@ -507,20 +507,20 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IWETH.sol",
-    "id": 17623,
+    "id": 17662,
     "exportedSymbols": {
       "IERC20": [
-        47531
+        47570
       ],
       "IWETH": [
-        17622
+        17661
       ]
     },
     "nodeType": "SourceUnit",
     "src": "176:406:91",
     "nodes": [
       {
-        "id": 17609,
+        "id": 17648,
         "nodeType": "PragmaDirective",
         "src": "176:23:91",
         "nodes": [],
@@ -532,25 +532,25 @@
         ]
       },
       {
-        "id": 17610,
+        "id": 17649,
         "nodeType": "ImportDirective",
         "src": "201:56:91",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
         "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 17623,
-        "sourceUnit": 47532,
+        "scope": 17662,
+        "sourceUnit": 47571,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 17622,
+        "id": 17661,
         "nodeType": "ContractDefinition",
         "src": "462:119:91",
         "nodes": [
           {
-            "id": 17616,
+            "id": 17655,
             "nodeType": "FunctionDefinition",
             "src": "494:36:91",
             "nodes": [],
@@ -561,24 +561,24 @@
             "name": "deposit",
             "nameLocation": "503:7:91",
             "parameters": {
-              "id": 17614,
+              "id": 17653,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "510:2:91"
             },
             "returnParameters": {
-              "id": 17615,
+              "id": 17654,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "529:0:91"
             },
-            "scope": 17622,
+            "scope": 17661,
             "stateMutability": "payable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 17621,
+            "id": 17660,
             "nodeType": "FunctionDefinition",
             "src": "536:43:91",
             "nodes": [],
@@ -589,17 +589,17 @@
             "name": "withdraw",
             "nameLocation": "545:8:91",
             "parameters": {
-              "id": 17619,
+              "id": 17658,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17618,
+                  "id": 17657,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "562:6:91",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17621,
+                  "scope": 17660,
                   "src": "554:14:91",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -608,7 +608,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17617,
+                    "id": 17656,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "554:7:91",
@@ -623,12 +623,12 @@
               "src": "553:16:91"
             },
             "returnParameters": {
-              "id": 17620,
+              "id": 17659,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "578:0:91"
             },
-            "scope": 17622,
+            "scope": 17661,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -638,16 +638,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 17612,
+              "id": 17651,
               "name": "IERC20",
               "nameLocations": [
                 "481:6:91"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 47531,
+              "referencedDeclaration": 47570,
               "src": "481:6:91"
             },
-            "id": 17613,
+            "id": 17652,
             "nodeType": "InheritanceSpecifier",
             "src": "481:6:91"
           }
@@ -656,19 +656,19 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 17611,
+          "id": 17650,
           "nodeType": "StructuredDocumentation",
           "src": "259:202:91",
           "text": " @dev Interface for the WETH token contract used internally for wrapping and unwrapping, to support\n sending and receiving ETH in joins, swaps, and internal balance deposits and withdrawals."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17622,
-          47531
+          17661,
+          47570
         ],
         "name": "IWETH",
         "nameLocation": "472:5:91",
-        "scope": 17623,
+        "scope": 17662,
         "usedErrors": []
       }
     ],
