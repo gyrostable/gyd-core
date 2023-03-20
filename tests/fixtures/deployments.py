@@ -49,8 +49,8 @@ def static_percentage_fee_handler(StaticPercentageFeeHandler, admin, gyro_config
 
 @pytest.fixture(scope="module")
 def gyd_token(admin, GydToken, gyro_config):
-    gyd_token = admin.deploy(GydToken, gyro_config)
-    gyd_token.initialize("GYD Token", "GYD")
+    gyd_token = admin.deploy(GydToken)
+    gyd_token.initialize(admin, "GYD Token", "GYD")
     gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token, {"from": admin})
     return gyd_token
 
@@ -72,7 +72,7 @@ def reserve(admin, Reserve, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def gyd_recovery(admin, GydRecovery, gyro_config, mock_gyfi, gyd_token):
+def gyd_recovery(admin, GydRecovery, gyro_config, mock_gyfi):
     gyd_recovery = admin.deploy(
         GydRecovery,
         admin,
@@ -247,7 +247,7 @@ def root_safety_check(admin, RootSafetyCheck, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def motherboard(admin, Motherboard, gyro_config, reserve, request):
+def motherboard(admin, Motherboard, gyro_config, gyd_token, reserve, request):
     extra_dependencies = [
         "fee_bank",
         "mock_pamm",
@@ -256,7 +256,6 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
         "root_safety_check",
         "static_percentage_fee_handler",
         "mock_balancer_vault",
-        "gyd_token",
         "gyd_recovery",
         "stewardship_incentives",
     ]
@@ -268,6 +267,7 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
     gyro_config.setAddress(
         config_keys.MOTHERBOARD_ADDRESS, motherboard, {"from": admin}
     )
+    gyd_token.addMinter(motherboard, {"from": admin})
     return motherboard
 
 

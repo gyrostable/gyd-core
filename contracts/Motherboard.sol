@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/IMotherboard.sol";
@@ -32,7 +34,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     using FixedPoint for uint256;
     using DecimalScale for uint256;
     using SafeERC20 for IERC20;
-    using SafeERC20 for IGYDToken;
+    using SafeERC20Upgradeable for IGYDToken;
     using ConfigHelpers for IGyroConfig;
     using EnumerableSet for EnumerableSet.AddressSet;
     using Address for address;
