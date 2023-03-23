@@ -114,13 +114,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
         gyroConfig.getGydRecovery().checkAndRun(reserveState);
 
-        gydToken.burnFrom(msg.sender, gydToRedeem);
-
         uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveState.totalUSDValue);
         require(
             usdValueToRedeem <= gydToRedeem.mulDown(FixedPoint.ONE + _REDEEM_DEVIATION_EPSILON),
             Errors.REDEEM_AMOUNT_BUG
         );
+
+        gydToken.burnFrom(msg.sender, gydToRedeem);
 
         DataTypes.Order memory order = _createRedeemOrder(
             usdValueToRedeem,
