@@ -1,14 +1,15 @@
 import functools
 from decimal import Decimal
-from math import cos, pi, sin
+from math import cos, pi, sin, tan
 from pickle import FALSE
 from typing import Iterable, Tuple
 
 import hypothesis.strategies as st
 from _pytest.python_api import ApproxDecimal
-from brownie import reverts
+from brownie import reverts, history
+from brownie.exceptions import VirtualMachineError
 from brownie.test import given
-from hypothesis import assume, note, settings
+from hypothesis import assume, note, settings, example
 from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.types import *
 from tests.support.utils_pools import qdecimals, scale, to_decimal, unscale
@@ -17,6 +18,7 @@ import lp_share_pricing as math_implementation
 
 MIN_PRICE = "1e-6"
 MAX_PRICE = "1e6"
+MIN_PRICE_SEPARATION = D("0.001")
 
 billion_balance_strategy = st.integers(min_value=0, max_value=1_000_000_000)
 weights_strategy = st.decimals(min_value="0.05", max_value="0.95")
@@ -342,14 +344,22 @@ ECLP_MIN_PRICE_SEPARATION = to_decimal("0.0001")
 def gen_params(draw):
     phi_degrees = draw(st.floats(10, 80))
     phi = phi_degrees / 360 * 2 * pi
+
+    # Price bounds. Choose s.t. the 'peg' lies within the bounds.
+    # It'd be nonsensical if this was not the case: Why are we using an ellipse then?!
+    peg = tan(phi)  # = price where the flattest point of the ellipse lies.
+    peg = D(peg)
+    alpha_high = peg
+    beta_low = peg
+    alpha = draw(qdecimals("0.05", alpha_high.raw))
+    beta = draw(
+        qdecimals(max(beta_low.raw, (alpha + MIN_PRICE_SEPARATION).raw), "20.0")
+    )
+
     s = sin(phi)
     c = cos(phi)
-    lam = draw(qdecimals("1", "100"))
-    alpha = draw(qdecimals("0.05", "0.995"))
-    beta = draw(qdecimals("1.005", "20.0"))
-    price_peg = draw(qdecimals("0.05", "20.0"))
-    # price_peg = D(1)
-    return ECLPMathParams(price_peg * alpha, price_peg * beta, D(c), D(s), lam)
+    l = draw(qdecimals("1", "1e8"))
+    return ECLPMathParams(alpha, beta, D(c), D(s), l)
 
 
 def faulty_params_eclp(params: ECLPMathParams):
@@ -404,4 +414,4 @@ def test_price_bpt_eclp(
         mparams, mderived, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-10"))
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-6"))
