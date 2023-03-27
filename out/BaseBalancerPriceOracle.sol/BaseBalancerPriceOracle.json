@@ -378,65 +378,65 @@
   },
   "ast": {
     "absolutePath": "contracts/oracles/balancer/BaseBalancerPriceOracle.sol",
-    "id": 10369,
+    "id": 10330,
     "exportedSymbols": {
       "BalancerLPSharePricing": [
-        10325
+        10286
       ],
       "BaseBalancerPriceOracle": [
-        10368
+        10329
       ],
       "BaseVaultPriceOracle": [
-        6471
+        6432
       ],
       "DataTypes": [
-        54558
+        54575
       ],
       "Errors": [
-        56095
+        56112
       ],
       "FixedPoint": [
-        56465
+        56482
       ],
       "IECLP": [
-        17024
+        17041
       ],
       "IERC20": [
-        47570
+        47587
       ],
       "IERC20Metadata": [
-        47595
+        47612
       ],
       "IGyroVault": [
-        16453
+        16470
       ],
       "IMinimalPoolView": [
-        17062
+        17079
       ],
       "IVaultPriceOracle": [
-        17766
+        17783
       ],
       "LogExpMath": [
-        57847
+        57864
       ],
       "SafeCast": [
-        52047
+        52064
       ],
       "SignedFixedPoint": [
-        58110
+        58127
       ],
       "TypeConversion": [
-        58259
+        58276
       ],
       "Vaults": [
-        58268
+        58285
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:624:30",
     "nodes": [
       {
-        "id": 10327,
+        "id": 10288,
         "nodeType": "PragmaDirective",
         "src": "174:23:30",
         "nodes": [],
@@ -448,127 +448,127 @@
         ]
       },
       {
-        "id": 10328,
+        "id": 10289,
         "nodeType": "ImportDirective",
         "src": "199:38:30",
         "nodes": [],
         "absolutePath": "contracts/oracles/balancer/BalancerLPSharePricing.sol",
         "file": "./BalancerLPSharePricing.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 10369,
-        "sourceUnit": 10326,
+        "scope": 10330,
+        "sourceUnit": 10287,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 10329,
+        "id": 10290,
         "nodeType": "ImportDirective",
         "src": "238:37:30",
         "nodes": [],
         "absolutePath": "contracts/oracles/BaseVaultPriceOracle.sol",
         "file": "../BaseVaultPriceOracle.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 10369,
-        "sourceUnit": 6472,
+        "scope": 10330,
+        "sourceUnit": 6433,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 10330,
+        "id": 10291,
         "nodeType": "ImportDirective",
         "src": "277:47:30",
         "nodes": [],
         "absolutePath": "libraries/TypeConversion.sol",
         "file": "../../../libraries/TypeConversion.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 10369,
-        "sourceUnit": 58260,
+        "scope": 10330,
+        "sourceUnit": 58277,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 10331,
+        "id": 10292,
         "nodeType": "ImportDirective",
         "src": "326:59:30",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
         "file": "../../../interfaces/balancer/IMinimalPoolView.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 10369,
-        "sourceUnit": 17063,
+        "scope": 10330,
+        "sourceUnit": 17080,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 10368,
+        "id": 10329,
         "nodeType": "ContractDefinition",
         "src": "387:410:30",
         "nodes": [
           {
-            "id": 10338,
+            "id": 10299,
             "nodeType": "UsingForDirective",
             "src": "459:49:30",
             "nodes": [],
             "global": false,
             "libraryName": {
-              "id": 10334,
+              "id": 10295,
               "name": "TypeConversion",
               "nameLocations": [
                 "465:14:30"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 58259,
+              "referencedDeclaration": 58276,
               "src": "465:14:30"
             },
             "typeName": {
               "baseType": {
-                "id": 10336,
+                "id": 10297,
                 "nodeType": "UserDefinedTypeName",
                 "pathNode": {
-                  "id": 10335,
+                  "id": 10296,
                   "name": "DataTypes.PricedToken",
                   "nameLocations": [
                     "484:9:30",
                     "494:11:30"
                   ],
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 54427,
+                  "referencedDeclaration": 54444,
                   "src": "484:21:30"
                 },
-                "referencedDeclaration": 54427,
+                "referencedDeclaration": 54444,
                 "src": "484:21:30",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_PricedToken_$54427_storage_ptr",
+                  "typeIdentifier": "t_struct$_PricedToken_$54444_storage_ptr",
                   "typeString": "struct DataTypes.PricedToken"
                 }
               },
-              "id": 10337,
+              "id": 10298,
               "nodeType": "ArrayTypeName",
               "src": "484:23:30",
               "typeDescriptions": {
-                "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_storage_$dyn_storage_ptr",
+                "typeIdentifier": "t_array$_t_struct$_PricedToken_$54444_storage_$dyn_storage_ptr",
                 "typeString": "struct DataTypes.PricedToken[]"
               }
             }
           },
           {
-            "id": 10341,
+            "id": 10302,
             "nodeType": "UsingForDirective",
             "src": "513:29:30",
             "nodes": [],
             "global": false,
             "libraryName": {
-              "id": 10339,
+              "id": 10300,
               "name": "FixedPoint",
               "nameLocations": [
                 "519:10:30"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 56465,
+              "referencedDeclaration": 56482,
               "src": "519:10:30"
             },
             "typeName": {
-              "id": 10340,
+              "id": 10301,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "534:7:30",
@@ -579,29 +579,29 @@
             }
           },
           {
-            "id": 10367,
+            "id": 10328,
             "nodeType": "FunctionDefinition",
             "src": "548:247:30",
             "nodes": [],
             "body": {
-              "id": 10366,
+              "id": 10327,
               "nodeType": "Block",
               "src": "642:153:30",
               "nodes": [],
               "statements": [
                 {
                   "assignments": [
-                    10350
+                    10311
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 10350,
+                      "id": 10311,
                       "mutability": "mutable",
                       "name": "invariant",
                       "nameLocation": "660:9:30",
                       "nodeType": "VariableDeclaration",
-                      "scope": 10366,
+                      "scope": 10327,
                       "src": "652:17:30",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -610,7 +610,7 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 10349,
+                        "id": 10310,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
                         "src": "652:7:30",
@@ -622,24 +622,24 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 10354,
+                  "id": 10315,
                   "initialValue": {
                     "arguments": [],
                     "expression": {
                       "argumentTypes": [],
                       "expression": {
-                        "id": 10351,
+                        "id": 10312,
                         "name": "pool",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 10344,
+                        "referencedDeclaration": 10305,
                         "src": "672:4:30",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IMinimalPoolView_$17062",
+                          "typeIdentifier": "t_contract$_IMinimalPoolView_$17079",
                           "typeString": "contract IMinimalPoolView"
                         }
                       },
-                      "id": 10352,
+                      "id": 10313,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -647,14 +647,14 @@
                       "memberLocation": "677:12:30",
                       "memberName": "getInvariant",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 17051,
+                      "referencedDeclaration": 17068,
                       "src": "672:17:30",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$__$returns$_t_uint256_$",
                         "typeString": "function () view external returns (uint256)"
                       }
                     },
-                    "id": 10353,
+                    "id": 10314,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -675,17 +675,17 @@
                 },
                 {
                   "assignments": [
-                    10356
+                    10317
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 10356,
+                      "id": 10317,
                       "mutability": "mutable",
                       "name": "totalSupply",
                       "nameLocation": "709:11:30",
                       "nodeType": "VariableDeclaration",
-                      "scope": 10366,
+                      "scope": 10327,
                       "src": "701:19:30",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -694,7 +694,7 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 10355,
+                        "id": 10316,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
                         "src": "701:7:30",
@@ -706,24 +706,24 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 10360,
+                  "id": 10321,
                   "initialValue": {
                     "arguments": [],
                     "expression": {
                       "argumentTypes": [],
                       "expression": {
-                        "id": 10357,
+                        "id": 10318,
                         "name": "pool",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 10344,
+                        "referencedDeclaration": 10305,
                         "src": "723:4:30",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IMinimalPoolView_$17062",
+                          "typeIdentifier": "t_contract$_IMinimalPoolView_$17079",
                           "typeString": "contract IMinimalPoolView"
                         }
                       },
-                      "id": 10358,
+                      "id": 10319,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -731,14 +731,14 @@
                       "memberLocation": "728:11:30",
                       "memberName": "totalSupply",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 17061,
+                      "referencedDeclaration": 17078,
                       "src": "723:16:30",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$__$returns$_t_uint256_$",
                         "typeString": "function () view external returns (uint256)"
                       }
                     },
-                    "id": 10359,
+                    "id": 10320,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -761,11 +761,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 10363,
+                        "id": 10324,
                         "name": "totalSupply",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 10356,
+                        "referencedDeclaration": 10317,
                         "src": "776:11:30",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -781,18 +781,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 10361,
+                        "id": 10322,
                         "name": "invariant",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 10350,
+                        "referencedDeclaration": 10311,
                         "src": "758:9:30",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
                         }
                       },
-                      "id": 10362,
+                      "id": 10323,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -800,14 +800,14 @@
                       "memberLocation": "768:7:30",
                       "memberName": "divDown",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 56245,
+                      "referencedDeclaration": 56262,
                       "src": "758:17:30",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
                         "typeString": "function (uint256,uint256) pure returns (uint256)"
                       }
                     },
-                    "id": 10364,
+                    "id": 10325,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -823,8 +823,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 10348,
-                  "id": 10365,
+                  "functionReturnParameters": 10309,
+                  "id": 10326,
                   "nodeType": "Return",
                   "src": "751:37:30"
                 }
@@ -836,41 +836,41 @@
             "name": "getInvariantDivSupply",
             "nameLocation": "557:21:30",
             "parameters": {
-              "id": 10345,
+              "id": 10306,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 10344,
+                  "id": 10305,
                   "mutability": "mutable",
                   "name": "pool",
                   "nameLocation": "596:4:30",
                   "nodeType": "VariableDeclaration",
-                  "scope": 10367,
+                  "scope": 10328,
                   "src": "579:21:30",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IMinimalPoolView_$17062",
+                    "typeIdentifier": "t_contract$_IMinimalPoolView_$17079",
                     "typeString": "contract IMinimalPoolView"
                   },
                   "typeName": {
-                    "id": 10343,
+                    "id": 10304,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 10342,
+                      "id": 10303,
                       "name": "IMinimalPoolView",
                       "nameLocations": [
                         "579:16:30"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 17062,
+                      "referencedDeclaration": 17079,
                       "src": "579:16:30"
                     },
-                    "referencedDeclaration": 17062,
+                    "referencedDeclaration": 17079,
                     "src": "579:16:30",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IMinimalPoolView_$17062",
+                      "typeIdentifier": "t_contract$_IMinimalPoolView_$17079",
                       "typeString": "contract IMinimalPoolView"
                     }
                   },
@@ -880,17 +880,17 @@
               "src": "578:23:30"
             },
             "returnParameters": {
-              "id": 10348,
+              "id": 10309,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 10347,
+                  "id": 10308,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 10367,
+                  "scope": 10328,
                   "src": "633:7:30",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -899,7 +899,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 10346,
+                    "id": 10307,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "633:7:30",
@@ -913,7 +913,7 @@
               ],
               "src": "632:9:30"
             },
-            "scope": 10368,
+            "scope": 10329,
             "stateMutability": "view",
             "virtual": true,
             "visibility": "internal"
@@ -923,16 +923,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 10332,
+              "id": 10293,
               "name": "BaseVaultPriceOracle",
               "nameLocations": [
                 "432:20:30"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 6471,
+              "referencedDeclaration": 6432,
               "src": "432:20:30"
             },
-            "id": 10333,
+            "id": 10294,
             "nodeType": "InheritanceSpecifier",
             "src": "432:20:30"
           }
@@ -942,13 +942,13 @@
         "contractKind": "contract",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          10368,
-          6471,
-          17766
+          10329,
+          6432,
+          17783
         ],
         "name": "BaseBalancerPriceOracle",
         "nameLocation": "405:23:30",
-        "scope": 10369,
+        "scope": 10330,
         "usedErrors": []
       }
     ],

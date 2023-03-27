@@ -486,34 +486,34 @@
   },
   "ast": {
     "absolutePath": "interfaces/IPAMM.sol",
-    "id": 16672,
+    "id": 16689,
     "exportedSymbols": {
       "DataTypes": [
-        54558
+        54575
       ],
       "Errors": [
-        56095
+        56112
       ],
       "Governable": [
-        5497
+        5458
       ],
       "GovernableBase": [
-        5591
+        5552
       ],
       "IGovernable": [
-        16215
+        16232
       ],
       "IPAMM": [
-        16671
+        16688
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:2042:72",
+    "src": "174:2042:73",
     "nodes": [
       {
-        "id": 16600,
+        "id": 16617,
         "nodeType": "PragmaDirective",
-        "src": "174:23:72",
+        "src": "174:23:73",
         "nodes": [],
         "literals": [
           "solidity",
@@ -523,65 +523,65 @@
         ]
       },
       {
-        "id": 16601,
+        "id": 16618,
         "nodeType": "ImportDirective",
-        "src": "199:38:72",
+        "src": "199:38:73",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "./../libraries/DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16672,
-        "sourceUnit": 54559,
+        "scope": 16689,
+        "sourceUnit": 54576,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16602,
+        "id": 16619,
         "nodeType": "ImportDirective",
-        "src": "238:42:72",
+        "src": "238:42:73",
         "nodes": [],
         "absolutePath": "contracts/auth/Governable.sol",
         "file": "../contracts/auth/Governable.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16672,
-        "sourceUnit": 5498,
+        "scope": 16689,
+        "sourceUnit": 5459,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16671,
+        "id": 16688,
         "nodeType": "ContractDefinition",
-        "src": "346:1869:72",
+        "src": "346:1869:73",
         "nodes": [
           {
-            "id": 16614,
+            "id": 16631,
             "nodeType": "EventDefinition",
-            "src": "445:96:72",
+            "src": "445:96:73",
             "nodes": [],
             "anonymous": false,
             "documentation": {
-              "id": 16604,
+              "id": 16621,
               "nodeType": "StructuredDocumentation",
-              "src": "368:72:72",
+              "src": "368:72:73",
               "text": "@notice this event is emitted when the system parameters are updated"
             },
             "eventSelector": "4c76fdbdf1d037612da5c0dce3f84fb05d29652b0dbc2d66501d683d3df4df88",
             "name": "SystemParamsUpdated",
-            "nameLocation": "451:19:72",
+            "nameLocation": "451:19:73",
             "parameters": {
-              "id": 16613,
+              "id": 16630,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16606,
+                  "id": 16623,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "alphaBar",
-                  "nameLocation": "478:8:72",
+                  "nameLocation": "478:8:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16614,
-                  "src": "471:15:72",
+                  "scope": 16631,
+                  "src": "471:15:73",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -589,10 +589,10 @@
                     "typeString": "uint64"
                   },
                   "typeName": {
-                    "id": 16605,
+                    "id": 16622,
                     "name": "uint64",
                     "nodeType": "ElementaryTypeName",
-                    "src": "471:6:72",
+                    "src": "471:6:73",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint64",
                       "typeString": "uint64"
@@ -602,14 +602,14 @@
                 },
                 {
                   "constant": false,
-                  "id": 16608,
+                  "id": 16625,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "xuBar",
-                  "nameLocation": "495:5:72",
+                  "nameLocation": "495:5:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16614,
-                  "src": "488:12:72",
+                  "scope": 16631,
+                  "src": "488:12:73",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -617,10 +617,10 @@
                     "typeString": "uint64"
                   },
                   "typeName": {
-                    "id": 16607,
+                    "id": 16624,
                     "name": "uint64",
                     "nodeType": "ElementaryTypeName",
-                    "src": "488:6:72",
+                    "src": "488:6:73",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint64",
                       "typeString": "uint64"
@@ -630,14 +630,14 @@
                 },
                 {
                   "constant": false,
-                  "id": 16610,
+                  "id": 16627,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "thetaBar",
-                  "nameLocation": "509:8:72",
+                  "nameLocation": "509:8:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16614,
-                  "src": "502:15:72",
+                  "scope": 16631,
+                  "src": "502:15:73",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -645,10 +645,10 @@
                     "typeString": "uint64"
                   },
                   "typeName": {
-                    "id": 16609,
+                    "id": 16626,
                     "name": "uint64",
                     "nodeType": "ElementaryTypeName",
-                    "src": "502:6:72",
+                    "src": "502:6:73",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint64",
                       "typeString": "uint64"
@@ -658,14 +658,14 @@
                 },
                 {
                   "constant": false,
-                  "id": 16612,
+                  "id": 16629,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "outflowMemory",
-                  "nameLocation": "526:13:72",
+                  "nameLocation": "526:13:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16614,
-                  "src": "519:20:72",
+                  "scope": 16631,
+                  "src": "519:20:73",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -673,10 +673,10 @@
                     "typeString": "uint64"
                   },
                   "typeName": {
-                    "id": 16611,
+                    "id": 16628,
                     "name": "uint64",
                     "nodeType": "ElementaryTypeName",
-                    "src": "519:6:72",
+                    "src": "519:6:73",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint64",
                       "typeString": "uint64"
@@ -685,25 +685,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "470:70:72"
+              "src": "470:70:73"
             }
           },
           {
-            "id": 16623,
+            "id": 16640,
             "nodeType": "StructDefinition",
-            "src": "600:194:72",
+            "src": "600:194:73",
             "nodes": [],
             "canonicalName": "IPAMM.Params",
             "members": [
               {
                 "constant": false,
-                "id": 16616,
+                "id": 16633,
                 "mutability": "mutable",
                 "name": "alphaBar",
-                "nameLocation": "631:8:72",
+                "nameLocation": "631:8:73",
                 "nodeType": "VariableDeclaration",
-                "scope": 16623,
-                "src": "624:15:72",
+                "scope": 16640,
+                "src": "624:15:73",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -711,10 +711,10 @@
                   "typeString": "uint64"
                 },
                 "typeName": {
-                  "id": 16615,
+                  "id": 16632,
                   "name": "uint64",
                   "nodeType": "ElementaryTypeName",
-                  "src": "624:6:72",
+                  "src": "624:6:73",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint64",
                     "typeString": "uint64"
@@ -724,13 +724,13 @@
               },
               {
                 "constant": false,
-                "id": 16618,
+                "id": 16635,
                 "mutability": "mutable",
                 "name": "xuBar",
-                "nameLocation": "673:5:72",
+                "nameLocation": "673:5:73",
                 "nodeType": "VariableDeclaration",
-                "scope": 16623,
-                "src": "666:12:72",
+                "scope": 16640,
+                "src": "666:12:73",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -738,10 +738,10 @@
                   "typeString": "uint64"
                 },
                 "typeName": {
-                  "id": 16617,
+                  "id": 16634,
                   "name": "uint64",
                   "nodeType": "ElementaryTypeName",
-                  "src": "666:6:72",
+                  "src": "666:6:73",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint64",
                     "typeString": "uint64"
@@ -751,13 +751,13 @@
               },
               {
                 "constant": false,
-                "id": 16620,
+                "id": 16637,
                 "mutability": "mutable",
                 "name": "thetaBar",
-                "nameLocation": "714:8:72",
+                "nameLocation": "714:8:73",
                 "nodeType": "VariableDeclaration",
-                "scope": 16623,
-                "src": "707:15:72",
+                "scope": 16640,
+                "src": "707:15:73",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -765,10 +765,10 @@
                   "typeString": "uint64"
                 },
                 "typeName": {
-                  "id": 16619,
+                  "id": 16636,
                   "name": "uint64",
                   "nodeType": "ElementaryTypeName",
-                  "src": "707:6:72",
+                  "src": "707:6:73",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint64",
                     "typeString": "uint64"
@@ -778,13 +778,13 @@
               },
               {
                 "constant": false,
-                "id": 16622,
+                "id": 16639,
                 "mutability": "mutable",
                 "name": "outflowMemory",
-                "nameLocation": "757:13:72",
+                "nameLocation": "757:13:73",
                 "nodeType": "VariableDeclaration",
-                "scope": 16623,
-                "src": "750:20:72",
+                "scope": 16640,
+                "src": "750:20:73",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -792,10 +792,10 @@
                   "typeString": "uint64"
                 },
                 "typeName": {
-                  "id": 16621,
+                  "id": 16638,
                   "name": "uint64",
                   "nodeType": "ElementaryTypeName",
-                  "src": "750:6:72",
+                  "src": "750:6:73",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint64",
                     "typeString": "uint64"
@@ -805,19 +805,19 @@
               }
             ],
             "name": "Params",
-            "nameLocation": "607:6:72",
-            "scope": 16671,
+            "nameLocation": "607:6:73",
+            "scope": 16688,
             "visibility": "public"
           },
           {
-            "id": 16633,
+            "id": 16650,
             "nodeType": "FunctionDefinition",
-            "src": "1045:127:72",
+            "src": "1045:127:73",
             "nodes": [],
             "documentation": {
-              "id": 16624,
+              "id": 16641,
               "nodeType": "StructuredDocumentation",
-              "src": "800:240:72",
+              "src": "800:240:73",
               "text": "@notice Quotes the amount of GYD to mint for the given USD amount\n @param usdAmount the USD value to add to the reserve\n @param reserveUSDValue the current USD value of the reserve\n @return the amount of GYD to mint"
             },
             "functionSelector": "616a1ed9",
@@ -825,20 +825,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "computeMintAmount",
-            "nameLocation": "1054:17:72",
+            "nameLocation": "1054:17:73",
             "parameters": {
-              "id": 16629,
+              "id": 16646,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16626,
+                  "id": 16643,
                   "mutability": "mutable",
                   "name": "usdAmount",
-                  "nameLocation": "1080:9:72",
+                  "nameLocation": "1080:9:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16633,
-                  "src": "1072:17:72",
+                  "scope": 16650,
+                  "src": "1072:17:73",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -846,10 +846,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16625,
+                    "id": 16642,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1072:7:72",
+                    "src": "1072:7:73",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -859,13 +859,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16628,
+                  "id": 16645,
                   "mutability": "mutable",
                   "name": "reserveUSDValue",
-                  "nameLocation": "1099:15:72",
+                  "nameLocation": "1099:15:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16633,
-                  "src": "1091:23:72",
+                  "scope": 16650,
+                  "src": "1091:23:73",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -873,10 +873,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16627,
+                    "id": 16644,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1091:7:72",
+                    "src": "1091:7:73",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -885,221 +885,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1071:44:72"
+              "src": "1071:44:73"
             },
             "returnParameters": {
-              "id": 16632,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16631,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16633,
-                  "src": "1163:7:72",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16630,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1163:7:72",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1162:9:72"
-            },
-            "scope": 16671,
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 16643,
-            "nodeType": "FunctionDefinition",
-            "src": "1449:85:72",
-            "nodes": [],
-            "documentation": {
-              "id": 16634,
-              "nodeType": "StructuredDocumentation",
-              "src": "1178:266:72",
-              "text": "@notice Quotes and records the amount of GYD to mint for the given USD amount.\n NB that reserveUSDValue is added here to future proof the implementation\n @param usdAmount the USD value to add to the reserve\n @return the amount of GYD to mint"
-            },
-            "functionSelector": "1b2ef1ca",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "mint",
-            "nameLocation": "1458:4:72",
-            "parameters": {
-              "id": 16639,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16636,
-                  "mutability": "mutable",
-                  "name": "usdAmount",
-                  "nameLocation": "1471:9:72",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16643,
-                  "src": "1463:17:72",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16635,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1463:7:72",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 16638,
-                  "mutability": "mutable",
-                  "name": "reserveUSDValue",
-                  "nameLocation": "1490:15:72",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16643,
-                  "src": "1482:23:72",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16637,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1482:7:72",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1462:44:72"
-            },
-            "returnParameters": {
-              "id": 16642,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16641,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16643,
-                  "src": "1525:7:72",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16640,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1525:7:72",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1524:9:72"
-            },
-            "scope": 16671,
-            "stateMutability": "nonpayable",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 16653,
-            "nodeType": "FunctionDefinition",
-            "src": "1697:129:72",
-            "nodes": [],
-            "documentation": {
-              "id": 16644,
-              "nodeType": "StructuredDocumentation",
-              "src": "1540:152:72",
-              "text": "@notice Quotes the output USD value given an amount of GYD\n @param gydAmount the amount GYD to redeem\n @return the USD value to redeem"
-            },
-            "functionSelector": "71db63ec",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "computeRedeemAmount",
-            "nameLocation": "1706:19:72",
-            "parameters": {
               "id": 16649,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16646,
-                  "mutability": "mutable",
-                  "name": "gydAmount",
-                  "nameLocation": "1734:9:72",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16653,
-                  "src": "1726:17:72",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16645,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1726:7:72",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
                   "id": 16648,
                   "mutability": "mutable",
-                  "name": "reserveUSDValue",
-                  "nameLocation": "1753:15:72",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16653,
-                  "src": "1745:23:72",
+                  "scope": 16650,
+                  "src": "1163:7:73",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1110,7 +910,7 @@
                     "id": 16647,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1745:7:72",
+                    "src": "1163:7:73",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1119,77 +919,43 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1725:44:72"
+              "src": "1162:9:73"
             },
-            "returnParameters": {
-              "id": 16652,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16651,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16653,
-                  "src": "1817:7:72",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16650,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1817:7:72",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1816:9:72"
-            },
-            "scope": 16671,
+            "scope": 16688,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16663,
+            "id": 16660,
             "nodeType": "FunctionDefinition",
-            "src": "2001:87:72",
+            "src": "1449:85:73",
             "nodes": [],
             "documentation": {
-              "id": 16654,
+              "id": 16651,
               "nodeType": "StructuredDocumentation",
-              "src": "1832:164:72",
-              "text": "@notice Quotes and records the output USD value given an amount of GYD\n @param gydAmount the amount GYD to redeem\n @return the USD value to redeem"
+              "src": "1178:266:73",
+              "text": "@notice Quotes and records the amount of GYD to mint for the given USD amount.\n NB that reserveUSDValue is added here to future proof the implementation\n @param usdAmount the USD value to add to the reserve\n @return the amount of GYD to mint"
             },
-            "functionSelector": "7cbc2373",
+            "functionSelector": "1b2ef1ca",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "redeem",
-            "nameLocation": "2010:6:72",
+            "name": "mint",
+            "nameLocation": "1458:4:73",
             "parameters": {
-              "id": 16659,
+              "id": 16656,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16656,
+                  "id": 16653,
                   "mutability": "mutable",
-                  "name": "gydAmount",
-                  "nameLocation": "2025:9:72",
+                  "name": "usdAmount",
+                  "nameLocation": "1471:9:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16663,
-                  "src": "2017:17:72",
+                  "scope": 16660,
+                  "src": "1463:17:73",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1197,10 +963,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16655,
+                    "id": 16652,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2017:7:72",
+                    "src": "1463:7:73",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1210,13 +976,47 @@
                 },
                 {
                   "constant": false,
-                  "id": 16658,
+                  "id": 16655,
                   "mutability": "mutable",
                   "name": "reserveUSDValue",
-                  "nameLocation": "2044:15:72",
+                  "nameLocation": "1490:15:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16663,
-                  "src": "2036:23:72",
+                  "scope": 16660,
+                  "src": "1482:23:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16654,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1482:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1462:44:73"
+            },
+            "returnParameters": {
+              "id": 16659,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16658,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16660,
+                  "src": "1525:7:73",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1227,7 +1027,7 @@
                     "id": 16657,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2036:7:72",
+                    "src": "1525:7:73",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1236,43 +1036,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2016:44:72"
+              "src": "1524:9:73"
             },
-            "returnParameters": {
-              "id": 16662,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16661,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16663,
-                  "src": "2079:7:72",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16660,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "2079:7:72",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "2078:9:72"
-            },
-            "scope": 16671,
+            "scope": 16688,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -1280,12 +1046,246 @@
           {
             "id": 16670,
             "nodeType": "FunctionDefinition",
-            "src": "2157:56:72",
+            "src": "1697:129:73",
             "nodes": [],
             "documentation": {
-              "id": 16664,
+              "id": 16661,
               "nodeType": "StructuredDocumentation",
-              "src": "2094:58:72",
+              "src": "1540:152:73",
+              "text": "@notice Quotes the output USD value given an amount of GYD\n @param gydAmount the amount GYD to redeem\n @return the USD value to redeem"
+            },
+            "functionSelector": "71db63ec",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "computeRedeemAmount",
+            "nameLocation": "1706:19:73",
+            "parameters": {
+              "id": 16666,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16663,
+                  "mutability": "mutable",
+                  "name": "gydAmount",
+                  "nameLocation": "1734:9:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16670,
+                  "src": "1726:17:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16662,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1726:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16665,
+                  "mutability": "mutable",
+                  "name": "reserveUSDValue",
+                  "nameLocation": "1753:15:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16670,
+                  "src": "1745:23:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16664,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1745:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1725:44:73"
+            },
+            "returnParameters": {
+              "id": 16669,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16668,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16670,
+                  "src": "1817:7:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16667,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1817:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1816:9:73"
+            },
+            "scope": 16688,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16680,
+            "nodeType": "FunctionDefinition",
+            "src": "2001:87:73",
+            "nodes": [],
+            "documentation": {
+              "id": 16671,
+              "nodeType": "StructuredDocumentation",
+              "src": "1832:164:73",
+              "text": "@notice Quotes and records the output USD value given an amount of GYD\n @param gydAmount the amount GYD to redeem\n @return the USD value to redeem"
+            },
+            "functionSelector": "7cbc2373",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "redeem",
+            "nameLocation": "2010:6:73",
+            "parameters": {
+              "id": 16676,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16673,
+                  "mutability": "mutable",
+                  "name": "gydAmount",
+                  "nameLocation": "2025:9:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16680,
+                  "src": "2017:17:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16672,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2017:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16675,
+                  "mutability": "mutable",
+                  "name": "reserveUSDValue",
+                  "nameLocation": "2044:15:73",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16680,
+                  "src": "2036:23:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16674,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2036:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2016:44:73"
+            },
+            "returnParameters": {
+              "id": 16679,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16678,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16680,
+                  "src": "2079:7:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16677,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2079:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2078:9:73"
+            },
+            "scope": 16688,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16687,
+            "nodeType": "FunctionDefinition",
+            "src": "2157:56:73",
+            "nodes": [],
+            "documentation": {
+              "id": 16681,
+              "nodeType": "StructuredDocumentation",
+              "src": "2094:58:73",
               "text": "@notice Allows for the system parameters to be updated"
             },
             "functionSelector": "9e590854",
@@ -1293,58 +1293,58 @@
             "kind": "function",
             "modifiers": [],
             "name": "setSystemParams",
-            "nameLocation": "2166:15:72",
+            "nameLocation": "2166:15:73",
             "parameters": {
-              "id": 16668,
+              "id": 16685,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16667,
+                  "id": 16684,
                   "mutability": "mutable",
                   "name": "params",
-                  "nameLocation": "2196:6:72",
+                  "nameLocation": "2196:6:73",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16670,
-                  "src": "2182:20:72",
+                  "scope": 16687,
+                  "src": "2182:20:73",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Params_$16623_memory_ptr",
+                    "typeIdentifier": "t_struct$_Params_$16640_memory_ptr",
                     "typeString": "struct IPAMM.Params"
                   },
                   "typeName": {
-                    "id": 16666,
+                    "id": 16683,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16665,
+                      "id": 16682,
                       "name": "Params",
                       "nameLocations": [
-                        "2182:6:72"
+                        "2182:6:73"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16623,
-                      "src": "2182:6:72"
+                      "referencedDeclaration": 16640,
+                      "src": "2182:6:73"
                     },
-                    "referencedDeclaration": 16623,
-                    "src": "2182:6:72",
+                    "referencedDeclaration": 16640,
+                    "src": "2182:6:73",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Params_$16623_storage_ptr",
+                      "typeIdentifier": "t_struct$_Params_$16640_storage_ptr",
                       "typeString": "struct IPAMM.Params"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "2181:22:72"
+              "src": "2181:22:73"
             },
             "returnParameters": {
-              "id": 16669,
+              "id": 16686,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2212:0:72"
+              "src": "2212:0:73"
             },
-            "scope": 16671,
+            "scope": 16688,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -1356,22 +1356,22 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16603,
+          "id": 16620,
           "nodeType": "StructuredDocumentation",
-          "src": "282:64:72",
+          "src": "282:64:73",
           "text": "@title IPAMM is the pricing contract for the Primary Market"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16671
+          16688
         ],
         "name": "IPAMM",
-        "nameLocation": "356:5:72",
-        "scope": 16672,
+        "nameLocation": "356:5:73",
+        "scope": 16689,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 72
+  "id": 73
 }

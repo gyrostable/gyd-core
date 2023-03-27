@@ -113,19 +113,19 @@
   },
   "ast": {
     "absolutePath": "interfaces/ICapAuthentication.sol",
-    "id": 16091,
+    "id": 16108,
     "exportedSymbols": {
       "ICapAuthentication": [
-        16090
+        16107
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:271:63",
+    "src": "174:271:64",
     "nodes": [
       {
-        "id": 16080,
+        "id": 16097,
         "nodeType": "PragmaDirective",
-        "src": "174:23:63",
+        "src": "174:23:64",
         "nodes": [],
         "literals": [
           "solidity",
@@ -135,19 +135,19 @@
         ]
       },
       {
-        "id": 16090,
+        "id": 16107,
         "nodeType": "ContractDefinition",
-        "src": "281:163:63",
+        "src": "281:163:64",
         "nodes": [
           {
-            "id": 16089,
+            "id": 16106,
             "nodeType": "FunctionDefinition",
-            "src": "371:71:63",
+            "src": "371:71:64",
             "nodes": [],
             "documentation": {
-              "id": 16082,
+              "id": 16099,
               "nodeType": "StructuredDocumentation",
-              "src": "316:50:63",
+              "src": "316:50:64",
               "text": "@return `true` if the account is authenticated"
             },
             "functionSelector": "d15d4150",
@@ -155,20 +155,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "isAuthenticated",
-            "nameLocation": "380:15:63",
+            "nameLocation": "380:15:64",
             "parameters": {
-              "id": 16085,
+              "id": 16102,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16084,
+                  "id": 16101,
                   "mutability": "mutable",
                   "name": "account",
-                  "nameLocation": "404:7:63",
+                  "nameLocation": "404:7:64",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16089,
-                  "src": "396:15:63",
+                  "scope": 16106,
+                  "src": "396:15:64",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -176,10 +176,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16083,
+                    "id": 16100,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "396:7:63",
+                    "src": "396:7:64",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -189,21 +189,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "395:17:63"
+              "src": "395:17:64"
             },
             "returnParameters": {
-              "id": 16088,
+              "id": 16105,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16087,
+                  "id": 16104,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16089,
-                  "src": "436:4:63",
+                  "scope": 16106,
+                  "src": "436:4:64",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -211,10 +211,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 16086,
+                    "id": 16103,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "436:4:63",
+                    "src": "436:4:64",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -223,9 +223,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "435:6:63"
+              "src": "435:6:64"
             },
-            "scope": 16090,
+            "scope": 16107,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -237,22 +237,22 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16081,
+          "id": 16098,
           "nodeType": "StructuredDocumentation",
-          "src": "199:82:63",
+          "src": "199:82:64",
           "text": "@notice ICapAuthentication handles cap authentication for the capped protocol"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16090
+          16107
         ],
         "name": "ICapAuthentication",
-        "nameLocation": "291:18:63",
-        "scope": 16091,
+        "nameLocation": "291:18:64",
+        "scope": 16108,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 63
+  "id": 64
 }

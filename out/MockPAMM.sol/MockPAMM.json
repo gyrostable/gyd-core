@@ -165,12 +165,12 @@
   ],
   "bytecode": {
     "object": "0x608060405234801561001057600080fd5b50610193806100206000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80631b2ef1ca1461005c578063616a1ed91461005c57806371db63ec1461005c5780637cbc23731461005c5780639e59085414610080575b600080fd5b61006e61006a366004610093565b5090565b60405190815260200160405180910390f35b61009161008e3660046100d2565b50565b005b600080604083850312156100a657600080fd5b50508035926020909101359150565b803567ffffffffffffffff811681146100cd57600080fd5b919050565b6000608082840312156100e457600080fd5b6040516080810181811067ffffffffffffffff8211171561011557634e487b7160e01b600052604160045260246000fd5b604052610121836100b5565b815261012f602084016100b5565b6020820152610140604084016100b5565b6040820152610151606084016100b5565b6060820152939250505056fea264697066735822122038ebc2220b0bf03be1f6af2692fc103403a69b91a8a26cdf45558fa7d8ae822464736f6c63430008110033",
-    "sourceMap": "238:780:36:-:0;;;;;;;;;;;;;;;;;;;",
+    "sourceMap": "238:780:37:-:0;;;;;;;;;;;;;;;;;;;",
     "linkReferences": {}
   },
   "deployedBytecode": {
     "object": "0x608060405234801561001057600080fd5b50600436106100575760003560e01c80631b2ef1ca1461005c578063616a1ed91461005c57806371db63ec1461005c5780637cbc23731461005c5780639e59085414610080575b600080fd5b61006e61006a366004610093565b5090565b60405190815260200160405180910390f35b61009161008e3660046100d2565b50565b005b600080604083850312156100a657600080fd5b50508035926020909101359150565b803567ffffffffffffffff811681146100cd57600080fd5b919050565b6000608082840312156100e457600080fd5b6040516080810181811067ffffffffffffffff8211171561011557634e487b7160e01b600052604160045260246000fd5b604052610121836100b5565b815261012f602084016100b5565b6020820152610140604084016100b5565b6040820152610151606084016100b5565b6060820152939250505056fea264697066735822122038ebc2220b0bf03be1f6af2692fc103403a69b91a8a26cdf45558fa7d8ae822464736f6c63430008110033",
-    "sourceMap": "238:780:36:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;452:110;;;;;;:::i;:::-;-1:-1:-1;549:6:36;452:110;;;;413:25:167;;;401:2;386:18;452:110:36;;;;;;;932:84;;;;;;:::i;:::-;;;;;14:248:167;82:6;90;143:2;131:9;122:7;118:23;114:32;111:52;;;159:1;156;149:12;111:52;-1:-1:-1;;182:23:167;;;252:2;237:18;;;224:32;;-1:-1:-1;14:248:167:o;449:171::-;516:20;;576:18;565:30;;555:41;;545:69;;610:1;607;600:12;545:69;449:171;;;:::o;625:755::-;709:6;762:3;750:9;741:7;737:23;733:33;730:53;;;779:1;776;769:12;730:53;812:2;806:9;854:3;846:6;842:16;924:6;912:10;909:22;888:18;876:10;873:34;870:62;867:185;;;974:10;969:3;965:20;962:1;955:31;1009:4;1006:1;999:15;1037:4;1034:1;1027:15;867:185;1068:2;1061:22;1107:28;1125:9;1107:28;:::i;:::-;1099:6;1092:44;1169:37;1202:2;1191:9;1187:18;1169:37;:::i;:::-;1164:2;1156:6;1152:15;1145:62;1240:37;1273:2;1262:9;1258:18;1240:37;:::i;:::-;1235:2;1227:6;1223:15;1216:62;1311:37;1344:2;1333:9;1329:18;1311:37;:::i;:::-;1306:2;1294:15;;1287:62;1298:6;625:755;-1:-1:-1;;;625:755:167:o",
+    "sourceMap": "238:780:37:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;452:110;;;;;;:::i;:::-;-1:-1:-1;549:6:37;452:110;;;;413:25:168;;;401:2;386:18;452:110:37;;;;;;;932:84;;;;;;:::i;:::-;;;;;14:248:168;82:6;90;143:2;131:9;122:7;118:23;114:32;111:52;;;159:1;156;149:12;111:52;-1:-1:-1;;182:23:168;;;252:2;237:18;;;224:32;;-1:-1:-1;14:248:168:o;449:171::-;516:20;;576:18;565:30;;555:41;;545:69;;610:1;607;600:12;545:69;449:171;;;:::o;625:755::-;709:6;762:3;750:9;741:7;737:23;733:33;730:53;;;779:1;776;769:12;730:53;812:2;806:9;854:3;846:6;842:16;924:6;912:10;909:22;888:18;876:10;873:34;870:62;867:185;;;974:10;969:3;965:20;962:1;955:31;1009:4;1006:1;999:15;1037:4;1034:1;1027:15;867:185;1068:2;1061:22;1107:28;1125:9;1107:28;:::i;:::-;1099:6;1092:44;1169:37;1202:2;1191:9;1187:18;1169:37;:::i;:::-;1164:2;1156:6;1152:15;1145:62;1240:37;1273:2;1262:9;1258:18;1240:37;:::i;:::-;1235:2;1227:6;1223:15;1216:62;1311:37;1344:2;1333:9;1329:18;1311:37;:::i;:::-;1306:2;1294:15;;1287:62;1298:6;625:755;-1:-1:-1;;;625:755:168:o",
     "linkReferences": {}
   },
   "methodIdentifiers": {
@@ -494,37 +494,37 @@
   },
   "ast": {
     "absolutePath": "contracts/testing/MockPAMM.sol",
-    "id": 12915,
+    "id": 12932,
     "exportedSymbols": {
       "DataTypes": [
-        54558
+        54575
       ],
       "Errors": [
-        56095
+        56112
       ],
       "Governable": [
-        5497
+        5458
       ],
       "GovernableBase": [
-        5591
+        5552
       ],
       "IGovernable": [
-        16215
+        16232
       ],
       "IPAMM": [
-        16671
+        16688
       ],
       "MockPAMM": [
-        12914
+        12931
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "175:844:36",
+    "src": "175:844:37",
     "nodes": [
       {
-        "id": 12845,
+        "id": 12862,
         "nodeType": "PragmaDirective",
-        "src": "175:23:36",
+        "src": "175:23:37",
         "nodes": [],
         "literals": [
           "solidity",
@@ -534,61 +534,61 @@
         ]
       },
       {
-        "id": 12846,
+        "id": 12863,
         "nodeType": "ImportDirective",
-        "src": "200:36:36",
+        "src": "200:36:37",
         "nodes": [],
         "absolutePath": "interfaces/IPAMM.sol",
         "file": "../../interfaces/IPAMM.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 12915,
-        "sourceUnit": 16672,
+        "scope": 12932,
+        "sourceUnit": 16689,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 12914,
+        "id": 12931,
         "nodeType": "ContractDefinition",
-        "src": "238:780:36",
+        "src": "238:780:37",
         "nodes": [
           {
-            "id": 12862,
+            "id": 12879,
             "nodeType": "FunctionDefinition",
-            "src": "297:123:36",
+            "src": "297:123:37",
             "nodes": [],
             "body": {
-              "id": 12861,
+              "id": 12878,
               "nodeType": "Block",
-              "src": "390:30:36",
+              "src": "390:30:37",
               "nodes": [],
               "statements": [
                 {
                   "expression": {
-                    "id": 12859,
+                    "id": 12876,
                     "name": "amount",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 12851,
-                    "src": "407:6:36",
+                    "referencedDeclaration": 12868,
+                    "src": "407:6:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 12858,
-                  "id": 12860,
+                  "functionReturnParameters": 12875,
+                  "id": 12877,
                   "nodeType": "Return",
-                  "src": "400:13:36"
+                  "src": "400:13:37"
                 }
               ]
             },
             "baseFunctions": [
-              16633
+              16650
             ],
             "documentation": {
-              "id": 12849,
+              "id": 12866,
               "nodeType": "StructuredDocumentation",
-              "src": "271:21:36",
+              "src": "271:21:37",
               "text": "@inheritdoc IPAMM"
             },
             "functionSelector": "616a1ed9",
@@ -596,26 +596,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "computeMintAmount",
-            "nameLocation": "306:17:36",
+            "nameLocation": "306:17:37",
             "overrides": {
-              "id": 12855,
+              "id": 12872,
               "nodeType": "OverrideSpecifier",
               "overrides": [],
-              "src": "363:8:36"
+              "src": "363:8:37"
             },
             "parameters": {
-              "id": 12854,
+              "id": 12871,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 12851,
+                  "id": 12868,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "332:6:36",
+                  "nameLocation": "332:6:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 12862,
-                  "src": "324:14:36",
+                  "scope": 12879,
+                  "src": "324:14:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -623,10 +623,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 12850,
+                    "id": 12867,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "324:7:36",
+                    "src": "324:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -636,13 +636,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 12853,
+                  "id": 12870,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 12862,
-                  "src": "340:7:36",
+                  "scope": 12879,
+                  "src": "340:7:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -650,10 +650,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 12852,
+                    "id": 12869,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "340:7:36",
+                    "src": "340:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -662,21 +662,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "323:25:36"
+              "src": "323:25:37"
             },
             "returnParameters": {
-              "id": 12858,
+              "id": 12875,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 12857,
+                  "id": 12874,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 12862,
-                  "src": "381:7:36",
+                  "scope": 12879,
+                  "src": "381:7:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -684,10 +684,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 12856,
+                    "id": 12873,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "381:7:36",
+                    "src": "381:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -696,51 +696,51 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "380:9:36"
+              "src": "380:9:37"
             },
-            "scope": 12914,
+            "scope": 12931,
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 12876,
+            "id": 12893,
             "nodeType": "FunctionDefinition",
-            "src": "452:110:36",
+            "src": "452:110:37",
             "nodes": [],
             "body": {
-              "id": 12875,
+              "id": 12892,
               "nodeType": "Block",
-              "src": "532:30:36",
+              "src": "532:30:37",
               "nodes": [],
               "statements": [
                 {
                   "expression": {
-                    "id": 12873,
+                    "id": 12890,
                     "name": "amount",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 12865,
-                    "src": "549:6:36",
+                    "referencedDeclaration": 12882,
+                    "src": "549:6:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 12872,
-                  "id": 12874,
+                  "functionReturnParameters": 12889,
+                  "id": 12891,
                   "nodeType": "Return",
-                  "src": "542:13:36"
+                  "src": "542:13:37"
                 }
               ]
             },
             "baseFunctions": [
-              16643
+              16660
             ],
             "documentation": {
-              "id": 12863,
+              "id": 12880,
               "nodeType": "StructuredDocumentation",
-              "src": "426:21:36",
+              "src": "426:21:37",
               "text": "@inheritdoc IPAMM"
             },
             "functionSelector": "1b2ef1ca",
@@ -748,330 +748,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "mint",
-            "nameLocation": "461:4:36",
+            "nameLocation": "461:4:37",
             "overrides": {
-              "id": 12869,
-              "nodeType": "OverrideSpecifier",
-              "overrides": [],
-              "src": "505:8:36"
-            },
-            "parameters": {
-              "id": 12868,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 12865,
-                  "mutability": "mutable",
-                  "name": "amount",
-                  "nameLocation": "474:6:36",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 12876,
-                  "src": "466:14:36",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 12864,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "466:7:36",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 12867,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 12876,
-                  "src": "482:7:36",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 12866,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "482:7:36",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "465:25:36"
-            },
-            "returnParameters": {
-              "id": 12872,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 12871,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 12876,
-                  "src": "523:7:36",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 12870,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "523:7:36",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "522:9:36"
-            },
-            "scope": 12914,
-            "stateMutability": "pure",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 12890,
-            "nodeType": "FunctionDefinition",
-            "src": "594:125:36",
-            "nodes": [],
-            "body": {
-              "id": 12889,
-              "nodeType": "Block",
-              "src": "689:30:36",
-              "nodes": [],
-              "statements": [
-                {
-                  "expression": {
-                    "id": 12887,
-                    "name": "amount",
-                    "nodeType": "Identifier",
-                    "overloadedDeclarations": [],
-                    "referencedDeclaration": 12879,
-                    "src": "706:6:36",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "functionReturnParameters": 12886,
-                  "id": 12888,
-                  "nodeType": "Return",
-                  "src": "699:13:36"
-                }
-              ]
-            },
-            "baseFunctions": [
-              16653
-            ],
-            "documentation": {
-              "id": 12877,
-              "nodeType": "StructuredDocumentation",
-              "src": "568:21:36",
-              "text": "@inheritdoc IPAMM"
-            },
-            "functionSelector": "71db63ec",
-            "implemented": true,
-            "kind": "function",
-            "modifiers": [],
-            "name": "computeRedeemAmount",
-            "nameLocation": "603:19:36",
-            "overrides": {
-              "id": 12883,
-              "nodeType": "OverrideSpecifier",
-              "overrides": [],
-              "src": "662:8:36"
-            },
-            "parameters": {
-              "id": 12882,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 12879,
-                  "mutability": "mutable",
-                  "name": "amount",
-                  "nameLocation": "631:6:36",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 12890,
-                  "src": "623:14:36",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 12878,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "623:7:36",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 12881,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 12890,
-                  "src": "639:7:36",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 12880,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "639:7:36",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "622:25:36"
-            },
-            "returnParameters": {
               "id": 12886,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 12885,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 12890,
-                  "src": "680:7:36",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 12884,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "680:7:36",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "679:9:36"
-            },
-            "scope": 12914,
-            "stateMutability": "pure",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 12904,
-            "nodeType": "FunctionDefinition",
-            "src": "751:112:36",
-            "nodes": [],
-            "body": {
-              "id": 12903,
-              "nodeType": "Block",
-              "src": "833:30:36",
-              "nodes": [],
-              "statements": [
-                {
-                  "expression": {
-                    "id": 12901,
-                    "name": "amount",
-                    "nodeType": "Identifier",
-                    "overloadedDeclarations": [],
-                    "referencedDeclaration": 12893,
-                    "src": "850:6:36",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "functionReturnParameters": 12900,
-                  "id": 12902,
-                  "nodeType": "Return",
-                  "src": "843:13:36"
-                }
-              ]
-            },
-            "baseFunctions": [
-              16663
-            ],
-            "documentation": {
-              "id": 12891,
-              "nodeType": "StructuredDocumentation",
-              "src": "725:21:36",
-              "text": "@inheritdoc IPAMM"
-            },
-            "functionSelector": "7cbc2373",
-            "implemented": true,
-            "kind": "function",
-            "modifiers": [],
-            "name": "redeem",
-            "nameLocation": "760:6:36",
-            "overrides": {
-              "id": 12897,
               "nodeType": "OverrideSpecifier",
               "overrides": [],
-              "src": "806:8:36"
+              "src": "505:8:37"
             },
             "parameters": {
-              "id": 12896,
+              "id": 12885,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 12893,
+                  "id": 12882,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "775:6:36",
+                  "nameLocation": "474:6:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 12904,
-                  "src": "767:14:36",
+                  "scope": 12893,
+                  "src": "466:14:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1079,10 +775,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 12892,
+                    "id": 12881,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "767:7:36",
+                    "src": "466:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1092,13 +788,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 12895,
+                  "id": 12884,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 12904,
-                  "src": "783:7:36",
+                  "scope": 12893,
+                  "src": "482:7:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1106,10 +802,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 12894,
+                    "id": 12883,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "783:7:36",
+                    "src": "482:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1118,21 +814,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "766:25:36"
+              "src": "465:25:37"
             },
             "returnParameters": {
-              "id": 12900,
+              "id": 12889,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 12899,
+                  "id": 12888,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 12904,
-                  "src": "824:7:36",
+                  "scope": 12893,
+                  "src": "523:7:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1140,10 +836,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 12898,
+                    "id": 12887,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "824:7:36",
+                    "src": "523:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1152,29 +848,41 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "823:9:36"
+              "src": "522:9:37"
             },
-            "scope": 12914,
+            "scope": 12931,
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 12913,
+            "id": 12907,
             "nodeType": "FunctionDefinition",
-            "src": "932:84:36",
+            "src": "594:125:37",
             "nodes": [],
             "body": {
-              "id": 12912,
+              "id": 12906,
               "nodeType": "Block",
-              "src": "993:23:36",
+              "src": "689:30:37",
               "nodes": [],
               "statements": [
                 {
-                  "functionReturnParameters": 12910,
-                  "id": 12911,
+                  "expression": {
+                    "id": 12904,
+                    "name": "amount",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 12896,
+                    "src": "706:6:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 12903,
+                  "id": 12905,
                   "nodeType": "Return",
-                  "src": "1003:7:36"
+                  "src": "699:13:37"
                 }
               ]
             },
@@ -1182,9 +890,301 @@
               16670
             ],
             "documentation": {
-              "id": 12905,
+              "id": 12894,
               "nodeType": "StructuredDocumentation",
-              "src": "869:58:36",
+              "src": "568:21:37",
+              "text": "@inheritdoc IPAMM"
+            },
+            "functionSelector": "71db63ec",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "computeRedeemAmount",
+            "nameLocation": "603:19:37",
+            "overrides": {
+              "id": 12900,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "662:8:37"
+            },
+            "parameters": {
+              "id": 12899,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12896,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "631:6:37",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12907,
+                  "src": "623:14:37",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12895,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "623:7:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12898,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12907,
+                  "src": "639:7:37",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12897,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "639:7:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "622:25:37"
+            },
+            "returnParameters": {
+              "id": 12903,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12902,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12907,
+                  "src": "680:7:37",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12901,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "680:7:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "679:9:37"
+            },
+            "scope": 12931,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 12921,
+            "nodeType": "FunctionDefinition",
+            "src": "751:112:37",
+            "nodes": [],
+            "body": {
+              "id": 12920,
+              "nodeType": "Block",
+              "src": "833:30:37",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 12918,
+                    "name": "amount",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 12910,
+                    "src": "850:6:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 12917,
+                  "id": 12919,
+                  "nodeType": "Return",
+                  "src": "843:13:37"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16680
+            ],
+            "documentation": {
+              "id": 12908,
+              "nodeType": "StructuredDocumentation",
+              "src": "725:21:37",
+              "text": "@inheritdoc IPAMM"
+            },
+            "functionSelector": "7cbc2373",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "redeem",
+            "nameLocation": "760:6:37",
+            "overrides": {
+              "id": 12914,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "806:8:37"
+            },
+            "parameters": {
+              "id": 12913,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12910,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "775:6:37",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12921,
+                  "src": "767:14:37",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12909,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "767:7:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12912,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12921,
+                  "src": "783:7:37",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12911,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "783:7:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "766:25:37"
+            },
+            "returnParameters": {
+              "id": 12917,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12916,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12921,
+                  "src": "824:7:37",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12915,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "824:7:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "823:9:37"
+            },
+            "scope": 12931,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 12930,
+            "nodeType": "FunctionDefinition",
+            "src": "932:84:37",
+            "nodes": [],
+            "body": {
+              "id": 12929,
+              "nodeType": "Block",
+              "src": "993:23:37",
+              "nodes": [],
+              "statements": [
+                {
+                  "functionReturnParameters": 12927,
+                  "id": 12928,
+                  "nodeType": "Return",
+                  "src": "1003:7:37"
+                }
+              ]
+            },
+            "baseFunctions": [
+              16687
+            ],
+            "documentation": {
+              "id": 12922,
+              "nodeType": "StructuredDocumentation",
+              "src": "869:58:37",
               "text": "@notice Allows for the system parameters to be updated"
             },
             "functionSelector": "9e590854",
@@ -1192,58 +1192,58 @@
             "kind": "function",
             "modifiers": [],
             "name": "setSystemParams",
-            "nameLocation": "941:15:36",
+            "nameLocation": "941:15:37",
             "parameters": {
-              "id": 12909,
+              "id": 12926,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 12908,
+                  "id": 12925,
                   "mutability": "mutable",
                   "name": "params",
-                  "nameLocation": "971:6:36",
+                  "nameLocation": "971:6:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 12913,
-                  "src": "957:20:36",
+                  "scope": 12930,
+                  "src": "957:20:37",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Params_$16623_memory_ptr",
+                    "typeIdentifier": "t_struct$_Params_$16640_memory_ptr",
                     "typeString": "struct IPAMM.Params"
                   },
                   "typeName": {
-                    "id": 12907,
+                    "id": 12924,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 12906,
+                      "id": 12923,
                       "name": "Params",
                       "nameLocations": [
-                        "957:6:36"
+                        "957:6:37"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16623,
-                      "src": "957:6:36"
+                      "referencedDeclaration": 16640,
+                      "src": "957:6:37"
                     },
-                    "referencedDeclaration": 16623,
-                    "src": "957:6:36",
+                    "referencedDeclaration": 16640,
+                    "src": "957:6:37",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Params_$16623_storage_ptr",
+                      "typeIdentifier": "t_struct$_Params_$16640_storage_ptr",
                       "typeString": "struct IPAMM.Params"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "956:22:36"
+              "src": "956:22:37"
             },
             "returnParameters": {
-              "id": 12910,
+              "id": 12927,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "993:0:36"
+              "src": "993:0:37"
             },
-            "scope": 12914,
+            "scope": 12931,
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "external"
@@ -1253,18 +1253,18 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 12847,
+              "id": 12864,
               "name": "IPAMM",
               "nameLocations": [
-                "259:5:36"
+                "259:5:37"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 16671,
-              "src": "259:5:36"
+              "referencedDeclaration": 16688,
+              "src": "259:5:37"
             },
-            "id": 12848,
+            "id": 12865,
             "nodeType": "InheritanceSpecifier",
-            "src": "259:5:36"
+            "src": "259:5:37"
           }
         ],
         "canonicalName": "MockPAMM",
@@ -1272,16 +1272,16 @@
         "contractKind": "contract",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          12914,
-          16671
+          12931,
+          16688
         ],
         "name": "MockPAMM",
-        "nameLocation": "247:8:36",
-        "scope": 12915,
+        "nameLocation": "247:8:37",
+        "scope": 12932,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 36
+  "id": 37
 }

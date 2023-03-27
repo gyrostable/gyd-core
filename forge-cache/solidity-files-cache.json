@@ -119,7 +119,7 @@
       }
     },
     "contracts/GydToken.sol": {
-      "lastModificationDate": 1674036628973,
+      "lastModificationDate": 1678711258849,
       "contentHash": "c4bb6ed8d77c28281b0721606f2be1b9",
       "sourceName": "contracts/GydToken.sol",
       "solcConfig": {
@@ -251,8 +251,8 @@
       }
     },
     "contracts/Motherboard.sol": {
-      "lastModificationDate": 1678132235600,
-      "contentHash": "1765831cabbc88f4c268d924b24fd4f4",
+      "lastModificationDate": 1679926034609,
+      "contentHash": "3ae8a33dd82ae6bb23d26361f8197d99",
       "sourceName": "contracts/Motherboard.sol",
       "solcConfig": {
         "settings": {
@@ -311,22 +311,6 @@
         "interfaces/balancer/IWETH.sol",
         "interfaces/oracles/IBatchVaultPriceOracle.sol",
         "interfaces/oracles/IUSDPriceOracle.sol",
-        "lib/forge-std/lib/ds-test/src/test.sol",
-        "lib/forge-std/src/Base.sol",
-        "lib/forge-std/src/StdAssertions.sol",
-        "lib/forge-std/src/StdChains.sol",
-        "lib/forge-std/src/StdCheats.sol",
-        "lib/forge-std/src/StdError.sol",
-        "lib/forge-std/src/StdInvariant.sol",
-        "lib/forge-std/src/StdJson.sol",
-        "lib/forge-std/src/StdMath.sol",
-        "lib/forge-std/src/StdStorage.sol",
-        "lib/forge-std/src/StdUtils.sol",
-        "lib/forge-std/src/Test.sol",
-        "lib/forge-std/src/Vm.sol",
-        "lib/forge-std/src/console.sol",
-        "lib/forge-std/src/console2.sol",
-        "lib/forge-std/src/interfaces/IMulticall3.sol",
         "lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol",
@@ -352,7 +336,7 @@
       }
     },
     "contracts/PrimaryAMMV1.sol": {
-      "lastModificationDate": 1674036628974,
+      "lastModificationDate": 1678716540698,
       "contentHash": "24db70ee3985212c99ef090022340cbe",
       "sourceName": "contracts/PrimaryAMMV1.sol",
       "solcConfig": {
@@ -488,7 +472,7 @@
       }
     },
     "contracts/ReserveManager.sol": {
-      "lastModificationDate": 1677240909388,
+      "lastModificationDate": 1678716542686,
       "contentHash": "dc4251633cff3b3eaec23889545b31e8",
       "sourceName": "contracts/ReserveManager.sol",
       "solcConfig": {
@@ -1245,7 +1229,7 @@
       }
     },
     "contracts/oracles/CheckedPriceOracle.sol": {
-      "lastModificationDate": 1674036628976,
+      "lastModificationDate": 1678716544481,
       "contentHash": "66c5a2a53b4b4a1d7b3f2f30214ecc47",
       "sourceName": "contracts/oracles/CheckedPriceOracle.sol",
       "solcConfig": {
@@ -1787,8 +1771,92 @@
         }
       }
     },
+    "contracts/read_only/ReserveSystemRead.sol": {
+      "lastModificationDate": 1678793530010,
+      "contentHash": "9f753d6e87eb86a4f266a6514bffa45d",
+      "sourceName": "contracts/read_only/ReserveSystemRead.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/PrimaryAMMV1.sol",
+        "contracts/ReserveManager.sol",
+        "contracts/auth/Governable.sol",
+        "contracts/auth/GovernableBase.sol",
+        "interfaces/IAssetRegistry.sol",
+        "interfaces/ICapAuthentication.sol",
+        "interfaces/IFeeBank.sol",
+        "interfaces/IFeeHandler.sol",
+        "interfaces/IGYDToken.sol",
+        "interfaces/IGovernable.sol",
+        "interfaces/IGyroConfig.sol",
+        "interfaces/IGyroVault.sol",
+        "interfaces/IMotherboard.sol",
+        "interfaces/IPAMM.sol",
+        "interfaces/IReserve.sol",
+        "interfaces/IReserveManager.sol",
+        "interfaces/ISafetyCheck.sol",
+        "interfaces/IVaultRegistry.sol",
+        "interfaces/IVaultWeightManager.sol",
+        "interfaces/balancer/IAsset.sol",
+        "interfaces/balancer/IAuthorizer.sol",
+        "interfaces/balancer/IFlashLoanRecipient.sol",
+        "interfaces/balancer/ISignaturesValidator.sol",
+        "interfaces/balancer/ITemporarilyPausable.sol",
+        "interfaces/balancer/IVault.sol",
+        "interfaces/balancer/IWETH.sol",
+        "interfaces/oracles/IBatchVaultPriceOracle.sol",
+        "interfaces/oracles/IUSDPriceOracle.sol",
+        "lib/openzeppelin-contracts/contracts/access/Ownable.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Context.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "libraries/ConfigHelpers.sol",
+        "libraries/ConfigKeys.sol",
+        "libraries/DataTypes.sol",
+        "libraries/Errors.sol",
+        "libraries/FixedPoint.sol",
+        "libraries/Flow.sol",
+        "libraries/LogExpMath.sol",
+        "libraries/Vaults.sol"
+      ],
+      "versionRequirement": "^0.8.4",
+      "artifacts": {
+        "ReserveSystemRead": {
+          "0.8.17+commit.8df45f5f.Darwin.appleclang": "ReserveSystemRead.sol/ReserveSystemRead.json"
+        }
+      }
+    },
     "contracts/safety/ReserveSafetyManager.sol": {
-      "lastModificationDate": 1678099753620,
+      "lastModificationDate": 1678968388330,
       "contentHash": "7c783338228333a5ab067d93f9dfb450",
       "sourceName": "contracts/safety/ReserveSafetyManager.sol",
       "solcConfig": {
@@ -2060,8 +2128,8 @@
       }
     },
     "contracts/testing/MockGyroVault.sol": {
-      "lastModificationDate": 1678129823979,
-      "contentHash": "aa6afc4e1329d8a1681e5c84f50014bd",
+      "lastModificationDate": 1678556575742,
+      "contentHash": "fd585df72d574a17ad6793d62d83bf34",
       "sourceName": "contracts/testing/MockGyroVault.sol",
       "solcConfig": {
         "settings": {
@@ -2693,7 +2761,7 @@
       }
     },
     "contracts/testing/TestingReserveSafetyManager.sol": {
-      "lastModificationDate": 1678094183470,
+      "lastModificationDate": 1678968381615,
       "contentHash": "eb8d1e52d74a2087e2fe1e6ea2ef9f05",
       "sourceName": "contracts/testing/TestingReserveSafetyManager.sol",
       "solcConfig": {
@@ -3800,7 +3868,7 @@
       }
     },
     "interfaces/IMotherboard.sol": {
-      "lastModificationDate": 1674036628982,
+      "lastModificationDate": 1678711258850,
       "contentHash": "635c62b71889cbc97c561b29c29263b0",
       "sourceName": "interfaces/IMotherboard.sol",
       "solcConfig": {
@@ -5060,7 +5128,7 @@
       }
     },
     "lib/forge-std/lib/ds-test/src/test.sol": {
-      "lastModificationDate": 1677240926095,
+      "lastModificationDate": 1678711258853,
       "contentHash": "962996f0e05d5218857a538a62d7c47e",
       "sourceName": "lib/forge-std/lib/ds-test/src/test.sol",
       "solcConfig": {
@@ -5100,7 +5168,7 @@
       }
     },
     "lib/forge-std/src/Base.sol": {
-      "lastModificationDate": 1677240926095,
+      "lastModificationDate": 1678711258853,
       "contentHash": "8f04bbbb2c16f79e14fdc321695a8ec2",
       "sourceName": "lib/forge-std/src/Base.sol",
       "solcConfig": {
@@ -5149,7 +5217,7 @@
       }
     },
     "lib/forge-std/src/StdAssertions.sol": {
-      "lastModificationDate": 1677240926095,
+      "lastModificationDate": 1678711258853,
       "contentHash": "5bc6a90903a666d831370fa46838ed73",
       "sourceName": "lib/forge-std/src/StdAssertions.sol",
       "solcConfig": {
@@ -5192,7 +5260,7 @@
       }
     },
     "lib/forge-std/src/StdChains.sol": {
-      "lastModificationDate": 1677240926095,
+      "lastModificationDate": 1678711258853,
       "contentHash": "f73fef006f384b898c755b0e404b84a2",
       "sourceName": "lib/forge-std/src/StdChains.sol",
       "solcConfig": {
@@ -5234,7 +5302,7 @@
       }
     },
     "lib/forge-std/src/StdCheats.sol": {
-      "lastModificationDate": 1677240926096,
+      "lastModificationDate": 1678711258854,
       "contentHash": "027b46591bff2397c69867fd06ddc0c1",
       "sourceName": "lib/forge-std/src/StdCheats.sol",
       "solcConfig": {
@@ -5280,7 +5348,7 @@
       }
     },
     "lib/forge-std/src/StdError.sol": {
-      "lastModificationDate": 1677240926096,
+      "lastModificationDate": 1678711258854,
       "contentHash": "64c896e1276a291776e5ea5aecb3870a",
       "sourceName": "lib/forge-std/src/StdError.sol",
       "solcConfig": {
@@ -5320,7 +5388,7 @@
       }
     },
     "lib/forge-std/src/StdInvariant.sol": {
-      "lastModificationDate": 1677240926096,
+      "lastModificationDate": 1678711258854,
       "contentHash": "12c06010ec43ce935ed209d5aca30828",
       "sourceName": "lib/forge-std/src/StdInvariant.sol",
       "solcConfig": {
@@ -5360,7 +5428,7 @@
       }
     },
     "lib/forge-std/src/StdJson.sol": {
-      "lastModificationDate": 1677240926096,
+      "lastModificationDate": 1678711258854,
       "contentHash": "2e1d13674e152408867795362d833c24",
       "sourceName": "lib/forge-std/src/StdJson.sol",
       "solcConfig": {
@@ -5402,7 +5470,7 @@
       }
     },
     "lib/forge-std/src/StdMath.sol": {
-      "lastModificationDate": 1677240926096,
+      "lastModificationDate": 1678711258854,
       "contentHash": "9da8f453eba6bb98f3d75bc6822bfb29",
       "sourceName": "lib/forge-std/src/StdMath.sol",
       "solcConfig": {
@@ -5442,7 +5510,7 @@
       }
     },
     "lib/forge-std/src/StdStorage.sol": {
-      "lastModificationDate": 1677240926096,
+      "lastModificationDate": 1678711258854,
       "contentHash": "3cb9868082df39a53927db09dbc21f23",
       "sourceName": "lib/forge-std/src/StdStorage.sol",
       "solcConfig": {
@@ -5487,7 +5555,7 @@
       }
     },
     "lib/forge-std/src/StdUtils.sol": {
-      "lastModificationDate": 1677240926096,
+      "lastModificationDate": 1678711258854,
       "contentHash": "45fc08daaa17b7908fa5de7d758d8c86",
       "sourceName": "lib/forge-std/src/StdUtils.sol",
       "solcConfig": {
@@ -5530,7 +5598,7 @@
       }
     },
     "lib/forge-std/src/Test.sol": {
-      "lastModificationDate": 1677240926096,
+      "lastModificationDate": 1678711258854,
       "contentHash": "095f745449cb5b6ff27a2e53892b648f",
       "sourceName": "lib/forge-std/src/Test.sol",
       "solcConfig": {
@@ -5586,7 +5654,7 @@
       }
     },
     "lib/forge-std/src/Vm.sol": {
-      "lastModificationDate": 1677240926097,
+      "lastModificationDate": 1678711258854,
       "contentHash": "86d01713430fa0877970a6ed8f99dc78",
       "sourceName": "lib/forge-std/src/Vm.sol",
       "solcConfig": {
@@ -5629,7 +5697,7 @@
       }
     },
     "lib/forge-std/src/console.sol": {
-      "lastModificationDate": 1677240926098,
+      "lastModificationDate": 1678711258855,
       "contentHash": "100b8a33b917da1147740d7ab8b0ded3",
       "sourceName": "lib/forge-std/src/console.sol",
       "solcConfig": {
@@ -5669,7 +5737,7 @@
       }
     },
     "lib/forge-std/src/console2.sol": {
-      "lastModificationDate": 1677240926099,
+      "lastModificationDate": 1678711258855,
       "contentHash": "2096b4e5f252c5df9909cccbe3d2da2e",
       "sourceName": "lib/forge-std/src/console2.sol",
       "solcConfig": {
@@ -5709,7 +5777,7 @@
       }
     },
     "lib/forge-std/src/interfaces/IMulticall3.sol": {
-      "lastModificationDate": 1677240926099,
+      "lastModificationDate": 1678711258855,
       "contentHash": "7b131ca1ca32ef6378b7b9ad5488b901",
       "sourceName": "lib/forge-std/src/interfaces/IMulticall3.sol",
       "solcConfig": {
@@ -7230,7 +7298,7 @@
       }
     },
     "libraries/ConfigHelpers.sol": {
-      "lastModificationDate": 1677240909389,
+      "lastModificationDate": 1678711258857,
       "contentHash": "039f2a1855b8867938247262af4b5346",
       "sourceName": "libraries/ConfigHelpers.sol",
       "solcConfig": {
@@ -7305,7 +7373,7 @@
       }
     },
     "libraries/ConfigKeys.sol": {
-      "lastModificationDate": 1677240909389,
+      "lastModificationDate": 1678711258857,
       "contentHash": "3fd24b8bb5f43fbdc303ab8c96074dc2",
       "sourceName": "libraries/ConfigKeys.sol",
       "solcConfig": {
@@ -7848,8 +7916,8 @@
       }
     },
     "test/foundry/DryMint.t.sol": {
-      "lastModificationDate": 1678284535235,
-      "contentHash": "dd8ee044ad1b3097795e87083feec6b8",
+      "lastModificationDate": 1679926010967,
+      "contentHash": "e981705669ac335c7f16b08d103744ae",
       "sourceName": "test/foundry/DryMint.t.sol",
       "solcConfig": {
         "settings": {
@@ -7974,7 +8042,7 @@
       }
     },
     "test/foundry/ReserveSafetyManager.t.sol": {
-      "lastModificationDate": 1678099760295,
+      "lastModificationDate": 1678711259000,
       "contentHash": "c0a3c837b607e360817eff85d97204a7",
       "sourceName": "test/foundry/ReserveSafetyManager.t.sol",
       "solcConfig": {

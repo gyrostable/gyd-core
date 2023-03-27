@@ -565,34 +565,34 @@
   },
   "ast": {
     "absolutePath": "interfaces/oracles/IBatchVaultPriceOracle.sol",
-    "id": 17702,
+    "id": 17719,
     "exportedSymbols": {
       "DataTypes": [
-        54558
+        54575
       ],
       "IBatchVaultPriceOracle": [
-        17701
+        17718
       ],
       "IERC20": [
-        47570
+        47587
       ],
       "IERC20Metadata": [
-        47595
+        47612
       ],
       "IGyroVault": [
-        16453
+        16470
       ],
       "Vaults": [
-        58268
+        58285
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:592:93",
+    "src": "174:592:94",
     "nodes": [
       {
-        "id": 17675,
+        "id": 17692,
         "nodeType": "PragmaDirective",
-        "src": "174:23:93",
+        "src": "174:23:94",
         "nodes": [],
         "literals": [
           "solidity",
@@ -602,59 +602,59 @@
         ]
       },
       {
-        "id": 17676,
+        "id": 17693,
         "nodeType": "ImportDirective",
-        "src": "199:39:93",
+        "src": "199:39:94",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "../../libraries/DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 17702,
-        "sourceUnit": 54559,
+        "scope": 17719,
+        "sourceUnit": 54576,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 17677,
+        "id": 17694,
         "nodeType": "ImportDirective",
-        "src": "240:27:93",
+        "src": "240:27:94",
         "nodes": [],
         "absolutePath": "interfaces/IGyroVault.sol",
         "file": "../IGyroVault.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 17702,
-        "sourceUnit": 16454,
+        "scope": 17719,
+        "sourceUnit": 16471,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 17701,
+        "id": 17718,
         "nodeType": "ContractDefinition",
-        "src": "269:496:93",
+        "src": "269:496:94",
         "nodes": [
           {
-            "id": 17681,
+            "id": 17698,
             "nodeType": "EventDefinition",
-            "src": "308:59:93",
+            "src": "308:59:94",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "6a307a24f425432e870b96f8281754586de703b1ea0ed2d883134333b3a3bdf1",
             "name": "BatchPriceOracleChanged",
-            "nameLocation": "314:23:93",
+            "nameLocation": "314:23:94",
             "parameters": {
-              "id": 17680,
+              "id": 17697,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17679,
+                  "id": 17696,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "priceOracle",
-                  "nameLocation": "354:11:93",
+                  "nameLocation": "354:11:94",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17681,
-                  "src": "338:27:93",
+                  "scope": 17698,
+                  "src": "338:27:94",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -662,10 +662,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 17678,
+                    "id": 17695,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "338:7:93",
+                    "src": "338:7:94",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -675,56 +675,56 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "337:29:93"
+              "src": "337:29:94"
             }
           },
           {
-            "id": 17688,
+            "id": 17705,
             "nodeType": "EventDefinition",
-            "src": "372:90:93",
+            "src": "372:90:94",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "d992eaec24a9c32398c97bf68d6b13420cfa61ab8a600800cdd1c760d1fc7861",
             "name": "VaultPriceOracleChanged",
-            "nameLocation": "378:23:93",
+            "nameLocation": "378:23:94",
             "parameters": {
-              "id": 17687,
+              "id": 17704,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17684,
+                  "id": 17701,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "vaultType",
-                  "nameLocation": "422:9:93",
+                  "nameLocation": "422:9:94",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17688,
-                  "src": "402:29:93",
+                  "scope": 17705,
+                  "src": "402:29:94",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_Type_$58267",
+                    "typeIdentifier": "t_enum$_Type_$58284",
                     "typeString": "enum Vaults.Type"
                   },
                   "typeName": {
-                    "id": 17683,
+                    "id": 17700,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 17682,
+                      "id": 17699,
                       "name": "Vaults.Type",
                       "nameLocations": [
-                        "402:6:93",
-                        "409:4:93"
+                        "402:6:94",
+                        "409:4:94"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 58267,
-                      "src": "402:11:93"
+                      "referencedDeclaration": 58284,
+                      "src": "402:11:94"
                     },
-                    "referencedDeclaration": 58267,
-                    "src": "402:11:93",
+                    "referencedDeclaration": 58284,
+                    "src": "402:11:94",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_Type_$58267",
+                      "typeIdentifier": "t_enum$_Type_$58284",
                       "typeString": "enum Vaults.Type"
                     }
                   },
@@ -732,14 +732,14 @@
                 },
                 {
                   "constant": false,
-                  "id": 17686,
+                  "id": 17703,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "priceOracle",
-                  "nameLocation": "449:11:93",
+                  "nameLocation": "449:11:94",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17688,
-                  "src": "433:27:93",
+                  "scope": 17705,
+                  "src": "433:27:94",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -747,10 +747,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 17685,
+                    "id": 17702,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "433:7:93",
+                    "src": "433:7:94",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -760,18 +760,18 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "401:60:93"
+              "src": "401:60:94"
             }
           },
           {
-            "id": 17700,
+            "id": 17717,
             "nodeType": "FunctionDefinition",
-            "src": "621:142:93",
+            "src": "621:142:94",
             "nodes": [],
             "documentation": {
-              "id": 17689,
+              "id": 17706,
               "nodeType": "StructuredDocumentation",
-              "src": "468:148:93",
+              "src": "468:148:94",
               "text": "@notice Fetches the price of the vault token as well as the underlying tokens\n @return the same vaults info with the price data populated"
             },
             "functionSelector": "ccda1ef7",
@@ -779,116 +779,116 @@
             "kind": "function",
             "modifiers": [],
             "name": "fetchPricesUSD",
-            "nameLocation": "630:14:93",
+            "nameLocation": "630:14:94",
             "parameters": {
-              "id": 17694,
+              "id": 17711,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17693,
+                  "id": 17710,
                   "mutability": "mutable",
                   "name": "vaultsInfo",
-                  "nameLocation": "674:10:93",
+                  "nameLocation": "674:10:94",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17700,
-                  "src": "645:39:93",
+                  "scope": 17717,
+                  "src": "645:39:94",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54503_memory_ptr_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54520_memory_ptr_$dyn_memory_ptr",
                     "typeString": "struct DataTypes.VaultInfo[]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 17691,
+                      "id": 17708,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 17690,
+                        "id": 17707,
                         "name": "DataTypes.VaultInfo",
                         "nameLocations": [
-                          "645:9:93",
-                          "655:9:93"
+                          "645:9:94",
+                          "655:9:94"
                         ],
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 54503,
-                        "src": "645:19:93"
+                        "referencedDeclaration": 54520,
+                        "src": "645:19:94"
                       },
-                      "referencedDeclaration": 54503,
-                      "src": "645:19:93",
+                      "referencedDeclaration": 54520,
+                      "src": "645:19:94",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_VaultInfo_$54503_storage_ptr",
+                        "typeIdentifier": "t_struct$_VaultInfo_$54520_storage_ptr",
                         "typeString": "struct DataTypes.VaultInfo"
                       }
                     },
-                    "id": 17692,
+                    "id": 17709,
                     "nodeType": "ArrayTypeName",
-                    "src": "645:21:93",
+                    "src": "645:21:94",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54503_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54520_storage_$dyn_storage_ptr",
                       "typeString": "struct DataTypes.VaultInfo[]"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "644:41:93"
+              "src": "644:41:94"
             },
             "returnParameters": {
-              "id": 17699,
+              "id": 17716,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17698,
+                  "id": 17715,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17700,
-                  "src": "733:28:93",
+                  "scope": 17717,
+                  "src": "733:28:94",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54503_memory_ptr_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54520_memory_ptr_$dyn_memory_ptr",
                     "typeString": "struct DataTypes.VaultInfo[]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 17696,
+                      "id": 17713,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 17695,
+                        "id": 17712,
                         "name": "DataTypes.VaultInfo",
                         "nameLocations": [
-                          "733:9:93",
-                          "743:9:93"
+                          "733:9:94",
+                          "743:9:94"
                         ],
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 54503,
-                        "src": "733:19:93"
+                        "referencedDeclaration": 54520,
+                        "src": "733:19:94"
                       },
-                      "referencedDeclaration": 54503,
-                      "src": "733:19:93",
+                      "referencedDeclaration": 54520,
+                      "src": "733:19:94",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_VaultInfo_$54503_storage_ptr",
+                        "typeIdentifier": "t_struct$_VaultInfo_$54520_storage_ptr",
                         "typeString": "struct DataTypes.VaultInfo"
                       }
                     },
-                    "id": 17697,
+                    "id": 17714,
                     "nodeType": "ArrayTypeName",
-                    "src": "733:21:93",
+                    "src": "733:21:94",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54503_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_VaultInfo_$54520_storage_$dyn_storage_ptr",
                       "typeString": "struct DataTypes.VaultInfo[]"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "732:30:93"
+              "src": "732:30:94"
             },
-            "scope": 17701,
+            "scope": 17718,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -901,15 +901,15 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17701
+          17718
         ],
         "name": "IBatchVaultPriceOracle",
-        "nameLocation": "279:22:93",
-        "scope": 17702,
+        "nameLocation": "279:22:94",
+        "scope": 17719,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 93
+  "id": 94
 }

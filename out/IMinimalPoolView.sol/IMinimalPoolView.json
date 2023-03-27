@@ -149,19 +149,19 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
-    "id": 17063,
+    "id": 17080,
     "exportedSymbols": {
       "IMinimalPoolView": [
-        17062
+        17079
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:244:85",
+    "src": "174:244:86",
     "nodes": [
       {
-        "id": 17046,
+        "id": 17063,
         "nodeType": "PragmaDirective",
-        "src": "174:23:85",
+        "src": "174:23:86",
         "nodes": [],
         "literals": [
           "solidity",
@@ -171,40 +171,40 @@
         ]
       },
       {
-        "id": 17062,
+        "id": 17079,
         "nodeType": "ContractDefinition",
-        "src": "199:218:85",
+        "src": "199:218:86",
         "nodes": [
           {
-            "id": 17051,
+            "id": 17068,
             "nodeType": "FunctionDefinition",
-            "src": "232:56:85",
+            "src": "232:56:86",
             "nodes": [],
             "functionSelector": "c0ff1a15",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getInvariant",
-            "nameLocation": "241:12:85",
+            "nameLocation": "241:12:86",
             "parameters": {
-              "id": 17047,
+              "id": 17064,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "253:2:85"
+              "src": "253:2:86"
             },
             "returnParameters": {
-              "id": 17050,
+              "id": 17067,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17049,
+                  "id": 17066,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17051,
-                  "src": "279:7:85",
+                  "scope": 17068,
+                  "src": "279:7:86",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -212,10 +212,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17048,
+                    "id": 17065,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "279:7:85",
+                    "src": "279:7:86",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -224,43 +224,43 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "278:9:85"
+              "src": "278:9:86"
             },
-            "scope": 17062,
+            "scope": 17079,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 17056,
+            "id": 17073,
             "nodeType": "FunctionDefinition",
-            "src": "294:60:85",
+            "src": "294:60:86",
             "nodes": [],
             "functionSelector": "9b02cdde",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getLastInvariant",
-            "nameLocation": "303:16:85",
+            "nameLocation": "303:16:86",
             "parameters": {
-              "id": 17052,
+              "id": 17069,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "319:2:85"
+              "src": "319:2:86"
             },
             "returnParameters": {
-              "id": 17055,
+              "id": 17072,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17054,
+                  "id": 17071,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17056,
-                  "src": "345:7:85",
+                  "scope": 17073,
+                  "src": "345:7:86",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -268,10 +268,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17053,
+                    "id": 17070,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "345:7:85",
+                    "src": "345:7:86",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -280,43 +280,43 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "344:9:85"
+              "src": "344:9:86"
             },
-            "scope": 17062,
+            "scope": 17079,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 17061,
+            "id": 17078,
             "nodeType": "FunctionDefinition",
-            "src": "360:55:85",
+            "src": "360:55:86",
             "nodes": [],
             "functionSelector": "18160ddd",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "totalSupply",
-            "nameLocation": "369:11:85",
+            "nameLocation": "369:11:86",
             "parameters": {
-              "id": 17057,
+              "id": 17074,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "380:2:85"
+              "src": "380:2:86"
             },
             "returnParameters": {
-              "id": 17060,
+              "id": 17077,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17059,
+                  "id": 17076,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17061,
-                  "src": "406:7:85",
+                  "scope": 17078,
+                  "src": "406:7:86",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -324,10 +324,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17058,
+                    "id": 17075,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "406:7:85",
+                    "src": "406:7:86",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -336,9 +336,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "405:9:85"
+              "src": "405:9:86"
             },
-            "scope": 17062,
+            "scope": 17079,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -351,15 +351,15 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17062
+          17079
         ],
         "name": "IMinimalPoolView",
-        "nameLocation": "209:16:85",
-        "scope": 17063,
+        "nameLocation": "209:16:86",
+        "scope": 17080,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 85
+  "id": 86
 }

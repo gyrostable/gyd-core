@@ -131,19 +131,19 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IAuthorizer.sol",
-    "id": 16919,
+    "id": 16936,
     "exportedSymbols": {
       "IAuthorizer": [
-        16918
+        16935
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "176:311:81",
+    "src": "176:311:82",
     "nodes": [
       {
-        "id": 16905,
+        "id": 16922,
         "nodeType": "PragmaDirective",
-        "src": "176:23:81",
+        "src": "176:23:82",
         "nodes": [],
         "literals": [
           "solidity",
@@ -153,19 +153,19 @@
         ]
       },
       {
-        "id": 16918,
+        "id": 16935,
         "nodeType": "ContractDefinition",
-        "src": "201:285:81",
+        "src": "201:285:82",
         "nodes": [
           {
-            "id": 16917,
+            "id": 16934,
             "nodeType": "FunctionDefinition",
-            "src": "355:129:81",
+            "src": "355:129:82",
             "nodes": [],
             "documentation": {
-              "id": 16906,
+              "id": 16923,
               "nodeType": "StructuredDocumentation",
-              "src": "229:121:81",
+              "src": "229:121:82",
               "text": " @dev Returns true if `account` can perform the action described by `actionId` in the contract `where`."
             },
             "functionSelector": "9be2a884",
@@ -173,20 +173,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "canPerform",
-            "nameLocation": "364:10:81",
+            "nameLocation": "364:10:82",
             "parameters": {
-              "id": 16913,
+              "id": 16930,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16908,
+                  "id": 16925,
                   "mutability": "mutable",
                   "name": "actionId",
-                  "nameLocation": "392:8:81",
+                  "nameLocation": "392:8:82",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16917,
-                  "src": "384:16:81",
+                  "scope": 16934,
+                  "src": "384:16:82",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -194,10 +194,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 16907,
+                    "id": 16924,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "384:7:81",
+                    "src": "384:7:82",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -207,13 +207,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16910,
+                  "id": 16927,
                   "mutability": "mutable",
                   "name": "account",
-                  "nameLocation": "418:7:81",
+                  "nameLocation": "418:7:82",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16917,
-                  "src": "410:15:81",
+                  "scope": 16934,
+                  "src": "410:15:82",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -221,10 +221,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16909,
+                    "id": 16926,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "410:7:81",
+                    "src": "410:7:82",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -235,13 +235,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16912,
+                  "id": 16929,
                   "mutability": "mutable",
                   "name": "where",
-                  "nameLocation": "443:5:81",
+                  "nameLocation": "443:5:82",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16917,
-                  "src": "435:13:81",
+                  "scope": 16934,
+                  "src": "435:13:82",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -249,10 +249,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16911,
+                    "id": 16928,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "435:7:81",
+                    "src": "435:7:82",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -262,21 +262,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "374:80:81"
+              "src": "374:80:82"
             },
             "returnParameters": {
-              "id": 16916,
+              "id": 16933,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16915,
+                  "id": 16932,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16917,
-                  "src": "478:4:81",
+                  "scope": 16934,
+                  "src": "478:4:82",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -284,10 +284,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 16914,
+                    "id": 16931,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "478:4:81",
+                    "src": "478:4:82",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -296,9 +296,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "477:6:81"
+              "src": "477:6:82"
             },
-            "scope": 16918,
+            "scope": 16935,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -311,15 +311,15 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16918
+          16935
         ],
         "name": "IAuthorizer",
-        "nameLocation": "211:11:81",
-        "scope": 16919,
+        "nameLocation": "211:11:82",
+        "scope": 16936,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 81
+  "id": 82
 }

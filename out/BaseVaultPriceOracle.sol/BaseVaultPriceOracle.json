@@ -322,44 +322,44 @@
   },
   "ast": {
     "absolutePath": "contracts/oracles/BaseVaultPriceOracle.sol",
-    "id": 6472,
+    "id": 6433,
     "exportedSymbols": {
       "BaseVaultPriceOracle": [
-        6471
+        6432
       ],
       "DataTypes": [
-        54558
+        54575
       ],
       "Errors": [
-        56095
+        56112
       ],
       "FixedPoint": [
-        56465
+        56482
       ],
       "IERC20": [
-        47570
+        47587
       ],
       "IERC20Metadata": [
-        47595
+        47612
       ],
       "IGyroVault": [
-        16453
+        16470
       ],
       "IVaultPriceOracle": [
-        17766
+        17783
       ],
       "LogExpMath": [
-        57847
+        57864
       ],
       "Vaults": [
-        58268
+        58285
       ]
     },
     "nodeType": "SourceUnit",
     "src": "174:893:18",
     "nodes": [
       {
-        "id": 6422,
+        "id": 6383,
         "nodeType": "PragmaDirective",
         "src": "174:23:18",
         "nodes": [],
@@ -371,54 +371,54 @@
         ]
       },
       {
-        "id": 6423,
+        "id": 6384,
         "nodeType": "ImportDirective",
         "src": "199:56:18",
         "nodes": [],
         "absolutePath": "interfaces/oracles/IVaultPriceOracle.sol",
         "file": "../../interfaces/oracles/IVaultPriceOracle.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 6472,
-        "sourceUnit": 17767,
+        "scope": 6433,
+        "sourceUnit": 17784,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 6424,
+        "id": 6385,
         "nodeType": "ImportDirective",
         "src": "257:40:18",
         "nodes": [],
         "absolutePath": "libraries/FixedPoint.sol",
         "file": "../../libraries/FixedPoint.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 6472,
-        "sourceUnit": 56466,
+        "scope": 6433,
+        "sourceUnit": 56483,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 6471,
+        "id": 6432,
         "nodeType": "ContractDefinition",
         "src": "299:767:18",
         "nodes": [
           {
-            "id": 6429,
+            "id": 6390,
             "nodeType": "UsingForDirective",
             "src": "365:29:18",
             "nodes": [],
             "global": false,
             "libraryName": {
-              "id": 6427,
+              "id": 6388,
               "name": "FixedPoint",
               "nameLocations": [
                 "371:10:18"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 56465,
+              "referencedDeclaration": 56482,
               "src": "371:10:18"
             },
             "typeName": {
-              "id": 6428,
+              "id": 6389,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "386:7:18",
@@ -429,29 +429,29 @@
             }
           },
           {
-            "id": 6457,
+            "id": 6418,
             "nodeType": "FunctionDefinition",
             "src": "438:314:18",
             "nodes": [],
             "body": {
-              "id": 6456,
+              "id": 6417,
               "nodeType": "Block",
               "src": "592:160:18",
               "nodes": [],
               "statements": [
                 {
                   "assignments": [
-                    6443
+                    6404
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6443,
+                      "id": 6404,
                       "mutability": "mutable",
                       "name": "poolTokenPriceUSD",
                       "nameLocation": "610:17:18",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6456,
+                      "scope": 6417,
                       "src": "602:25:18",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -460,7 +460,7 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 6442,
+                        "id": 6403,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
                         "src": "602:7:18",
@@ -472,30 +472,30 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6448,
+                  "id": 6409,
                   "initialValue": {
                     "arguments": [
                       {
-                        "id": 6445,
+                        "id": 6406,
                         "name": "vault",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6433,
+                        "referencedDeclaration": 6394,
                         "src": "651:5:18",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IGyroVault_$16453",
+                          "typeIdentifier": "t_contract$_IGyroVault_$16470",
                           "typeString": "contract IGyroVault"
                         }
                       },
                       {
-                        "id": 6446,
+                        "id": 6407,
                         "name": "underlyingPricedTokens",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6437,
+                        "referencedDeclaration": 6398,
                         "src": "658:22:18",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr",
+                          "typeIdentifier": "t_array$_t_struct$_PricedToken_$54444_memory_ptr_$dyn_memory_ptr",
                           "typeString": "struct DataTypes.PricedToken memory[] memory"
                         }
                       }
@@ -503,26 +503,26 @@
                     "expression": {
                       "argumentTypes": [
                         {
-                          "typeIdentifier": "t_contract$_IGyroVault_$16453",
+                          "typeIdentifier": "t_contract$_IGyroVault_$16470",
                           "typeString": "contract IGyroVault"
                         },
                         {
-                          "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr",
+                          "typeIdentifier": "t_array$_t_struct$_PricedToken_$54444_memory_ptr_$dyn_memory_ptr",
                           "typeString": "struct DataTypes.PricedToken memory[] memory"
                         }
                       ],
-                      "id": 6444,
+                      "id": 6405,
                       "name": "getPoolTokenPriceUSD",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6470,
+                      "referencedDeclaration": 6431,
                       "src": "630:20:18",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_view$_t_contract$_IGyroVault_$16453_$_t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr_$returns$_t_uint256_$",
+                        "typeIdentifier": "t_function_internal_view$_t_contract$_IGyroVault_$16470_$_t_array$_t_struct$_PricedToken_$54444_memory_ptr_$dyn_memory_ptr_$returns$_t_uint256_$",
                         "typeString": "function (contract IGyroVault,struct DataTypes.PricedToken memory[] memory) view returns (uint256)"
                       }
                     },
-                    "id": 6447,
+                    "id": 6408,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -549,18 +549,18 @@
                         "expression": {
                           "argumentTypes": [],
                           "expression": {
-                            "id": 6451,
+                            "id": 6412,
                             "name": "vault",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6433,
+                            "referencedDeclaration": 6394,
                             "src": "724:5:18",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_IGyroVault_$16453",
+                              "typeIdentifier": "t_contract$_IGyroVault_$16470",
                               "typeString": "contract IGyroVault"
                             }
                           },
-                          "id": 6452,
+                          "id": 6413,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -568,14 +568,14 @@
                           "memberLocation": "730:12:18",
                           "memberName": "exchangeRate",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 16378,
+                          "referencedDeclaration": 16395,
                           "src": "724:18:18",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_view$__$returns$_t_uint256_$",
                             "typeString": "function () view external returns (uint256)"
                           }
                         },
-                        "id": 6453,
+                        "id": 6414,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -600,18 +600,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 6449,
+                        "id": 6410,
                         "name": "poolTokenPriceUSD",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6443,
+                        "referencedDeclaration": 6404,
                         "src": "698:17:18",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
                         }
                       },
-                      "id": 6450,
+                      "id": 6411,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -619,14 +619,14 @@
                       "memberLocation": "716:7:18",
                       "memberName": "mulDown",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 56149,
+                      "referencedDeclaration": 56166,
                       "src": "698:25:18",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
                         "typeString": "function (uint256,uint256) pure returns (uint256)"
                       }
                     },
-                    "id": 6454,
+                    "id": 6415,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -642,18 +642,18 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 6441,
-                  "id": 6455,
+                  "functionReturnParameters": 6402,
+                  "id": 6416,
                   "nodeType": "Return",
                   "src": "691:54:18"
                 }
               ]
             },
             "baseFunctions": [
-              17765
+              17782
             ],
             "documentation": {
-              "id": 6430,
+              "id": 6391,
               "nodeType": "StructuredDocumentation",
               "src": "400:33:18",
               "text": "@inheritdoc IVaultPriceOracle"
@@ -665,41 +665,41 @@
             "name": "getPriceUSD",
             "nameLocation": "447:11:18",
             "parameters": {
-              "id": 6438,
+              "id": 6399,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6433,
+                  "id": 6394,
                   "mutability": "mutable",
                   "name": "vault",
                   "nameLocation": "470:5:18",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6457,
+                  "scope": 6418,
                   "src": "459:16:18",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroVault_$16453",
+                    "typeIdentifier": "t_contract$_IGyroVault_$16470",
                     "typeString": "contract IGyroVault"
                   },
                   "typeName": {
-                    "id": 6432,
+                    "id": 6393,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 6431,
+                      "id": 6392,
                       "name": "IGyroVault",
                       "nameLocations": [
                         "459:10:18"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16453,
+                      "referencedDeclaration": 16470,
                       "src": "459:10:18"
                     },
-                    "referencedDeclaration": 16453,
+                    "referencedDeclaration": 16470,
                     "src": "459:10:18",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroVault_$16453",
+                      "typeIdentifier": "t_contract$_IGyroVault_$16470",
                       "typeString": "contract IGyroVault"
                     }
                   },
@@ -707,46 +707,46 @@
                 },
                 {
                   "constant": false,
-                  "id": 6437,
+                  "id": 6398,
                   "mutability": "mutable",
                   "name": "underlyingPricedTokens",
                   "nameLocation": "508:22:18",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6457,
+                  "scope": 6418,
                   "src": "477:53:18",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54444_memory_ptr_$dyn_memory_ptr",
                     "typeString": "struct DataTypes.PricedToken[]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6435,
+                      "id": 6396,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 6434,
+                        "id": 6395,
                         "name": "DataTypes.PricedToken",
                         "nameLocations": [
                           "477:9:18",
                           "487:11:18"
                         ],
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 54427,
+                        "referencedDeclaration": 54444,
                         "src": "477:21:18"
                       },
-                      "referencedDeclaration": 54427,
+                      "referencedDeclaration": 54444,
                       "src": "477:21:18",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_PricedToken_$54427_storage_ptr",
+                        "typeIdentifier": "t_struct$_PricedToken_$54444_storage_ptr",
                         "typeString": "struct DataTypes.PricedToken"
                       }
                     },
-                    "id": 6436,
+                    "id": 6397,
                     "nodeType": "ArrayTypeName",
                     "src": "477:23:18",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_PricedToken_$54444_storage_$dyn_storage_ptr",
                       "typeString": "struct DataTypes.PricedToken[]"
                     }
                   },
@@ -756,17 +756,17 @@
               "src": "458:73:18"
             },
             "returnParameters": {
-              "id": 6441,
+              "id": 6402,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6440,
+                  "id": 6401,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6457,
+                  "scope": 6418,
                   "src": "579:7:18",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -775,7 +775,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6439,
+                    "id": 6400,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "579:7:18",
@@ -789,18 +789,18 @@
               ],
               "src": "578:9:18"
             },
-            "scope": 6471,
+            "scope": 6432,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 6470,
+            "id": 6431,
             "nodeType": "FunctionDefinition",
             "src": "894:170:18",
             "nodes": [],
             "documentation": {
-              "id": 6458,
+              "id": 6419,
               "nodeType": "StructuredDocumentation",
               "src": "758:131:18",
               "text": "@notice returns the price of the underlying pool token (e.g. BPT token)\n rather than the price of the vault token itself"
@@ -812,41 +812,41 @@
             "name": "getPoolTokenPriceUSD",
             "nameLocation": "903:20:18",
             "parameters": {
-              "id": 6466,
+              "id": 6427,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6461,
+                  "id": 6422,
                   "mutability": "mutable",
                   "name": "vaultAddress",
                   "nameLocation": "944:12:18",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6470,
+                  "scope": 6431,
                   "src": "933:23:18",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroVault_$16453",
+                    "typeIdentifier": "t_contract$_IGyroVault_$16470",
                     "typeString": "contract IGyroVault"
                   },
                   "typeName": {
-                    "id": 6460,
+                    "id": 6421,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 6459,
+                      "id": 6420,
                       "name": "IGyroVault",
                       "nameLocations": [
                         "933:10:18"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16453,
+                      "referencedDeclaration": 16470,
                       "src": "933:10:18"
                     },
-                    "referencedDeclaration": 16453,
+                    "referencedDeclaration": 16470,
                     "src": "933:10:18",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroVault_$16453",
+                      "typeIdentifier": "t_contract$_IGyroVault_$16470",
                       "typeString": "contract IGyroVault"
                     }
                   },
@@ -854,46 +854,46 @@
                 },
                 {
                   "constant": false,
-                  "id": 6465,
+                  "id": 6426,
                   "mutability": "mutable",
                   "name": "underlyingPricedTokens",
                   "nameLocation": "997:22:18",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6470,
+                  "scope": 6431,
                   "src": "966:53:18",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54444_memory_ptr_$dyn_memory_ptr",
                     "typeString": "struct DataTypes.PricedToken[]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6463,
+                      "id": 6424,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 6462,
+                        "id": 6423,
                         "name": "DataTypes.PricedToken",
                         "nameLocations": [
                           "966:9:18",
                           "976:11:18"
                         ],
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 54427,
+                        "referencedDeclaration": 54444,
                         "src": "966:21:18"
                       },
-                      "referencedDeclaration": 54427,
+                      "referencedDeclaration": 54444,
                       "src": "966:21:18",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_PricedToken_$54427_storage_ptr",
+                        "typeIdentifier": "t_struct$_PricedToken_$54444_storage_ptr",
                         "typeString": "struct DataTypes.PricedToken"
                       }
                     },
-                    "id": 6464,
+                    "id": 6425,
                     "nodeType": "ArrayTypeName",
                     "src": "966:23:18",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_PricedToken_$54444_storage_$dyn_storage_ptr",
                       "typeString": "struct DataTypes.PricedToken[]"
                     }
                   },
@@ -903,17 +903,17 @@
               "src": "923:102:18"
             },
             "returnParameters": {
-              "id": 6469,
+              "id": 6430,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6468,
+                  "id": 6429,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6470,
+                  "scope": 6431,
                   "src": "1055:7:18",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -922,7 +922,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6467,
+                    "id": 6428,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1055:7:18",
@@ -936,7 +936,7 @@
               ],
               "src": "1054:9:18"
             },
-            "scope": 6471,
+            "scope": 6432,
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
@@ -946,16 +946,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 6425,
+              "id": 6386,
               "name": "IVaultPriceOracle",
               "nameLocations": [
                 "341:17:18"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 17766,
+              "referencedDeclaration": 17783,
               "src": "341:17:18"
             },
-            "id": 6426,
+            "id": 6387,
             "nodeType": "InheritanceSpecifier",
             "src": "341:17:18"
           }
@@ -965,12 +965,12 @@
         "contractKind": "contract",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          6471,
-          17766
+          6432,
+          17783
         ],
         "name": "BaseVaultPriceOracle",
         "nameLocation": "317:20:18",
-        "scope": 6472,
+        "scope": 6433,
         "usedErrors": []
       }
     ],

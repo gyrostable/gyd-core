@@ -141,19 +141,19 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/ISignaturesValidator.sol",
-    "id": 17127,
+    "id": 17144,
     "exportedSymbols": {
       "ISignaturesValidator": [
-        17126
+        17143
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "175:450:88",
+    "src": "175:450:89",
     "nodes": [
       {
-        "id": 17110,
+        "id": 17127,
         "nodeType": "PragmaDirective",
-        "src": "175:23:88",
+        "src": "175:23:89",
         "nodes": [],
         "literals": [
           "solidity",
@@ -163,19 +163,19 @@
         ]
       },
       {
-        "id": 17126,
+        "id": 17143,
         "nodeType": "ContractDefinition",
-        "src": "296:328:88",
+        "src": "296:328:89",
         "nodes": [
           {
-            "id": 17117,
+            "id": 17134,
             "nodeType": "FunctionDefinition",
-            "src": "398:62:88",
+            "src": "398:62:89",
             "nodes": [],
             "documentation": {
-              "id": 17112,
+              "id": 17129,
               "nodeType": "StructuredDocumentation",
-              "src": "333:60:88",
+              "src": "333:60:89",
               "text": " @dev Returns the EIP712 domain separator."
             },
             "functionSelector": "ed24911d",
@@ -183,26 +183,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "getDomainSeparator",
-            "nameLocation": "407:18:88",
+            "nameLocation": "407:18:89",
             "parameters": {
-              "id": 17113,
+              "id": 17130,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "425:2:88"
+              "src": "425:2:89"
             },
             "returnParameters": {
-              "id": 17116,
+              "id": 17133,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17115,
+                  "id": 17132,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17117,
-                  "src": "451:7:88",
+                  "scope": 17134,
+                  "src": "451:7:89",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -210,10 +210,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 17114,
+                    "id": 17131,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "451:7:88",
+                    "src": "451:7:89",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -222,22 +222,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "450:9:88"
+              "src": "450:9:89"
             },
-            "scope": 17126,
+            "scope": 17143,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 17125,
+            "id": 17142,
             "nodeType": "FunctionDefinition",
-            "src": "554:68:88",
+            "src": "554:68:89",
             "nodes": [],
             "documentation": {
-              "id": 17118,
+              "id": 17135,
               "nodeType": "StructuredDocumentation",
-              "src": "466:83:88",
+              "src": "466:83:89",
               "text": " @dev Returns the next nonce used by an address to sign messages."
             },
             "functionSelector": "90193b7c",
@@ -245,20 +245,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "getNextNonce",
-            "nameLocation": "563:12:88",
+            "nameLocation": "563:12:89",
             "parameters": {
-              "id": 17121,
+              "id": 17138,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17120,
+                  "id": 17137,
                   "mutability": "mutable",
                   "name": "user",
-                  "nameLocation": "584:4:88",
+                  "nameLocation": "584:4:89",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17125,
-                  "src": "576:12:88",
+                  "scope": 17142,
+                  "src": "576:12:89",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -266,10 +266,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 17119,
+                    "id": 17136,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "576:7:88",
+                    "src": "576:7:89",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -279,21 +279,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "575:14:88"
+              "src": "575:14:89"
             },
             "returnParameters": {
-              "id": 17124,
+              "id": 17141,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17123,
+                  "id": 17140,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17125,
-                  "src": "613:7:88",
+                  "scope": 17142,
+                  "src": "613:7:89",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -301,10 +301,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17122,
+                    "id": 17139,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "613:7:88",
+                    "src": "613:7:89",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -313,9 +313,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "612:9:88"
+              "src": "612:9:89"
             },
-            "scope": 17126,
+            "scope": 17143,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -327,22 +327,22 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 17111,
+          "id": 17128,
           "nodeType": "StructuredDocumentation",
-          "src": "200:95:88",
+          "src": "200:95:89",
           "text": " @dev Interface for the SignatureValidator helper, used to support meta-transactions."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17126
+          17143
         ],
         "name": "ISignaturesValidator",
-        "nameLocation": "306:20:88",
-        "scope": 17127,
+        "nameLocation": "306:20:89",
+        "scope": 17144,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 88
+  "id": 89
 }

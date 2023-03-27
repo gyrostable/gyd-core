@@ -204,34 +204,34 @@
   },
   "ast": {
     "absolutePath": "interfaces/oracles/IVaultPriceOracle.sol",
-    "id": 17767,
+    "id": 17784,
     "exportedSymbols": {
       "DataTypes": [
-        54558
+        54575
       ],
       "IERC20": [
-        47570
+        47587
       ],
       "IERC20Metadata": [
-        47595
+        47612
       ],
       "IGyroVault": [
-        16453
+        16470
       ],
       "IVaultPriceOracle": [
-        17766
+        17783
       ],
       "Vaults": [
-        58268
+        58285
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:565:97",
+    "src": "174:565:98",
     "nodes": [
       {
-        "id": 17750,
+        "id": 17767,
         "nodeType": "PragmaDirective",
-        "src": "174:23:97",
+        "src": "174:23:98",
         "nodes": [],
         "literals": [
           "solidity",
@@ -241,45 +241,45 @@
         ]
       },
       {
-        "id": 17751,
+        "id": 17768,
         "nodeType": "ImportDirective",
-        "src": "199:39:97",
+        "src": "199:39:98",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "../../libraries/DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 17767,
-        "sourceUnit": 54559,
+        "scope": 17784,
+        "sourceUnit": 54576,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 17752,
+        "id": 17769,
         "nodeType": "ImportDirective",
-        "src": "240:27:97",
+        "src": "240:27:98",
         "nodes": [],
         "absolutePath": "interfaces/IGyroVault.sol",
         "file": "../IGyroVault.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 17767,
-        "sourceUnit": 16454,
+        "scope": 17784,
+        "sourceUnit": 16471,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 17766,
+        "id": 17783,
         "nodeType": "ContractDefinition",
-        "src": "269:469:97",
+        "src": "269:469:98",
         "nodes": [
           {
-            "id": 17765,
+            "id": 17782,
             "nodeType": "FunctionDefinition",
-            "src": "586:150:97",
+            "src": "586:150:98",
             "nodes": [],
             "documentation": {
-              "id": 17753,
+              "id": 17770,
               "nodeType": "StructuredDocumentation",
-              "src": "303:278:97",
+              "src": "303:278:98",
               "text": "@notice Quotes the USD price of `vault` tokens\n The quoted price is always scaled with 18 decimals regardless of the\n source used for the oracle.\n @param vault the vault of which the price is to be quoted\n @return the USD price of the vault token"
             },
             "functionSelector": "b7bb2fe0",
@@ -287,43 +287,43 @@
             "kind": "function",
             "modifiers": [],
             "name": "getPriceUSD",
-            "nameLocation": "595:11:97",
+            "nameLocation": "595:11:98",
             "parameters": {
-              "id": 17761,
+              "id": 17778,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17756,
+                  "id": 17773,
                   "mutability": "mutable",
                   "name": "vault",
-                  "nameLocation": "618:5:97",
+                  "nameLocation": "618:5:98",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17765,
-                  "src": "607:16:97",
+                  "scope": 17782,
+                  "src": "607:16:98",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_IGyroVault_$16453",
+                    "typeIdentifier": "t_contract$_IGyroVault_$16470",
                     "typeString": "contract IGyroVault"
                   },
                   "typeName": {
-                    "id": 17755,
+                    "id": 17772,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 17754,
+                      "id": 17771,
                       "name": "IGyroVault",
                       "nameLocations": [
-                        "607:10:97"
+                        "607:10:98"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 16453,
-                      "src": "607:10:97"
+                      "referencedDeclaration": 16470,
+                      "src": "607:10:98"
                     },
-                    "referencedDeclaration": 16453,
-                    "src": "607:10:97",
+                    "referencedDeclaration": 16470,
+                    "src": "607:10:98",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IGyroVault_$16453",
+                      "typeIdentifier": "t_contract$_IGyroVault_$16470",
                       "typeString": "contract IGyroVault"
                     }
                   },
@@ -331,67 +331,67 @@
                 },
                 {
                   "constant": false,
-                  "id": 17760,
+                  "id": 17777,
                   "mutability": "mutable",
                   "name": "underlyingPricedTokens",
-                  "nameLocation": "656:22:97",
+                  "nameLocation": "656:22:98",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17765,
-                  "src": "625:53:97",
+                  "scope": 17782,
+                  "src": "625:53:98",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_memory_ptr_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_PricedToken_$54444_memory_ptr_$dyn_memory_ptr",
                     "typeString": "struct DataTypes.PricedToken[]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 17758,
+                      "id": 17775,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 17757,
+                        "id": 17774,
                         "name": "DataTypes.PricedToken",
                         "nameLocations": [
-                          "625:9:97",
-                          "635:11:97"
+                          "625:9:98",
+                          "635:11:98"
                         ],
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 54427,
-                        "src": "625:21:97"
+                        "referencedDeclaration": 54444,
+                        "src": "625:21:98"
                       },
-                      "referencedDeclaration": 54427,
-                      "src": "625:21:97",
+                      "referencedDeclaration": 54444,
+                      "src": "625:21:98",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_PricedToken_$54427_storage_ptr",
+                        "typeIdentifier": "t_struct$_PricedToken_$54444_storage_ptr",
                         "typeString": "struct DataTypes.PricedToken"
                       }
                     },
-                    "id": 17759,
+                    "id": 17776,
                     "nodeType": "ArrayTypeName",
-                    "src": "625:23:97",
+                    "src": "625:23:98",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_PricedToken_$54427_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_PricedToken_$54444_storage_$dyn_storage_ptr",
                       "typeString": "struct DataTypes.PricedToken[]"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "606:73:97"
+              "src": "606:73:98"
             },
             "returnParameters": {
-              "id": 17764,
+              "id": 17781,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17763,
+                  "id": 17780,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17765,
-                  "src": "727:7:97",
+                  "scope": 17782,
+                  "src": "727:7:98",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -399,10 +399,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17762,
+                    "id": 17779,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "727:7:97",
+                    "src": "727:7:98",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -411,9 +411,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "726:9:97"
+              "src": "726:9:98"
             },
-            "scope": 17766,
+            "scope": 17783,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -426,15 +426,15 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17766
+          17783
         ],
         "name": "IVaultPriceOracle",
-        "nameLocation": "279:17:97",
-        "scope": 17767,
+        "nameLocation": "279:17:98",
+        "scope": 17784,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 97
+  "id": 98
 }

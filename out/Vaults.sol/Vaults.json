@@ -2,12 +2,12 @@
   "abi": [],
   "bytecode": {
     "object": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220359a85e0c989c1389383ed8c3f97f64df92f1358b15aa83d017ded8399f8411a64736f6c63430008110033",
-    "sourceMap": "199:148:164:-:0;;;;;;;;;;;;;;;-1:-1:-1;;;199:148:164;;;;;;;;;;;;;;;;;",
+    "sourceMap": "199:148:165:-:0;;;;;;;;;;;;;;;-1:-1:-1;;;199:148:165;;;;;;;;;;;;;;;;;",
     "linkReferences": {}
   },
   "deployedBytecode": {
     "object": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220359a85e0c989c1389383ed8c3f97f64df92f1358b15aa83d017ded8399f8411a64736f6c63430008110033",
-    "sourceMap": "199:148:164:-:0;;;;;;;;",
+    "sourceMap": "199:148:165:-:0;;;;;;;;",
     "linkReferences": {}
   },
   "methodIdentifiers": {},
@@ -65,19 +65,19 @@
   },
   "ast": {
     "absolutePath": "libraries/Vaults.sol",
-    "id": 58269,
+    "id": 58286,
     "exportedSymbols": {
       "Vaults": [
-        58268
+        58285
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:174:164",
+    "src": "174:174:165",
     "nodes": [
       {
-        "id": 58261,
+        "id": 58278,
         "nodeType": "PragmaDirective",
-        "src": "174:23:164",
+        "src": "174:23:165",
         "nodes": [],
         "literals": [
           "solidity",
@@ -87,55 +87,55 @@
         ]
       },
       {
-        "id": 58268,
+        "id": 58285,
         "nodeType": "ContractDefinition",
-        "src": "199:148:164",
+        "src": "199:148:165",
         "nodes": [
           {
-            "id": 58267,
+            "id": 58284,
             "nodeType": "EnumDefinition",
-            "src": "220:125:164",
+            "src": "220:125:165",
             "nodes": [],
             "canonicalName": "Vaults.Type",
             "members": [
               {
-                "id": 58262,
+                "id": 58279,
                 "name": "GENERIC",
-                "nameLocation": "240:7:164",
+                "nameLocation": "240:7:165",
                 "nodeType": "EnumValue",
-                "src": "240:7:164"
+                "src": "240:7:165"
               },
               {
-                "id": 58263,
+                "id": 58280,
                 "name": "BALANCER_CPMM",
-                "nameLocation": "257:13:164",
+                "nameLocation": "257:13:165",
                 "nodeType": "EnumValue",
-                "src": "257:13:164"
+                "src": "257:13:165"
               },
               {
-                "id": 58264,
+                "id": 58281,
                 "name": "BALANCER_2CLP",
-                "nameLocation": "280:13:164",
+                "nameLocation": "280:13:165",
                 "nodeType": "EnumValue",
-                "src": "280:13:164"
+                "src": "280:13:165"
               },
               {
-                "id": 58265,
+                "id": 58282,
                 "name": "BALANCER_3CLP",
-                "nameLocation": "303:13:164",
+                "nameLocation": "303:13:165",
                 "nodeType": "EnumValue",
-                "src": "303:13:164"
+                "src": "303:13:165"
               },
               {
-                "id": 58266,
+                "id": 58283,
                 "name": "BALANCER_ECLP",
-                "nameLocation": "326:13:164",
+                "nameLocation": "326:13:165",
                 "nodeType": "EnumValue",
-                "src": "326:13:164"
+                "src": "326:13:165"
               }
             ],
             "name": "Type",
-            "nameLocation": "225:4:164"
+            "nameLocation": "225:4:165"
           }
         ],
         "abstract": false,
@@ -145,15 +145,15 @@
         "contractKind": "library",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          58268
+          58285
         ],
         "name": "Vaults",
-        "nameLocation": "207:6:164",
-        "scope": 58269,
+        "nameLocation": "207:6:165",
+        "scope": 58286,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 164
+  "id": 165
 }

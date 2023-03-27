@@ -418,22 +418,22 @@
   },
   "ast": {
     "absolutePath": "interfaces/ILPTokenExchanger.sol",
-    "id": 16506,
+    "id": 16523,
     "exportedSymbols": {
       "DataTypes": [
-        54558
+        54575
       ],
       "ILPTokenExchanger": [
-        16505
+        16522
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:1955:70",
+    "src": "174:1955:71",
     "nodes": [
       {
-        "id": 16455,
+        "id": 16472,
         "nodeType": "PragmaDirective",
-        "src": "174:23:70",
+        "src": "174:23:71",
         "nodes": [],
         "literals": [
           "solidity",
@@ -443,32 +443,32 @@
         ]
       },
       {
-        "id": 16456,
+        "id": 16473,
         "nodeType": "ImportDirective",
-        "src": "199:36:70",
+        "src": "199:36:71",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "../libraries/DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16506,
-        "sourceUnit": 54559,
+        "scope": 16523,
+        "sourceUnit": 54576,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16505,
+        "id": 16522,
         "nodeType": "ContractDefinition",
-        "src": "405:1723:70",
+        "src": "405:1723:71",
         "nodes": [
           {
-            "id": 16464,
+            "id": 16481,
             "nodeType": "FunctionDefinition",
-            "src": "721:71:70",
+            "src": "721:71:71",
             "nodes": [],
             "documentation": {
-              "id": 16458,
+              "id": 16475,
               "nodeType": "StructuredDocumentation",
-              "src": "439:277:70",
+              "src": "439:277:71",
               "text": "@notice Returns a list of tokens supported by this exchanger to deposit\n to the underlying pool\n @dev This will typically be the tokens in the pool (e.g. ETH and DAI for an ETH/DAI pool)\n but we could also support swapping tokens before depositing them"
             },
             "functionSelector": "d3c7c2c7",
@@ -476,26 +476,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "getSupportedTokens",
-            "nameLocation": "730:18:70",
+            "nameLocation": "730:18:71",
             "parameters": {
-              "id": 16459,
+              "id": 16476,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "748:2:70"
+              "src": "748:2:71"
             },
             "returnParameters": {
-              "id": 16463,
+              "id": 16480,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16462,
+                  "id": 16479,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16464,
-                  "src": "774:16:70",
+                  "scope": 16481,
+                  "src": "774:16:71",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -504,19 +504,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16460,
+                      "id": 16477,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "774:7:70",
+                      "src": "774:7:71",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "id": 16461,
+                    "id": 16478,
                     "nodeType": "ArrayTypeName",
-                    "src": "774:9:70",
+                    "src": "774:9:71",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -525,22 +525,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "773:18:70"
+              "src": "773:18:71"
             },
-            "scope": 16505,
+            "scope": 16522,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16473,
+            "id": 16490,
             "nodeType": "FunctionDefinition",
-            "src": "1010:122:70",
+            "src": "1010:122:71",
             "nodes": [],
             "documentation": {
-              "id": 16465,
+              "id": 16482,
               "nodeType": "StructuredDocumentation",
-              "src": "798:207:70",
+              "src": "798:207:71",
               "text": "@notice Deposits `underlyingMonetaryAmount` to the liquidity pool\n and sends back the received LP tokens as `lpTokenAmount`\n @param tokenToDeposit the underlying token and amount to deposit"
             },
             "functionSelector": "5c7a2a80",
@@ -548,237 +548,53 @@
             "kind": "function",
             "modifiers": [],
             "name": "deposit",
-            "nameLocation": "1019:7:70",
+            "nameLocation": "1019:7:71",
             "parameters": {
-              "id": 16469,
+              "id": 16486,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16468,
+                  "id": 16485,
                   "mutability": "mutable",
                   "name": "tokenToDeposit",
-                  "nameLocation": "1059:14:70",
+                  "nameLocation": "1059:14:71",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16473,
-                  "src": "1027:46:70",
+                  "scope": 16490,
+                  "src": "1027:46:71",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_MonetaryAmount_$54420_memory_ptr",
+                    "typeIdentifier": "t_struct$_MonetaryAmount_$54437_memory_ptr",
                     "typeString": "struct DataTypes.MonetaryAmount"
                   },
                   "typeName": {
-                    "id": 16467,
+                    "id": 16484,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16466,
+                      "id": 16483,
                       "name": "DataTypes.MonetaryAmount",
                       "nameLocations": [
-                        "1027:9:70",
-                        "1037:14:70"
+                        "1027:9:71",
+                        "1037:14:71"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54420,
-                      "src": "1027:24:70"
+                      "referencedDeclaration": 54437,
+                      "src": "1027:24:71"
                     },
-                    "referencedDeclaration": 54420,
-                    "src": "1027:24:70",
+                    "referencedDeclaration": 54437,
+                    "src": "1027:24:71",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_MonetaryAmount_$54420_storage_ptr",
+                      "typeIdentifier": "t_struct$_MonetaryAmount_$54437_storage_ptr",
                       "typeString": "struct DataTypes.MonetaryAmount"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "1026:48:70"
+              "src": "1026:48:71"
             },
             "returnParameters": {
-              "id": 16472,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16471,
-                  "mutability": "mutable",
-                  "name": "lpTokenAmount",
-                  "nameLocation": "1117:13:70",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16473,
-                  "src": "1109:21:70",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16470,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1109:7:70",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1108:23:70"
-            },
-            "scope": 16505,
-            "stateMutability": "nonpayable",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 16484,
-            "nodeType": "FunctionDefinition",
-            "src": "1324:157:70",
-            "nodes": [],
-            "documentation": {
-              "id": 16474,
-              "nodeType": "StructuredDocumentation",
-              "src": "1138:181:70",
-              "text": "@notice Dry version of `deposit`\n @param tokenToDeposit the underlying token and amount to deposit\n @return lpTokenAmount the received LP tokens as `lpTokenAmount`"
-            },
-            "functionSelector": "ecc05a5b",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "dryDeposit",
-            "nameLocation": "1333:10:70",
-            "parameters": {
-              "id": 16478,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16477,
-                  "mutability": "mutable",
-                  "name": "tokenToDeposit",
-                  "nameLocation": "1376:14:70",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16484,
-                  "src": "1344:46:70",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_MonetaryAmount_$54420_memory_ptr",
-                    "typeString": "struct DataTypes.MonetaryAmount"
-                  },
-                  "typeName": {
-                    "id": 16476,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 16475,
-                      "name": "DataTypes.MonetaryAmount",
-                      "nameLocations": [
-                        "1344:9:70",
-                        "1354:14:70"
-                      ],
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54420,
-                      "src": "1344:24:70"
-                    },
-                    "referencedDeclaration": 54420,
-                    "src": "1344:24:70",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_MonetaryAmount_$54420_storage_ptr",
-                      "typeString": "struct DataTypes.MonetaryAmount"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1343:48:70"
-            },
-            "returnParameters": {
-              "id": 16483,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16480,
-                  "mutability": "mutable",
-                  "name": "lpTokenAmount",
-                  "nameLocation": "1447:13:70",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16484,
-                  "src": "1439:21:70",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16479,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1439:7:70",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 16482,
-                  "mutability": "mutable",
-                  "name": "err",
-                  "nameLocation": "1476:3:70",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16484,
-                  "src": "1462:17:70",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 16481,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1462:6:70",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1438:42:70"
-            },
-            "scope": 16505,
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 16493,
-            "nodeType": "FunctionDefinition",
-            "src": "1669:124:70",
-            "nodes": [],
-            "documentation": {
-              "id": 16485,
-              "nodeType": "StructuredDocumentation",
-              "src": "1487:177:70",
-              "text": "@notice Withdraws token from the liquidity pool\n and sends back an underlyingMonetaryAmount\n @param tokenToWithdraw the underlying token and amount to withdraw"
-            },
-            "functionSelector": "3c565417",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "withdraw",
-            "nameLocation": "1678:8:70",
-            "parameters": {
               "id": 16489,
               "nodeType": "ParameterList",
               "parameters": [
@@ -786,56 +602,11 @@
                   "constant": false,
                   "id": 16488,
                   "mutability": "mutable",
-                  "name": "tokenToWithdraw",
-                  "nameLocation": "1719:15:70",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16493,
-                  "src": "1687:47:70",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_MonetaryAmount_$54420_memory_ptr",
-                    "typeString": "struct DataTypes.MonetaryAmount"
-                  },
-                  "typeName": {
-                    "id": 16487,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 16486,
-                      "name": "DataTypes.MonetaryAmount",
-                      "nameLocations": [
-                        "1687:9:70",
-                        "1697:14:70"
-                      ],
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54420,
-                      "src": "1687:24:70"
-                    },
-                    "referencedDeclaration": 54420,
-                    "src": "1687:24:70",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_MonetaryAmount_$54420_storage_ptr",
-                      "typeString": "struct DataTypes.MonetaryAmount"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1686:49:70"
-            },
-            "returnParameters": {
-              "id": 16492,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16491,
-                  "mutability": "mutable",
                   "name": "lpTokenAmount",
-                  "nameLocation": "1778:13:70",
+                  "nameLocation": "1117:13:71",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16493,
-                  "src": "1770:21:70",
+                  "scope": 16490,
+                  "src": "1109:21:71",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -843,10 +614,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16490,
+                    "id": 16487,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1770:7:70",
+                    "src": "1109:7:71",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -855,88 +626,88 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1769:23:70"
+              "src": "1108:23:71"
             },
-            "scope": 16505,
+            "scope": 16522,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16504,
+            "id": 16501,
             "nodeType": "FunctionDefinition",
-            "src": "1967:159:70",
+            "src": "1324:157:71",
             "nodes": [],
             "documentation": {
-              "id": 16494,
+              "id": 16491,
               "nodeType": "StructuredDocumentation",
-              "src": "1799:163:70",
-              "text": "@notice Dry version of `withdraw`\n and sends back an underlyingMonetaryAmount\n @param tokenToWithdraw the underlying token and amount to withdraw"
+              "src": "1138:181:71",
+              "text": "@notice Dry version of `deposit`\n @param tokenToDeposit the underlying token and amount to deposit\n @return lpTokenAmount the received LP tokens as `lpTokenAmount`"
             },
-            "functionSelector": "74e53577",
+            "functionSelector": "ecc05a5b",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "dryWithdraw",
-            "nameLocation": "1976:11:70",
+            "name": "dryDeposit",
+            "nameLocation": "1333:10:71",
             "parameters": {
-              "id": 16498,
+              "id": 16495,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16497,
+                  "id": 16494,
                   "mutability": "mutable",
-                  "name": "tokenToWithdraw",
-                  "nameLocation": "2020:15:70",
+                  "name": "tokenToDeposit",
+                  "nameLocation": "1376:14:71",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16504,
-                  "src": "1988:47:70",
+                  "scope": 16501,
+                  "src": "1344:46:71",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_MonetaryAmount_$54420_memory_ptr",
+                    "typeIdentifier": "t_struct$_MonetaryAmount_$54437_memory_ptr",
                     "typeString": "struct DataTypes.MonetaryAmount"
                   },
                   "typeName": {
-                    "id": 16496,
+                    "id": 16493,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16495,
+                      "id": 16492,
                       "name": "DataTypes.MonetaryAmount",
                       "nameLocations": [
-                        "1988:9:70",
-                        "1998:14:70"
+                        "1344:9:71",
+                        "1354:14:71"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54420,
-                      "src": "1988:24:70"
+                      "referencedDeclaration": 54437,
+                      "src": "1344:24:71"
                     },
-                    "referencedDeclaration": 54420,
-                    "src": "1988:24:70",
+                    "referencedDeclaration": 54437,
+                    "src": "1344:24:71",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_MonetaryAmount_$54420_storage_ptr",
+                      "typeIdentifier": "t_struct$_MonetaryAmount_$54437_storage_ptr",
                       "typeString": "struct DataTypes.MonetaryAmount"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "1987:49:70"
+              "src": "1343:48:71"
             },
             "returnParameters": {
-              "id": 16503,
+              "id": 16500,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16500,
+                  "id": 16497,
                   "mutability": "mutable",
                   "name": "lpTokenAmount",
-                  "nameLocation": "2092:13:70",
+                  "nameLocation": "1447:13:71",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16504,
-                  "src": "2084:21:70",
+                  "scope": 16501,
+                  "src": "1439:21:71",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -944,10 +715,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16499,
+                    "id": 16496,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2084:7:70",
+                    "src": "1439:7:71",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -957,13 +728,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16502,
+                  "id": 16499,
                   "mutability": "mutable",
                   "name": "err",
-                  "nameLocation": "2121:3:70",
+                  "nameLocation": "1476:3:71",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16504,
-                  "src": "2107:17:70",
+                  "scope": 16501,
+                  "src": "1462:17:71",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -971,10 +742,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 16501,
+                    "id": 16498,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2107:6:70",
+                    "src": "1462:6:71",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -983,9 +754,238 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2083:42:70"
+              "src": "1438:42:71"
             },
-            "scope": 16505,
+            "scope": 16522,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16510,
+            "nodeType": "FunctionDefinition",
+            "src": "1669:124:71",
+            "nodes": [],
+            "documentation": {
+              "id": 16502,
+              "nodeType": "StructuredDocumentation",
+              "src": "1487:177:71",
+              "text": "@notice Withdraws token from the liquidity pool\n and sends back an underlyingMonetaryAmount\n @param tokenToWithdraw the underlying token and amount to withdraw"
+            },
+            "functionSelector": "3c565417",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "withdraw",
+            "nameLocation": "1678:8:71",
+            "parameters": {
+              "id": 16506,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16505,
+                  "mutability": "mutable",
+                  "name": "tokenToWithdraw",
+                  "nameLocation": "1719:15:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16510,
+                  "src": "1687:47:71",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_MonetaryAmount_$54437_memory_ptr",
+                    "typeString": "struct DataTypes.MonetaryAmount"
+                  },
+                  "typeName": {
+                    "id": 16504,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 16503,
+                      "name": "DataTypes.MonetaryAmount",
+                      "nameLocations": [
+                        "1687:9:71",
+                        "1697:14:71"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 54437,
+                      "src": "1687:24:71"
+                    },
+                    "referencedDeclaration": 54437,
+                    "src": "1687:24:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_MonetaryAmount_$54437_storage_ptr",
+                      "typeString": "struct DataTypes.MonetaryAmount"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1686:49:71"
+            },
+            "returnParameters": {
+              "id": 16509,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16508,
+                  "mutability": "mutable",
+                  "name": "lpTokenAmount",
+                  "nameLocation": "1778:13:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16510,
+                  "src": "1770:21:71",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16507,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1770:7:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1769:23:71"
+            },
+            "scope": 16522,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16521,
+            "nodeType": "FunctionDefinition",
+            "src": "1967:159:71",
+            "nodes": [],
+            "documentation": {
+              "id": 16511,
+              "nodeType": "StructuredDocumentation",
+              "src": "1799:163:71",
+              "text": "@notice Dry version of `withdraw`\n and sends back an underlyingMonetaryAmount\n @param tokenToWithdraw the underlying token and amount to withdraw"
+            },
+            "functionSelector": "74e53577",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "dryWithdraw",
+            "nameLocation": "1976:11:71",
+            "parameters": {
+              "id": 16515,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16514,
+                  "mutability": "mutable",
+                  "name": "tokenToWithdraw",
+                  "nameLocation": "2020:15:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16521,
+                  "src": "1988:47:71",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_MonetaryAmount_$54437_memory_ptr",
+                    "typeString": "struct DataTypes.MonetaryAmount"
+                  },
+                  "typeName": {
+                    "id": 16513,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 16512,
+                      "name": "DataTypes.MonetaryAmount",
+                      "nameLocations": [
+                        "1988:9:71",
+                        "1998:14:71"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 54437,
+                      "src": "1988:24:71"
+                    },
+                    "referencedDeclaration": 54437,
+                    "src": "1988:24:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_MonetaryAmount_$54437_storage_ptr",
+                      "typeString": "struct DataTypes.MonetaryAmount"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1987:49:71"
+            },
+            "returnParameters": {
+              "id": 16520,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16517,
+                  "mutability": "mutable",
+                  "name": "lpTokenAmount",
+                  "nameLocation": "2092:13:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16521,
+                  "src": "2084:21:71",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16516,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2084:7:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16519,
+                  "mutability": "mutable",
+                  "name": "err",
+                  "nameLocation": "2121:3:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16521,
+                  "src": "2107:17:71",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 16518,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2107:6:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2083:42:71"
+            },
+            "scope": 16522,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -997,22 +997,22 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16457,
+          "id": 16474,
           "nodeType": "StructuredDocumentation",
-          "src": "237:168:70",
+          "src": "237:168:71",
           "text": "@notice ILPTokenExchanger transforms underlying tokens to/from lp tokens supported by Gyro vaults\n It can also be used to give estimates about these conversions"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16505
+          16522
         ],
         "name": "ILPTokenExchanger",
-        "nameLocation": "415:17:70",
-        "scope": 16506,
+        "nameLocation": "415:17:71",
+        "scope": 16523,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 70
+  "id": 71
 }

@@ -339,22 +339,22 @@
   },
   "ast": {
     "absolutePath": "interfaces/IFeeBank.sol",
-    "id": 16116,
+    "id": 16133,
     "exportedSymbols": {
       "IFeeBank": [
-        16115
+        16132
       ],
       "IGovernable": [
-        16215
+        16232
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:581:64",
+    "src": "174:581:65",
     "nodes": [
       {
-        "id": 16092,
+        "id": 16109,
         "nodeType": "PragmaDirective",
-        "src": "174:23:64",
+        "src": "174:23:65",
         "nodes": [],
         "literals": [
           "solidity",
@@ -364,32 +364,32 @@
         ]
       },
       {
-        "id": 16093,
+        "id": 16110,
         "nodeType": "ImportDirective",
-        "src": "199:27:64",
+        "src": "199:27:65",
         "nodes": [],
         "absolutePath": "interfaces/IGovernable.sol",
         "file": "./IGovernable.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16116,
-        "sourceUnit": 16216,
+        "scope": 16133,
+        "sourceUnit": 16233,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16115,
+        "id": 16132,
         "nodeType": "ContractDefinition",
-        "src": "282:472:64",
+        "src": "282:472:65",
         "nodes": [
           {
-            "id": 16104,
+            "id": 16121,
             "nodeType": "FunctionDefinition",
-            "src": "476:66:64",
+            "src": "476:66:65",
             "nodes": [],
             "documentation": {
-              "id": 16097,
+              "id": 16114,
               "nodeType": "StructuredDocumentation",
-              "src": "322:149:64",
+              "src": "322:149:65",
               "text": "@notice Deposits `amount` of `underlying` in the fee bank\n @dev the fee bank should be approved to spend at least `amount` of `underlying`"
             },
             "functionSelector": "a71532cd",
@@ -397,20 +397,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "depositFees",
-            "nameLocation": "485:11:64",
+            "nameLocation": "485:11:65",
             "parameters": {
-              "id": 16102,
+              "id": 16119,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16099,
+                  "id": 16116,
                   "mutability": "mutable",
                   "name": "underlying",
-                  "nameLocation": "505:10:64",
+                  "nameLocation": "505:10:65",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16104,
-                  "src": "497:18:64",
+                  "scope": 16121,
+                  "src": "497:18:65",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -418,10 +418,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16098,
+                    "id": 16115,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "497:7:64",
+                    "src": "497:7:65",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -432,13 +432,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16101,
+                  "id": 16118,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "525:6:64",
+                  "nameLocation": "525:6:65",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16104,
-                  "src": "517:14:64",
+                  "scope": 16121,
+                  "src": "517:14:65",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -446,10 +446,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16100,
+                    "id": 16117,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "517:7:64",
+                    "src": "517:7:65",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -458,28 +458,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "496:36:64"
+              "src": "496:36:65"
             },
             "returnParameters": {
-              "id": 16103,
+              "id": 16120,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "541:0:64"
+              "src": "541:0:65"
             },
-            "scope": 16115,
+            "scope": 16132,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16114,
+            "id": 16131,
             "nodeType": "FunctionDefinition",
-            "src": "634:118:64",
+            "src": "634:118:65",
             "nodes": [],
             "documentation": {
-              "id": 16105,
+              "id": 16122,
               "nodeType": "StructuredDocumentation",
-              "src": "548:81:64",
+              "src": "548:81:65",
               "text": "@notice Withdraws `amount` of `underlying` from the fee bank to `beneficiary`"
             },
             "functionSelector": "e55dc4e6",
@@ -487,20 +487,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "withdrawFees",
-            "nameLocation": "643:12:64",
+            "nameLocation": "643:12:65",
             "parameters": {
-              "id": 16112,
+              "id": 16129,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16107,
+                  "id": 16124,
                   "mutability": "mutable",
                   "name": "underlying",
-                  "nameLocation": "673:10:64",
+                  "nameLocation": "673:10:65",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16114,
-                  "src": "665:18:64",
+                  "scope": 16131,
+                  "src": "665:18:65",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -508,10 +508,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16106,
+                    "id": 16123,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "665:7:64",
+                    "src": "665:7:65",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -522,13 +522,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16109,
+                  "id": 16126,
                   "mutability": "mutable",
                   "name": "beneficiary",
-                  "nameLocation": "701:11:64",
+                  "nameLocation": "701:11:65",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16114,
-                  "src": "693:19:64",
+                  "scope": 16131,
+                  "src": "693:19:65",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -536,10 +536,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16108,
+                    "id": 16125,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "693:7:64",
+                    "src": "693:7:65",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -550,13 +550,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16111,
+                  "id": 16128,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "730:6:64",
+                  "nameLocation": "730:6:65",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16114,
-                  "src": "722:14:64",
+                  "scope": 16131,
+                  "src": "722:14:65",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -564,10 +564,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16110,
+                    "id": 16127,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "722:7:64",
+                    "src": "722:7:65",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -576,15 +576,15 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "655:87:64"
+              "src": "655:87:65"
             },
             "returnParameters": {
-              "id": 16113,
+              "id": 16130,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "751:0:64"
+              "src": "751:0:65"
             },
-            "scope": 16115,
+            "scope": 16132,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -594,41 +594,41 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 16095,
+              "id": 16112,
               "name": "IGovernable",
               "nameLocations": [
-                "304:11:64"
+                "304:11:65"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 16215,
-              "src": "304:11:64"
+              "referencedDeclaration": 16232,
+              "src": "304:11:65"
             },
-            "id": 16096,
+            "id": 16113,
             "nodeType": "InheritanceSpecifier",
-            "src": "304:11:64"
+            "src": "304:11:65"
           }
         ],
         "canonicalName": "IFeeBank",
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 16094,
+          "id": 16111,
           "nodeType": "StructuredDocumentation",
-          "src": "228:54:64",
+          "src": "228:54:65",
           "text": "@notice IFeeBank is where the fees will be stored"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16115,
-          16215
+          16132,
+          16232
         ],
         "name": "IFeeBank",
-        "nameLocation": "292:8:64",
-        "scope": 16116,
+        "nameLocation": "292:8:65",
+        "scope": 16133,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 64
+  "id": 65
 }

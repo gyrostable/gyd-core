@@ -526,49 +526,49 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IMinimalSwapInfoPool.sol",
-    "id": 17082,
+    "id": 17099,
     "exportedSymbols": {
       "IAsset": [
-        16903
+        16920
       ],
       "IAuthorizer": [
-        16918
+        16935
       ],
       "IBasePool": [
-        16976
+        16993
       ],
       "IERC20": [
-        47570
+        47587
       ],
       "IFlashLoanRecipient": [
-        17044
+        17061
       ],
       "IMinimalSwapInfoPool": [
-        17081
+        17098
       ],
       "IPoolSwapStructs": [
-        17108
+        17125
       ],
       "ISignaturesValidator": [
-        17126
+        17143
       ],
       "ITemporarilyPausable": [
-        17145
+        17162
       ],
       "IVault": [
-        17646
+        17663
       ],
       "IWETH": [
-        17661
+        17678
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "176:916:86",
+    "src": "176:916:87",
     "nodes": [
       {
-        "id": 17064,
+        "id": 17081,
         "nodeType": "PragmaDirective",
-        "src": "176:23:86",
+        "src": "176:23:87",
         "nodes": [],
         "literals": [
           "solidity",
@@ -578,70 +578,70 @@
         ]
       },
       {
-        "id": 17065,
+        "id": 17082,
         "nodeType": "ImportDirective",
-        "src": "201:25:86",
+        "src": "201:25:87",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IBasePool.sol",
         "file": "./IBasePool.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 17082,
-        "sourceUnit": 16977,
+        "scope": 17099,
+        "sourceUnit": 16994,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 17081,
+        "id": 17098,
         "nodeType": "ContractDefinition",
-        "src": "864:227:86",
+        "src": "864:227:87",
         "nodes": [
           {
-            "id": 17080,
+            "id": 17097,
             "nodeType": "FunctionDefinition",
-            "src": "914:175:86",
+            "src": "914:175:87",
             "nodes": [],
             "functionSelector": "9d2c110c",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "onSwap",
-            "nameLocation": "923:6:86",
+            "nameLocation": "923:6:87",
             "parameters": {
-              "id": 17076,
+              "id": 17093,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17071,
+                  "id": 17088,
                   "mutability": "mutable",
                   "name": "swapRequest",
-                  "nameLocation": "958:11:86",
+                  "nameLocation": "958:11:87",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17080,
-                  "src": "939:30:86",
+                  "scope": 17097,
+                  "src": "939:30:87",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_SwapRequest_$17107_memory_ptr",
+                    "typeIdentifier": "t_struct$_SwapRequest_$17124_memory_ptr",
                     "typeString": "struct IPoolSwapStructs.SwapRequest"
                   },
                   "typeName": {
-                    "id": 17070,
+                    "id": 17087,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 17069,
+                      "id": 17086,
                       "name": "SwapRequest",
                       "nameLocations": [
-                        "939:11:86"
+                        "939:11:87"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 17107,
-                      "src": "939:11:86"
+                      "referencedDeclaration": 17124,
+                      "src": "939:11:87"
                     },
-                    "referencedDeclaration": 17107,
-                    "src": "939:11:86",
+                    "referencedDeclaration": 17124,
+                    "src": "939:11:87",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_SwapRequest_$17107_storage_ptr",
+                      "typeIdentifier": "t_struct$_SwapRequest_$17124_storage_ptr",
                       "typeString": "struct IPoolSwapStructs.SwapRequest"
                     }
                   },
@@ -649,13 +649,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 17073,
+                  "id": 17090,
                   "mutability": "mutable",
                   "name": "currentBalanceTokenIn",
-                  "nameLocation": "987:21:86",
+                  "nameLocation": "987:21:87",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17080,
-                  "src": "979:29:86",
+                  "scope": 17097,
+                  "src": "979:29:87",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -663,10 +663,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17072,
+                    "id": 17089,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "979:7:86",
+                    "src": "979:7:87",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -676,13 +676,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 17075,
+                  "id": 17092,
                   "mutability": "mutable",
                   "name": "currentBalanceTokenOut",
-                  "nameLocation": "1026:22:86",
+                  "nameLocation": "1026:22:87",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17080,
-                  "src": "1018:30:86",
+                  "scope": 17097,
+                  "src": "1018:30:87",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -690,10 +690,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17074,
+                    "id": 17091,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1018:7:86",
+                    "src": "1018:7:87",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -702,21 +702,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "929:125:86"
+              "src": "929:125:87"
             },
             "returnParameters": {
-              "id": 17079,
+              "id": 17096,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17078,
+                  "id": 17095,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "1081:6:86",
+                  "nameLocation": "1081:6:87",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17080,
-                  "src": "1073:14:86",
+                  "scope": 17097,
+                  "src": "1073:14:87",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -724,10 +724,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17077,
+                    "id": 17094,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1073:7:86",
+                    "src": "1073:7:87",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -736,9 +736,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1072:16:86"
+              "src": "1072:16:87"
             },
-            "scope": 17081,
+            "scope": 17098,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -748,42 +748,42 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 17067,
+              "id": 17084,
               "name": "IBasePool",
               "nameLocations": [
-                "898:9:86"
+                "898:9:87"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 16976,
-              "src": "898:9:86"
+              "referencedDeclaration": 16993,
+              "src": "898:9:87"
             },
-            "id": 17068,
+            "id": 17085,
             "nodeType": "InheritanceSpecifier",
-            "src": "898:9:86"
+            "src": "898:9:87"
           }
         ],
         "canonicalName": "IMinimalSwapInfoPool",
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 17066,
+          "id": 17083,
           "nodeType": "StructuredDocumentation",
-          "src": "228:635:86",
+          "src": "228:635:87",
           "text": " @dev Pool contracts with the MinimalSwapInfo or TwoToken specialization settings should implement this interface.\n This is called by the Vault when a user calls `IVault.swap` or `IVault.batchSwap` to swap with this Pool.\n Returns the number of tokens the Pool will grant to the user in a 'given in' swap, or that the user will grant\n to the pool in a 'given out' swap.\n This can often be implemented by a `view` function, since many pricing algorithms don't need to track state\n changes in swaps. However, contracts implementing this in non-view functions should check that the caller is\n indeed the Vault."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17081,
-          16976,
-          17108
+          17098,
+          16993,
+          17125
         ],
         "name": "IMinimalSwapInfoPool",
-        "nameLocation": "874:20:86",
-        "scope": 17082,
+        "nameLocation": "874:20:87",
+        "scope": 17099,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 86
+  "id": 87
 }

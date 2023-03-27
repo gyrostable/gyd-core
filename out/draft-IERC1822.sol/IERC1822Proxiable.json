@@ -99,19 +99,19 @@
   },
   "ast": {
     "absolutePath": "lib/openzeppelin-contracts/contracts/interfaces/draft-IERC1822.sol",
-    "id": 46036,
+    "id": 46053,
     "exportedSymbols": {
       "IERC1822Proxiable": [
-        46035
+        46052
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "113:766:123",
+    "src": "113:766:124",
     "nodes": [
       {
-        "id": 46027,
+        "id": 46044,
         "nodeType": "PragmaDirective",
-        "src": "113:23:123",
+        "src": "113:23:124",
         "nodes": [],
         "literals": [
           "solidity",
@@ -121,19 +121,19 @@
         ]
       },
       {
-        "id": 46035,
+        "id": 46052,
         "nodeType": "ContractDefinition",
-        "src": "342:536:123",
+        "src": "342:536:124",
         "nodes": [
           {
-            "id": 46034,
+            "id": 46051,
             "nodeType": "FunctionDefinition",
-            "src": "819:57:123",
+            "src": "819:57:124",
             "nodes": [],
             "documentation": {
-              "id": 46029,
+              "id": 46046,
               "nodeType": "StructuredDocumentation",
-              "src": "376:438:123",
+              "src": "376:438:124",
               "text": " @dev Returns the storage slot that the proxiable contract assumes is being used to store the implementation\n address.\n IMPORTANT: A proxy pointing at a proxiable contract should not be considered proxiable itself, because this risks\n bricking a proxy that upgrades to it, by delegating to itself until out of gas. Thus it is critical that this\n function revert if invoked through a proxy."
             },
             "functionSelector": "52d1902d",
@@ -141,26 +141,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "proxiableUUID",
-            "nameLocation": "828:13:123",
+            "nameLocation": "828:13:124",
             "parameters": {
-              "id": 46030,
+              "id": 46047,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "841:2:123"
+              "src": "841:2:124"
             },
             "returnParameters": {
-              "id": 46033,
+              "id": 46050,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 46032,
+                  "id": 46049,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 46034,
-                  "src": "867:7:123",
+                  "scope": 46051,
+                  "src": "867:7:124",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -168,10 +168,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 46031,
+                    "id": 46048,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "867:7:123",
+                    "src": "867:7:124",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -180,9 +180,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "866:9:123"
+              "src": "866:9:124"
             },
-            "scope": 46035,
+            "scope": 46052,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -194,22 +194,22 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 46028,
+          "id": 46045,
           "nodeType": "StructuredDocumentation",
-          "src": "138:203:123",
+          "src": "138:203:124",
           "text": " @dev ERC1822: Universal Upgradeable Proxy Standard (UUPS) documents a method for upgradeability through a simplified\n proxy whose upgrades are fully controlled by the current implementation."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          46035
+          46052
         ],
         "name": "IERC1822Proxiable",
-        "nameLocation": "352:17:123",
-        "scope": 46036,
+        "nameLocation": "352:17:124",
+        "scope": 46053,
         "usedErrors": []
       }
     ],
     "license": "MIT"
   },
-  "id": 123
+  "id": 124
 }

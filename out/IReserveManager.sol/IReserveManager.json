@@ -395,28 +395,28 @@
   },
   "ast": {
     "absolutePath": "interfaces/IReserveManager.sol",
-    "id": 16760,
+    "id": 16777,
     "exportedSymbols": {
       "DataTypes": [
-        54558
+        54575
       ],
       "IReserveManager": [
-        16759
+        16776
       ],
       "IUSDPriceOracle": [
-        17748
+        17765
       ],
       "IVaultWeightManager": [
-        16875
+        16892
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:535:74",
+    "src": "174:535:75",
     "nodes": [
       {
-        "id": 16736,
+        "id": 16753,
         "nodeType": "PragmaDirective",
-        "src": "174:23:74",
+        "src": "174:23:75",
         "nodes": [],
         "literals": [
           "solidity",
@@ -426,72 +426,72 @@
         ]
       },
       {
-        "id": 16737,
+        "id": 16754,
         "nodeType": "ImportDirective",
-        "src": "199:47:74",
+        "src": "199:47:75",
         "nodes": [],
         "absolutePath": "interfaces/IVaultWeightManager.sol",
         "file": "../interfaces/IVaultWeightManager.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16760,
-        "sourceUnit": 16876,
+        "scope": 16777,
+        "sourceUnit": 16893,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16738,
+        "id": 16755,
         "nodeType": "ImportDirective",
-        "src": "247:51:74",
+        "src": "247:51:75",
         "nodes": [],
         "absolutePath": "interfaces/oracles/IUSDPriceOracle.sol",
         "file": "../interfaces/oracles/IUSDPriceOracle.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16760,
-        "sourceUnit": 17749,
+        "scope": 16777,
+        "sourceUnit": 17766,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16739,
+        "id": 16756,
         "nodeType": "ImportDirective",
-        "src": "299:36:74",
+        "src": "299:36:75",
         "nodes": [],
         "absolutePath": "libraries/DataTypes.sol",
         "file": "../libraries/DataTypes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16760,
-        "sourceUnit": 54559,
+        "scope": 16777,
+        "sourceUnit": 54576,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16759,
+        "id": 16776,
         "nodeType": "ContractDefinition",
-        "src": "337:371:74",
+        "src": "337:371:75",
         "nodes": [
           {
-            "id": 16745,
+            "id": 16762,
             "nodeType": "EventDefinition",
-            "src": "369:84:74",
+            "src": "369:84:75",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "64606b26a66c25bc07fea2203c004119f9f5e1b13d50fef2961b5501ad675592",
             "name": "NewVaultWeightManager",
-            "nameLocation": "375:21:74",
+            "nameLocation": "375:21:75",
             "parameters": {
-              "id": 16744,
+              "id": 16761,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16741,
+                  "id": 16758,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "oldManager",
-                  "nameLocation": "413:10:74",
+                  "nameLocation": "413:10:75",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16745,
-                  "src": "397:26:74",
+                  "scope": 16762,
+                  "src": "397:26:75",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -499,10 +499,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16740,
+                    "id": 16757,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "397:7:74",
+                    "src": "397:7:75",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -513,14 +513,14 @@
                 },
                 {
                   "constant": false,
-                  "id": 16743,
+                  "id": 16760,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "newManager",
-                  "nameLocation": "441:10:74",
+                  "nameLocation": "441:10:75",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16745,
-                  "src": "425:26:74",
+                  "scope": 16762,
+                  "src": "425:26:75",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -528,10 +528,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16742,
+                    "id": 16759,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "425:7:74",
+                    "src": "425:7:75",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -541,32 +541,32 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "396:56:74"
+              "src": "396:56:75"
             }
           },
           {
-            "id": 16751,
+            "id": 16768,
             "nodeType": "EventDefinition",
-            "src": "458:75:74",
+            "src": "458:75:75",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "d52b2b9b7e9ee655fcb95d2e5b9e0c9f69e7ef2b8e9d2d0ea78402d576d22e22",
             "name": "NewPriceOracle",
-            "nameLocation": "464:14:74",
+            "nameLocation": "464:14:75",
             "parameters": {
-              "id": 16750,
+              "id": 16767,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16747,
+                  "id": 16764,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "oldOracle",
-                  "nameLocation": "495:9:74",
+                  "nameLocation": "495:9:75",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16751,
-                  "src": "479:25:74",
+                  "scope": 16768,
+                  "src": "479:25:75",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -574,10 +574,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16746,
+                    "id": 16763,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "479:7:74",
+                    "src": "479:7:75",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -588,14 +588,14 @@
                 },
                 {
                   "constant": false,
-                  "id": 16749,
+                  "id": 16766,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "newOracle",
-                  "nameLocation": "522:9:74",
+                  "nameLocation": "522:9:75",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16751,
-                  "src": "506:25:74",
+                  "scope": 16768,
+                  "src": "506:25:75",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -603,10 +603,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16748,
+                    "id": 16765,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "506:7:74",
+                    "src": "506:7:75",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -616,18 +616,18 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "478:54:74"
+              "src": "478:54:75"
             }
           },
           {
-            "id": 16758,
+            "id": 16775,
             "nodeType": "FunctionDefinition",
-            "src": "625:81:74",
+            "src": "625:81:75",
             "nodes": [],
             "documentation": {
-              "id": 16752,
+              "id": 16769,
               "nodeType": "StructuredDocumentation",
-              "src": "539:81:74",
+              "src": "539:81:75",
               "text": "@notice Returns a list of vaults including metadata such as price and weights"
             },
             "functionSelector": "ef5bac25",
@@ -635,59 +635,59 @@
             "kind": "function",
             "modifiers": [],
             "name": "getReserveState",
-            "nameLocation": "634:15:74",
+            "nameLocation": "634:15:75",
             "parameters": {
-              "id": 16753,
+              "id": 16770,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "649:2:74"
+              "src": "649:2:75"
             },
             "returnParameters": {
-              "id": 16757,
+              "id": 16774,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16756,
+                  "id": 16773,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16758,
-                  "src": "675:29:74",
+                  "scope": 16775,
+                  "src": "675:29:75",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_ReserveState_$54557_memory_ptr",
+                    "typeIdentifier": "t_struct$_ReserveState_$54574_memory_ptr",
                     "typeString": "struct DataTypes.ReserveState"
                   },
                   "typeName": {
-                    "id": 16755,
+                    "id": 16772,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 16754,
+                      "id": 16771,
                       "name": "DataTypes.ReserveState",
                       "nameLocations": [
-                        "675:9:74",
-                        "685:12:74"
+                        "675:9:75",
+                        "685:12:75"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 54557,
-                      "src": "675:22:74"
+                      "referencedDeclaration": 54574,
+                      "src": "675:22:75"
                     },
-                    "referencedDeclaration": 54557,
-                    "src": "675:22:74",
+                    "referencedDeclaration": 54574,
+                    "src": "675:22:75",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ReserveState_$54557_storage_ptr",
+                      "typeIdentifier": "t_struct$_ReserveState_$54574_storage_ptr",
                       "typeString": "struct DataTypes.ReserveState"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "674:31:74"
+              "src": "674:31:75"
             },
-            "scope": 16759,
+            "scope": 16776,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -700,15 +700,15 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16759
+          16776
         ],
         "name": "IReserveManager",
-        "nameLocation": "347:15:74",
-        "scope": 16760,
+        "nameLocation": "347:15:75",
+        "scope": 16777,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 74
+  "id": 75
 }

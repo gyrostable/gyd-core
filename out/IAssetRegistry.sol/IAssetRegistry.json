@@ -562,19 +562,19 @@
   },
   "ast": {
     "absolutePath": "interfaces/IAssetRegistry.sol",
-    "id": 16079,
+    "id": 16096,
     "exportedSymbols": {
       "IAssetRegistry": [
-        16078
+        16095
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:2349:62",
+    "src": "174:2349:63",
     "nodes": [
       {
-        "id": 15979,
+        "id": 15996,
         "nodeType": "PragmaDirective",
-        "src": "174:23:62",
+        "src": "174:23:63",
         "nodes": [],
         "literals": [
           "solidity",
@@ -584,39 +584,39 @@
         ]
       },
       {
-        "id": 16078,
+        "id": 16095,
         "nodeType": "ContractDefinition",
-        "src": "199:2323:62",
+        "src": "199:2323:63",
         "nodes": [
           {
-            "id": 15988,
+            "id": 16005,
             "nodeType": "EventDefinition",
-            "src": "373:143:62",
+            "src": "373:143:63",
             "nodes": [],
             "anonymous": false,
             "documentation": {
-              "id": 15980,
+              "id": 15997,
               "nodeType": "StructuredDocumentation",
-              "src": "230:138:62",
+              "src": "230:138:63",
               "text": "@notice Emitted when an asset address is updated\n If `previousAddress` was 0, it means that the asset was added to the registry"
             },
             "eventSelector": "bae65703f0aeb3db2f7b7f07b34b9cf2f9dde13c561a9e3423915de548dd20e3",
             "name": "AssetAddressUpdated",
-            "nameLocation": "379:19:62",
+            "nameLocation": "379:19:63",
             "parameters": {
-              "id": 15987,
+              "id": 16004,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 15982,
+                  "id": 15999,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "assetName",
-                  "nameLocation": "423:9:62",
+                  "nameLocation": "423:9:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 15988,
-                  "src": "408:24:62",
+                  "scope": 16005,
+                  "src": "408:24:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -624,10 +624,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 15981,
+                    "id": 15998,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "408:6:62",
+                    "src": "408:6:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -637,14 +637,14 @@
                 },
                 {
                   "constant": false,
-                  "id": 15984,
+                  "id": 16001,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "previousAddress",
-                  "nameLocation": "458:15:62",
+                  "nameLocation": "458:15:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 15988,
-                  "src": "442:31:62",
+                  "scope": 16005,
+                  "src": "442:31:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -652,10 +652,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 15983,
+                    "id": 16000,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "442:7:62",
+                    "src": "442:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -666,14 +666,14 @@
                 },
                 {
                   "constant": false,
-                  "id": 15986,
+                  "id": 16003,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "newAddress",
-                  "nameLocation": "499:10:62",
+                  "nameLocation": "499:10:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 15988,
-                  "src": "483:26:62",
+                  "scope": 16005,
+                  "src": "483:26:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -681,10 +681,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 15985,
+                    "id": 16002,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "483:7:62",
+                    "src": "483:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -694,38 +694,38 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "398:117:62"
+              "src": "398:117:63"
             }
           },
           {
-            "id": 15993,
+            "id": 16010,
             "nodeType": "EventDefinition",
-            "src": "583:46:62",
+            "src": "583:46:63",
             "nodes": [],
             "anonymous": false,
             "documentation": {
-              "id": 15989,
+              "id": 16006,
               "nodeType": "StructuredDocumentation",
-              "src": "522:56:62",
+              "src": "522:56:63",
               "text": "@notice Emitted when an asset is set as being stable"
             },
             "eventSelector": "93266109223f3ffe4999eeedd7026e74a3ba153a9b782165be501bcfbdccd3a9",
             "name": "StableAssetAdded",
-            "nameLocation": "589:16:62",
+            "nameLocation": "589:16:63",
             "parameters": {
-              "id": 15992,
+              "id": 16009,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 15991,
+                  "id": 16008,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "asset",
-                  "nameLocation": "622:5:62",
+                  "nameLocation": "622:5:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 15993,
-                  "src": "606:21:62",
+                  "scope": 16010,
+                  "src": "606:21:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -733,10 +733,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 15990,
+                    "id": 16007,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "606:7:62",
+                    "src": "606:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -746,38 +746,38 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "605:23:62"
+              "src": "605:23:63"
             }
           },
           {
-            "id": 15998,
+            "id": 16015,
             "nodeType": "EventDefinition",
-            "src": "698:48:62",
+            "src": "698:48:63",
             "nodes": [],
             "anonymous": false,
             "documentation": {
-              "id": 15994,
+              "id": 16011,
               "nodeType": "StructuredDocumentation",
-              "src": "635:58:62",
+              "src": "635:58:63",
               "text": "@notice Emitted when an asset is unset as being stable"
             },
             "eventSelector": "02d765d86e62553c49c4853f47990fbb8cf7713f511ac332855aaa6b02bebd36",
             "name": "StableAssetRemoved",
-            "nameLocation": "704:18:62",
+            "nameLocation": "704:18:63",
             "parameters": {
-              "id": 15997,
+              "id": 16014,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 15996,
+                  "id": 16013,
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "asset",
-                  "nameLocation": "739:5:62",
+                  "nameLocation": "739:5:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 15998,
-                  "src": "723:21:62",
+                  "scope": 16015,
+                  "src": "723:21:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -785,10 +785,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 15995,
+                    "id": 16012,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "723:7:62",
+                    "src": "723:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -798,18 +798,18 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "722:23:62"
+              "src": "722:23:63"
             }
           },
           {
-            "id": 16006,
+            "id": 16023,
             "nodeType": "FunctionDefinition",
-            "src": "890:84:62",
+            "src": "890:84:63",
             "nodes": [],
             "documentation": {
-              "id": 15999,
+              "id": 16016,
               "nodeType": "StructuredDocumentation",
-              "src": "752:133:62",
+              "src": "752:133:63",
               "text": "@notice Returns the address associated with the given asset name\n e.g. \"DAI\" -> 0x6B175474E89094C44Da98b954EedeAC495271d0F"
             },
             "functionSelector": "7307ae55",
@@ -817,20 +817,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "getAssetAddress",
-            "nameLocation": "899:15:62",
+            "nameLocation": "899:15:63",
             "parameters": {
-              "id": 16002,
+              "id": 16019,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16001,
+                  "id": 16018,
                   "mutability": "mutable",
                   "name": "assetName",
-                  "nameLocation": "931:9:62",
+                  "nameLocation": "931:9:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16006,
-                  "src": "915:25:62",
+                  "scope": 16023,
+                  "src": "915:25:63",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -838,10 +838,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 16000,
+                    "id": 16017,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "915:6:62",
+                    "src": "915:6:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -850,21 +850,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "914:27:62"
+              "src": "914:27:63"
             },
             "returnParameters": {
-              "id": 16005,
+              "id": 16022,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16004,
+                  "id": 16021,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16006,
-                  "src": "965:7:62",
+                  "scope": 16023,
+                  "src": "965:7:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -872,10 +872,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16003,
+                    "id": 16020,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "965:7:62",
+                    "src": "965:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -885,22 +885,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "964:9:62"
+              "src": "964:9:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16013,
+            "id": 16030,
             "nodeType": "FunctionDefinition",
-            "src": "1119:76:62",
+            "src": "1119:76:63",
             "nodes": [],
             "documentation": {
-              "id": 16007,
+              "id": 16024,
               "nodeType": "StructuredDocumentation",
-              "src": "980:134:62",
+              "src": "980:134:63",
               "text": "@notice Returns a list of names for the registered assets\n The asset are encoded as bytes32 (big endian) rather than string"
             },
             "functionSelector": "f804c0c8",
@@ -908,26 +908,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "getRegisteredAssetNames",
-            "nameLocation": "1128:23:62",
+            "nameLocation": "1128:23:63",
             "parameters": {
-              "id": 16008,
+              "id": 16025,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1151:2:62"
+              "src": "1151:2:63"
             },
             "returnParameters": {
-              "id": 16012,
+              "id": 16029,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16011,
+                  "id": 16028,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16013,
-                  "src": "1177:16:62",
+                  "scope": 16030,
+                  "src": "1177:16:63",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -936,18 +936,18 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16009,
+                      "id": 16026,
                       "name": "bytes32",
                       "nodeType": "ElementaryTypeName",
-                      "src": "1177:7:62",
+                      "src": "1177:7:63",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
                       }
                     },
-                    "id": 16010,
+                    "id": 16027,
                     "nodeType": "ArrayTypeName",
-                    "src": "1177:9:62",
+                    "src": "1177:9:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
                       "typeString": "bytes32[]"
@@ -956,22 +956,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1176:18:62"
+              "src": "1176:18:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16020,
+            "id": 16037,
             "nodeType": "FunctionDefinition",
-            "src": "1271:80:62",
+            "src": "1271:80:63",
             "nodes": [],
             "documentation": {
-              "id": 16014,
+              "id": 16031,
               "nodeType": "StructuredDocumentation",
-              "src": "1201:65:62",
+              "src": "1201:65:63",
               "text": "@notice Returns a list of addresses for the registered assets"
             },
             "functionSelector": "36daa731",
@@ -979,26 +979,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "getRegisteredAssetAddresses",
-            "nameLocation": "1280:27:62",
+            "nameLocation": "1280:27:63",
             "parameters": {
-              "id": 16015,
+              "id": 16032,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1307:2:62"
+              "src": "1307:2:63"
             },
             "returnParameters": {
-              "id": 16019,
+              "id": 16036,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16018,
+                  "id": 16035,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16020,
-                  "src": "1333:16:62",
+                  "scope": 16037,
+                  "src": "1333:16:63",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1007,19 +1007,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16016,
+                      "id": 16033,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "1333:7:62",
+                      "src": "1333:7:63",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "id": 16017,
+                    "id": 16034,
                     "nodeType": "ArrayTypeName",
-                    "src": "1333:9:62",
+                    "src": "1333:9:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -1028,22 +1028,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1332:18:62"
+              "src": "1332:18:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16027,
+            "id": 16044,
             "nodeType": "FunctionDefinition",
-            "src": "1429:68:62",
+            "src": "1429:68:63",
             "nodes": [],
             "documentation": {
-              "id": 16021,
+              "id": 16038,
               "nodeType": "StructuredDocumentation",
-              "src": "1357:67:62",
+              "src": "1357:67:63",
               "text": "@notice Returns a list of addresses contaning the stable assets"
             },
             "functionSelector": "6df5d2d3",
@@ -1051,26 +1051,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "getStableAssets",
-            "nameLocation": "1438:15:62",
+            "nameLocation": "1438:15:63",
             "parameters": {
-              "id": 16022,
+              "id": 16039,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1453:2:62"
+              "src": "1453:2:63"
             },
             "returnParameters": {
-              "id": 16026,
+              "id": 16043,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16025,
+                  "id": 16042,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16027,
-                  "src": "1479:16:62",
+                  "scope": 16044,
+                  "src": "1479:16:63",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1079,19 +1079,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 16023,
+                      "id": 16040,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "1479:7:62",
+                      "src": "1479:7:63",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "id": 16024,
+                    "id": 16041,
                     "nodeType": "ArrayTypeName",
-                    "src": "1479:9:62",
+                    "src": "1479:9:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -1100,22 +1100,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1478:18:62"
+              "src": "1478:18:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16035,
+            "id": 16052,
             "nodeType": "FunctionDefinition",
-            "src": "1556:87:62",
+            "src": "1556:87:63",
             "nodes": [],
             "documentation": {
-              "id": 16028,
+              "id": 16045,
               "nodeType": "StructuredDocumentation",
-              "src": "1503:48:62",
+              "src": "1503:48:63",
               "text": "@return true if the asset name is registered"
             },
             "functionSelector": "f41092de",
@@ -1123,20 +1123,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "isAssetNameRegistered",
-            "nameLocation": "1565:21:62",
+            "nameLocation": "1565:21:63",
             "parameters": {
-              "id": 16031,
+              "id": 16048,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16030,
+                  "id": 16047,
                   "mutability": "mutable",
                   "name": "assetName",
-                  "nameLocation": "1603:9:62",
+                  "nameLocation": "1603:9:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16035,
-                  "src": "1587:25:62",
+                  "scope": 16052,
+                  "src": "1587:25:63",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -1144,10 +1144,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 16029,
+                    "id": 16046,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1587:6:62",
+                    "src": "1587:6:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1156,21 +1156,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1586:27:62"
+              "src": "1586:27:63"
             },
             "returnParameters": {
-              "id": 16034,
+              "id": 16051,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16033,
+                  "id": 16050,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16035,
-                  "src": "1637:4:62",
+                  "scope": 16052,
+                  "src": "1637:4:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1178,10 +1178,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 16032,
+                    "id": 16049,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1637:4:62",
+                    "src": "1637:4:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -1190,22 +1190,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1636:6:62"
+              "src": "1636:6:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16043,
+            "id": 16060,
             "nodeType": "FunctionDefinition",
-            "src": "1705:85:62",
+            "src": "1705:85:63",
             "nodes": [],
             "documentation": {
-              "id": 16036,
+              "id": 16053,
               "nodeType": "StructuredDocumentation",
-              "src": "1649:51:62",
+              "src": "1649:51:63",
               "text": "@return true if the asset address is registered"
             },
             "functionSelector": "8b46c4fd",
@@ -1213,20 +1213,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "isAssetAddressRegistered",
-            "nameLocation": "1714:24:62",
+            "nameLocation": "1714:24:63",
             "parameters": {
-              "id": 16039,
+              "id": 16056,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16038,
+                  "id": 16055,
                   "mutability": "mutable",
                   "name": "assetAddress",
-                  "nameLocation": "1747:12:62",
+                  "nameLocation": "1747:12:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16043,
-                  "src": "1739:20:62",
+                  "scope": 16060,
+                  "src": "1739:20:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1234,10 +1234,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16037,
+                    "id": 16054,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1739:7:62",
+                    "src": "1739:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1247,21 +1247,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1738:22:62"
+              "src": "1738:22:63"
             },
             "returnParameters": {
-              "id": 16042,
+              "id": 16059,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16041,
+                  "id": 16058,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16043,
-                  "src": "1784:4:62",
+                  "scope": 16060,
+                  "src": "1784:4:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1269,10 +1269,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 16040,
+                    "id": 16057,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1784:4:62",
+                    "src": "1784:4:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -1281,22 +1281,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1783:6:62"
+              "src": "1783:6:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16051,
+            "id": 16068,
             "nodeType": "FunctionDefinition",
-            "src": "1845:74:62",
+            "src": "1845:74:63",
             "nodes": [],
             "documentation": {
-              "id": 16044,
+              "id": 16061,
               "nodeType": "StructuredDocumentation",
-              "src": "1796:44:62",
+              "src": "1796:44:63",
               "text": "@return true if the asset name is stable"
             },
             "functionSelector": "4976c588",
@@ -1304,20 +1304,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "isAssetStable",
-            "nameLocation": "1854:13:62",
+            "nameLocation": "1854:13:63",
             "parameters": {
-              "id": 16047,
+              "id": 16064,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16046,
+                  "id": 16063,
                   "mutability": "mutable",
                   "name": "assetAddress",
-                  "nameLocation": "1876:12:62",
+                  "nameLocation": "1876:12:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16051,
-                  "src": "1868:20:62",
+                  "scope": 16068,
+                  "src": "1868:20:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1325,10 +1325,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16045,
+                    "id": 16062,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1868:7:62",
+                    "src": "1868:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1338,21 +1338,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1867:22:62"
+              "src": "1867:22:63"
             },
             "returnParameters": {
-              "id": 16050,
+              "id": 16067,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16049,
+                  "id": 16066,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16051,
-                  "src": "1913:4:62",
+                  "scope": 16068,
+                  "src": "1913:4:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1360,10 +1360,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 16048,
+                    "id": 16065,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1913:4:62",
+                    "src": "1913:4:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -1372,22 +1372,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1912:6:62"
+              "src": "1912:6:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16057,
+            "id": 16074,
             "nodeType": "FunctionDefinition",
-            "src": "2038:55:62",
+            "src": "2038:55:63",
             "nodes": [],
             "documentation": {
-              "id": 16052,
+              "id": 16069,
               "nodeType": "StructuredDocumentation",
-              "src": "1925:108:62",
+              "src": "1925:108:63",
               "text": "@notice Adds a stable asset to the registry\n The asset must already be registered in the registry"
             },
             "functionSelector": "10ec0878",
@@ -1395,20 +1395,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "addStableAsset",
-            "nameLocation": "2047:14:62",
+            "nameLocation": "2047:14:63",
             "parameters": {
-              "id": 16055,
+              "id": 16072,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16054,
+                  "id": 16071,
                   "mutability": "mutable",
                   "name": "assetAddress",
-                  "nameLocation": "2070:12:62",
+                  "nameLocation": "2070:12:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16057,
-                  "src": "2062:20:62",
+                  "scope": 16074,
+                  "src": "2062:20:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1416,10 +1416,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16053,
+                    "id": 16070,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2062:7:62",
+                    "src": "2062:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1429,28 +1429,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2061:22:62"
+              "src": "2061:22:63"
             },
             "returnParameters": {
-              "id": 16056,
+              "id": 16073,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2092:0:62"
+              "src": "2092:0:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16063,
+            "id": 16080,
             "nodeType": "FunctionDefinition",
-            "src": "2203:51:62",
+            "src": "2203:51:63",
             "nodes": [],
             "documentation": {
-              "id": 16058,
+              "id": 16075,
               "nodeType": "StructuredDocumentation",
-              "src": "2099:99:62",
+              "src": "2099:99:63",
               "text": "@notice Removes a stable asset to the registry\n The asset must already be a stable asset"
             },
             "functionSelector": "c6a052b6",
@@ -1458,20 +1458,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "removeStableAsset",
-            "nameLocation": "2212:17:62",
+            "nameLocation": "2212:17:63",
             "parameters": {
-              "id": 16061,
+              "id": 16078,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16060,
+                  "id": 16077,
                   "mutability": "mutable",
                   "name": "asset",
-                  "nameLocation": "2238:5:62",
+                  "nameLocation": "2238:5:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16063,
-                  "src": "2230:13:62",
+                  "scope": 16080,
+                  "src": "2230:13:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1479,10 +1479,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16059,
+                    "id": 16076,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2230:7:62",
+                    "src": "2230:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1492,28 +1492,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2229:15:62"
+              "src": "2229:15:63"
             },
             "returnParameters": {
-              "id": 16062,
+              "id": 16079,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2253:0:62"
+              "src": "2253:0:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16071,
+            "id": 16088,
             "nodeType": "FunctionDefinition",
-            "src": "2324:81:62",
+            "src": "2324:81:63",
             "nodes": [],
             "documentation": {
-              "id": 16064,
+              "id": 16081,
               "nodeType": "StructuredDocumentation",
-              "src": "2260:59:62",
+              "src": "2260:59:63",
               "text": "@notice Set the `assetName` to the given `assetAddress`"
             },
             "functionSelector": "a5c7b384",
@@ -1521,20 +1521,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "setAssetAddress",
-            "nameLocation": "2333:15:62",
+            "nameLocation": "2333:15:63",
             "parameters": {
-              "id": 16069,
+              "id": 16086,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16066,
+                  "id": 16083,
                   "mutability": "mutable",
                   "name": "assetName",
-                  "nameLocation": "2363:9:62",
+                  "nameLocation": "2363:9:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16071,
-                  "src": "2349:23:62",
+                  "scope": 16088,
+                  "src": "2349:23:63",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1542,10 +1542,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 16065,
+                    "id": 16082,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2349:6:62",
+                    "src": "2349:6:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1555,13 +1555,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16068,
+                  "id": 16085,
                   "mutability": "mutable",
                   "name": "assetAddress",
-                  "nameLocation": "2382:12:62",
+                  "nameLocation": "2382:12:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16071,
-                  "src": "2374:20:62",
+                  "scope": 16088,
+                  "src": "2374:20:63",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1569,10 +1569,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16067,
+                    "id": 16084,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2374:7:62",
+                    "src": "2374:7:63",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1582,28 +1582,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2348:47:62"
+              "src": "2348:47:63"
             },
             "returnParameters": {
-              "id": 16070,
+              "id": 16087,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2404:0:62"
+              "src": "2404:0:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 16077,
+            "id": 16094,
             "nodeType": "FunctionDefinition",
-            "src": "2465:55:62",
+            "src": "2465:55:63",
             "nodes": [],
             "documentation": {
-              "id": 16072,
+              "id": 16089,
               "nodeType": "StructuredDocumentation",
-              "src": "2411:49:62",
+              "src": "2411:49:63",
               "text": "@notice Removes `assetName` from the registry"
             },
             "functionSelector": "759af9ec",
@@ -1611,20 +1611,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "removeAsset",
-            "nameLocation": "2474:11:62",
+            "nameLocation": "2474:11:63",
             "parameters": {
-              "id": 16075,
+              "id": 16092,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16074,
+                  "id": 16091,
                   "mutability": "mutable",
                   "name": "assetName",
-                  "nameLocation": "2500:9:62",
+                  "nameLocation": "2500:9:63",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16077,
-                  "src": "2486:23:62",
+                  "scope": 16094,
+                  "src": "2486:23:63",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1632,10 +1632,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 16073,
+                    "id": 16090,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2486:6:62",
+                    "src": "2486:6:63",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1644,15 +1644,15 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2485:25:62"
+              "src": "2485:25:63"
             },
             "returnParameters": {
-              "id": 16076,
+              "id": 16093,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2519:0:62"
+              "src": "2519:0:63"
             },
-            "scope": 16078,
+            "scope": 16095,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -1665,15 +1665,15 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16078
+          16095
         ],
         "name": "IAssetRegistry",
-        "nameLocation": "209:14:62",
-        "scope": 16079,
+        "nameLocation": "209:14:63",
+        "scope": 16096,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 62
+  "id": 63
 }

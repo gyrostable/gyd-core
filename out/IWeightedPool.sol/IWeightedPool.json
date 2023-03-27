@@ -184,22 +184,22 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/IWeightedPool.sol",
-    "id": 17674,
+    "id": 17691,
     "exportedSymbols": {
       "IMinimalPoolView": [
-        17062
+        17079
       ],
       "IWeightedPool": [
-        17673
+        17690
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:185:92",
+    "src": "174:185:93",
     "nodes": [
       {
-        "id": 17663,
+        "id": 17680,
         "nodeType": "PragmaDirective",
-        "src": "174:23:92",
+        "src": "174:23:93",
         "nodes": [],
         "literals": [
           "solidity",
@@ -209,53 +209,53 @@
         ]
       },
       {
-        "id": 17664,
+        "id": 17681,
         "nodeType": "ImportDirective",
-        "src": "199:32:92",
+        "src": "199:32:93",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
         "file": "./IMinimalPoolView.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 17674,
-        "sourceUnit": 17063,
+        "scope": 17691,
+        "sourceUnit": 17080,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 17673,
+        "id": 17690,
         "nodeType": "ContractDefinition",
-        "src": "233:125:92",
+        "src": "233:125:93",
         "nodes": [
           {
-            "id": 17672,
+            "id": 17689,
             "nodeType": "FunctionDefinition",
-            "src": "283:73:92",
+            "src": "283:73:93",
             "nodes": [],
             "functionSelector": "f89f27ed",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getNormalizedWeights",
-            "nameLocation": "292:20:92",
+            "nameLocation": "292:20:93",
             "parameters": {
-              "id": 17667,
+              "id": 17684,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "312:2:92"
+              "src": "312:2:93"
             },
             "returnParameters": {
-              "id": 17671,
+              "id": 17688,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17670,
+                  "id": 17687,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17672,
-                  "src": "338:16:92",
+                  "scope": 17689,
+                  "src": "338:16:93",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -264,18 +264,18 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 17668,
+                      "id": 17685,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
-                      "src": "338:7:92",
+                      "src": "338:7:93",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 17669,
+                    "id": 17686,
                     "nodeType": "ArrayTypeName",
-                    "src": "338:9:92",
+                    "src": "338:9:93",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -284,9 +284,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "337:18:92"
+              "src": "337:18:93"
             },
-            "scope": 17673,
+            "scope": 17690,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -296,18 +296,18 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 17665,
+              "id": 17682,
               "name": "IMinimalPoolView",
               "nameLocations": [
-                "260:16:92"
+                "260:16:93"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 17062,
-              "src": "260:16:92"
+              "referencedDeclaration": 17079,
+              "src": "260:16:93"
             },
-            "id": 17666,
+            "id": 17683,
             "nodeType": "InheritanceSpecifier",
-            "src": "260:16:92"
+            "src": "260:16:93"
           }
         ],
         "canonicalName": "IWeightedPool",
@@ -315,16 +315,16 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17673,
-          17062
+          17690,
+          17079
         ],
         "name": "IWeightedPool",
-        "nameLocation": "243:13:92",
-        "scope": 17674,
+        "nameLocation": "243:13:93",
+        "scope": 17691,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 92
+  "id": 93
 }

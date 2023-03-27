@@ -192,19 +192,19 @@
   },
   "ast": {
     "absolutePath": "interfaces/IVaultWeightManager.sol",
-    "id": 16876,
+    "id": 16893,
     "exportedSymbols": {
       "IVaultWeightManager": [
-        16875
+        16892
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:473:77",
+    "src": "174:473:78",
     "nodes": [
       {
-        "id": 16848,
+        "id": 16865,
         "nodeType": "PragmaDirective",
-        "src": "174:23:77",
+        "src": "174:23:78",
         "nodes": [],
         "literals": [
           "solidity",
@@ -214,19 +214,19 @@
         ]
       },
       {
-        "id": 16875,
+        "id": 16892,
         "nodeType": "ContractDefinition",
-        "src": "199:447:77",
+        "src": "199:447:78",
         "nodes": [
           {
-            "id": 16856,
+            "id": 16873,
             "nodeType": "FunctionDefinition",
-            "src": "291:72:77",
+            "src": "291:72:78",
             "nodes": [],
             "documentation": {
-              "id": 16849,
+              "id": 16866,
               "nodeType": "StructuredDocumentation",
-              "src": "235:51:77",
+              "src": "235:51:78",
               "text": "@notice Retrieves the weight of the given vault"
             },
             "functionSelector": "ac8047d2",
@@ -234,20 +234,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "getVaultWeight",
-            "nameLocation": "300:14:77",
+            "nameLocation": "300:14:78",
             "parameters": {
-              "id": 16852,
+              "id": 16869,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16851,
+                  "id": 16868,
                   "mutability": "mutable",
                   "name": "_vault",
-                  "nameLocation": "323:6:77",
+                  "nameLocation": "323:6:78",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16856,
-                  "src": "315:14:77",
+                  "scope": 16873,
+                  "src": "315:14:78",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -255,10 +255,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 16850,
+                    "id": 16867,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "315:7:77",
+                    "src": "315:7:78",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -268,214 +268,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "314:16:77"
+              "src": "314:16:78"
             },
             "returnParameters": {
-              "id": 16855,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16854,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16856,
-                  "src": "354:7:77",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 16853,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "354:7:77",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "353:9:77"
-            },
-            "scope": 16875,
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 16866,
-            "nodeType": "FunctionDefinition",
-            "src": "427:94:77",
-            "nodes": [],
-            "documentation": {
-              "id": 16857,
-              "nodeType": "StructuredDocumentation",
-              "src": "369:53:77",
-              "text": "@notice Retrieves the weights of the given vaults"
-            },
-            "functionSelector": "ad19ac8e",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "getVaultWeights",
-            "nameLocation": "436:15:77",
-            "parameters": {
-              "id": 16861,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16860,
-                  "mutability": "mutable",
-                  "name": "_vaults",
-                  "nameLocation": "471:7:77",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16866,
-                  "src": "452:26:77",
-                  "stateVariable": false,
-                  "storageLocation": "calldata",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_address_$dyn_calldata_ptr",
-                    "typeString": "address[]"
-                  },
-                  "typeName": {
-                    "baseType": {
-                      "id": 16858,
-                      "name": "address",
-                      "nodeType": "ElementaryTypeName",
-                      "src": "452:7:77",
-                      "stateMutability": "nonpayable",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      }
-                    },
-                    "id": 16859,
-                    "nodeType": "ArrayTypeName",
-                    "src": "452:9:77",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
-                      "typeString": "address[]"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "451:28:77"
-            },
-            "returnParameters": {
-              "id": 16865,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 16864,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16866,
-                  "src": "503:16:77",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
-                    "typeString": "uint256[]"
-                  },
-                  "typeName": {
-                    "baseType": {
-                      "id": 16862,
-                      "name": "uint256",
-                      "nodeType": "ElementaryTypeName",
-                      "src": "503:7:77",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "id": 16863,
-                    "nodeType": "ArrayTypeName",
-                    "src": "503:9:77",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
-                      "typeString": "uint256[]"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "502:18:77"
-            },
-            "scope": 16875,
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 16874,
-            "nodeType": "FunctionDefinition",
-            "src": "578:66:77",
-            "nodes": [],
-            "documentation": {
-              "id": 16867,
-              "nodeType": "StructuredDocumentation",
-              "src": "527:46:77",
-              "text": "@notice Sets the weight of the given vault"
-            },
-            "functionSelector": "06a96bd8",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "setVaultWeight",
-            "nameLocation": "587:14:77",
-            "parameters": {
               "id": 16872,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16869,
-                  "mutability": "mutable",
-                  "name": "_vault",
-                  "nameLocation": "610:6:77",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 16874,
-                  "src": "602:14:77",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 16868,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "602:7:77",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
                   "id": 16871,
                   "mutability": "mutable",
-                  "name": "_weight",
-                  "nameLocation": "626:7:77",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16874,
-                  "src": "618:15:77",
+                  "scope": 16873,
+                  "src": "354:7:78",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -486,7 +293,7 @@
                     "id": 16870,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "618:7:77",
+                    "src": "354:7:78",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -495,15 +302,208 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "601:33:77"
+              "src": "353:9:78"
+            },
+            "scope": 16892,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16883,
+            "nodeType": "FunctionDefinition",
+            "src": "427:94:78",
+            "nodes": [],
+            "documentation": {
+              "id": 16874,
+              "nodeType": "StructuredDocumentation",
+              "src": "369:53:78",
+              "text": "@notice Retrieves the weights of the given vaults"
+            },
+            "functionSelector": "ad19ac8e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getVaultWeights",
+            "nameLocation": "436:15:78",
+            "parameters": {
+              "id": 16878,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16877,
+                  "mutability": "mutable",
+                  "name": "_vaults",
+                  "nameLocation": "471:7:78",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16883,
+                  "src": "452:26:78",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_calldata_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 16875,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "452:7:78",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 16876,
+                    "nodeType": "ArrayTypeName",
+                    "src": "452:9:78",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "451:28:78"
             },
             "returnParameters": {
-              "id": 16873,
+              "id": 16882,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16881,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16883,
+                  "src": "503:16:78",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 16879,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "503:7:78",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 16880,
+                    "nodeType": "ArrayTypeName",
+                    "src": "503:9:78",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "502:18:78"
+            },
+            "scope": 16892,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 16891,
+            "nodeType": "FunctionDefinition",
+            "src": "578:66:78",
+            "nodes": [],
+            "documentation": {
+              "id": 16884,
+              "nodeType": "StructuredDocumentation",
+              "src": "527:46:78",
+              "text": "@notice Sets the weight of the given vault"
+            },
+            "functionSelector": "06a96bd8",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setVaultWeight",
+            "nameLocation": "587:14:78",
+            "parameters": {
+              "id": 16889,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16886,
+                  "mutability": "mutable",
+                  "name": "_vault",
+                  "nameLocation": "610:6:78",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16891,
+                  "src": "602:14:78",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16885,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "602:7:78",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 16888,
+                  "mutability": "mutable",
+                  "name": "_weight",
+                  "nameLocation": "626:7:78",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 16891,
+                  "src": "618:15:78",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 16887,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "618:7:78",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "601:33:78"
+            },
+            "returnParameters": {
+              "id": 16890,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "643:0:77"
+              "src": "643:0:78"
             },
-            "scope": 16875,
+            "scope": 16892,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -516,15 +516,15 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16875
+          16892
         ],
         "name": "IVaultWeightManager",
-        "nameLocation": "209:19:77",
-        "scope": 16876,
+        "nameLocation": "209:19:78",
+        "scope": 16893,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 77
+  "id": 78
 }

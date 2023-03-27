@@ -145,19 +145,19 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/ITemporarilyPausable.sol",
-    "id": 17146,
+    "id": 17163,
     "exportedSymbols": {
       "ITemporarilyPausable": [
-        17145
+        17162
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "176:510:89",
+    "src": "176:510:90",
     "nodes": [
       {
-        "id": 17128,
+        "id": 17145,
         "nodeType": "PragmaDirective",
-        "src": "176:23:89",
+        "src": "176:23:90",
         "nodes": [],
         "literals": [
           "solidity",
@@ -167,39 +167,39 @@
         ]
       },
       {
-        "id": 17145,
+        "id": 17162,
         "nodeType": "ContractDefinition",
-        "src": "263:422:89",
+        "src": "263:422:90",
         "nodes": [
           {
-            "id": 17134,
+            "id": 17151,
             "nodeType": "EventDefinition",
-            "src": "388:38:89",
+            "src": "388:38:90",
             "nodes": [],
             "anonymous": false,
             "documentation": {
-              "id": 17130,
+              "id": 17147,
               "nodeType": "StructuredDocumentation",
-              "src": "300:83:89",
+              "src": "300:83:90",
               "text": " @dev Emitted every time the pause state changes by `_setPaused`."
             },
             "eventSelector": "9e3a5e37224532dea67b89face185703738a228a6e8a23dee546960180d3be64",
             "name": "PausedStateChanged",
-            "nameLocation": "394:18:89",
+            "nameLocation": "394:18:90",
             "parameters": {
-              "id": 17133,
+              "id": 17150,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17132,
+                  "id": 17149,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "paused",
-                  "nameLocation": "418:6:89",
+                  "nameLocation": "418:6:90",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17134,
-                  "src": "413:11:89",
+                  "scope": 17151,
+                  "src": "413:11:90",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -207,10 +207,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 17131,
+                    "id": 17148,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "413:4:89",
+                    "src": "413:4:90",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -219,18 +219,18 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "412:13:89"
+              "src": "412:13:90"
             }
           },
           {
-            "id": 17144,
+            "id": 17161,
             "nodeType": "FunctionDefinition",
-            "src": "494:189:89",
+            "src": "494:189:90",
             "nodes": [],
             "documentation": {
-              "id": 17135,
+              "id": 17152,
               "nodeType": "StructuredDocumentation",
-              "src": "432:57:89",
+              "src": "432:57:90",
               "text": " @dev Returns the current paused state."
             },
             "functionSelector": "1c0de051",
@@ -238,26 +238,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "getPausedState",
-            "nameLocation": "503:14:89",
+            "nameLocation": "503:14:90",
             "parameters": {
-              "id": 17136,
+              "id": 17153,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "517:2:89"
+              "src": "517:2:90"
             },
             "returnParameters": {
-              "id": 17143,
+              "id": 17160,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 17138,
+                  "id": 17155,
                   "mutability": "mutable",
                   "name": "paused",
-                  "nameLocation": "585:6:89",
+                  "nameLocation": "585:6:90",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17144,
-                  "src": "580:11:89",
+                  "scope": 17161,
+                  "src": "580:11:90",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -265,10 +265,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 17137,
+                    "id": 17154,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "580:4:89",
+                    "src": "580:4:90",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -278,13 +278,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 17140,
+                  "id": 17157,
                   "mutability": "mutable",
                   "name": "pauseWindowEndTime",
-                  "nameLocation": "613:18:89",
+                  "nameLocation": "613:18:90",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17144,
-                  "src": "605:26:89",
+                  "scope": 17161,
+                  "src": "605:26:90",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -292,10 +292,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17139,
+                    "id": 17156,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "605:7:89",
+                    "src": "605:7:90",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -305,13 +305,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 17142,
+                  "id": 17159,
                   "mutability": "mutable",
                   "name": "bufferPeriodEndTime",
-                  "nameLocation": "653:19:89",
+                  "nameLocation": "653:19:90",
                   "nodeType": "VariableDeclaration",
-                  "scope": 17144,
-                  "src": "645:27:89",
+                  "scope": 17161,
+                  "src": "645:27:90",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -319,10 +319,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 17141,
+                    "id": 17158,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "645:7:89",
+                    "src": "645:7:90",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -331,9 +331,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "566:116:89"
+              "src": "566:116:90"
             },
-            "scope": 17145,
+            "scope": 17162,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -345,22 +345,22 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 17129,
+          "id": 17146,
           "nodeType": "StructuredDocumentation",
-          "src": "201:61:89",
+          "src": "201:61:90",
           "text": " @dev Interface for the TemporarilyPausable helper."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          17145
+          17162
         ],
         "name": "ITemporarilyPausable",
-        "nameLocation": "273:20:89",
-        "scope": 17146,
+        "nameLocation": "273:20:90",
+        "scope": 17163,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 89
+  "id": 90
 }

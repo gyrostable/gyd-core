@@ -194,22 +194,22 @@
   },
   "ast": {
     "absolutePath": "interfaces/balancer/I2CLP.sol",
-    "id": 16889,
+    "id": 16906,
     "exportedSymbols": {
       "I2CLP": [
-        16888
+        16905
       ],
       "IMinimalPoolView": [
-        17062
+        17079
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "174:174:78",
+    "src": "174:174:79",
     "nodes": [
       {
-        "id": 16877,
+        "id": 16894,
         "nodeType": "PragmaDirective",
-        "src": "174:23:78",
+        "src": "174:23:79",
         "nodes": [],
         "literals": [
           "solidity",
@@ -219,53 +219,53 @@
         ]
       },
       {
-        "id": 16878,
+        "id": 16895,
         "nodeType": "ImportDirective",
-        "src": "199:32:78",
+        "src": "199:32:79",
         "nodes": [],
         "absolutePath": "interfaces/balancer/IMinimalPoolView.sol",
         "file": "./IMinimalPoolView.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 16889,
-        "sourceUnit": 17063,
+        "scope": 16906,
+        "sourceUnit": 17080,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 16888,
+        "id": 16905,
         "nodeType": "ContractDefinition",
-        "src": "233:114:78",
+        "src": "233:114:79",
         "nodes": [
           {
-            "id": 16887,
+            "id": 16904,
             "nodeType": "FunctionDefinition",
-            "src": "275:70:78",
+            "src": "275:70:79",
             "nodes": [],
             "functionSelector": "707dcd1e",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getSqrtParameters",
-            "nameLocation": "284:17:78",
+            "nameLocation": "284:17:79",
             "parameters": {
-              "id": 16881,
+              "id": 16898,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "301:2:78"
+              "src": "301:2:79"
             },
             "returnParameters": {
-              "id": 16886,
+              "id": 16903,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 16883,
+                  "id": 16900,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16887,
-                  "src": "327:7:78",
+                  "scope": 16904,
+                  "src": "327:7:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -273,10 +273,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16882,
+                    "id": 16899,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "327:7:78",
+                    "src": "327:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -286,13 +286,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 16885,
+                  "id": 16902,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 16887,
-                  "src": "336:7:78",
+                  "scope": 16904,
+                  "src": "336:7:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -300,10 +300,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 16884,
+                    "id": 16901,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "336:7:78",
+                    "src": "336:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -312,9 +312,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "326:18:78"
+              "src": "326:18:79"
             },
-            "scope": 16888,
+            "scope": 16905,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -324,18 +324,18 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 16879,
+              "id": 16896,
               "name": "IMinimalPoolView",
               "nameLocations": [
-                "252:16:78"
+                "252:16:79"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 17062,
-              "src": "252:16:78"
+              "referencedDeclaration": 17079,
+              "src": "252:16:79"
             },
-            "id": 16880,
+            "id": 16897,
             "nodeType": "InheritanceSpecifier",
-            "src": "252:16:78"
+            "src": "252:16:79"
           }
         ],
         "canonicalName": "I2CLP",
@@ -343,16 +343,16 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          16888,
-          17062
+          16905,
+          17079
         ],
         "name": "I2CLP",
-        "nameLocation": "243:5:78",
-        "scope": 16889,
+        "nameLocation": "243:5:79",
+        "scope": 16906,
         "usedErrors": []
       }
     ],
     "license": "LicenseRef-Gyro-1.0"
   },
-  "id": 78
+  "id": 79
 }
