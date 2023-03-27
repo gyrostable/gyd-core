@@ -44,6 +44,9 @@ contract DryMint is Test {
         gyroConfig.setAddress(ConfigKeys.BALANCER_VAULT_ADDRESS, addresses[0]);
         gyroConfig.setAddress(ConfigKeys.FEE_BANK_ADDRESS, addresses[0]);
         gyroConfig.setAddress(ConfigKeys.RESERVE_MANAGER_ADDRESS, address(mockReserveManager));
+        gyroConfig.setAddress(ConfigKeys.ROOT_SAFETY_CHECK_ADDRESS, address(reserveSafetyManager));
+        gyroConfig.setAddress(ConfigKeys.FEE_HANDLER_ADDRESS, address(feeHandler));
+        gyroConfig.setAddress(ConfigKeys.PAMM_ADDRESS, address(mockPAMMv1));
 
         reserveSafetyManager = new TestingReserveSafetyManager(
             governorAddress,
@@ -51,27 +54,78 @@ contract DryMint is Test {
             _stablecoinMaxDeviation,
             _minTokenPrice
         );
-        gyroConfig.setAddress(ConfigKeys.ROOT_SAFETY_CHECK_ADDRESS, address(reserveSafetyManager));
-        gyroConfig.setAddress(ConfigKeys.FEE_HANDLER_ADDRESS, address(feeHandler));
-        gyroConfig.setAddress(ConfigKeys.PAMM_ADDRESS, address(mockPAMMv1));
 
         motherboard = new Motherboard(gyroConfig);
     }
 
-    function testDryMint() public {
+    function testDryMint(uint128 mintAmount, uint8 index) public {
+        index = index % 6; // Bound to range [0, 5]
+        uint64[6] memory allowedDeviations = [1e16, 3e16, 5e16, 1e17, 3e17, 5e17];
+
+        // Deploy new safety manager
+        reserveSafetyManager = new TestingReserveSafetyManager(
+            governorAddress,
+            allowedDeviations[index],
+            _stablecoinMaxDeviation,
+            _minTokenPrice
+        );
+        gyroConfig.setAddress(ConfigKeys.ROOT_SAFETY_CHECK_ADDRESS, address(reserveSafetyManager));
+
+        // Define reserve state and mint asset
         DataTypes.ReserveState memory reserveState = mockReserveManager.getReserveState();
         DataTypes.MintAsset[] memory assets = new DataTypes.MintAsset[](1);
         assets[0] = DataTypes.MintAsset(
             reserveState.vaults[0].underlying,
-            1e15,
+            mintAmount,
             reserveState.vaults[0].vault
         );
-        // assets[1] = DataTypes.MintAsset(addresses[1], 1e18, addresses[1]);
-        // assets[2] = DataTypes.MintAsset(addresses[2], 1e18, addresses[2]);
-        // assets[3] = DataTypes.MintAsset(addresses[3], 1e18, addresses[3]);
-        (uint256 mintedGYDAmount, string memory err) = motherboard.dryMint(assets, 0, userAddress);
 
-        console.log(mintedGYDAmount, err);
+        // Find vault deviation
+        uint256 correspondingVaultIndex;
+
+        for (uint256 i; i < reserveState.vaults.length; i++) {
+            if (reserveState.vaults[i].vault == assets[0].destinationVault) {
+                correspondingVaultIndex = i;
+            }
+        }
+
+        uint256 totalValueAfter = assets[0].inputAmount.mulDown(
+            reserveState.vaults[correspondingVaultIndex].price
+        ) + reserveState.totalUSDValue;
+
+        uint256[] memory resultingWeights = new uint256[](reserveState.vaults.length);
+
+        bool expectFail;
+
+        for (uint256 i; i < reserveState.vaults.length; i++) {
+            if (i != correspondingVaultIndex) {
+                uint256 currentValue = reserveState.vaults[i].price.mulDown(
+                    reserveState.vaults[i].reserveBalance
+                );
+                resultingWeights[i] = currentValue.divDown(totalValueAfter);
+            } else {
+                uint256 newValue = reserveState.vaults[i].price.mulDown(
+                    reserveState.vaults[i].reserveBalance + assets[0].inputAmount
+                );
+                resultingWeights[i] = newValue.divDown(totalValueAfter);
+            }
+            uint256 scaledEpsilon = reserveState.vaults[i].idealWeight.mulUp(
+                allowedDeviations[index]
+            );
+            bool withinEpsilon = reserveState.vaults[i].idealWeight.absSub(resultingWeights[i]) <=
+                scaledEpsilon;
+
+            if (!withinEpsilon) expectFail = true;
+        }
+
+        // Test against real value
+        (, string memory err) = motherboard.dryMint(assets, 0, userAddress);
+
+        if (expectFail) {
+            assertEq("52", err);
+        } else {
+            assertEq("", err);
+        }
     }
 
     // Create addresses
@@ -88,7 +142,9 @@ contract DryMint is Test {
     }
 }
 
-// Mock Contract
+///////////////////////////////////////
+/////// Mock Contracts
+///////////////////////////////////////
 
 contract MockReserveManager {
     // Vaults
