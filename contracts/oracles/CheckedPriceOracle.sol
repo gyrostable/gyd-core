@@ -23,7 +23,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     using SafeCast for uint256;
     using SafeCast for int256;
 
-    uint256 public constant MAX_ABSOLUTE_WETH_DEVIATION = 50e18;
+    uint256 public constant MAX_RELATIVE_WETH_DEVIATION = 0.02e18;
     uint256 public constant INITIAL_RELATIVE_EPSILON = 0.02e18;
     uint256 public constant MAX_RELATIVE_EPSILON = 0.1e18;
 
@@ -285,9 +285,9 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         uint256[] memory priceLevelTwaps
     ) internal view {
         uint256 trueWETH = getRobustWETHPrice(signedPrices, priceLevelTwaps);
-        uint256 absolutePriceDifference = priceLevel.absSub(trueWETH);
+        uint256 relativePriceDifference = priceLevel.absSub(trueWETH).divDown(trueWETH);
         require(
-            absolutePriceDifference <= MAX_ABSOLUTE_WETH_DEVIATION,
+            relativePriceDifference <= MAX_RELATIVE_WETH_DEVIATION,
             Errors.ROOT_PRICE_NOT_GROUNDED
         );
     }
