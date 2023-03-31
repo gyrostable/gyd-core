@@ -23,7 +23,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     using SafeCast for uint256;
     using SafeCast for int256;
 
-    uint256 public constant MAX_RELATIVE_WETH_DEVIATION = 0.02e18;
+    uint256 public constant INITIAL_MAX_RELATIVE_WETH_DEVIATION = 0.02e18;
     uint256 public constant INITIAL_RELATIVE_EPSILON = 0.02e18;
     uint256 public constant MAX_RELATIVE_EPSILON = 0.1e18;
 
@@ -31,6 +31,8 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     IUSDPriceOracle public usdOracle;
     IRelativePriceOracle public relativeOracle;
+
+    uint256 public maxRelativeWethDeviation;
 
     uint256 public relativeEpsilon;
 
@@ -74,6 +76,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         relativeOracle = IRelativePriceOracle(_relativeOracle);
         relativeEpsilon = INITIAL_RELATIVE_EPSILON;
         wethAddress = _wethAddress;
+        maxRelativeWethDeviation = INITIAL_MAX_RELATIVE_WETH_DEVIATION;
     }
 
     function setUSDOracle(address _usdOracle) external governanceOnly {
@@ -279,6 +282,13 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         relativeEpsilon = _relativeEpsilon;
     }
 
+    function setRelativeAbsoluteWethDeviation(uint256 _relativeAbsoluteWethDeviation)
+        external
+        governanceOnly
+    {
+        maxRelativeWethDeviation = _relativeAbsoluteWethDeviation;
+    }
+
     function _checkPriceLevel(
         uint256 priceLevel,
         uint256[] memory signedPrices,
@@ -287,7 +297,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         uint256 trueWETH = getRobustWETHPrice(signedPrices, priceLevelTwaps);
         uint256 relativePriceDifference = priceLevel.absSub(trueWETH).divDown(trueWETH);
         require(
-            relativePriceDifference <= MAX_RELATIVE_WETH_DEVIATION,
+            relativePriceDifference <= maxRelativeWethDeviation,
             Errors.ROOT_PRICE_NOT_GROUNDED
         );
     }
