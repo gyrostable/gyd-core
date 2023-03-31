@@ -114,7 +114,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
         gydToken.mint(msg.sender, mintedGYDAmount);
 
-        emit Mint(msg.sender, mintedGYDAmount, usdValue, order, orderAfterFees)
+        emit Mint(msg.sender, mintedGYDAmount, usdValue, order, orderAfterFees);
     }
 
     /// @inheritdoc IMotherboard
@@ -151,7 +151,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         outputAmounts = _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
 
-        emit Redeem(msg.sender, gydToRedeem, usdValueToRedeem, order, orderAfterFees)
+        emit Redeem(msg.sender, gydToRedeem, usdValueToRedeem, order, orderAfterFees);
     }
 
     /// @inheritdoc IMotherboard
