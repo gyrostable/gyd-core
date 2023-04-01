@@ -47,6 +47,23 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     // Balancer vault used for re-entrancy check.
     IVault internal immutable balancerVault;
 
+    // Events
+    event Mint(
+        address indexed minter,
+        uint256 mintedGYDAmount,
+        uint256 usdValue,
+        DataTypes.Order orderBeforeFees,
+        DataTypes.Order orderAfterFees
+    );
+
+    event Redeem(
+        address indexed redeemer,
+        uint256 gydToRedeem,
+        uint256 usdValueToRedeem,
+        DataTypes.Order orderBeforeFees,
+        DataTypes.Order orderAfterFees
+    );
+
     constructor(IGyroConfig _gyroConfig) {
         gyroConfig = _gyroConfig;
         gydToken = _gyroConfig.getGYDToken();
@@ -96,6 +113,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         require(!_isOverCap(msg.sender, mintedGYDAmount), Errors.SUPPLY_CAP_EXCEEDED);
 
         gydToken.mint(msg.sender, mintedGYDAmount);
+
+        emit Mint(msg.sender, mintedGYDAmount, usdValue, order, orderAfterFees);
     }
 
     /// @inheritdoc IMotherboard
@@ -131,6 +150,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         outputAmounts = _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
+
+        emit Redeem(msg.sender, gydToRedeem, usdValueToRedeem, order, orderAfterFees);
     }
 
     /// @inheritdoc IMotherboard
