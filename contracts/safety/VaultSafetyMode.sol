@@ -51,19 +51,9 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
 
     IGyroConfig public immutable gyroConfig;
 
-    uint256 public immutable safetyBlocksAutomatic;
-    uint256 public immutable safetyBlocksGuardian;
-
     uint256 public constant THRESHOLD_BUFFER = 8e17;
 
-    constructor(
-        address governor,
-        uint256 _safetyBlocksAutomatic,
-        uint256 _safetyBlocksGuardian,
-        address _gyroConfig
-    ) Governable(governor) {
-        safetyBlocksAutomatic = _safetyBlocksAutomatic;
-        safetyBlocksGuardian = _safetyBlocksGuardian;
+    constructor(address governor, address _gyroConfig) Governable(governor) {
         gyroConfig = IGyroConfig(_gyroConfig);
     }
 
@@ -158,7 +148,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         DataTypes.Direction direction = depositsOnly
             ? DataTypes.Direction.In
             : DataTypes.Direction.Both;
-        uint256 blocksToActivate = safetyBlocksGuardian;
+        uint256 blocksToActivate = gyroConfig.getUint(ConfigKeys.SAFETY_BLOCKS_GUARDIAN);
         for (uint256 i = 0; i < vaults.length; i++) {
             DataTypes.GuardedVaults memory vaultToProtect = DataTypes.GuardedVaults(
                 vaults[i],
@@ -223,7 +213,9 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             directionalData.lastSeenBlock = uint64(block.number);
             directionalData.shortFlow = uint128(result[i].newFlow);
             if (result[i].safetyModeActivated) {
-                directionalData.lastSafetyBlock = uint64(block.number + safetyBlocksAutomatic);
+                directionalData.lastSafetyBlock = uint64(
+                    block.number + gyroConfig.getUint(ConfigKeys.SAFETY_BLOCKS_AUTOMATIC)
+                );
             }
         }
     }
@@ -231,7 +223,10 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     function _activateOracleGuardian(DataTypes.GuardedVaults memory vaultToProtect, uint256 blocks)
         internal
     {
-        require(blocks <= safetyBlocksGuardian, Errors.ORACLE_GUARDIAN_TIME_LIMIT);
+        require(
+            blocks <= gyroConfig.getUint(ConfigKeys.SAFETY_BLOCKS_GUARDIAN),
+            Errors.ORACLE_GUARDIAN_TIME_LIMIT
+        );
 
         uint64 targetBlock = uint64(block.number + blocks);
         if (

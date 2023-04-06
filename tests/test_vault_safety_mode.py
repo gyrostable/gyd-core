@@ -61,7 +61,7 @@ def test_call_wrong_function(admin, vault_safety_mode, mint):
 @pytest.mark.usefixtures("authorize_admin")
 @pytest.mark.parametrize("mint", [True, False])
 def test_multiple_mints_or_redeems(
-    vault_safety_mode, admin, mint, chain, MockGyroVault
+    vault_safety_mode, admin, mint, chain, MockGyroVault, gyro_config
 ):
     value_index = 0 if mint else 1
     other_value_index = 1 if mint else 0
@@ -146,9 +146,8 @@ def test_multiple_mints_or_redeems(
         order.vaults_with_amount[0].vault_info.vault
     )
     assert persisted_a[value_index][0] < amount_a_1 + amount_a_2 + amount_a_3
-    assert (
-        persisted_a[value_index][1]
-        == tx.block_number + vault_safety_mode.safetyBlocksAutomatic()
+    assert persisted_a[value_index][1] == tx.block_number + gyro_config.getUint(
+        config_keys.SAFETY_BLOCKS_AUTOMATIC
     )
 
     assert query_check(order) == error_codes.SAFETY_MODE_ACTIVATED
@@ -166,7 +165,7 @@ def test_multiple_mints_or_redeems(
     tx = execute_check(order)
     assert not tx.events
 
-    chain.mine(vault_safety_mode.safetyBlocksAutomatic())
+    chain.mine(gyro_config.getUint(config_keys.SAFETY_BLOCKS_AUTOMATIC))
 
     # once the safety mode is deactivated (after n blocks), we can use the vault again
     order = Order(
@@ -180,7 +179,9 @@ def test_multiple_mints_or_redeems(
 
 
 @pytest.mark.usefixtures("authorize_admin")
-def test_mixed_mints_and_redeems(vault_safety_mode, admin, chain, MockGyroVault):
+def test_mixed_mints_and_redeems(
+    vault_safety_mode, admin, chain, MockGyroVault, gyro_config
+):
     vault_info = _create_vault_info(admin, MockGyroVault, 18, 10**19)
     mint_order = Order(
         mint=True,
@@ -191,7 +192,7 @@ def test_mixed_mints_and_redeems(vault_safety_mode, admin, chain, MockGyroVault)
     tx = vault_safety_mode.checkAndPersistMint(mint_order)
     assert not tx.events
 
-    chain.mine(vault_safety_mode.safetyBlocksAutomatic() * 10)
+    chain.mine(gyro_config.getUint(config_keys.SAFETY_BLOCKS_AUTOMATIC) * 10)
 
     redeem_order = Order(
         mint=False,
@@ -322,6 +323,7 @@ def test_pause_protocol(
     MockGyroVault,
     deposits_only,
     mock_price_oracle,
+    gyro_config,
 ):
     tx = vault_safety_mode.addAddressToWhitelist(admin, {"from": admin})
     vaults = []
@@ -338,10 +340,9 @@ def test_pause_protocol(
         assert len(tx.events["OracleGuardianActivated"]) == len(vaults)
     else:
         assert len(tx.events["OracleGuardianActivated"]) == len(vaults) * 2
-    assert (
-        tx.events["OracleGuardianActivated"][0]["durationOfProtectionInBlocks"]
-        == vault_safety_mode.safetyBlocksGuardian()
-    )
+    assert tx.events["OracleGuardianActivated"][0][
+        "durationOfProtectionInBlocks"
+    ] == gyro_config.getUint(config_keys.SAFETY_BLOCKS_GUARDIAN)
 
     for vault in vaults:
         mint_order = Order(

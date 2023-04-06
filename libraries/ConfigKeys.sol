@@ -34,4 +34,7 @@ library ConfigKeys {
 
     bytes32 internal constant GYD_RECOVERY_TRIGGER_CR = "GYD_RECOVERY_TRIGGER_CR";
     bytes32 internal constant GYD_RECOVERY_TARGET_CR = "GYD_RECOVERY_TARGET_CR";
+
+    bytes32 internal constant SAFETY_BLOCKS_AUTOMATIC = "SAFETY_BLOCKS_AUTOMATIC";
+    bytes32 internal constant SAFETY_BLOCKS_GUARDIAN = "SAFETY_BLOCKS_GUARDIAN";
 }
