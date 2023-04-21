@@ -181,7 +181,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         returns (uint256 withdrawalId)
     {
         // redundant with _unstake() but we want a better error message.
-        require(adjustedAmount <= balanceOf(msg.sender), "not enough to withdraw");
+        require(adjustedAmount <= balanceAdjustedOf(msg.sender), "not enough to withdraw");
 
         _unstake(msg.sender, adjustedAmount); // This also handles full burns, which is important below.
 
