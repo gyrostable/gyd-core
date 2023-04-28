@@ -8,6 +8,7 @@ from tests.support import config_keys
 from tests.support.utils import to_decimal as D, scale, unscale, format_to_bytes
 from pprint import pprint
 
+
 def encode_governance_call_via_governanceproxy(
     governanceproxy, gyroconfig, setter: str, key: bytes, value: Union[int, str]
 ):
@@ -93,7 +94,6 @@ def get_vals_stmatic_eclp():
         except VirtualMachineError:
             print("global", key, "not set")
 
-
     for key in ["PROTOCOL_SWAP_FEE_PERC", "PROTOCOL_FEE_GYRO_PORTION"]:
         keyb = key.encode()
         # Sanity check
@@ -108,4 +108,3 @@ def get_vals_stmatic_eclp():
 
 def main():
     mk_set_vals_stmatic_eclp()
-
