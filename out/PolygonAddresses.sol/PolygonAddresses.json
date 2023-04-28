@@ -1,17 +1,17 @@
 {
   "abi": [],
   "bytecode": {
-    "object": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220b3f7ce330078406b4cde3923ebd17ae0477c7ed96be3f677b5c6fbb5de67f31364736f6c63430008110033",
-    "sourceMap": "64:292:65:-:0;;;;;;;;;;;;;;;;;;;",
+    "object": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212201359acd4e35433244624b69474f6aaaa79f19f57fa735faf814705ce9a2327f164736f6c63430008110033",
+    "sourceMap": "64:368:65:-:0;;;;;;;;;;;;;;;;;;;",
     "linkReferences": {}
   },
   "deployedBytecode": {
-    "object": "0x6080604052600080fdfea2646970667358221220b3f7ce330078406b4cde3923ebd17ae0477c7ed96be3f677b5c6fbb5de67f31364736f6c63430008110033",
-    "sourceMap": "64:292:65:-:0;;;;;",
+    "object": "0x6080604052600080fdfea26469706673582212201359acd4e35433244624b69474f6aaaa79f19f57fa735faf814705ce9a2327f164736f6c63430008110033",
+    "sourceMap": "64:368:65:-:0;;;;;",
     "linkReferences": {}
   },
   "methodIdentifiers": {},
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"test/foundry/polygon-tests/PolygonAddresses.sol\":\"PolygonAddresses\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"test/foundry/polygon-tests/PolygonAddresses.sol\":{\"keccak256\":\"0xac2690deb22675bd8c477cafe0882093a285e3c2179aac63c607599387cc437a\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://5dd2e406cf751aaad6b410e10ef8b912ccd3bc8b721ecd22f4433e03dbec3a78\",\"dweb:/ipfs/QmSMMiMKLvXptcA9LgBWDZPPW58zsJpPFp2KDYiacMj5hm\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"test/foundry/polygon-tests/PolygonAddresses.sol\":\"PolygonAddresses\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"test/foundry/polygon-tests/PolygonAddresses.sol\":{\"keccak256\":\"0xb527a55c8f11474518c54aa7b41049506f1f44b8a9e3b9dcfd982b6d8c49ab94\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://6ad21114b20f71c70831174e46ca786eace3153bec31c81c7ff1b1ad83050eba\",\"dweb:/ipfs/QmfVVA7HPDLA28s6mk5ew2BtS9XZsk368EoJwkzfNpAwsB\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.17+commit.8df45f5f"
@@ -53,10 +53,10 @@
     },
     "sources": {
       "test/foundry/polygon-tests/PolygonAddresses.sol": {
-        "keccak256": "0xac2690deb22675bd8c477cafe0882093a285e3c2179aac63c607599387cc437a",
+        "keccak256": "0xb527a55c8f11474518c54aa7b41049506f1f44b8a9e3b9dcfd982b6d8c49ab94",
         "urls": [
-          "bzz-raw://5dd2e406cf751aaad6b410e10ef8b912ccd3bc8b721ecd22f4433e03dbec3a78",
-          "dweb:/ipfs/QmSMMiMKLvXptcA9LgBWDZPPW58zsJpPFp2KDYiacMj5hm"
+          "bzz-raw://6ad21114b20f71c70831174e46ca786eace3153bec31c81c7ff1b1ad83050eba",
+          "dweb:/ipfs/QmfVVA7HPDLA28s6mk5ew2BtS9XZsk368EoJwkzfNpAwsB"
         ],
         "license": "Unlicense"
       }
@@ -65,17 +65,17 @@
   },
   "ast": {
     "absolutePath": "test/foundry/polygon-tests/PolygonAddresses.sol",
-    "id": 35172,
+    "id": 35496,
     "exportedSymbols": {
       "PolygonAddresses": [
-        35171
+        35495
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "38:319:65",
+    "src": "38:395:65",
     "nodes": [
       {
-        "id": 35161,
+        "id": 35482,
         "nodeType": "PragmaDirective",
         "src": "38:24:65",
         "nodes": [],
@@ -87,12 +87,12 @@
         ]
       },
       {
-        "id": 35171,
+        "id": 35495,
         "nodeType": "ContractDefinition",
-        "src": "64:292:65",
+        "src": "64:368:65",
         "nodes": [
           {
-            "id": 35164,
+            "id": 35485,
             "nodeType": "VariableDeclaration",
             "src": "96:80:65",
             "nodes": [],
@@ -100,7 +100,7 @@
             "mutability": "constant",
             "name": "motherboardAddress",
             "nameLocation": "113:18:65",
-            "scope": 35171,
+            "scope": 35495,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -108,7 +108,7 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 35162,
+              "id": 35483,
               "name": "address",
               "nodeType": "ElementaryTypeName",
               "src": "96:7:65",
@@ -120,7 +120,7 @@
             },
             "value": {
               "hexValue": "307836384244654531624639354144373330463337394130356542386335316662356446413037373438",
-              "id": 35163,
+              "id": 35484,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -137,7 +137,7 @@
             "visibility": "internal"
           },
           {
-            "id": 35167,
+            "id": 35488,
             "nodeType": "VariableDeclaration",
             "src": "182:83:65",
             "nodes": [],
@@ -145,7 +145,7 @@
             "mutability": "constant",
             "name": "reserveManagerAddress",
             "nameLocation": "199:21:65",
-            "scope": 35171,
+            "scope": 35495,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -153,7 +153,7 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 35165,
+              "id": 35486,
               "name": "address",
               "nodeType": "ElementaryTypeName",
               "src": "182:7:65",
@@ -165,7 +165,7 @@
             },
             "value": {
               "hexValue": "307861396244343345393862313834433636414662383346373533343865423034316466383142423135",
-              "id": 35166,
+              "id": 35487,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -182,7 +182,7 @@
             "visibility": "internal"
           },
           {
-            "id": 35170,
+            "id": 35491,
             "nodeType": "VariableDeclaration",
             "src": "271:82:65",
             "nodes": [],
@@ -190,7 +190,7 @@
             "mutability": "constant",
             "name": "balancerVaultAddress",
             "nameLocation": "288:20:65",
-            "scope": 35171,
+            "scope": 35495,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -198,7 +198,7 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 35168,
+              "id": 35489,
               "name": "address",
               "nodeType": "ElementaryTypeName",
               "src": "271:7:65",
@@ -210,7 +210,7 @@
             },
             "value": {
               "hexValue": "307842413132323232323232323238643842613434353935386137356130373034643536364246324338",
-              "id": 35169,
+              "id": 35490,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -225,6 +225,51 @@
               "value": "0xBA12222222228d8Ba445958a75a0704d566BF2C8"
             },
             "visibility": "internal"
+          },
+          {
+            "id": 35494,
+            "nodeType": "VariableDeclaration",
+            "src": "359:70:65",
+            "nodes": [],
+            "constant": true,
+            "mutability": "constant",
+            "name": "gydToken",
+            "nameLocation": "376:8:65",
+            "scope": 35495,
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 35492,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "359:7:65",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": {
+              "hexValue": "307833376238453131353266423930413836374633646363413665386435333736383142303437303545",
+              "id": 35493,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "387:42:65",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              },
+              "value": "0x37b8E1152fB90A867F3dccA6e8d537681B04705E"
+            },
+            "visibility": "internal"
           }
         ],
         "abstract": false,
@@ -234,11 +279,11 @@
         "contractKind": "contract",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          35171
+          35495
         ],
         "name": "PolygonAddresses",
         "nameLocation": "73:16:65",
-        "scope": 35172,
+        "scope": 35496,
         "usedErrors": []
       }
     ],

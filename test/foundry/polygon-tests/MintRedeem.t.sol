@@ -19,6 +19,7 @@ contract MintRedeemTest is PolygonAddresses, Test {
 
     address constant usdc = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
     address constant tester = 0x4f62aC9936D383289C13524157d95f3aB3EeF629;
+    address constant pGYDHolder = 0xC5250939aB0E1aAF6680D54A2b2154e59a43871e;
     Motherboard constant motherboard = Motherboard(motherboardAddress);
 
     uint256 usdcDepegBlock = 40220000;
@@ -186,5 +187,45 @@ contract MintRedeemTest is PolygonAddresses, Test {
         motherboard.mint(mintAssets, 0);
 
         vm.stopPrank();
+    }
+
+    // Attempt to redeem small amount of p-GYD for any combination of vault tokens
+    function testForkRedeemSafe() public {
+        DataTypes.RedeemAsset memory redeemAsset0 = DataTypes.RedeemAsset(
+            0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619,
+            0,
+            250000000000000000,
+            0x65A978eC2f27bED3C9f0b5C3a59B473ef4FfE3d0
+        );
+
+        DataTypes.RedeemAsset memory redeemAsset1 = DataTypes.RedeemAsset(
+            0x97469E6236bD467cd147065f77752b00EfadCe8a,
+            0,
+            250000000000000000,
+            0x67D204645F4639ABFf0a91F45b3236a3D7541829
+        );
+
+        DataTypes.RedeemAsset memory redeemAsset2 = DataTypes.RedeemAsset(
+            0x17f1Ef81707811eA15d9eE7c741179bbE2A63887,
+            0,
+            250000000000000000,
+            0x1E6aFF38A1A908b71ad36834895515c9cf3b786b
+        );
+
+        DataTypes.RedeemAsset memory redeemAsset3 = DataTypes.RedeemAsset(
+            0xdAC42eeb17758Daa38CAF9A3540c808247527aE3,
+            0,
+            250000000000000000,
+            0x741B6291b4fA578523b15C006eB37531C18e3C8c
+        );
+
+        DataTypes.RedeemAsset[] memory redeemAssets = new DataTypes.RedeemAsset[](4);
+        redeemAssets[0] = redeemAsset0;
+        redeemAssets[1] = redeemAsset1;
+        redeemAssets[2] = redeemAsset2;
+        redeemAssets[3] = redeemAsset3;
+
+        vm.prank(pGYDHolder);
+        motherboard.redeem(100000000000000000, redeemAssets); // Redeem 0.1 GYD
     }
 }
