@@ -27,7 +27,7 @@ def mk_pool_setting(
     elif pool_type is not None:
         return keccak(encode_abi(["bytes32", "bytes32"], [setting, pool_type]))
     else:
-        return setting
+        return encode_abi(["bytes32"], [setting])
 
 
 def main():
