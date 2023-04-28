@@ -8,15 +8,28 @@ from tests.support import config_keys
 from tests.support.utils import to_decimal as D, scale, unscale, format_to_bytes
 from pprint import pprint
 
-def encode_governance_call(
+def encode_governance_call_via_governanceproxy(
     governanceproxy, gyroconfig, setter: str, key: bytes, value: Union[int, str]
 ):
     """
+    For GyroConfig instance that's controlled by the governance proxy.
     setter: "setUint" or "setAddress"
     """
-    return governanceproxy.executeCall.encode_input(
+    s = governanceproxy.executeCall.encode_input(
         gyroconfig.address, getattr(gyroconfig, setter).encode_input(key, value)
     )
+    return "0x" + s.hex()
+
+
+def encode_governance_call_direct(
+    gyroconfig, setter: str, key: bytes, value: Union[int, str]
+):
+    """
+    For GyroConfig instance that's controlled by the governance proxy.
+    setter: "setUint" or "setAddress"
+    We return the encoded values.
+    """
+    return (setter, "0x" + key.hex(), value)
 
 
 def mk_set_vals_stmatic_eclp():
@@ -38,8 +51,7 @@ def mk_set_vals_stmatic_eclp():
     #                                     config_keys.GYRO_TREASURY,
     #                                     ZERO_ADDRESS))
     calls.append(
-        encode_governance_call(
-            governanceproxy,
+        encode_governance_call_direct(
             gyroconfig,
             "setAddress",
             config_keys.BAL_TREASURY,
@@ -47,8 +59,7 @@ def mk_set_vals_stmatic_eclp():
         )
     )
     calls.append(
-        encode_governance_call(
-            governanceproxy,
+        encode_governance_call_direct(
             gyroconfig,
             "setUint",
             mk_pool_setting(
@@ -57,7 +68,7 @@ def mk_set_vals_stmatic_eclp():
             int(scale(protocol_swap_fee_perc)),
         )
     )
-    pprint(calls)
+    print(calls)
 
     print("GovernanceProxy:", governanceproxy.address)
     print("GyroConfig:", gyroconfig.address)
@@ -86,7 +97,7 @@ def get_vals_stmatic_eclp():
     for key in ["PROTOCOL_SWAP_FEE_PERC", "PROTOCOL_FEE_GYRO_PORTION"]:
         keyb = key.encode()
         # Sanity check
-        assert getattr(config_keys, key) == mk_pool_setting(keyb)
+        assert getattr(config_keys, key).hex() == mk_pool_setting(keyb).hex()
 
         setting = mk_pool_setting(keyb, pool_address=pool_address)
         try:
