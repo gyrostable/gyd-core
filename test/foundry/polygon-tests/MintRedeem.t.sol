@@ -12,10 +12,13 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "./PolygonAddresses.sol";
 import "../../../contracts/ReserveManager.sol";
 import "../../../contracts/Motherboard.sol";
+import "../../../contracts/PrimaryAMMV1.sol";
 import "../../../libraries/DataTypes.sol";
 
 contract MintRedeemTest is PolygonAddresses, Test {
     using Address for address;
+    using FixedPoint for uint256;
+    using DecimalScale for uint256;
 
     address constant usdc = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
     address constant tester = 0x4f62aC9936D383289C13524157d95f3aB3EeF629;
@@ -59,6 +62,19 @@ contract MintRedeemTest is PolygonAddresses, Test {
             console.log("------------");
             console.log("------------");
         }
+
+        PrimaryAMMV1 primaryAMMV1 = PrimaryAMMV1(primaryAMMV1Address);
+
+        uint256 redemptionPrice = primaryAMMV1.computeRedeemAmount(
+            1e18,
+            reserveState.totalUSDValue
+        );
+
+        uint256 totalSupply = ERC20(gydTokenAddress).totalSupply();
+
+        console.log("\n");
+        console.log("Collateralization ratio: ", reserveState.totalUSDValue.divDown(totalSupply));
+        console.log("Redemption Price: ", redemptionPrice);
     }
 
     // Attempt to mint GYD with WETH only or with a vault token which contains depegged USDC, but which reduces the weight of that vault
