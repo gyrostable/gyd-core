@@ -12,6 +12,7 @@ list_of_contracts = [
     "GovernableUpgradeable",
     "StaticPercentageFeeHandler",
     "BalancerECLPPriceOracle",
+    "BalancerECLPV2PriceOracle",
     "Balancer2CLPPriceOracle",
     "Balancer3CLPPriceOracle",
     "BalancerLPSharePricing",
