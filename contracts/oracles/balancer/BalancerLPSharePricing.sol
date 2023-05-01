@@ -17,12 +17,12 @@ library BalancerLPSharePricing {
 
     uint256 internal constant ONEHALF = 0.5e18;
 
-    uint256 internal constant MIN_PRICE_CPMM = 2.0002e11;  // 2.0002e-7 scaled
-    uint256 internal constant MIN_PRICE_2CLP = 2.0002e11;  // 2.0002e-7 scaled
-    uint256 internal constant MIN_PRICE_ASSET2_3CLP = 4e13;  // 4e-5 scaled
-    uint256 internal constant MIN_REL_PRICE_3CLP = 1e14;  // 1e-4 scaled
-    uint256 internal constant MAX_REL_PRICE_3CLP = 1e22;  // 1e4 scaled
-    uint256 internal constant MIN_PRICE_ECLP = 1e11;  // 1e-7 scaled
+    uint256 internal constant MIN_PRICE_CPMM = 2.0002e11; // 2.0002e-7 scaled
+    uint256 internal constant MIN_PRICE_2CLP = 2.0002e11; // 2.0002e-7 scaled
+    uint256 internal constant MIN_PRICE_ASSET2_3CLP = 4e13; // 4e-5 scaled
+    uint256 internal constant MIN_REL_PRICE_3CLP = 1e14; // 1e-4 scaled
+    uint256 internal constant MAX_REL_PRICE_3CLP = 1e22; // 1e4 scaled
+    uint256 internal constant MIN_PRICE_ECLP = 1e11; // 1e-7 scaled
 
     /** @dev Calculates the value of Balancer pool tokens (BPT) that use constant product invariant
      *  @param weights = weights of underlying assets
