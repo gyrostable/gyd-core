@@ -232,15 +232,28 @@ def gen_root3Alpha():
     return qdecimals(min_value=ROOT_ALPHA_MIN, max_value=ROOT_ALPHA_MAX, places=4)
 
 
-def gen_three_prices(min_price=MIN_PRICE, max_price=MAX_PRICE):
-    return st.tuples(*([qdecimals(min_price, max_price)] * 3))
-
+@st.composite
+def gen_three_prices(draw, min_price=MIN_PRICE, max_price=MAX_PRICE, max_rel_price = None):
+    if max_rel_price is not None:
+        max_rel_price = to_decimal(max_rel_price)
+    min_price = to_decimal(min_price)
+    max_price = to_decimal(min_price)
+    pz = draw(qdecimals(min_price, max_price))
+    if max_rel_price is not None:
+        min_price = max(min_price, pz / max_rel_price + D('2e-18'))
+        max_price = min(max_price, pz * max_rel_price - D('2e-18'))
+    px = draw(qdecimals(min_price, max_price))
+    if max_rel_price is not None:
+        min_price = max(min_price, px / max_rel_price + D('2e-18'))
+        max_price = min(max_price, px * max_rel_price - D('2e-18'))
+    py = draw(qdecimals(min_price, max_price))
+    return px, py, pz
 
 # Consistency check equilibrium prices
 @settings(max_examples=200)
 @given(
     root3Alpha=gen_root3Alpha(),
-    underlying_prices=gen_three_prices("1e-4", "1e4"),
+    underlying_prices=gen_three_prices("1e-4", "1e4", "1e4"),
 )
 def test_python_equilibrium_prices_3CLP(root3Alpha, underlying_prices):
     alpha = root3Alpha**3
@@ -276,7 +289,7 @@ def test_python_equilibrium_prices_3CLP(root3Alpha, underlying_prices):
 
 @given(
     root3Alpha=gen_root3Alpha(),
-    underlying_prices=gen_three_prices("1e-4", "1e4"),
+    underlying_prices=gen_three_prices("1e-4", "1e4", "1e4"),
 )
 def test_equilibrium_prices_match_3CLP(
     root3Alpha, underlying_prices, gyro_lp_price_testing

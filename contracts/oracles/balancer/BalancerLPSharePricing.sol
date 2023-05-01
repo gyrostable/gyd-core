@@ -17,6 +17,13 @@ library BalancerLPSharePricing {
 
     uint256 internal constant ONEHALF = 0.5e18;
 
+    uint256 internal constant MIN_PRICE_CPMM = 2.0002e11;  // 2.0002e-7 scaled
+    uint256 internal constant MIN_PRICE_2CLP = 2.0002e11;  // 2.0002e-7 scaled
+    uint256 internal constant MIN_PRICE_ASSET2_3CLP = 4e13;  // 4e-5 scaled
+    uint256 internal constant MIN_REL_PRICE_3CLP = 1e14;  // 1e-4 scaled
+    uint256 internal constant MAX_REL_PRICE_3CLP = 1e22;  // 1e4 scaled
+    uint256 internal constant MIN_PRICE_ECLP = 1e11;  // 1e-7 scaled
+
     /** @dev Calculates the value of Balancer pool tokens (BPT) that use constant product invariant
      *  @param weights = weights of underlying assets
      *  @param underlyingPrices = prices of underlying assets, in same order as weights
@@ -34,6 +41,8 @@ library BalancerLPSharePricing {
         **********************************************************************************************/
         uint256 prod = FixedPoint.ONE;
         for (uint256 i = 0; i < weights.length; i++) {
+            require(underlyingPrices[i] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
+
             prod = prod.mulDown(
                 FixedPoint.powDown(underlyingPrices[i].divDown(weights[i]), weights[i])
             );
@@ -60,6 +69,8 @@ library BalancerLPSharePricing {
         // firstTerm is invariantDivSupply
 
         require(weights.length == 2, Errors.INVALID_NUMBER_WEIGHTS);
+        require(underlyingPrices[0] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
+        require(underlyingPrices[1] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
 
         (uint256 i, uint256 j) = weights[1].mulDown(underlyingPrices[0]) >
             weights[0].mulDown(underlyingPrices[1])
@@ -121,6 +132,9 @@ library BalancerLPSharePricing {
         // When p_x/p_y > beta: bptPrice = L/S * p_y (sqrt(beta) - sqrt(alpha))         //
         **********************************************************************************************/
         (uint256 px, uint256 py) = (underlyingPrices[0], underlyingPrices[1]);
+        require(px >= MIN_PRICE_2CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+        require(py >= MIN_PRICE_2CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+
         uint256 one = FixedPoint.ONE;
         if (px.divDown(py) <= sqrtAlpha.mulUp(sqrtAlpha)) {
             bptPrice = invariantDivSupply.mulDown(px).mulDown(
@@ -149,12 +163,24 @@ library BalancerLPSharePricing {
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
         require(underlyingPrices.length == 3, Errors.INVALID_ARGUMENT);
+        require(underlyingPrices[2] >= MIN_PRICE_ASSET2_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+
         uint256 pXZPool;
         uint256 pYZPool;
         {
             uint256 alpha = cbrtAlpha.mulDown(cbrtAlpha).mulDown(cbrtAlpha);
             uint256 pXZ = underlyingPrices[0].divDown(underlyingPrices[2]);
             uint256 pYZ = underlyingPrices[1].divDown(underlyingPrices[2]);
+
+            // Checks on relative prices to protect against excessive rounding error.
+            uint256 pXY = underlyingPrices[0].divDown(underlyingPrices[1]);
+            require(pXZ >= MIN_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pXZ <= MAX_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pYZ >= MIN_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pYZ <= MAX_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pXY >= MIN_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pXY <= MAX_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+
             (pXZPool, pYZPool) = relativeEquilibriumPrices3CLP(alpha, pXZ, pYZ);
         }
 
@@ -237,7 +263,10 @@ library BalancerLPSharePricing {
         // When p_x/p_y > beta:                                                                      //
         //      bptPrice = L/S * p_y (e_y A^{-1} tau(alpha) - e_y A^{-1} tau(beta) )                 //
         **********************************************************************************************/
+        require(underlyingPrices[0] >= MIN_PRICE_ECLP, Errors.TOKEN_PRICES_TOO_SMALL);
+        require(underlyingPrices[1] >= MIN_PRICE_ECLP, Errors.TOKEN_PRICES_TOO_SMALL);
         (int256 px, int256 py) = (underlyingPrices[0].toInt256(), underlyingPrices[1].toInt256());
+
         int256 pxIny = px.divDownMag(py);
         if (pxIny < params.alpha) {
             int256 bP = (mulAinv(params, derivedParams.tauBeta).x -
