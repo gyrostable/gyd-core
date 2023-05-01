@@ -82,9 +82,13 @@ def unscale(x, decimals=18):
     return unscale_scalar(x, decimals)
 
 
+def to_raw_decimal(x: DecimalLike):
+    return to_decimal(x).raw
+
+
 def qdecimals(
     *args, allow_nan=False, allow_infinity=False, **kwargs
 ) -> st.SearchStrategy[QuantizedDecimal]:
     return st.decimals(
-        *args, allow_nan=allow_nan, allow_infinity=allow_infinity, **kwargs
+        *map(to_raw_decimal, args), allow_nan=allow_nan, allow_infinity=allow_infinity, **kwargs
     ).map(QuantizedDecimal)
