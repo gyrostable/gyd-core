@@ -72,7 +72,7 @@ def reserve(admin, Reserve, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def gyd_recovery(admin, GydRecovery, gyro_config, mock_gyfi):
+def gyd_recovery(admin, GydRecovery, gyro_config, mock_gyfi, gyd_token):
     gyd_recovery = admin.deploy(
         GydRecovery,
         admin,
