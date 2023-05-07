@@ -278,9 +278,7 @@ def test_multiple_burns(
 
 
 @pytest.mark.usefixtures("gyd_alice", "gyd_bob", "gyd_recovery_mining")
-def test_rewards_noburn(
-    alice, bob, gyd_recovery, gyd_token, chain
-):
+def test_rewards_noburn(alice, bob, gyd_recovery, gyd_token, chain):
     """Test accounting of liquidity mining without burns."""
     gyd_amount = scale(2)
     gyd_token.approve(gyd_recovery, gyd_amount, {"from": alice})
@@ -306,7 +304,9 @@ def test_rewards_noburn(
     # Check mining amounts
     time_elapsed = chain[-1]["timestamp"] - deposit_time
 
-    compute_expected = lambda v: v / 6 * time_elapsed * gyd_recovery.rewardsEmissionRate()
+    compute_expected = (
+        lambda v: v / 6 * time_elapsed * gyd_recovery.rewardsEmissionRate()
+    )
     alice_expected = compute_expected(2)
     bob_expected = compute_expected(4)
 
@@ -352,7 +352,7 @@ def test_rewards_partialburn_sync(
     # Partial burn
     start_gyd_supply = gyd_token.totalSupply()
     recovery_supply = gyd_recovery.totalUnderlying()
-    new_price = D('0.75')
+    new_price = D("0.75")
     mock_price_oracle.setUSDPrice(dai, scale(new_price), {"from": admin})
     mock_price_oracle.setUSDPrice(dai_vault, scale(new_price), {"from": admin})
     burn_amount = (1 - new_price) * start_gyd_supply
@@ -366,7 +366,9 @@ def test_rewards_partialburn_sync(
     # Check mining amounts
     time_elapsed = chain[-1]["timestamp"] - deposit_time
 
-    compute_expected = lambda v: v / 6 * time_elapsed * gyd_recovery.rewardsEmissionRate()
+    compute_expected = (
+        lambda v: v / 6 * time_elapsed * gyd_recovery.rewardsEmissionRate()
+    )
     alice_expected = compute_expected(2)
     bob_expected = compute_expected(4)
 
@@ -390,7 +392,7 @@ def test_rewards_fullburn_async(
     # Full burn
     start_gyd_supply = gyd_token.totalSupply()
     recovery_supply = gyd_recovery.totalUnderlying()
-    new_price = D('0.1')
+    new_price = D("0.1")
     mock_price_oracle.setUSDPrice(dai, scale(new_price), {"from": admin})
     mock_price_oracle.setUSDPrice(dai_vault, scale(new_price), {"from": admin})
     tx = gyd_recovery.checkAndRun()
@@ -409,7 +411,6 @@ def test_rewards_fullburn_async(
     chain.sleep(7 * 86400)
     chain.mine()
     end_time = chain[-1]["timestamp"]
-
 
     emission_rate = gyd_recovery.rewardsEmissionRate()
     alice_expected = (burn_time - deposit_time_alice) * emission_rate
@@ -435,7 +436,7 @@ def test_rewards_partialburn_async(
     # Full burn
     start_gyd_supply = gyd_token.totalSupply()
     recovery_supply = gyd_recovery.totalUnderlying()
-    new_price = D('0.75')
+    new_price = D("0.75")
     mock_price_oracle.setUSDPrice(dai, scale(new_price), {"from": admin})
     mock_price_oracle.setUSDPrice(dai_vault, scale(new_price), {"from": admin})
     burn_amount = (1 - new_price) * start_gyd_supply
@@ -461,14 +462,22 @@ def test_rewards_partialburn_async(
 
     # Alice receives 100% of rewards until bob joins. Then much less according
     # to how much of her funds are still left vs. bob's new funds.
-    alice_remaining_postburn = scale(6) * (recovery_supply - burn_amount) / recovery_supply
-    share_alice_remaining_postburn = alice_remaining_postburn / (alice_remaining_postburn + scale(2))
-    alice_expected = (
-        (deposit_time_bob - deposit_time_alice) * emission_rate
-        + (end_time - deposit_time_bob) * emission_rate * share_alice_remaining_postburn
+    alice_remaining_postburn = (
+        scale(6) * (recovery_supply - burn_amount) / recovery_supply
     )
-    bob_expected = (end_time - deposit_time_bob) * emission_rate * (1 - share_alice_remaining_postburn)
+    share_alice_remaining_postburn = alice_remaining_postburn / (
+        alice_remaining_postburn + scale(2)
+    )
+    alice_expected = (deposit_time_bob - deposit_time_alice) * emission_rate + (
+        end_time - deposit_time_bob
+    ) * emission_rate * share_alice_remaining_postburn
+    bob_expected = (
+        (end_time - deposit_time_bob)
+        * emission_rate
+        * (1 - share_alice_remaining_postburn)
+    )
 
-    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(int(alice_expected))
+    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(
+        int(alice_expected)
+    )
     assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(int(bob_expected))
-

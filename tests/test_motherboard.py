@@ -8,6 +8,7 @@ from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.types import MintAsset, RedeemAsset
 from tests.support.utils import scale
 
+
 @pytest.fixture(scope="module", autouse=True)
 def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
     pass
