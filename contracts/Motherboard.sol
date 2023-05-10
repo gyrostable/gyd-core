@@ -70,7 +70,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.Order orderAfterFees
     );
 
-    struct ExternalWhitelistActions {
+    struct ExternalActions {
         address target;
         bytes data;
     }
@@ -84,11 +84,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     }
 
     /// @inheritdoc IMotherboard
-    function mint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
-        public
-        override
-        returns (uint256 mintedGYDAmount)
-    {
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount
+    ) public override returns (uint256 mintedGYDAmount) {
         _ensureBalancerVaultNotReentrant();
 
         DataTypes.MonetaryAmount[] memory vaultAmounts = _convertMintInputAssetsToVaultTokens(
@@ -128,12 +127,25 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         emit Mint(msg.sender, mintedGYDAmount, usdValue, order, orderAfterFees);
     }
 
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount,
+        ExternalActions[] calldata actions
+    ) external returns (uint256 mintedGYDAmount) {
+        for (uint256 i = 0; i < actions.length; i++) {
+            if (externalCallWhitelist.contains(actions[i].target)) {
+                actions[i].target.functionCall(actions[i].data, "action failed");
+            }
+        }
+
+        return mint(assets, minReceivedAmount);
+    }
+
     /// @inheritdoc IMotherboard
-    function redeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
-        public
-        override
-        returns (uint256[] memory outputAmounts)
-    {
+    function redeem(
+        uint256 gydToRedeem,
+        DataTypes.RedeemAsset[] calldata assets
+    ) public override returns (uint256[] memory outputAmounts) {
         _ensureBalancerVaultNotReentrant();
 
         DataTypes.ReserveState memory reserveState = gyroConfig
@@ -163,6 +175,20 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         outputAmounts = _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
 
         emit Redeem(msg.sender, gydToRedeem, usdValueToRedeem, order, orderAfterFees);
+    }
+
+    function redeem(
+        uint256 gydToRedeem,
+        DataTypes.RedeemAsset[] calldata assets,
+        ExternalActions[] calldata actions
+    ) external returns (uint256[] memory outputAmounts) {
+        for (uint256 i = 0; i < actions.length; i++) {
+            if (externalCallWhitelist.contains(actions[i].target)) {
+                actions[i].target.functionCall(actions[i].data, "action failed");
+            }
+        }
+
+        return redeem(gydToRedeem, assets);
     }
 
     /// @inheritdoc IMotherboard
@@ -205,12 +231,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     }
 
     /// @inheritdoc IMotherboard
-    function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
-        external
-        view
-        override
-        returns (uint256[] memory outputAmounts, string memory err)
-    {
+    function dryRedeem(
+        uint256 gydToRedeem,
+        DataTypes.RedeemAsset[] calldata assets
+    ) external view override returns (uint256[] memory outputAmounts, string memory err) {
         outputAmounts = new uint256[](assets.length);
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
@@ -230,30 +254,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         }
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
         return _computeRedeemOutputAmounts(assets, orderAfterFees);
-    }
-
-    function mintWithExternalCalls(
-        DataTypes.MintAsset[] calldata assets,
-        uint256 minReceivedAmount,
-        ExternalWhitelistActions[] calldata actions
-    ) external returns (uint256 mintedGYDAmount) {
-        for (uint256 i = 0; i < actions.length; i++) {
-            actions[i].target.functionCall(actions[i].data, "action failed");
-        }
-
-        return mint(assets, minReceivedAmount);
-    }
-
-    function redeemWithExternalCalls(
-        uint256 gydToRedeem,
-        DataTypes.RedeemAsset[] calldata assets,
-        ExternalWhitelistActions[] calldata actions
-    ) external returns (uint256[] memory outputAmounts) {
-        for (uint256 i = 0; i < actions.length; i++) {
-            actions[i].target.functionCall(actions[i].data, "action failed");
-        }
-
-        return redeem(gydToRedeem, assets);
     }
 
     /// @inheritdoc IMotherboard
@@ -278,11 +278,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         gydToken.mint(treasury, amount);
     }
 
-    function _dryConvertMintInputAssetsToVaultTokens(DataTypes.MintAsset[] calldata assets)
-        internal
-        view
-        returns (DataTypes.MonetaryAmount[] memory vaultAmounts, string memory err)
-    {
+    function getExternalCallWhitelist() external returns (address[] memory) {
+        return externalCallWhitelist.values();
+    }
+
+    function _dryConvertMintInputAssetsToVaultTokens(
+        DataTypes.MintAsset[] calldata assets
+    ) internal view returns (DataTypes.MonetaryAmount[] memory vaultAmounts, string memory err) {
         vaultAmounts = new DataTypes.MonetaryAmount[](assets.length);
         for (uint256 i = 0; i < assets.length; i++) {
             DataTypes.MintAsset calldata asset = assets[i];
@@ -298,11 +300,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         }
     }
 
-    function _computeVaultTokensForAsset(DataTypes.MintAsset calldata asset)
-        internal
-        view
-        returns (uint256, string memory err)
-    {
+    function _computeVaultTokensForAsset(
+        DataTypes.MintAsset calldata asset
+    ) internal view returns (uint256, string memory err) {
         if (asset.inputToken == asset.destinationVault) {
             return (asset.inputAmount, "");
         } else {
@@ -315,10 +315,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         }
     }
 
-    function _convertMintInputAssetsToVaultTokens(DataTypes.MintAsset[] calldata assets)
-        internal
-        returns (DataTypes.MonetaryAmount[] memory)
-    {
+    function _convertMintInputAssetsToVaultTokens(
+        DataTypes.MintAsset[] calldata assets
+    ) internal returns (DataTypes.MonetaryAmount[] memory) {
         DataTypes.MonetaryAmount[] memory vaultAmounts = new DataTypes.MonetaryAmount[](
             assets.length
         );
@@ -333,10 +332,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return vaultAmounts;
     }
 
-    function _convertMintInputAssetToVaultToken(DataTypes.MintAsset calldata asset)
-        internal
-        returns (uint256)
-    {
+    function _convertMintInputAssetToVaultToken(
+        DataTypes.MintAsset calldata asset
+    ) internal returns (uint256) {
         IGyroVault vault = IGyroVault(asset.destinationVault);
 
         IERC20(asset.inputToken).safeTransferFrom(msg.sender, address(this), asset.inputAmount);
@@ -352,11 +350,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return vault.deposit(asset.inputAmount, 0);
     }
 
-    function _getAssetAmountMint(address vault, DataTypes.MonetaryAmount[] memory amounts)
-        internal
-        pure
-        returns (uint256)
-    {
+    function _getAssetAmountMint(
+        address vault,
+        DataTypes.MonetaryAmount[] memory amounts
+    ) internal pure returns (uint256) {
         uint256 total = 0;
         for (uint256 i = 0; i < amounts.length; i++) {
             DataTypes.MonetaryAmount memory vaultAmount = amounts[i];
@@ -454,11 +451,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         }
     }
 
-    function _getRedeemAmount(DataTypes.VaultWithAmount[] memory vaultsWithAmount, address vault)
-        internal
-        pure
-        returns (uint256)
-    {
+    function _getRedeemAmount(
+        DataTypes.VaultWithAmount[] memory vaultsWithAmount,
+        address vault
+    ) internal pure returns (uint256) {
         for (uint256 i = 0; i < vaultsWithAmount.length; i++) {
             DataTypes.VaultWithAmount memory vaultWithAmount = vaultsWithAmount[i];
             if (vaultWithAmount.vaultInfo.vault == vault) {
@@ -468,10 +464,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return 0;
     }
 
-    function _convertRedeemOutputAsset(DataTypes.RedeemAsset memory asset, uint256 vaultTokenAmount)
-        internal
-        returns (uint256)
-    {
+    function _convertRedeemOutputAsset(
+        DataTypes.RedeemAsset memory asset,
+        uint256 vaultTokenAmount
+    ) internal returns (uint256) {
         IGyroVault vault = IGyroVault(asset.originVault);
         // withdraw the amount of vault tokens from the reserve
         reserve.withdrawToken(address(vault), vaultTokenAmount);
@@ -532,11 +528,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return vault.dryWithdraw(vaultTokenAmount, 0);
     }
 
-    function _getBasketUSDValue(DataTypes.Order memory order)
-        internal
-        pure
-        returns (uint256 result)
-    {
+    function _getBasketUSDValue(
+        DataTypes.Order memory order
+    ) internal pure returns (uint256 result) {
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             DataTypes.VaultWithAmount memory vaultWithAmount = order.vaultsWithAmount[i];
             uint256 scaledAmount = vaultWithAmount.amount.scaleFrom(
