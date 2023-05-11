@@ -5,7 +5,7 @@ from tests.support import config_keys, error_codes
 from tests.support.balancer import join_pool
 from tests.support.constants import BALANCER_POOL_IDS, address_from_pool_id
 from tests.support.quantized_decimal import QuantizedDecimal as D
-from tests.support.types import MintAsset, RedeemAsset
+from tests.support.types import MintAsset, RedeemAsset, ExternalAction
 from tests.support.utils import scale
 
 @pytest.fixture(scope="module", autouse=True)
@@ -56,6 +56,27 @@ def test_mint_vault_underlying(
     assert gyd_token.balanceOf(alice) == scale(10)
     assert gyd_minted == scale(10)
     assert usdc_vault.balanceOf(reserve) == usdc_amount
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_mint_with_external_call(
+    motherboard, usdc, usdc_vault, alice, bob, gyd_token, reserve
+):
+    usdc_amount = scale(10, usdc.decimals())
+    bob_transfer_amount = scale(1, usdc.decimals())
+    initial_bob_balance = usdc.balanceOf(bob)
+    usdc.approve(motherboard, usdc_amount + bob_transfer_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    motherboard.addToWhitelist(usdc)
+    external_action = ExternalAction(target=usdc, data=usdc.transferFrom.encode_input(alice, bob, bob_transfer_amount)) # Send 1 USDC to bob
+    tx = motherboard.mint([mint_asset], 0, [external_action], {"from": alice})
+    gyd_minted = tx.return_value
+    assert gyd_token.balanceOf(alice) == scale(10)
+    assert gyd_minted == scale(10)
+    assert usdc_vault.balanceOf(reserve) == usdc_amount
+    assert usdc.balanceOf(bob) == bob_transfer_amount + initial_bob_balance
 
 
 @pytest.mark.usefixtures("register_usdc_and_dai_vaults")

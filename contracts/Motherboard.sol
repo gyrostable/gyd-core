@@ -70,7 +70,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.Order orderAfterFees
     );
 
-    struct ExternalActions {
+    struct ExternalAction {
         address target;
         bytes data;
     }
@@ -130,7 +130,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     function mint(
         DataTypes.MintAsset[] calldata assets,
         uint256 minReceivedAmount,
-        ExternalActions[] calldata actions
+        ExternalAction[] calldata actions
     ) external returns (uint256 mintedGYDAmount) {
         for (uint256 i = 0; i < actions.length; i++) {
             if (externalCallWhitelist.contains(actions[i].target)) {
@@ -180,7 +180,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     function redeem(
         uint256 gydToRedeem,
         DataTypes.RedeemAsset[] calldata assets,
-        ExternalActions[] calldata actions
+        ExternalAction[] calldata actions
     ) external returns (uint256[] memory outputAmounts) {
         for (uint256 i = 0; i < actions.length; i++) {
             if (externalCallWhitelist.contains(actions[i].target)) {
