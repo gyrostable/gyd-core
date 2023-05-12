@@ -10,6 +10,8 @@ import "../libraries/ConfigHelpers.sol";
 
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "./LiquidityMining.sol";
 
 import "../interfaces/IGydRecovery.sol";
@@ -17,8 +19,8 @@ import "../interfaces/IGydRecovery.sol";
 contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     using FixedPoint for uint256;
     using ConfigHelpers for IGyroConfig;
-    using SafeERC20 for IGYDToken;
     using SafeERC20 for IERC20;
+    using SafeERC20Upgradeable for IGYDToken;
     using EnumerableSet for EnumerableSet.UintSet;
 
     /* We account for burn actions (= when the mechanism is triggered) in two ways:
