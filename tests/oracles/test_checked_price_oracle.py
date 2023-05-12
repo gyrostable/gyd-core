@@ -31,6 +31,11 @@ def get_eth_price():
 
 
 @pytest.fixture
+def initialize_registry(asset_registry, admin):
+    asset_registry.setAssetAddress("ETH", TokenAddresses.WETH, {"from": admin})
+
+
+@pytest.fixture
 def initialize_mainnet_oracles(
     mainnet_checked_price_oracle,
     local_signer_price_oracle,
@@ -38,6 +43,7 @@ def initialize_mainnet_oracles(
     TestingTrustedSignerPriceOracle,
     asset_registry,
     price_signer,
+    initialize_registry,
 ):
     deployed_trusted_signer = admin.deploy(
         TestingTrustedSignerPriceOracle, asset_registry, price_signer, True
@@ -48,8 +54,6 @@ def initialize_mainnet_oracles(
         "ETH", int(scale(unscaled_price, PRICE_DECIMALS)), timestamp
     )
     signature = sign_message(encoded_message, price_signer)
-
-    asset_registry.setAssetAddress("ETH", TokenAddresses.WETH, {"from": admin})
 
     local_signer_price_oracle.postPrice(encoded_message, signature)
 
@@ -69,6 +73,17 @@ def initialize_mainnet_oracles(
     mainnet_checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.USDC)
 
 
+def _post_price(oracle, signer, price, timestamp=None):
+    if timestamp is None:
+        timestamp = int(time.time())
+    unscaled_price = D(price)
+    encoded_message = make_message(
+        "ETH", int(scale(unscaled_price, PRICE_DECIMALS)), timestamp
+    )
+    signature = sign_message(encoded_message, signer)
+    oracle.postPrice(encoded_message, signature)
+
+
 @pytest.fixture
 def initialize_local_oracle(
     local_checked_price_oracle,
@@ -77,14 +92,9 @@ def initialize_local_oracle(
     price_signer,
     admin,
 ):
-    timestamp = int(time.time())
-    unscaled_price = D(ETH_USD_UNSCALED_PRICE)
-    encoded_message = make_message(
-        "ETH", int(scale(unscaled_price, PRICE_DECIMALS)), timestamp
-    )
-    signature = sign_message(encoded_message, price_signer)
     asset_registry.setAssetAddress("ETH", TokenAddresses.WETH, {"from": admin})
-    local_signer_price_oracle.postPrice(encoded_message, signature)
+
+    _post_price(local_signer_price_oracle, price_signer, ETH_USD_UNSCALED_PRICE)
 
     local_checked_price_oracle.addETHPriceOracle(local_signer_price_oracle)
 
@@ -333,3 +343,85 @@ def test_medianize_twaps(testing_checked_price_oracle, values):
         result = np.partition(array, 1)[1]
 
     assert medianized == result
+
+
+@pytest.mark.usefixtures("initialize_registry")
+def test_single_eth_price_oracle(
+    local_checked_price_oracle, local_signer_price_oracle, price_signer
+):
+    _post_price(local_signer_price_oracle, price_signer, ETH_USD_UNSCALED_PRICE)
+    local_checked_price_oracle.addETHPriceOracle(local_signer_price_oracle)
+    assert local_checked_price_oracle.getETHPrices() == [ETH_USD_PRICE]
+
+
+@pytest.mark.usefixtures("initialize_registry")
+def test_multiple_eth_price_oracle(
+    local_checked_price_oracle,
+    local_signer_price_oracle,
+    price_signer,
+    TestingTrustedSignerPriceOracle,
+    asset_registry,
+    admin,
+):
+    _post_price(local_signer_price_oracle, price_signer, ETH_USD_UNSCALED_PRICE)
+
+    other_oracle = admin.deploy(
+        TestingTrustedSignerPriceOracle, asset_registry, price_signer, True
+    )
+    _post_price(other_oracle, price_signer, "2100")
+
+    local_checked_price_oracle.addETHPriceOracle(local_signer_price_oracle)
+    local_checked_price_oracle.addETHPriceOracle(other_oracle)
+
+    assert local_checked_price_oracle.getETHPrices() == [ETH_USD_PRICE, scale("2100")]
+
+
+@pytest.mark.usefixtures("initialize_registry")
+def test_all_failing_eth_oracle(
+    local_checked_price_oracle,
+    price_signer,
+    TestingTrustedSignerPriceOracle,
+    asset_registry,
+    chain,
+    admin,
+):
+    oracle = admin.deploy(
+        TestingTrustedSignerPriceOracle, asset_registry, price_signer, True
+    )
+    local_checked_price_oracle.addETHPriceOracle(oracle)
+
+    _post_price(oracle, price_signer, "2100")
+    chain.sleep(3670)
+
+    with reverts(error_codes.NO_WETH_PRICE):
+        local_checked_price_oracle.getETHPrices.transact()
+
+
+@pytest.mark.usefixtures("initialize_registry")
+def test_some_failing_eth_oracle(
+    local_checked_price_oracle,
+    local_signer_price_oracle,
+    price_signer,
+    TestingTrustedSignerPriceOracle,
+    asset_registry,
+    chain,
+    admin,
+):
+    failing_oracle = admin.deploy(
+        TestingTrustedSignerPriceOracle, asset_registry, price_signer, True
+    )
+    _post_price(failing_oracle, price_signer, "2100")
+    local_checked_price_oracle.addETHPriceOracle(failing_oracle)
+    local_checked_price_oracle.addETHPriceOracle(local_signer_price_oracle)
+
+    chain.sleep(3670)
+
+    # post new price so that one of the oracles is not stale
+    _post_price(
+        local_signer_price_oracle,
+        price_signer,
+        ETH_USD_UNSCALED_PRICE,
+        timestamp=chain.time(),
+    )
+
+    assert local_checked_price_oracle.getETHPrices() == [ETH_USD_PRICE]

@@ -368,12 +368,10 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
     function getETHPrices() public view returns (uint256[] memory ethPrices) {
         uint256[] memory prices = new uint256[](ethPriceOracles.length());
         uint256 successCount;
-        for (uint256 i; i < ethPriceOracles.length(); ) {
+        for (uint256 i; i < ethPriceOracles.length(); i++) {
             IUSDPriceOracle oracle = IUSDPriceOracle(ethPriceOracles.at(i));
             try oracle.getPriceUSD(wethAddress) returns (uint256 price) {
-                prices[i] = price;
-                successCount++;
-                i++;
+                prices[successCount++] = price;
             } catch {}
         }
         require(successCount > 0, Errors.NO_WETH_PRICE);
