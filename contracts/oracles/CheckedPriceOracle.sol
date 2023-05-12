@@ -34,7 +34,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     uint256 public relativeEpsilon;
 
-    EnumerableSet.AddressSet internal trustedSignerPriceOracles;
+    EnumerableSet.AddressSet internal ethPriceOracles;
 
     /// This list is going to be used for the twaps to be input into the price level checks.
     /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT
@@ -86,18 +86,18 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         emit RelativeOracleUpdated(_relativeOracle);
     }
 
-    function addSignedPriceSource(address _signedAssetToAdd) external governanceOnly {
-        trustedSignerPriceOracles.add(_signedAssetToAdd);
-        emit TrustedSignerOracleAdded(_signedAssetToAdd);
+    function addETHPriceOracle(address oracleToAdd) external governanceOnly {
+        ethPriceOracles.add(oracleToAdd);
+        emit TrustedSignerOracleAdded(oracleToAdd);
     }
 
-    function removeSignedPriceSource(address _signedAssetToRemove) external governanceOnly {
-        trustedSignerPriceOracles.remove(_signedAssetToRemove);
-        emit TrustedSignerOracleRemoved(_signedAssetToRemove);
+    function removeETHPriceOracle(address oracleToRemove) external governanceOnly {
+        ethPriceOracles.remove(oracleToRemove);
+        emit TrustedSignerOracleRemoved(oracleToRemove);
     }
 
-    function listSignedPriceSource() external view returns (address[] memory) {
-        return trustedSignerPriceOracles.values();
+    function listETHPriceOracles() external view returns (address[] memory) {
+        return ethPriceOracles.values();
     }
 
     function addQuoteAssetsForPriceLevelTwap(address _quoteAssetToAdd) external governanceOnly {
@@ -259,17 +259,11 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
         uint256[] memory priceLevelTwaps = batchRelativePriceCheck(tokenAddresses, prices);
 
-        uint256 numberOfTrustedSignerOracles = trustedSignerPriceOracles.length();
-        uint256[] memory signedPrices = new uint256[](numberOfTrustedSignerOracles);
+        uint256[] memory ethPrices = getETHPrices();
 
-        for (uint256 i = 0; i < numberOfTrustedSignerOracles; i++) {
-            IUSDPriceOracle oracle = IUSDPriceOracle(trustedSignerPriceOracles.at(i));
-            signedPrices[i] = oracle.getPriceUSD(wethAddress);
-        }
+        _checkPriceLevel(priceLevel, ethPrices, priceLevelTwaps);
 
-        _checkPriceLevel(priceLevel, signedPrices, priceLevelTwaps);
-
-        return (prices, priceLevel, signedPrices, priceLevelTwaps);
+        return (prices, priceLevel, ethPrices, priceLevelTwaps);
     }
 
     function setRelativeMaxEpsilon(uint256 _relativeEpsilon) external governanceOnly {
@@ -306,23 +300,21 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     function _computeMinOrSecondMin(uint256[] memory twapPrices) internal pure returns (uint256) {
         // min if there are two, or the 2nd min if more than two
-        uint256 min = twapPrices[0];
-        uint256 secondMin = 2**256 - 1;
-        for (uint256 i = 1; i < twapPrices.length; i++) {
+        if (twapPrices.length == 1) return twapPrices[0];
+        (uint256 min, uint256 secondMin) = twapPrices[0] < twapPrices[1]
+            ? (twapPrices[0], twapPrices[1])
+            : (twapPrices[1], twapPrices[0]);
+        if (twapPrices.length == 2) return min;
+
+        for (uint256 i = 2; i < twapPrices.length; i++) {
             if (twapPrices[i] < min) {
                 secondMin = min;
                 min = twapPrices[i];
-            } else if ((twapPrices[i] < secondMin)) {
+            } else if (twapPrices[i] < secondMin) {
                 secondMin = twapPrices[i];
             }
         }
-        if (twapPrices.length == 1) {
-            return twapPrices[0];
-        } else if (twapPrices.length == 2) {
-            return min;
-        } else {
-            return secondMin;
-        }
+        return secondMin;
     }
 
     function _findPrice(
@@ -371,6 +363,24 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
             array.length % 2 == 0
                 ? Math.average(array[array.length / 2 - 1], array[array.length / 2])
                 : array[array.length / 2];
+    }
+
+    function getETHPrices() public view returns (uint256[] memory ethPrices) {
+        uint256[] memory prices = new uint256[](ethPriceOracles.length());
+        uint256 successCount;
+        for (uint256 i; i < ethPriceOracles.length(); ) {
+            IUSDPriceOracle oracle = IUSDPriceOracle(ethPriceOracles.at(i));
+            try oracle.getPriceUSD(wethAddress) returns (uint256 price) {
+                prices[i] = price;
+                successCount++;
+                i++;
+            } catch {}
+        }
+        require(successCount > 0, Errors.NO_WETH_PRICE);
+        ethPrices = new uint256[](successCount);
+        for (uint256 i = 0; i < successCount; i++) {
+            ethPrices[i] = prices[i];
+        }
     }
 
     /// @notice this function provides an estimate of the true WETH price.

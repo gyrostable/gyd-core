@@ -61,8 +61,8 @@ def initialize_mainnet_oracles(
 
     deployed_trusted_signer.postPrice(encoded_message, signature)
 
-    mainnet_checked_price_oracle.addSignedPriceSource(local_signer_price_oracle)
-    mainnet_checked_price_oracle.addSignedPriceSource(deployed_trusted_signer)
+    mainnet_checked_price_oracle.addETHPriceOracle(local_signer_price_oracle)
+    mainnet_checked_price_oracle.addETHPriceOracle(deployed_trusted_signer)
     mainnet_checked_price_oracle.addQuoteAssetsForPriceLevelTwap(TokenAddresses.USDC)
 
     mainnet_checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.WETH)
@@ -86,7 +86,7 @@ def initialize_local_oracle(
     asset_registry.setAssetAddress("ETH", TokenAddresses.WETH, {"from": admin})
     local_signer_price_oracle.postPrice(encoded_message, signature)
 
-    local_checked_price_oracle.addSignedPriceSource(local_signer_price_oracle)
+    local_checked_price_oracle.addETHPriceOracle(local_signer_price_oracle)
 
     local_checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.WETH)
     local_checked_price_oracle.addAssetForRelativePriceCheck(TokenAddresses.USDC)
