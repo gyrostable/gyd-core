@@ -13,11 +13,13 @@ compiler:
       - "@balancer-labs/v2-vault=balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/vault"
       - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.3.2"
       - "@openzeppelin/contracts-upgradeable=OpenZeppelin/openzeppelin-contracts-upgradeable@4.3.2/contracts"
+      - "@usingtellor=tellor-io/usingtellor@5.0.4"
 
 dependencies:
   - OpenZeppelin/openzeppelin-contracts@4.3.2
   - OpenZeppelin/openzeppelin-contracts-upgradeable@4.3.2
   - balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable
+  - tellor-io/usingtellor@5.0.4
 
 networks:
   development:
