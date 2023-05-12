@@ -4,6 +4,8 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/IMotherboard.sol";
@@ -32,6 +34,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     using SafeERC20 for IERC20;
     using SafeERC20 for IGYDToken;
     using ConfigHelpers for IGyroConfig;
+    using EnumerableSet for EnumerableSet.AddressSet;
+    using Address for address;
 
     uint256 internal constant _REDEEM_DEVIATION_EPSILON = 1e13; // 0.001 %
 
@@ -46,6 +50,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
     // Balancer vault used for re-entrancy check.
     IVault internal immutable balancerVault;
+
+    EnumerableSet.AddressSet internal externalCallWhitelist;
 
     // Events
     event Mint(
@@ -64,6 +70,11 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.Order orderAfterFees
     );
 
+    struct ExternalAction {
+        address target;
+        bytes data;
+    }
+
     constructor(IGyroConfig _gyroConfig) {
         gyroConfig = _gyroConfig;
         gydToken = _gyroConfig.getGYDToken();
@@ -74,7 +85,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
     /// @inheritdoc IMotherboard
     function mint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
-        external
+        public
         override
         returns (uint256 mintedGYDAmount)
     {
@@ -117,9 +128,25 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         emit Mint(msg.sender, mintedGYDAmount, usdValue, order, orderAfterFees);
     }
 
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount,
+        ExternalAction[] calldata actions
+    ) external returns (uint256 mintedGYDAmount) {
+        for (uint256 i = 0; i < actions.length; i++) {
+            require(
+                externalCallWhitelist.contains(actions[i].target),
+                Errors.FORBIDDEN_EXTERNAL_ACTION
+            );
+            actions[i].target.functionCall(actions[i].data, Errors.EXTERNAL_ACTION_FAILED);
+        }
+
+        return mint(assets, minReceivedAmount);
+    }
+
     /// @inheritdoc IMotherboard
     function redeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
-        external
+        public
         override
         returns (uint256[] memory outputAmounts)
     {
@@ -152,6 +179,22 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         outputAmounts = _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
 
         emit Redeem(msg.sender, gydToRedeem, usdValueToRedeem, order, orderAfterFees);
+    }
+
+    function redeem(
+        uint256 gydToRedeem,
+        DataTypes.RedeemAsset[] calldata assets,
+        ExternalAction[] calldata actions
+    ) external returns (uint256[] memory outputAmounts) {
+        for (uint256 i = 0; i < actions.length; i++) {
+            require(
+                externalCallWhitelist.contains(actions[i].target),
+                Errors.FORBIDDEN_EXTERNAL_ACTION
+            );
+            actions[i].target.functionCall(actions[i].data, Errors.EXTERNAL_ACTION_FAILED);
+        }
+
+        return redeem(gydToRedeem, assets);
     }
 
     /// @inheritdoc IMotherboard
@@ -226,6 +269,22 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
     }
 
+    function addToExternalCallWhitelist(address whitelistedAddress)
+        external
+        governanceOnly
+        returns (bool)
+    {
+        return externalCallWhitelist.add(whitelistedAddress);
+    }
+
+    function removeFromExternalCallWhitelist(address removedAddress)
+        external
+        governanceOnly
+        returns (bool)
+    {
+        return externalCallWhitelist.remove(removedAddress);
+    }
+
     function mintStewardshipIncRewards(uint256 amount) external override {
         require(
             msg.sender == address(gyroConfig.getReserveStewardshipIncentives()),
@@ -233,6 +292,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         );
         address treasury = gyroConfig.getGovTreasuryAddress();
         gydToken.mint(treasury, amount);
+    }
+
+    function listExternalCallWhitelist() external view returns (address[] memory) {
+        return externalCallWhitelist.values();
     }
 
     function _dryConvertMintInputAssetsToVaultTokens(DataTypes.MintAsset[] calldata assets)
