@@ -8,6 +8,7 @@ from tests.support.quantized_decimal import QuantizedDecimal as D
 from tests.support.types import MintAsset, RedeemAsset, ExternalAction
 from tests.support.utils import scale
 
+
 @pytest.fixture(scope="module", autouse=True)
 def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
     pass
@@ -69,8 +70,11 @@ def test_mint_with_external_call(
     mint_asset = MintAsset(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
-    motherboard.addToWhitelist(usdc)
-    external_action = ExternalAction(target=usdc, data=usdc.transferFrom.encode_input(alice, bob, bob_transfer_amount)) # Send 1 USDC to bob
+    motherboard.addToExternalCallWhitelist(usdc)
+    external_action = ExternalAction(
+        target=usdc,
+        data=usdc.transferFrom.encode_input(alice, bob, bob_transfer_amount),
+    )  # Send 1 USDC to bob
     tx = motherboard.mint([mint_asset], 0, [external_action], {"from": alice})
     gyd_minted = tx.return_value
     assert gyd_token.balanceOf(alice) == scale(10)
@@ -157,7 +161,6 @@ def test_mint_above_user_cap_with_authentication(
     gyro_config,
     cap_authentication,
 ):
-
     cap_authentication.authenticate(alice, {"from": admin})
 
     gyro_config.setAddress(
