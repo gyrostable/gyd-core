@@ -105,6 +105,7 @@ class VaultType:
     BALANCER_2CLP = 2
     BALANCER_3CLP = 3
     BALANCER_ECLP = 4
+    BALANCER_ECLPV2 = 5
 
 
 class FlowDirection:

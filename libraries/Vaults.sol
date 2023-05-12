@@ -8,6 +8,11 @@ library Vaults {
         BALANCER_CPMM,
         BALANCER_2CLP,
         BALANCER_3CLP,
-        BALANCER_ECLP
+        BALANCER_ECLP,
+        // ECLPV2 is the ECLP version with optional rate scaling.
+        // SOMEDAY when we're sure the old vault type won't be used anymore, we
+        // can remove BALANCER_ECLP, the associated LP share price oracles, and
+        // rename ECLPV2 to just ECLP.
+        BALANCER_ECLPV2
     }
 }
