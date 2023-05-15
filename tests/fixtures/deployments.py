@@ -56,14 +56,6 @@ def gyd_token(admin, GydToken, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def fee_bank(admin, FeeBank, gyro_config):
-    fee_bank = admin.deploy(FeeBank)
-    fee_bank.initialize(admin)
-    gyro_config.setAddress(config_keys.FEE_BANK_ADDRESS, fee_bank, {"from": admin})
-    return fee_bank
-
-
-@pytest.fixture(scope="module")
 def reserve(admin, Reserve, gyro_config):
     reserve = admin.deploy(Reserve)
     reserve.initialize(admin)
@@ -249,7 +241,6 @@ def root_safety_check(admin, RootSafetyCheck, gyro_config):
 @pytest.fixture(scope="module")
 def motherboard(admin, Motherboard, gyro_config, gyd_token, reserve, request):
     extra_dependencies = [
-        "fee_bank",
         "mock_pamm",
         "mock_price_oracle",
         "reserve_manager",

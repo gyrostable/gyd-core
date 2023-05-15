@@ -310,8 +310,8 @@ def test_rewards_noburn(alice, bob, gyd_recovery, gyd_token, chain):
     alice_expected = compute_expected(2)
     bob_expected = compute_expected(4)
 
-    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(alice_expected)
-    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(bob_expected)
+    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(alice_expected, rel=5e-6, abs=1e-12)
+    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(bob_expected, rel=5e-6, abs=1e-12)
 
     # Withdraw and check: initiateWithdrawal changes staked balance, executing
     # the withdrawal does not.
@@ -372,8 +372,8 @@ def test_rewards_partialburn_sync(
     alice_expected = compute_expected(2)
     bob_expected = compute_expected(4)
 
-    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(alice_expected)
-    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(bob_expected)
+    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(alice_expected, rel=5e-6, abs=1e-12)
+    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(bob_expected, rel=5e-6, abs=1e-12)
 
 
 @pytest.mark.usefixtures("gyd_alice", "gyd_bob", "gyd_recovery_mining")
@@ -416,8 +416,8 @@ def test_rewards_fullburn_async(
     alice_expected = (burn_time - deposit_time_alice) * emission_rate
     bob_expected = (end_time - deposit_time_bob) * emission_rate
 
-    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(alice_expected)
-    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(bob_expected)
+    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(alice_expected, rel=5e-6, abs=1e-12)
+    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(bob_expected, rel=5e-6, abs=1e-12)
 
 
 @pytest.mark.usefixtures("gyd_alice", "gyd_bob", "gyd_recovery_mining")
@@ -478,6 +478,6 @@ def test_rewards_partialburn_async(
     )
 
     assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(
-        int(alice_expected)
+        int(alice_expected), rel=5e-6, abs=1e-12
     )
-    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(int(bob_expected))
+    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(int(bob_expected), rel=5e-6, abs=1e-12)

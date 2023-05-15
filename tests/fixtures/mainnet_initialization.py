@@ -223,7 +223,6 @@ def initialize_safety_checks(
 def uninitialized_motherboard(admin, Motherboard, request, gyro_config, reserve):
     extra_dependencies = [
         "gyd_token",
-        "fee_bank",
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
