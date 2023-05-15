@@ -30,7 +30,6 @@ list_of_contracts = [
     "VaultSafetyMode",
     "BalancerPoolVault",
     "BaseVault",
-    "FeeBank",
     "FreezableProxy",
     "GydToken",
     "GyroConfig",

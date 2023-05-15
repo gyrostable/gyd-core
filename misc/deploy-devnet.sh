@@ -103,9 +103,6 @@ brownie run --network $NETWORK_ID scripts/deployment/deploy_pamm.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py
 brownie run --network $NETWORK_ID scripts/deployment/deploy_gyd_token.py proxy
 
-brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py
-brownie run --network $NETWORK_ID scripts/deployment/deploy_fee_bank.py proxy
-
 if [ "$LIVE" != "true" ]; then
     brownie run --network $NETWORK_ID scripts/deployment/deploy_mock_price_oracle.py
 fi

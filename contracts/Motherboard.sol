@@ -16,7 +16,6 @@ import "../interfaces/ILPTokenExchanger.sol";
 import "../interfaces/IPAMM.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
-import "../interfaces/IFeeBank.sol";
 import "../interfaces/balancer/IVault.sol";
 
 import "../libraries/DataTypes.sol";
@@ -82,7 +81,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         gydToken = _gyroConfig.getGYDToken();
         reserve = _gyroConfig.getReserve();
         balancerVault = _gyroConfig.getBalancerVault();
-        gydToken.safeApprove(address(_gyroConfig.getFeeBank()), type(uint256).max);
     }
 
     /// @inheritdoc IMotherboard

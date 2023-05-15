@@ -13,7 +13,6 @@ import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IVaultRegistry.sol";
 import "../interfaces/IAssetRegistry.sol";
 import "../interfaces/IReserveManager.sol";
-import "../interfaces/IFeeBank.sol";
 import "../interfaces/IReserve.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
@@ -46,10 +45,6 @@ library ConfigHelpers {
 
     function getReserveManager(IGyroConfig gyroConfig) internal view returns (IReserveManager) {
         return IReserveManager(gyroConfig.getAddress(ConfigKeys.RESERVE_MANAGER_ADDRESS));
-    }
-
-    function getFeeBank(IGyroConfig gyroConfig) internal view returns (IFeeBank) {
-        return IFeeBank(gyroConfig.getAddress(ConfigKeys.FEE_BANK_ADDRESS));
     }
 
     function getReserve(IGyroConfig gyroConfig) internal view returns (IReserve) {

@@ -2,7 +2,6 @@ from tests.support.utils import format_to_bytes
 
 GYD_TOKEN_ADDRESS = format_to_bytes("GYD_TOKEN_ADDRESS", 32)
 PAMM_ADDRESS = format_to_bytes("PAMM_ADDRESS", 32)
-FEE_BANK_ADDRESS = format_to_bytes("FEE_BANK_ADDRESS", 32)
 RESERVE_ADDRESS = format_to_bytes("RESERVE_ADDRESS", 32)
 ROOT_PRICE_ORACLE_ADDRESS = format_to_bytes("ROOT_PRICE_ORACLE_ADDRESS", 32)
 ROOT_SAFETY_CHECK_ADDRESS = format_to_bytes("ROOT_SAFETY_CHECK_ADDRESS", 32)
