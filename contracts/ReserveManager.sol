@@ -23,6 +23,8 @@ contract ReserveManager is IReserveManager, Governable {
     using ConfigHelpers for IGyroConfig;
     using DecimalScale for uint256;
 
+    uint256 public constant VAULT_DUST_THRESHOLD = 100e18;
+
     IVaultRegistry public immutable vaultRegistry;
     IAssetRegistry public immutable assetRegistry;
     address public immutable reserveAddress;
@@ -43,7 +45,9 @@ contract ReserveManager is IReserveManager, Governable {
     /// @inheritdoc IReserveManager
     function getReserveState() public view returns (DataTypes.ReserveState memory) {
         address[] memory vaultAddresses = vaultRegistry.listVaults();
-        require(vaultAddresses.length > 0, Errors.INVALID_ARGUMENT);
+        if (vaultAddresses.length == 0) {
+            return DataTypes.ReserveState({vaults: new DataTypes.VaultInfo[](0), totalUSDValue: 0});
+        }
 
         uint256 length = vaultAddresses.length;
         DataTypes.VaultInfo[] memory vaultsInfo = new DataTypes.VaultInfo[](length);
@@ -94,7 +98,7 @@ contract ReserveManager is IReserveManager, Governable {
         for (uint256 i = 0; i < length; i++) {
             /// Only zero at initialization
             vaultsInfo[i].currentWeight = reserveUSDValue == 0
-                ? vaultsInfo[i].persistedMetadata.initialWeight
+                ? vaultsInfo[i].persistedMetadata.targetWeight
                 : usdValues[i].divDown(reserveUSDValue);
         }
 
@@ -104,7 +108,7 @@ contract ReserveManager is IReserveManager, Governable {
             uint256 initialPrice = vaultsInfo[i].persistedMetadata.initialPrice;
             if (initialPrice == 0) continue;
             weightedReturns[i] = vaultsInfo[i].price.divDown(initialPrice).mulDown(
-                vaultsInfo[i].persistedMetadata.initialWeight
+                vaultsInfo[i].persistedMetadata.targetWeight
             );
             returnsSum += weightedReturns[i];
         }
@@ -125,29 +129,62 @@ contract ReserveManager is IReserveManager, Governable {
         return DataTypes.ReserveState({vaults: vaultsInfo, totalUSDValue: reserveUSDValue});
     }
 
-    function registerVault(
-        address _addressOfVault,
-        uint256 initialWeight,
-        uint256 shortFlowMemory,
-        uint256 shortFlowThreshold
-    ) external governanceOnly {
-        DataTypes.PersistedVaultMetadata memory persistedVaultMetadata = DataTypes
-            .PersistedVaultMetadata({
-                initialPrice: 0,
-                initialWeight: initialWeight,
-                shortFlowMemory: shortFlowMemory,
-                shortFlowThreshold: shortFlowThreshold
-            });
+    function setVaults(DataTypes.VaultConfiguration[] calldata vaults) external governanceOnly {
+        _ensureValuableVaultsNotRemoved(vaults);
 
-        vaultRegistry.registerVault(_addressOfVault, persistedVaultMetadata);
+        DataTypes.VaultInternalConfiguration[]
+            memory vaultConfigs = new DataTypes.VaultInternalConfiguration[](vaults.length);
+        for (uint256 i; i < vaults.length; i++) {
+            vaultConfigs[i] = _makeVaultInternalConfiguration(vaults[i]);
+        }
+
+        vaultRegistry.setVaults(vaultConfigs);
 
         DataTypes.ReserveState memory reserveState = getReserveState();
-        uint256 initialVaultPrice = 0;
         for (uint256 i = 0; i < reserveState.vaults.length; i++) {
-            if (reserveState.vaults[i].vault == _addressOfVault) {
-                initialVaultPrice = reserveState.vaults[i].price;
-            }
+            vaultRegistry.setInitialPrice(
+                reserveState.vaults[i].vault,
+                reserveState.vaults[i].price
+            );
         }
-        vaultRegistry.setInitialPrice(_addressOfVault, initialVaultPrice);
+    }
+
+    function _makeVaultInternalConfiguration(DataTypes.VaultConfiguration calldata vaultConfig)
+        internal
+        pure
+        returns (DataTypes.VaultInternalConfiguration memory)
+    {
+        return
+            DataTypes.VaultInternalConfiguration({
+                vaultAddress: vaultConfig.vaultAddress,
+                metadata: DataTypes.PersistedVaultMetadata({
+                    initialPrice: 0,
+                    targetWeight: vaultConfig.targetWeight,
+                    shortFlowMemory: vaultConfig.shortFlowMemory,
+                    shortFlowThreshold: vaultConfig.shortFlowThreshold
+                })
+            });
+    }
+
+    function _ensureValuableVaultsNotRemoved(DataTypes.VaultConfiguration[] memory vaults)
+        internal
+        view
+    {
+        DataTypes.ReserveState memory previousState = getReserveState();
+        for (uint256 i; i < previousState.vaults.length; i++) {
+            DataTypes.VaultInfo memory vaultInfo = previousState.vaults[i];
+            require(!_isValuableVaultRemoved(vaultInfo, vaults), Errors.VAULT_CANNOT_BE_REMOVED);
+        }
+    }
+
+    function _isValuableVaultRemoved(
+        DataTypes.VaultInfo memory vaultInfo,
+        DataTypes.VaultConfiguration[] memory vaults
+    ) internal pure returns (bool) {
+        for (uint256 j; j < vaults.length; j++) {
+            if (vaultInfo.vault == vaults[j].vaultAddress) return false;
+        }
+        uint256 vaultUSDAmount = vaultInfo.price.mulDown(vaultInfo.reserveBalance);
+        return vaultUSDAmount >= VAULT_DUST_THRESHOLD;
     }
 }

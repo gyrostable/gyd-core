@@ -43,7 +43,7 @@ library DataTypes {
     /// @notice Persisted metadata about the vault
     struct PersistedVaultMetadata {
         uint256 initialPrice;
-        uint256 initialWeight;
+        uint256 targetWeight;
         uint256 shortFlowMemory;
         uint256 shortFlowThreshold;
     }
@@ -136,5 +136,17 @@ library DataTypes {
         uint8 v;
         bytes32 r;
         bytes32 s;
+    }
+
+    struct VaultInternalConfiguration {
+        address vaultAddress;
+        DataTypes.PersistedVaultMetadata metadata;
+    }
+
+    struct VaultConfiguration {
+        address vaultAddress;
+        uint256 targetWeight;
+        uint256 shortFlowMemory;
+        uint256 shortFlowThreshold;
     }
 }

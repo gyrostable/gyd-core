@@ -45,7 +45,7 @@ class JoinPoolRequest(NamedTuple):
 
 class PersistedVaultMetadata(NamedTuple):
     initial_price: int
-    initial_weight: int
+    target_weight: int
     short_flow_memory: int
     short_flow_threshold: int
 
@@ -141,3 +141,15 @@ class PammParams(NamedTuple):
 class ExternalAction(NamedTuple):
     target: str
     data: str
+
+
+class VaultInternalConfiguration(NamedTuple):
+    vault_address: str
+    metadata: PersistedVaultMetadata
+
+
+class VaultConfiguration(NamedTuple):
+    vault_address: str
+    target_weight: int
+    short_flow_memory: int
+    short_flow_threshold: int

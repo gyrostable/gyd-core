@@ -84,7 +84,7 @@ def _create_vault_info(
         ideal_weight=int(scale(ideal_weight)),
         persisted_metadata=PersistedVaultMetadata(
             initial_price=int(scale(initial_price)),
-            initial_weight=int(scale(initial_weight)),
+            target_weight=int(scale(initial_weight)),
             short_flow_memory=int(constants.OUTFLOW_MEMORY),
             short_flow_threshold=int(scale(1_000_000)),
         ),
@@ -607,7 +607,6 @@ def test_update_metadata_with_price_safety_tiny_prices(
 def test_safe_to_execute_outside_epsilon(
     bundle_metadata, reserve_safety_manager, mock_vaults, mock_price_oracle
 ):
-
     metadata = object_creation.bundle_to_metadata(
         bundle_metadata, mock_vaults, mock_price_oracle
     )
