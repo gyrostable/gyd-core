@@ -45,7 +45,7 @@ def test_dry_mint_above_cap(motherboard, usdc, usdc_vault, alice, gyro_config, a
 
 @pytest.mark.usefixtures("register_usdc_vault")
 def test_mint_vault_underlying(
-    motherboard, usdc, usdc_vault, alice, gyd_token, reserve
+    motherboard, usdc, usdc_vault, alice, gyd_token, reserve, reserve_manager
 ):
     usdc_amount = scale(10, usdc.decimals())
     usdc.approve(motherboard, usdc_amount, {"from": alice})
@@ -57,6 +57,8 @@ def test_mint_vault_underlying(
     assert gyd_token.balanceOf(alice) == scale(10)
     assert gyd_minted == scale(10)
     assert usdc_vault.balanceOf(reserve) == usdc_amount
+    total_usd_value, _ = reserve_manager.getReserveState()
+    assert total_usd_value == scale(10)
 
 
 @pytest.mark.usefixtures("register_usdc_vault")
