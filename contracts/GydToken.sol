@@ -2,7 +2,7 @@
 // for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./auth/GovernableUpgradeable.sol";
 
@@ -11,7 +11,7 @@ import "../interfaces/IGYDToken.sol";
 
 import "../libraries/ConfigHelpers.sol";
 
-contract GydToken is ERC20Upgradeable, GovernableUpgradeable, IGYDToken {
+contract GydToken is ERC20PermitUpgradeable, GovernableUpgradeable, IGYDToken {
     using EnumerableSet for EnumerableSet.AddressSet;
     using ConfigHelpers for IGyroConfig;
 

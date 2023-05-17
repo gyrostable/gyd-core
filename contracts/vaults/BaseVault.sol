@@ -3,6 +3,7 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
@@ -11,7 +12,7 @@ import "../../interfaces/IGyroVault.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../libraries/Errors.sol";
 
-abstract contract BaseVault is IGyroVault, ERC20, Governable {
+abstract contract BaseVault is IGyroVault, ERC20Permit, Governable {
     using FixedPoint for uint256;
     using SafeERC20 for IERC20;
 
@@ -29,7 +30,7 @@ abstract contract BaseVault is IGyroVault, ERC20, Governable {
         address _underlying,
         string memory name,
         string memory symbol
-    ) Governable(_governor) ERC20(name, symbol) {
+    ) Governable(_governor) ERC20(name, symbol) ERC20Permit(name) {
         require(address(_underlying) != address(0), Errors.INVALID_ARGUMENT);
         underlying = _underlying;
         deployedAt = block.number;
