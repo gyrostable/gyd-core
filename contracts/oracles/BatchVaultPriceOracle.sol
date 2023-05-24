@@ -47,17 +47,23 @@ contract BatchVaultPriceOracle is IBatchVaultPriceOracle, Governable {
 
         for (uint256 i = 0; i < vaultsInfo.length; i++) {
             _assignUnderlyingTokenPrices(vaultsInfo[i], tokens, underlyingPrices);
-            vaultsInfo[i].price = _getVaultPrice(vaultsInfo[i]);
+            vaultsInfo[i].price = getVaultPrice(
+                IGyroVault(vaultsInfo[i].vault),
+                vaultsInfo[i].pricedTokens
+            );
         }
 
         return vaultsInfo;
     }
 
-    function _getVaultPrice(DataTypes.VaultInfo memory vaultInfo) internal view returns (uint256) {
-        IGyroVault vault = IGyroVault(vaultInfo.vault);
+    function getVaultPrice(IGyroVault vault, DataTypes.PricedToken[] memory pricedTokens)
+        public
+        view
+        returns (uint256)
+    {
         IVaultPriceOracle vaultPriceOracle = vaultPriceOracles[vault.vaultType()];
         require(address(vaultPriceOracle) != address(0), Errors.ASSET_NOT_SUPPORTED);
-        return vaultPriceOracle.getPriceUSD(vault, vaultInfo.pricedTokens);
+        return vaultPriceOracle.getPriceUSD(vault, pricedTokens);
     }
 
     function _assignUnderlyingTokenPrices(

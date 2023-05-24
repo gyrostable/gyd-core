@@ -101,6 +101,32 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         return true;
     }
 
+    /// @notice we allow minting only if depegged stablecoins are above peg
+    /// we allow redeeming regardless of whether depegged stablecoins are above or under peg
+    /// the price of the stablecoin is adjusted later when computing the reserve value
+    /// and the amount that the user can mint/redeem
+    function _canOperateWithDepeggedStablecoins(DataTypes.Metadata memory metaData)
+        internal
+        view
+        returns (bool)
+    {
+        if (!metaData.mint) return true;
+
+        for (uint256 i; i < metaData.vaultMetadata.length; i++) {
+            DataTypes.VaultMetadata memory vaultData = metaData.vaultMetadata[i];
+            for (uint256 j; j < vaultData.pricedTokens.length; j++) {
+                DataTypes.PricedToken memory pricedToken = vaultData.pricedTokens[j];
+                if (
+                    pricedToken.isStable &&
+                    pricedToken.price < STABLECOIN_IDEAL_PRICE - stablecoinMaxDeviation
+                ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     function isRedeemFeasible(DataTypes.Order memory order) internal pure returns (bool) {
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             if (
@@ -258,6 +284,13 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         return true;
     }
 
+    function _isStablecoinSafe(DataTypes.Metadata memory metaData) internal view returns (bool) {
+        return
+            metaData.allStablecoinsAllVaultsOnPeg ||
+            _canOperateWithDepeggedStablecoins(metaData) ||
+            _vaultWeightWithOffPegFalls(metaData);
+    }
+
     /// @inheritdoc ISafetyCheck
     function isMintSafe(DataTypes.Order memory order) public view returns (string memory) {
         DataTypes.Metadata memory metaData = _buildMetaData(order);
@@ -269,12 +302,10 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             return Errors.TOKEN_PRICES_TOO_SMALL;
         }
 
-        bool stableCoinsSafe = metaData.allStablecoinsAllVaultsOnPeg ||
-            _vaultWeightWithOffPegFalls(metaData);
         bool epsilonSafe = metaData.allVaultsWithinEpsilon ||
             _safeToExecuteOutsideEpsilon(metaData);
 
-        if (stableCoinsSafe && epsilonSafe) {
+        if (_isStablecoinSafe(metaData) && epsilonSafe) {
             return "";
         }
 

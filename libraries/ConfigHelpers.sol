@@ -67,8 +67,15 @@ library ConfigHelpers {
         return IGydRecovery(gyroConfig.getAddress(ConfigKeys.GYD_RECOVERY_ADDRESS));
     }
 
-    function getReserveStewardshipIncentives(IGyroConfig gyroConfig) internal view returns (IReserveStewardshipIncentives) {
-        return IReserveStewardshipIncentives(gyroConfig.getAddress(ConfigKeys.STEWARDSHIP_INC_ADDRESS));
+    function getReserveStewardshipIncentives(IGyroConfig gyroConfig)
+        internal
+        view
+        returns (IReserveStewardshipIncentives)
+    {
+        return
+            IReserveStewardshipIncentives(
+                gyroConfig.getAddress(ConfigKeys.STEWARDSHIP_INC_ADDRESS)
+            );
     }
 
     function getBalancerVault(IGyroConfig gyroConfig) internal view returns (IVault) {
@@ -79,11 +86,19 @@ library ConfigHelpers {
         return gyroConfig.getUint(ConfigKeys.GYD_GLOBAL_SUPPLY_CAP, type(uint256).max);
     }
 
-    function getStewardshipIncMinCollateralRatio(IGyroConfig gyroConfig) internal view returns (uint256) {
+    function getStewardshipIncMinCollateralRatio(IGyroConfig gyroConfig)
+        internal
+        view
+        returns (uint256)
+    {
         return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MIN_CR);
     }
 
-    function getStewardshipIncMaxHealthViolations(IGyroConfig gyroConfig) internal view returns (uint256) {
+    function getStewardshipIncMaxHealthViolations(IGyroConfig gyroConfig)
+        internal
+        view
+        returns (uint256)
+    {
         return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MAX_VIOLATIONS);
     }
 

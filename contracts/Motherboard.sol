@@ -25,6 +25,7 @@ import "../libraries/ConfigHelpers.sol";
 import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/DecimalScale.sol";
+import "../libraries/ReserveStateExtensions.sol";
 
 import "./auth/GovernableUpgradeable.sol";
 
@@ -38,6 +39,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     using SafeERC20Upgradeable for IGYDToken;
     using ConfigHelpers for IGyroConfig;
     using EnumerableSet for EnumerableSet.AddressSet;
+    using ReserveStateExtensions for DataTypes.ReserveState;
+    using ReserveStateExtensions for DataTypes.VaultWithAmount;
     using Address for address;
 
     uint256 internal constant _REDEEM_DEVIATION_EPSILON = 1e13; // 0.001 %
@@ -177,11 +180,15 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             .getReserveManager()
             .getReserveState();
 
+        uint256 reserveRedeemUSDValue = reserveState.computeLowerBoundUSDValue(
+            gyroConfig.getRootPriceOracle()
+        );
+
         // order matters!
         gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
         gyroConfig.getGydRecovery().checkAndRun(reserveState);
 
-        uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveState.totalUSDValue);
+        uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveRedeemUSDValue);
         require(
             usdValueToRedeem <= gydToRedeem.mulDown(FixedPoint.ONE + _REDEEM_DEVIATION_EPSILON),
             Errors.REDEEM_AMOUNT_BUG
@@ -575,15 +582,12 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
     function _getBasketUSDValue(DataTypes.Order memory order)
         internal
-        pure
+        view
         returns (uint256 result)
     {
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             DataTypes.VaultWithAmount memory vaultWithAmount = order.vaultsWithAmount[i];
-            uint256 scaledAmount = vaultWithAmount.amount.scaleFrom(
-                vaultWithAmount.vaultInfo.decimals
-            );
-            result += scaledAmount.mulDown(vaultWithAmount.vaultInfo.price);
+            result += vaultWithAmount.computeLowerBoundUSDValue(gyroConfig.getRootPriceOracle());
         }
     }
 

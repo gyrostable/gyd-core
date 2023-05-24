@@ -12,8 +12,13 @@ interface IBatchVaultPriceOracle {
 
     /// @notice Fetches the price of the vault token as well as the underlying tokens
     /// @return the same vaults info with the price data populated
-    function fetchPricesUSD(DataTypes.VaultInfo[] memory vaultsInfo)
-        external
-        view
-        returns (DataTypes.VaultInfo[] memory);
+    function fetchPricesUSD(
+        DataTypes.VaultInfo[] memory vaultsInfo
+    ) external view returns (DataTypes.VaultInfo[] memory);
+
+    /// @notice Returns the price of the vault token give the prices included in `pricedTokens`
+    function getVaultPrice(
+        IGyroVault vault,
+        DataTypes.PricedToken[] memory pricedTokens
+    ) external view returns (uint256);
 }

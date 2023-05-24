@@ -39,6 +39,17 @@ contract MockPriceOracle is
         }
     }
 
+    function getVaultPrice(IGyroVault vault, DataTypes.PricedToken[] memory pricedTokens)
+        external
+        view
+        returns (uint256)
+    {
+        if (pricedTokens.length == 1) {
+            return pricedTokens[0].price;
+        }
+        return usdPrices[address(vault)];
+    }
+
     /// @inheritdoc IBatchVaultPriceOracle
     function fetchPricesUSD(DataTypes.VaultInfo[] memory vaultsInfo)
         external
