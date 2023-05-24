@@ -13,7 +13,7 @@ def test_deposit_insufficient_funds(underlying, alice, vault, decimals):
 
 def test_deposit_insufficient_allowance(underlying, alice, vault, decimals):
     assert underlying.allowance(alice, vault) == 0
-    with reverts("ERC20: transfer amount exceeds allowance"):
+    with reverts("ERC20: insufficient allowance"):
         vault.deposit(10**decimals, 0, {"from": alice})
 
 
