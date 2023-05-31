@@ -15,6 +15,8 @@ class Region(Enum):
     CASE_II_L = 4
     CASE_III_H = 5
     CASE_III_L = 6
+    CASE_low = 10  # Any case where r <= theta_bar and where the region therefore cannot be reconstructed.
+    CASE_high = 20  # Any case where r >= 1 and where the region therefore cannot be reconstructed. (this is iff ra >= 1)
 
     @staticmethod
     def from_pieces(r1: Union[str, None], r2: Union[str, None], r3: Union[str, None]):
@@ -37,10 +39,12 @@ class Region(Enum):
         raise AssertionError("Missing region in rules")
 
 
+# Order matters!
 _pieces2region_rules = [
     ((None, None, "i"), Region.CASE_i),
     (("I", None, "ii"), Region.CASE_I_ii),
     (("I", None, "iii"), Region.CASE_I_iii),
+    ((None, None, "iii"), Region.CASE_low),
     (("II", "H", None), Region.CASE_II_H),
     (("II", "L", None), Region.CASE_II_L),
     (("III", "H", None), Region.CASE_III_H),
@@ -247,6 +251,9 @@ def compute_region_ext(
     deltaa = ya - ba
     ra = ba / ya
 
+    # DEBUG
+    # print(dict(alphahat=alpha_hat, alphamin=alpha_min, xuhat=xu_hat, xumax=xu_max))
+
     if isle(alpha_hat, alpha_min, prec) and isge(xu_hat, xu_max, prec):
         d1 = "I"
         d2 = None
@@ -273,15 +280,12 @@ def compute_region_ext(
 
 def compute_region(
     x: D, ba: D, ya: D, params: Params, prec=D(0)
-) -> Union[None, Region]:
+) -> Region:
     """For testing. Compute the Region, which should also be detected by Pamm._compute_current_region().
 
     We return None iff we are below the floor (which doesn't have a region b/c it's caught early)"""
     print("PARAMS", params)
     r = compute_region_ext(x, ba, ya, params, prec)
-    if r == (None, None, "iii"):
-        # Reserve ratio below floor
-        return None
     return Region.from_pieces(*r)
 
 

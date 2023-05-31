@@ -7,6 +7,11 @@ RAW_THETA_FLOOR = "0.6"
 RAW_XU_MAX_REL = "0.3"
 RAW_ALPHA_MIN_REL = "1"
 
+# Another param set for tests:
+# RAW_THETA_FLOOR = "0.8"
+# RAW_XU_MAX_REL = "0.5"
+# RAW_ALPHA_MIN_REL = "2"
+
 THETA_FLOOR: Decimal = scale(RAW_THETA_FLOOR, 18)
 XU_MAX_REL: Decimal = scale(RAW_XU_MAX_REL, 18)  # Relative to ya. Scale by * ya.
 ALPHA_MIN_REL: Decimal = scale(RAW_ALPHA_MIN_REL, 18)  # Relative to ya. Scale by / ya.
