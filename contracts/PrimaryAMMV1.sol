@@ -36,13 +36,13 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     enum Region {
-        CASE_i,     // 0
-        CASE_I_ii,  // 1
+        CASE_i, // 0
+        CASE_I_ii, // 1
         CASE_I_iii, // 2
-        CASE_II_H,  // 3
-        CASE_II_L,  // 4
+        CASE_II_H, // 3
+        CASE_II_L, // 4
         CASE_III_H, // 5
-        CASE_III_L  // 6
+        CASE_III_L // 6
     }
 
     struct State {

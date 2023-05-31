@@ -37,9 +37,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             totalGyroSupply: y
         });
 
-        uint256 normalizedNav = state.reserveValue.divDown(
-            state.totalGyroSupply
-        );
+        uint256 normalizedNav = state.reserveValue.divDown(state.totalGyroSupply);
         if (normalizedNav >= ONE) {
             return 20;
         }
