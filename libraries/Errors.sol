@@ -30,6 +30,7 @@ library Errors {
     string public constant KEY_FROZEN = "33";
     string public constant INSUFFICIENT_BALANCE = "34";
     string public constant INVALID_ASSET = "35";
+    string public constant FORBIDDEN_EXTERNAL_ACTION = "35";
 
     // Oracle related errors
     string public constant ASSET_NOT_SUPPORTED = "40";
@@ -62,4 +63,5 @@ library Errors {
 
     // misc errors
     string public constant REDEEM_AMOUNT_BUG = "100";
+    string public constant EXTERNAL_ACTION_FAILED = "101";
 }

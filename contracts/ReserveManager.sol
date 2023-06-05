@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "../libraries/FixedPoint.sol";
 import "../libraries/ConfigHelpers.sol";
+import "../libraries/DecimalScale.sol";
 import "../libraries/ConfigKeys.sol";
 
 import "../interfaces/IReserveManager.sol";
@@ -20,6 +21,7 @@ import "./auth/Governable.sol";
 contract ReserveManager is IReserveManager, Governable {
     using FixedPoint for uint256;
     using ConfigHelpers for IGyroConfig;
+    using DecimalScale for uint256;
 
     IVaultRegistry public immutable vaultRegistry;
     IAssetRegistry public immutable assetRegistry;
@@ -29,7 +31,7 @@ contract ReserveManager is IReserveManager, Governable {
     constructor(address governor, IGyroConfig _gyroConfig) Governable(governor) {
         vaultRegistry = _gyroConfig.getVaultRegistry();
         assetRegistry = _gyroConfig.getAssetRegistry();
-        reserveAddress = _gyroConfig.getAddress(ConfigKeys.RESERVE_ADDRESS);
+        reserveAddress = address(_gyroConfig.getReserve());
 
         require(address(vaultRegistry) != address(0), Errors.INVALID_ARGUMENT);
         require(address(assetRegistry) != address(0), Errors.INVALID_ARGUMENT);
@@ -50,7 +52,9 @@ contract ReserveManager is IReserveManager, Governable {
             DataTypes.PersistedVaultMetadata memory persistedMetadata;
             persistedMetadata = vaultRegistry.getVaultMetadata(vaultAddresses[i]);
 
-            uint256 reserveBalance = IERC20(vaultAddresses[i]).balanceOf(reserveAddress);
+            IERC20Metadata vault = IERC20Metadata(vaultAddresses[i]);
+            uint256 reserveBalance = vault.balanceOf(reserveAddress);
+            reserveBalance = reserveBalance.scaleFrom(vault.decimals());
 
             IERC20[] memory tokens = IGyroVault(vaultAddresses[i]).getTokens();
             DataTypes.PricedToken[] memory pricedTokens = new DataTypes.PricedToken[](

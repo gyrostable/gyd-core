@@ -2,19 +2,23 @@
 // for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
 /// @notice IGYDToken is the GYD token contract
-interface IGYDToken is IERC20 {
-    /// @notice Set the address allowed to mint new GYD tokens
-    /// @dev This should typically be the motherboard that will mint or burn GYD tokens
-    /// when user interact with it
-    /// @param _minter the address of the authorized minter
-    function setMinter(address _minter) external;
+interface IGYDToken is IERC20Upgradeable {
+    event MinterAdded(address indexed minter);
+    event MinterRemoved(address indexed minter);
 
-    /// @notice Gets the address for the minter contract
-    /// @return the address of the minter contract
-    function minter() external returns (address);
+    /// @notice Adds an address allowed to mint new GYD tokens
+    /// @param _minter the address of the authorized minter
+    function addMinter(address _minter) external;
+
+    /// @notice Removes an address allowed to mint new GYD tokens
+    /// @param _minter the address of the authorized minter
+    function removeMinter(address _minter) external;
+
+    /// @return the addresses of the authorized minters
+    function listMinters() external returns (address[] memory);
 
     /// @notice Mints `amount` of GYD token for `account`
     function mint(address account, uint256 amount) external;

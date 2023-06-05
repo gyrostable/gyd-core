@@ -105,6 +105,7 @@ class VaultType:
     BALANCER_2CLP = 2
     BALANCER_3CLP = 3
     BALANCER_ECLP = 4
+    BALANCER_ECLPV2 = 5
 
 
 class FlowDirection:
@@ -135,3 +136,8 @@ class PammParams(NamedTuple):
     xu_bar: int  # x̄_U ∊ [0,1]
     theta_bar: int  # θ̄ ∊ [0,1]
     outflow_memory: int  #  [0,1]
+
+
+class ExternalAction(NamedTuple):
+    target: str
+    data: str

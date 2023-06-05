@@ -194,12 +194,10 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             uint256 tokenPrice = vaultMetadata.pricedTokens[i].price;
             bool isStable = vaultMetadata.pricedTokens[i].isStable;
 
-            if (isStable) {
-                vaultMetadata.atLeastOnePriceLargeEnough = true;
-                if (tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
-                    vaultMetadata.allStablecoinsOnPeg = false;
-                }
-            } else if (tokenPrice >= minTokenPrice) {
+            if (isStable && tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
+                vaultMetadata.allStablecoinsOnPeg = false;
+            }
+            if (tokenPrice >= minTokenPrice) {
                 vaultMetadata.atLeastOnePriceLargeEnough = true;
             }
         }

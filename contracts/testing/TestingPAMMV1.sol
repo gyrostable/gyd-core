@@ -16,7 +16,12 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         Params memory params
     ) PrimaryAMMV1(_governor, gyroConfig, params) {}
 
-    function computeRegion(State calldata normalizedState) external view returns (Region) {
+    /** @dev returns Region plus additional values for situations that would be caught *before*
+     * region detection even runs:
+     * 10 = reserve ratio <= theta_bar
+     * 20 = reserve ratio >= 1
+     */
+    function computeRegion(State calldata normalizedState) external view returns (uint256) {
         DerivedParams memory derived = createDerivedParams(systemParams);
 
         uint256 b = computeReserve(
@@ -32,7 +37,15 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             totalGyroSupply: y
         });
 
-        return computeReserveValueRegion(state, systemParams, derived);
+        uint256 normalizedNav = state.reserveValue.divDown(state.totalGyroSupply);
+        if (normalizedNav >= ONE) {
+            return 20;
+        }
+        if (normalizedNav <= systemParams.thetaBar) {
+            return 10;
+        }
+
+        return uint256(computeReserveValueRegion(state, systemParams, derived));
     }
 
     function computeReserveValue(State calldata normalizedState) public view returns (uint256) {

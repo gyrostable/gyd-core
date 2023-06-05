@@ -93,6 +93,12 @@ def usdc(Token, accounts, is_forked):
 
 
 @pytest.fixture(scope="module")
+def mock_gyfi(Token, admin):
+    token = Token.deploy("GYFI", "GYFI", 18, scale(10_000, 18), {"from": admin})
+    yield token
+
+
+@pytest.fixture(scope="module")
 def usdt(Token, accounts, is_forked):
     if is_forked:
         token = interface.ERC20(USDC_ADDRESS)

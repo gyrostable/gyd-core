@@ -13,11 +13,12 @@ import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IVaultRegistry.sol";
 import "../interfaces/IAssetRegistry.sol";
 import "../interfaces/IReserveManager.sol";
-import "../interfaces/IFeeBank.sol";
 import "../interfaces/IReserve.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/ICapAuthentication.sol";
+import "../interfaces/IGydRecovery.sol";
+import "../interfaces/IReserveStewardshipIncentives.sol";
 import "../interfaces/balancer/IVault.sol";
 
 /// @notice Defines helpers to allow easy access to common parts of the configuration
@@ -46,10 +47,6 @@ library ConfigHelpers {
         return IReserveManager(gyroConfig.getAddress(ConfigKeys.RESERVE_MANAGER_ADDRESS));
     }
 
-    function getFeeBank(IGyroConfig gyroConfig) internal view returns (IFeeBank) {
-        return IFeeBank(gyroConfig.getAddress(ConfigKeys.FEE_BANK_ADDRESS));
-    }
-
     function getReserve(IGyroConfig gyroConfig) internal view returns (IReserve) {
         return IReserve(gyroConfig.getAddress(ConfigKeys.RESERVE_ADDRESS));
     }
@@ -66,12 +63,36 @@ library ConfigHelpers {
         return IMotherboard(gyroConfig.getAddress(ConfigKeys.MOTHERBOARD_ADDRESS));
     }
 
+    function getGydRecovery(IGyroConfig gyroConfig) internal view returns (IGydRecovery) {
+        return IGydRecovery(gyroConfig.getAddress(ConfigKeys.GYD_RECOVERY_ADDRESS));
+    }
+
+    function getReserveStewardshipIncentives(IGyroConfig gyroConfig) internal view returns (IReserveStewardshipIncentives) {
+        return IReserveStewardshipIncentives(gyroConfig.getAddress(ConfigKeys.STEWARDSHIP_INC_ADDRESS));
+    }
+
     function getBalancerVault(IGyroConfig gyroConfig) internal view returns (IVault) {
         return IVault(gyroConfig.getAddress(ConfigKeys.BALANCER_VAULT_ADDRESS));
     }
 
     function getGlobalSupplyCap(IGyroConfig gyroConfig) internal view returns (uint256) {
         return gyroConfig.getUint(ConfigKeys.GYD_GLOBAL_SUPPLY_CAP, type(uint256).max);
+    }
+
+    function getStewardshipIncMinCollateralRatio(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MIN_CR);
+    }
+
+    function getStewardshipIncMaxHealthViolations(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MAX_VIOLATIONS);
+    }
+
+    function getStewardshipIncDuration(IGyroConfig gyroConfig) internal view returns (uint256) {
+        return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_DURATION);
+    }
+
+    function getGovTreasuryAddress(IGyroConfig gyroConfig) internal view returns (address) {
+        return gyroConfig.getAddress(ConfigKeys.GOV_TREASURY_ADDRESS);
     }
 
     function getPerUserSupplyCap(IGyroConfig gyroConfig, bool authenticated)

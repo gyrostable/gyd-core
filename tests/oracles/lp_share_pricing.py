@@ -61,9 +61,13 @@ def price_bpt_2clp(
         return term * invariant_div_supply
 
 
-def price_bpt_3clp(
+def price_bpt_3clp_representable(
     cbrt_alpha: D, invariant_div_supply: D, underlying_prices: Iterable[D]
 ) -> D:
+    """
+    LP share price *if* relative prices are representable in the pool. Otherwise wrong. For the general problem, use
+    price_bpt_price_bpt_3CLP().
+    """
     px, py, pz = (underlying_prices[0], underlying_prices[1], underlying_prices[2])
     term = 3 * (px * py * pz) ** D(1 / 3) - (px + py + pz) * cbrt_alpha
     return term * invariant_div_supply
@@ -129,29 +133,31 @@ def eta(pxc: D) -> tuple[D, D]:
 
 
 def relativeEquilibriumPrices3CLP(alpha: D, pXZ: D, pYZ: D) -> tuple[D, D]:
-    # Comparisons are re-ordered vs. the write-up to increase precision.
     beta = D(1) / alpha
-    if pYZ < alpha * (pXZ**2):
-        if pYZ < alpha:
+
+    if pYZ <= alpha * (pXZ**2):
+        if pYZ <= alpha:
             return D(1), alpha
-        elif pYZ > beta:
+        elif pYZ >= beta:
             return beta, beta
         else:
             return (beta * pYZ).sqrt(), pYZ
-    elif pXZ < alpha * (pYZ**2):
-        if pXZ < alpha:
+    elif pXZ <= alpha * (pYZ**2):
+        if pXZ <= alpha:
             return alpha, D(1)
-        elif pXZ > beta:
+        elif pXZ >= beta:
             return beta, beta
         else:
             return pXZ, (beta * pXZ).sqrt()
-    elif pXZ * pYZ < alpha:
-        if pXZ < alpha * pYZ:
+    elif pXZ * pYZ <= alpha:
+        if pXZ <= alpha * pYZ:
             return alpha, D(1)
-        elif pXZ > beta * pYZ:
+        elif pXZ >= beta * pYZ:
             return D(1), alpha
         else:
-            return (alpha * pXZ / pYZ).sqrt(), (alpha * pYZ / pXZ).sqrt()
+            sqrtAlpha = alpha.sqrt()
+            sqrtPXY = (pXZ / pYZ).sqrt()
+            return sqrtAlpha * sqrtPXY, sqrtAlpha / sqrtPXY
     else:
         return pXZ, pYZ
 

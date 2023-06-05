@@ -36,13 +36,13 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     enum Region {
-        CASE_i,
-        CASE_I_ii,
-        CASE_I_iii,
-        CASE_II_H,
-        CASE_II_L,
-        CASE_III_H,
-        CASE_III_L
+        CASE_i, // 0
+        CASE_I_ii, // 1
+        CASE_I_iii, // 2
+        CASE_II_H, // 3
+        CASE_II_L, // 4
+        CASE_III_H, // 5
+        CASE_III_L // 6
     }
 
     struct State {
@@ -135,7 +135,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             return ba - x;
         }
         if (x <= xl) {
-            return ba - x + (alpha * (x - xu).squareDown()) / TWO;
+            return ba + (alpha * (x - xu).squareDown()) / TWO - x;
         }
         // x > xl:
         uint256 rl = ONE - alpha.mulDown(xl - xu);
@@ -190,7 +190,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 alpha = params.alphaBar;
 
         uint256 yz = ANCHOR - xu;
-        if (ONE - alpha.mulDown(yz) >= params.thetaBar)
+        if (ONE >= params.thetaBar + alpha.mulDown(yz))
             return ANCHOR - (alpha * yz.squareDown()) / TWO;
         uint256 theta = ONE - params.thetaBar;
         return ANCHOR - theta.mulDown(yz) + theta**2 / (2 * alpha);
@@ -205,6 +205,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         DerivedParams memory derived;
 
         derived.baThresholdRegionI = computeBa(params.xuBar, params);
+
         derived.baThresholdRegionII = computeBa(0, params);
 
         derived.xlThresholdAtThresholdI = computeXl(

@@ -6,7 +6,6 @@ import "./IGyroConfig.sol";
 import "./IGYDToken.sol";
 import "./IReserve.sol";
 import "./IPAMM.sol";
-import "./IFeeBank.sol";
 
 /// @title IMotherboard is the central contract connecting the different pieces
 /// of the Gyro protocol
@@ -50,6 +49,9 @@ interface IMotherboard {
 
     /// @notice Simulates a mint to know whether it would succeed and how much would be minted
     /// The parameters are the same as the `mint` function
+    ///
+    /// Note: This does *not* include the action of the recovery module, if any!
+    ///
     /// @param assets the assets and associated amounts used to mint GYD
     /// @param minReceivedAmount the minimum amount of GYD to be minted
     /// @param account the account that wants to mint
@@ -61,6 +63,9 @@ interface IMotherboard {
 
     /// @notice Dry version of the `redeem` function
     /// exact outputs as specified by `tokens` and `amounts`
+    ///
+    /// Note: This does *not* include the action of the recovery module, if any!
+    ///
     /// @param gydToRedeem the maximum amount of GYD to redeem
     /// @param assets the output tokens and associated amounts to return against GYD
     /// @return outputAmounts the amounts receivd against the redeemed GYD
@@ -68,4 +73,7 @@ interface IMotherboard {
     function dryRedeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] memory assets)
         external
         returns (uint256[] memory outputAmounts, string memory err);
+
+    /// @notice Only callable from the reserve stewardship incentives module. Mints new GYD to the governance treasury.
+    function mintStewardshipIncRewards(uint256 amount) external;
 }
