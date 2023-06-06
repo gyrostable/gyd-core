@@ -320,6 +320,7 @@ def run_path_independence_test(
     assert x1 + x2 <= ya
 
     gyro_config.setAddress(config_keys.MOTHERBOARD_ADDRESS, admin, {"from": admin})
+    gyro_config.setUint(config_keys.REDEEM_DISCOUNT_RATIO, 0, {"from": admin})
 
     pamm = admin.deploy(PAMM, admin, gyro_config, params)
     pamm.setState((D(0), ba, ya))
