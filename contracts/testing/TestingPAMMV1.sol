@@ -16,7 +16,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         Params memory params
     ) PrimaryAMMV1(_governor, gyroConfig, params) {}
 
-    /** @dev returns Region plus additional values for situations that would be caught *before*
+    /** @dev returns reconstructed Region plus additional values for situations that would be caught *before*
      * region detection even runs:
      * 10 = reserve ratio <= theta_bar
      * 20 = reserve ratio >= 1
@@ -46,6 +46,56 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         }
 
         return uint256(computeReserveValueRegion(state, _systemParams, derived));
+    }
+
+    /// @dev like computeRegion() but doesn't reconstruct the region but detects it based on its
+    /// knowledge about the anchor point.
+    function computeTrueRegion(State calldata normalizedState) external view returns (uint256) {
+        uint256 normalizedNav = normalizedState.reserveValue.divDown(normalizedState.totalGyroSupply);
+        if (normalizedNav >= ONE) {
+            return 20;
+        }
+        if (normalizedNav <= systemParams.thetaBar) {
+            return 10;
+        }
+
+        uint256 theta = FixedPoint.ONE - systemParams.thetaBar;
+
+        uint256 ba = normalizedState.reserveValue;  // shorthand
+        uint256 ya = normalizedState.totalGyroSupply;  // shorthand
+        uint256 x = normalizedState.redemptionLevel;  // shorthand
+        uint256 alpha = computeAlpha(ba, ya, systemParams.thetaBar, systemParams.alphaBar);
+        uint256 xu = computeXu(ba, ya, alpha, systemParams.xuBar, theta);
+        uint256 xl = computeXl(ba, ya, alpha, xu, false);
+        if (x <= xu)
+            return uint(Region.CASE_i);
+        // Now x > xu
+        if (xu == systemParams.xuBar) {
+            // Case I
+            if (x <= xl)
+                return uint(Region.CASE_I_ii);
+            else
+                return uint(Region.CASE_I_iii);
+        }
+
+        // Detect case iii. Region detection wouldn't run here, so it doesn't have a Region entry.
+        if (x >= xl)
+            return 10;
+
+        if (alpha == systemParams.alphaBar) {
+
+            // now region ii.
+            if (alpha.mulDown(ya - ba) <= uint(0.5e18).mulDown(theta).mulDown(theta))
+                return uint(Region.CASE_II_H);
+            else
+                return uint(Region.CASE_II_L);
+        }
+        {
+            if (normalizedNav >= (FixedPoint.ONE + systemParams.thetaBar) / 2)
+                return uint(Region.CASE_III_H);
+            else
+                return uint(Region.CASE_III_L);
+        }
     }
 
     function computeReserveValue(State calldata normalizedState) public view returns (uint256) {
