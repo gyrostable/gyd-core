@@ -51,6 +51,16 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 totalGyroSupply; // y
     }
 
+    /** @dev
+     * For the `*HL` values, these are only defined if both of the respective regions (on either
+     * side of the threshold) exist (and are otherwise 0). To see if this is the case, check the
+     * respective `ba*HL` value against `baThresholdRegionI` and `baThresholdRegionII`.
+     * Specifically:
+     *  - The `*IIHL` values are well-defined iff
+     *    `baThresholdRegionI > baThresholdIIHL > baThresholdRegionII`.
+     *  - The `*IIIHL` values are well-defined iff `baThresholdRegionII > baThresholdIIIHL`.
+     * In constrast, the `*{I,II,III}` values are all always well-defined.
+     */
     struct DerivedParams {
         uint256 baThresholdRegionI; // b_a^{I/II}
         uint256 baThresholdRegionII; // b_a^{II/III}
@@ -59,8 +69,10 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 baThresholdIIHL; // ba^{h/l}
         uint256 baThresholdIIIHL; // ba^{H/L}
         uint256 xuThresholdIIHL; // x_U^{h/l}
+        // TODO check if we can just replace this by 1. (we should)
         uint256 xlThresholdIIHL; // x_L^{h/l}
         uint256 alphaThresholdIIIHL; // α^{H/L}
+        // TODO check if we can just replace this by 1. (we should)
         uint256 xlThresholdIIIHL; // x_L^{H/L}
     }
 
@@ -229,38 +241,47 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         );
 
         uint256 theta = ONE - params.thetaBar;
-        derived.baThresholdIIHL = ONE - (theta**2) / (2 * params.alphaBar);
 
-        derived.xuThresholdIIHL = computeXu(
-            derived.baThresholdIIHL,
-            ONE,
-            params.alphaBar,
-            params.xuBar,
-            theta
-        );
-        derived.xlThresholdIIHL = computeXl(
-            derived.baThresholdIIHL,
-            ONE,
-            params.alphaBar,
-            derived.xuThresholdIIHL,
-            true
-        );
+        {
+            uint256 subtrahend = (theta**2) / (2 * params.alphaBar);
+            derived.baThresholdIIHL = ONE >= subtrahend ? ONE - subtrahend : 0;
+        }
+
+        if (derived.baThresholdRegionI > derived.baThresholdIIHL && derived.baThresholdIIHL > derived.baThresholdRegionII) {
+            derived.xuThresholdIIHL = computeXu(
+                derived.baThresholdIIHL,
+                ONE,
+                params.alphaBar,
+                params.xuBar,
+                theta
+            );
+            derived.xlThresholdIIHL = computeXl(
+                derived.baThresholdIIHL,
+                ONE,
+                params.alphaBar,
+                derived.xuThresholdIIHL,
+                true
+            );
+        }
 
         derived.baThresholdIIIHL = (ONE + params.thetaBar) / 2;
-        derived.alphaThresholdIIIHL = computeAlpha(
-            derived.baThresholdIIIHL,
-            ONE,
-            params.thetaBar,
-            params.alphaBar
-        );
 
-        derived.xlThresholdIIIHL = computeXl(
-            derived.baThresholdIIIHL,
-            ONE,
-            derived.alphaThresholdIIIHL,
-            0,
-            true
-        );
+        if (derived.baThresholdRegionII > derived.baThresholdIIIHL) {
+            derived.alphaThresholdIIIHL = computeAlpha(
+                derived.baThresholdIIIHL,
+                ONE,
+                params.thetaBar,
+                params.alphaBar
+            );
+
+            derived.xlThresholdIIIHL = computeXl(
+                derived.baThresholdIIIHL,
+                ONE,
+                derived.alphaThresholdIIIHL,
+                0,
+                true
+            );
+        }
 
         return derived;
     }
@@ -316,6 +337,10 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 alphaBar,
         DerivedParams memory derived
     ) internal pure returns (bool) {
+        if (derived.baThresholdIIHL >= derived.baThresholdRegionI)
+            return false;
+        if (derived.baThresholdIIHL <= derived.baThresholdRegionII)
+            return true;
         return
             normalizedState.reserveValue >=
             computeReserveFixedParams(
@@ -333,6 +358,8 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         pure
         returns (bool)
     {
+        if (derived.baThresholdIIIHL >= derived.baThresholdRegionII)
+            return false;
         return
             normalizedState.reserveValue >=
             computeReserveFixedParams(

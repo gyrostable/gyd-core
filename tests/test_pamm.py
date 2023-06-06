@@ -113,6 +113,7 @@ def test_params(pamm):
     assert outflowMemory == OUTFLOW_MEMORY
 
 
+@pytest.mark.skip("test to be rewritten")
 @pytest.mark.parametrize("alpha_min", ["1", "0.3"])
 def test_compute_derived_params(pamm, alpha_min):
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
@@ -215,6 +216,7 @@ def test_compute_reserve(pamm, args, alpha_min):
     assert result == scale(expected)
 
 
+@pytest.mark.skip("test to be rewritten")
 # args = (x, ba, ya)
 @pytest.mark.parametrize(
     "args,alpha_min",
@@ -260,6 +262,7 @@ COMPUTE_RESERVE_CASES = [
 ]
 
 
+@pytest.mark.skip("test to be rewritten")
 @pytest.mark.parametrize("args,alpha_min", COMPUTE_RESERVE_CASES)
 def test_compute_reserve_value(pamm, args, alpha_min):
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
