@@ -230,11 +230,8 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         return computeAlpha(ba, ya, thetaFloor, alphaMin);
     }
 
-    function testComputeSlope(
-        uint256 ba,
-        uint256 ya
-    ) external view returns (uint256) {
-        return computeAlpha(ba, ya, systemParams.thetaBar, systemParams.alphaBar);
+    function testComputeSlope(uint256 ba, uint256 ya) external view returns (uint256) {
+        return computeAlpha(ba, ya, _systemParams.thetaBar, _systemParams.alphaBar);
     }
 
     function testComputeUpperRedemptionThreshold(
@@ -262,8 +259,14 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 ya,
         bool ignoreUnderflow
     ) external view returns (uint256) {
-        uint256 alpha = computeAlpha(ba, ya, systemParams.thetaBar, systemParams.alphaBar);
-        uint256 xu = computeXu(ba, ya, alpha, systemParams.xuBar, FixedPoint.ONE - systemParams.thetaBar);
+        uint256 alpha = computeAlpha(ba, ya, _systemParams.thetaBar, _systemParams.alphaBar);
+        uint256 xu = computeXu(
+            ba,
+            ya,
+            alpha,
+            _systemParams.xuBar,
+            FixedPoint.ONE - _systemParams.thetaBar
+        );
         return computeXl(ba, ya, alpha, xu, ignoreUnderflow);
     }
 

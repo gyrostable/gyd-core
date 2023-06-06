@@ -20,8 +20,8 @@ contract PammTest is Test {
     // irrelevant
     uint64 public constant OUTFLOW_MEMORY = 999993123563518195;
 
-    uint public constant DELTA_SMALL = 10;  // 1e-17
-    uint public constant DELTA_MED = 1e10; // 1e-8
+    uint256 public constant DELTA_SMALL = 10; // 1e-17
+    uint256 public constant DELTA_MED = 1e10; // 1e-8
 
     address public constant governorAddress = address(0);
     GyroConfig internal gyroConfig;
@@ -39,12 +39,20 @@ contract PammTest is Test {
     }
 
     /// @dev map x from [0, type max] to [a, b]
-    function mapToInterval(uint32 x, uint a, uint b) public pure returns (uint) {
+    function mapToInterval(
+        uint32 x,
+        uint256 a,
+        uint256 b
+    ) public pure returns (uint256) {
         // order matters b/c integers!
-        return a + (b - a) * uint(x) / type(uint32).max;
+        return a + ((b - a) * uint256(x)) / type(uint32).max;
     }
 
-    function setParams(uint alphaBar, uint xuBar, uint thetaBar) public {
+    function setParams(
+        uint256 alphaBar,
+        uint256 xuBar,
+        uint256 thetaBar
+    ) public {
         setParams(IPAMM.Params(uint64(alphaBar), uint64(xuBar), uint64(thetaBar), OUTFLOW_MEMORY));
     }
 
@@ -55,15 +63,23 @@ contract PammTest is Test {
         tpamm.setParams(params);
     }
 
-    function mkParams(uint alphaBar, uint xuBar, uint thetaBar) public pure returns (IPAMM.Params memory) {
+    function mkParams(
+        uint256 alphaBar,
+        uint256 xuBar,
+        uint256 thetaBar
+    ) public pure returns (IPAMM.Params memory) {
         return IPAMM.Params(uint64(alphaBar), uint64(xuBar), uint64(thetaBar), OUTFLOW_MEMORY);
     }
 
-    function mkParamsFromFuzzing(uint32 alphaBar0, uint32 xuBar0, uint32 thetaBar0) public pure returns (IPAMM.Params memory) {
-        uint alphaBar = mapToInterval(alphaBar0, 0.0001e18, type(uint64).max);
-        uint xuBar = mapToInterval(xuBar0, 0.0001e18, 1e18 - 0.0001e18);
-        uint thetaBar = mapToInterval(thetaBar0, 0.0001e18, 1e18 - 0.0001e18);
-        return mkParams(alphaBar,xuBar, thetaBar);
+    function mkParamsFromFuzzing(
+        uint32 alphaBar0,
+        uint32 xuBar0,
+        uint32 thetaBar0
+    ) public pure returns (IPAMM.Params memory) {
+        uint256 alphaBar = mapToInterval(alphaBar0, 0.0001e18, type(uint64).max);
+        uint256 xuBar = mapToInterval(xuBar0, 0.0001e18, 1e18 - 0.0001e18);
+        uint256 thetaBar = mapToInterval(thetaBar0, 0.0001e18, 1e18 - 0.0001e18);
+        return mkParams(alphaBar, xuBar, thetaBar);
     }
 
     function testExamples_DerivedValues() public {
@@ -82,12 +98,16 @@ contract PammTest is Test {
         checkDerivedValues(mkParams(0.3e18, 0.5e18, 0.3e18)); // II l does not exist and we're in II ii
     }
 
-    function testFuzz_DerivedValues(uint32 alphaBar0, uint32 xuBar0, uint32 thetaBar0) public {
+    function testFuzz_DerivedValues(
+        uint32 alphaBar0,
+        uint32 xuBar0,
+        uint32 thetaBar0
+    ) public {
         // Transmogrify values into the range we need.
         // NB anything larger than uint64.max ~ 18.4 (unscaled) is pointless b/c values are cast down to uint64 when stored in params.
-        uint alphaBar = mapToInterval(alphaBar0, 0.0001e18, type(uint64).max);
-        uint xuBar = mapToInterval(xuBar0, 0.0001e18, 1e18 - 0.0001e18);
-        uint thetaBar = mapToInterval(thetaBar0, 0.0001e18, 1e18 - 0.0001e18);
+        uint256 alphaBar = mapToInterval(alphaBar0, 0.0001e18, type(uint64).max);
+        uint256 xuBar = mapToInterval(xuBar0, 0.0001e18, 1e18 - 0.0001e18);
+        uint256 thetaBar = mapToInterval(thetaBar0, 0.0001e18, 1e18 - 0.0001e18);
         console.log("alphaBar = %e", alphaBar);
         console.log("xuBar = %e", xuBar);
         console.log("thetaBar = %e", thetaBar);
@@ -104,13 +124,23 @@ contract PammTest is Test {
         // - derived.xlThresholdIIHL -> Replace by 1.0
         // - derived.xlThresholdIIIHL -> Replace by 1.0
         // - derived.alphaThresholdIIIHL -> Replace by theta = 1.0 - thetaBar.
-        if (derived.baThresholdRegionI > derived.baThresholdIIHL && derived.baThresholdIIHL > derived.baThresholdRegionII) {
+        if (
+            derived.baThresholdRegionI > derived.baThresholdIIHL &&
+            derived.baThresholdIIHL > derived.baThresholdRegionII
+        ) {
             // Make sure we can always use 1 here.
-            uint xl1 = tpamm.testComputeLowerRedemptionThreshold(derived.baThresholdIIHL,
-                                                                FixedPoint.ONE, params.alphaBar,
-                                                                derived.xuThresholdIIHL, false);
-            uint xl2 = tpamm.testComputeLowerRedemptionThreshold(derived.baThresholdIIHL,
-                                                                 FixedPoint.ONE, false);
+            uint256 xl1 = tpamm.testComputeLowerRedemptionThreshold(
+                derived.baThresholdIIHL,
+                FixedPoint.ONE,
+                params.alphaBar,
+                derived.xuThresholdIIHL,
+                false
+            );
+            uint256 xl2 = tpamm.testComputeLowerRedemptionThreshold(
+                derived.baThresholdIIHL,
+                FixedPoint.ONE,
+                false
+            );
             assertApproxEqAbs(xl1, 1e18, DELTA_MED);
             assertApproxEqAbs(xl2, 1e18, DELTA_MED);
         } else {
@@ -118,17 +148,28 @@ contract PammTest is Test {
         }
 
         if (derived.baThresholdRegionII > derived.baThresholdIIIHL) {
-            uint theta = FixedPoint.ONE - params.thetaBar;
-            uint alpha1 = tpamm.testComputeSlope(derived.baThresholdIIIHL, FixedPoint.ONE,
-                                                 params.thetaBar, params.alphaBar);
+            uint256 theta = FixedPoint.ONE - params.thetaBar;
+            uint256 alpha1 = tpamm.testComputeSlope(
+                derived.baThresholdIIIHL,
+                FixedPoint.ONE,
+                params.thetaBar,
+                params.alphaBar
+            );
             assertApproxEqAbs(alpha1, 1e18, DELTA_MED);
 
             // Make sure we can always use 1 and theta here, respectively.
-            uint xl1 = tpamm.testComputeLowerRedemptionThreshold(derived.baThresholdIIIHL,
-                                                                FixedPoint.ONE, alpha1,
-                                                                0, false);
-            uint xl2 = tpamm.testComputeLowerRedemptionThreshold(derived.baThresholdIIIHL,
-                                                                 FixedPoint.ONE, false);
+            uint256 xl1 = tpamm.testComputeLowerRedemptionThreshold(
+                derived.baThresholdIIIHL,
+                FixedPoint.ONE,
+                alpha1,
+                0,
+                false
+            );
+            uint256 xl2 = tpamm.testComputeLowerRedemptionThreshold(
+                derived.baThresholdIIIHL,
+                FixedPoint.ONE,
+                false
+            );
             assertApproxEqAbs(xl1, theta, DELTA_MED);
             assertApproxEqAbs(xl2, theta, DELTA_MED);
         } else {
@@ -150,28 +191,45 @@ contract PammTest is Test {
         checkRegionReconstruction(0.7e18, 0.8499e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
         checkRegionReconstruction(0.7e18, 0.8501e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
         checkRegionReconstruction(0.2e18, 0.65e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.4994994994994995e18, 0.9e18, 1e18, mkParams(2.0e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(
+            0.4994994994994995e18,
+            0.9e18,
+            1e18,
+            mkParams(2.0e18, 0.3e18, 0.6e18)
+        );
 
         // Regression for the reconstruction bug where regions don't exist. Leads to an underflow there.
         checkRegionReconstruction(0.3e18, 0.9e18, 1e18, mkParams(0.3e18, 0.5e18, 0.3e18)); // II l does not exist and we're in II ii
     }
 
-    function testFuzz_RegionDetection(uint32 x0, uint32 ba0, uint32 ya0, uint32 alphaBar0, uint32 xuBar0, uint32 thetaBar0) public {
+    function testFuzz_RegionDetection(
+        uint32 x0,
+        uint32 ba0,
+        uint32 ya0,
+        uint32 alphaBar0,
+        uint32 xuBar0,
+        uint32 thetaBar0
+    ) public {
         IPAMM.Params memory params = mkParamsFromFuzzing(alphaBar0, xuBar0, thetaBar0);
 
-        uint ramin = params.thetaBar - params.thetaBar / 100;
+        uint256 ramin = params.thetaBar - params.thetaBar / 100;
 
         // Testing anchor GYD amounts and reserve values up to 100B such that reserve ratios are within (theta_bar - small) and (1 + small)
-        uint ya = mapToInterval(ya0, 0.0001e18, 1e11 * 1e18);
-        uint ba = mapToInterval(ba0, ramin * ya / 1e18, 1.01e18 * ya / 1e18);
-        uint x = mapToInterval(x0, 0, ya);
+        uint256 ya = mapToInterval(ya0, 0.0001e18, 1e11 * 1e18);
+        uint256 ba = mapToInterval(ba0, (ramin * ya) / 1e18, (1.01e18 * ya) / 1e18);
+        uint256 x = mapToInterval(x0, 0, ya);
 
         checkRegionReconstruction(x, ba, ya, params);
     }
 
     /// @dev Given x and an anchor point, first compute the region directly; then compare against
     /// the reconstructed region at the implied state.
-    function checkRegionReconstruction(uint x, uint ba, uint ya, IPAMM.Params memory params) public {
+    function checkRegionReconstruction(
+        uint256 x,
+        uint256 ba,
+        uint256 ya,
+        IPAMM.Params memory params
+    ) public {
         setParams(params);
         console.log("x = %e", x);
         console.log("ba = %e", ba);
@@ -179,8 +237,8 @@ contract PammTest is Test {
 
         PrimaryAMMV1.State memory anchoredState = PrimaryAMMV1.State(x, ba, ya);
 
-        uint regTrue = tpamm.computeTrueRegion(anchoredState);
-        uint regReconstructed = tpamm.reconstructRegionFromAnchor(anchoredState);
+        uint256 regTrue = tpamm.computeTrueRegion(anchoredState);
+        uint256 regReconstructed = tpamm.reconstructRegionFromAnchor(anchoredState);
         assertEq(regTrue, regReconstructed);
     }
 
@@ -197,18 +255,30 @@ contract PammTest is Test {
         checkBReconstructionFromB(0.7e18, 0.8499e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
         checkBReconstructionFromB(0.7e18, 0.8501e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
         checkBReconstructionFromB(0.2e18, 0.65e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.4994994994994995e18, 0.9e18, 1e18, mkParams(2.0e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(
+            0.4994994994994995e18,
+            0.9e18,
+            1e18,
+            mkParams(2.0e18, 0.3e18, 0.6e18)
+        );
     }
 
-    function testFuzz_BReconstructionFromB(uint32 x0, uint32 b0, uint32 y0, uint32 alphaBar0, uint32 xuBar0, uint32 thetaBar0) public {
+    function testFuzz_BReconstructionFromB(
+        uint32 x0,
+        uint32 b0,
+        uint32 y0,
+        uint32 alphaBar0,
+        uint32 xuBar0,
+        uint32 thetaBar0
+    ) public {
         IPAMM.Params memory params = mkParamsFromFuzzing(alphaBar0, xuBar0, thetaBar0);
 
-        uint rmin = params.thetaBar - params.thetaBar / 100;
+        uint256 rmin = params.thetaBar - params.thetaBar / 100;
 
         // Testing GYD amounts and reserve values up to 100B such that reserve ratios are within (theta_bar - small) and (1 + small)
-        uint y = mapToInterval(y0, 0.0001e18, 1e11 * 1e18);
-        uint b = mapToInterval(b0, rmin * y / 1e18, 1.01e18 * y / 1e18);
-        uint x = mapToInterval(x0, 0, y);
+        uint256 y = mapToInterval(y0, 0.0001e18, 1e11 * 1e18);
+        uint256 b = mapToInterval(b0, (rmin * y) / 1e18, (1.01e18 * y) / 1e18);
+        uint256 x = mapToInterval(x0, 0, y);
         // TODO test x slightly > y due to rounding errors & make sure it's not crashing. Somewhere (not here).
 
         checkBReconstructionFromB(x, b, y, params);
@@ -216,7 +286,12 @@ contract PammTest is Test {
 
     /// @dev Given a state, reconstruct the anchor point and from there its own b (= reserve value).
     /// This should yield the state's reserve value back.
-    function checkBReconstructionFromB(uint x, uint b, uint y, IPAMM.Params memory params) public {
+    function checkBReconstructionFromB(
+        uint256 x,
+        uint256 b,
+        uint256 y,
+        IPAMM.Params memory params
+    ) public {
         tpamm.setParams(params);
         console.log("y = %e", y);
         console.log("b = %e", b);
@@ -240,21 +315,35 @@ contract PammTest is Test {
         checkRedeemFromBa(0.2e18, 0.7e18, 0.8499e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
         checkRedeemFromBa(0.1e18, 0.7e18, 0.8501e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
         checkRedeemFromBa(0.7e18, 0.2e18, 0.65e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.4994994994994995e18, 0.4994994994994995e18, 0.9e18, 1e18, mkParams(2.0e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(
+            0.4994994994994995e18,
+            0.4994994994994995e18,
+            0.9e18,
+            1e18,
+            mkParams(2.0e18, 0.3e18, 0.6e18)
+        );
         checkRedeemFromBa(0.5e18, 0.3e18, 0.9e18, 1e18, mkParams(0.3e18, 0.5e18, 0.3e18)); // II l does not exist and we're in II ii
     }
 
-    function testFuzz_RedeemFromBa(uint32 dx0, uint32 x0, uint32 ba0, uint32 ya0, uint32 alphaBar0, uint32 xuBar0, uint32 thetaBar0) public {
+    function testFuzz_RedeemFromBa(
+        uint32 dx0,
+        uint32 x0,
+        uint32 ba0,
+        uint32 ya0,
+        uint32 alphaBar0,
+        uint32 xuBar0,
+        uint32 thetaBar0
+    ) public {
         IPAMM.Params memory params = mkParamsFromFuzzing(alphaBar0, xuBar0, thetaBar0);
 
-        uint ramin = params.thetaBar - params.thetaBar / 100;
+        uint256 ramin = params.thetaBar - params.thetaBar / 100;
 
         // Testing anchor GYD amounts and reserve values up to 100B such that reserve ratios are within (theta_bar - small) and (1 + small)
-        uint ya = mapToInterval(ya0, 0.0001e18, 1e11 * 1e18);
-        uint ba = mapToInterval(ba0, ramin * ya / 1e18, 1.01e18 * ya / 1e18);
-        uint x = mapToInterval(x0, 0, ya);
-        vm.assume(x < ya);  // we could've excluded the endpoint above somehow but that's painful.
-        uint dx = mapToInterval(dx0, 0, ya - x);
+        uint256 ya = mapToInterval(ya0, 0.0001e18, 1e11 * 1e18);
+        uint256 ba = mapToInterval(ba0, (ramin * ya) / 1e18, (1.01e18 * ya) / 1e18);
+        uint256 x = mapToInterval(x0, 0, ya);
+        vm.assume(x < ya); // we could've excluded the endpoint above somehow but that's painful.
+        uint256 dx = mapToInterval(dx0, 0, ya - x);
 
         checkRedeemFromBa(dx, x, ba, ya, params);
     }
@@ -262,25 +351,31 @@ contract PammTest is Test {
     /// @dev Given an anchor point, x, and a redeption amount dx, compute directly the reserve value
     /// before and after the redemption. The difference should be the redemption amount computed
     /// via the usual PAMM logic (= reconstruction, then computation of the new b).
-    function checkRedeemFromBa(uint dx, uint x, uint ba, uint ya, IPAMM.Params memory params) public {
+    function checkRedeemFromBa(
+        uint256 dx,
+        uint256 x,
+        uint256 ba,
+        uint256 ya,
+        IPAMM.Params memory params
+    ) public {
         setParams(params);
         console.log("dx = %e", dx);
         console.log("x = %e", x);
         console.log("ba = %e", ba);
         console.log("ya = %e", ya);
 
-        uint b;
+        uint256 b;
         {
             PrimaryAMMV1.State memory anchoredState = PrimaryAMMV1.State(x, ba, ya);
             b = tpamm.computeReserveValueFromAnchor(anchoredState);
         }
-        uint y = ya - x;
+        uint256 y = ya - x;
 
         PrimaryAMMV1.State memory anchoredState1 = PrimaryAMMV1.State(x + dx, ba, ya);
-        uint b1 = tpamm.computeReserveValueFromAnchor(anchoredState1);
+        uint256 b1 = tpamm.computeReserveValueFromAnchor(anchoredState1);
 
         PrimaryAMMV1.State memory state = PrimaryAMMV1.State(x, b, y);
-        uint db = tpamm.computeRedeemAmount(state, dx);
+        uint256 db = tpamm.computeRedeemAmount(state, dx);
 
         assertApproxEqAbs(db, b - b1, DELTA_MED);
     }
