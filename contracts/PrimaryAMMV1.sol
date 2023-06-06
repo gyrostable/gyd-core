@@ -14,8 +14,6 @@ import "../libraries/ConfigHelpers.sol";
 
 import "./auth/Governable.sol";
 
-import "forge-std/console2.sol";
-
 /// @notice Implements the primary AMM pricing mechanism
 contract PrimaryAMMV1 is IPAMM, Governable {
     using LogExpMath for uint256;
@@ -249,7 +247,10 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             derived.baThresholdIIHL = ONE >= subtrahend ? ONE - subtrahend : 0;
         }
 
-        if (derived.baThresholdRegionI > derived.baThresholdIIHL && derived.baThresholdIIHL > derived.baThresholdRegionII) {
+        if (
+            derived.baThresholdRegionI > derived.baThresholdIIHL &&
+            derived.baThresholdIIHL > derived.baThresholdRegionII
+        ) {
             derived.xuThresholdIIHL = computeXu(
                 derived.baThresholdIIHL,
                 ONE,
@@ -339,10 +340,8 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 alphaBar,
         DerivedParams memory derived
     ) internal pure returns (bool) {
-        if (derived.baThresholdIIHL >= derived.baThresholdRegionI)
-            return false;
-        if (derived.baThresholdIIHL <= derived.baThresholdRegionII)
-            return true;
+        if (derived.baThresholdIIHL >= derived.baThresholdRegionI) return false;
+        if (derived.baThresholdIIHL <= derived.baThresholdRegionII) return true;
         return
             normalizedState.reserveValue >=
             computeReserveFixedParams(
@@ -360,8 +359,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         pure
         returns (bool)
     {
-        if (derived.baThresholdIIIHL >= derived.baThresholdRegionII)
-            return false;
+        if (derived.baThresholdIIIHL >= derived.baThresholdRegionII) return false;
         return
             normalizedState.reserveValue >=
             computeReserveFixedParams(
