@@ -38,11 +38,10 @@ contract DryMint is Test {
     function setUp() public virtual {
         gyroConfig = new GyroConfig();
         gyroConfig.initialize(address(this));
-        gydToken = new GydToken(address(gyroConfig));
+        gydToken = new GydToken();
         gyroConfig.setAddress(ConfigKeys.GYD_TOKEN_ADDRESS, address(gydToken));
         gyroConfig.setAddress(ConfigKeys.RESERVE_ADDRESS, addresses[0]);
         gyroConfig.setAddress(ConfigKeys.BALANCER_VAULT_ADDRESS, addresses[0]);
-        gyroConfig.setAddress(ConfigKeys.FEE_BANK_ADDRESS, addresses[0]);
         gyroConfig.setAddress(ConfigKeys.RESERVE_MANAGER_ADDRESS, address(mockReserveManager));
         gyroConfig.setAddress(ConfigKeys.ROOT_SAFETY_CHECK_ADDRESS, address(reserveSafetyManager));
         gyroConfig.setAddress(ConfigKeys.FEE_HANDLER_ADDRESS, address(feeHandler));
