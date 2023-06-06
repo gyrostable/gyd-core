@@ -159,7 +159,7 @@ contract PammTest is Test {
         PrimaryAMMV1.State memory anchoredState = PrimaryAMMV1.State(x, ba, ya);
 
         uint regTrue = tpamm.computeTrueRegion(anchoredState);
-        uint regReconstructed = tpamm.computeRegion(anchoredState);
+        uint regReconstructed = tpamm.reconstructRegionFromAnchor(anchoredState);
         assertEq(regTrue, regReconstructed);
     }
 

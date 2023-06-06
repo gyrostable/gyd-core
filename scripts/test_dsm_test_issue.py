@@ -89,7 +89,7 @@ def main():
 
     print("region:")
     reg_python = pypamm.compute_region_ext(X_U, BA_U, YA_U, pyparams)
-    reg_solidity = pamm.computeRegion(state).return_value
+    reg_solidity = pamm.reconstructRegionFromAnchor(state).return_value
     print(f"python direct: {reg_python}")# = {reg_python.value}")
     print(f"solidity reconstructed: {reg_solidity}")
     print()

@@ -24,7 +24,11 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
      * 10 = reserve ratio <= theta_bar
      * 20 = reserve ratio >= 1
      */
-    function computeRegion(State calldata anchoredState) external view returns (uint256) {
+    function reconstructRegionFromAnchor(State calldata anchoredState)
+        external
+        view
+        returns (uint256)
+    {
         DerivedParams memory derived = createDerivedParams(_systemParams);
 
         uint256 b = computeReserve(
@@ -51,7 +55,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         return uint256(computeReserveValueRegion(state, _systemParams, derived));
     }
 
-    /// @dev Reconstruct region at given (raw/market) state. Returns the "extended" state flags like computeRegion().
+    /// @dev Reconstruct region at given (raw/market) state. Returns the "extended" state flags like reconstructRegionFromAnchor().
     function reconstructRegion(State calldata state) external view returns (uint256) {
         uint256 normalizedNav = state.reserveValue.divDown(state.totalGyroSupply);
         if (normalizedNav >= ONE) {
@@ -66,7 +70,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
     }
 
     /// @dev Detect the region based on our knowledge about the anchor point. Does *not*
-    /// reconstruct! Returns like computeRegion()
+    /// reconstruct! Returns like reconstructRegionFromAnchor()
     function computeTrueRegion(State calldata anchoredState) external view returns (uint256) {
         uint256 normalizedNav = anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply);
         if (normalizedNav >= ONE) {
@@ -109,7 +113,11 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
     }
 
     /// @dev Round-trip ba: Reconstruct anchor reserve value from state implied by the anchored state.
-    function computeReserveValue(State calldata anchoredState) public view returns (uint256) {
+    function reconstructAnchorFromAnchor(State calldata anchoredState)
+        public
+        view
+        returns (uint256)
+    {
         Params memory params = _systemParams;
         DerivedParams memory derived = createDerivedParams(_systemParams);
         uint256 b = computeReserve(
@@ -185,12 +193,12 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
     }
 
     // NOTE: needs to not be pure to be able to get transaction information from the frontend
-    function computeReserveValueWithGas(State calldata normalizedState)
+    function reconstructAnchorFromAnchorWithGas(State calldata normalizedState)
         external
         view
         returns (uint256)
     {
-        return computeReserveValue(normalizedState);
+        return reconstructAnchorFromAnchor(normalizedState);
     }
 
     function testComputeFixedReserve(
