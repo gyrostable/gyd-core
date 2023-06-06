@@ -62,6 +62,7 @@ library ReserveStateExtensions {
         for (uint256 i = 0; i < tokens.length; i++) {
             protocolPricedTokens[i].tokenAddress = tokens[i].tokenAddress;
             protocolPricedTokens[i].isStable = tokens[i].isStable;
+
             if (tokens[i].isStable && clampAbove == tokens[i].price < STABLECOIN_IDEAL_PRICE)
                 protocolPricedTokens[i].price = STABLECOIN_IDEAL_PRICE;
             else protocolPricedTokens[i].price = tokens[i].price;

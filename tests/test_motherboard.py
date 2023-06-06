@@ -29,8 +29,10 @@ def test_dry_mint_vault_underlying(motherboard, usdc, usdc_vault, alice):
 
 @pytest.mark.usefixtures("register_usdc_vault")
 def test_dry_mint_vault_underlying_over_peg(
-    motherboard, usdc, usdc_vault, alice, mock_price_oracle
+    motherboard, usdc, usdc_vault, alice, mock_price_oracle, asset_registry, admin
 ):
+    asset_registry.setAssetAddress("USDC", usdc, {"from": admin})
+    asset_registry.addStableAsset(usdc, {"from": admin})
     mock_price_oracle.setUSDPrice(usdc, scale("1.1"))
     mock_price_oracle.setUSDPrice(usdc_vault, scale("1.1"))
     decimals = usdc.decimals()
