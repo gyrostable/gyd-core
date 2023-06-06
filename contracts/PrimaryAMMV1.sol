@@ -218,7 +218,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     /// @dev Algorithm 1 (section 7) of the paper
     function createDerivedParams(Params memory params)
         internal
-        view
+        pure
         returns (DerivedParams memory)
     {
         DerivedParams memory derived;
