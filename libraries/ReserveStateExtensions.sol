@@ -21,46 +21,50 @@ library ReserveStateExtensions {
     ) internal view returns (uint256) {
         uint256 reserveValue;
         for (uint256 i; i < state.vaults.length; i++) {
-            reserveValue += computeLowerBoundUSDValue(state.vaults[i], oracle);
+            DataTypes.VaultInfo memory vaultInfo = state.vaults[i];
+            uint256 lowerBoundPrice = computeLowerBoundUSDPrice(vaultInfo, oracle);
+            uint256 scaledBalance = vaultInfo.reserveBalance.scaleFrom(vaultInfo.decimals);
+            reserveValue += scaledBalance.mulDown(lowerBoundPrice);
         }
         return reserveValue;
     }
 
-    function computeLowerBoundUSDValue(
-        DataTypes.VaultWithAmount memory vaultWithAmount,
-        IBatchVaultPriceOracle oracle
-    ) internal view returns (uint256) {
-        DataTypes.VaultInfo memory vaultInfo = vaultWithAmount.vaultInfo;
-        DataTypes.PricedToken[] memory pricedTokens = _toLowerBoundPricedTokens(
-            vaultInfo.pricedTokens
-        );
-        uint256 vaultPrice = oracle.getVaultPrice(IGyroVault(vaultInfo.vault), pricedTokens);
-        return vaultPrice.mulDown(vaultWithAmount.amount.scaleFrom(vaultInfo.decimals));
-    }
-
-    function computeLowerBoundUSDValue(
+    function computeLowerBoundUSDPrice(
         DataTypes.VaultInfo memory vaultInfo,
         IBatchVaultPriceOracle oracle
     ) internal view returns (uint256) {
-        DataTypes.PricedToken[] memory pricedTokens = _toLowerBoundPricedTokens(
-            vaultInfo.pricedTokens
+        DataTypes.PricedToken[] memory pricedTokens = _clampPricedTokens(
+            vaultInfo.pricedTokens,
+            false
         );
-        uint256 vaultPrice = oracle.getVaultPrice(IGyroVault(vaultInfo.vault), pricedTokens);
-        return vaultPrice.mulDown(vaultInfo.reserveBalance.scaleFrom(vaultInfo.decimals));
+        return oracle.getVaultPrice(IGyroVault(vaultInfo.vault), pricedTokens);
     }
 
-    function _toLowerBoundPricedTokens(
-        DataTypes.PricedToken[] memory tokens
-    ) internal pure returns (DataTypes.PricedToken[] memory) {
+    function computeUpperBoundUSDPrice(
+        DataTypes.VaultInfo memory vaultInfo,
+        IBatchVaultPriceOracle oracle
+    ) internal view returns (uint256) {
+        DataTypes.PricedToken[] memory pricedTokens = _clampPricedTokens(
+            vaultInfo.pricedTokens,
+            true
+        );
+        return oracle.getVaultPrice(IGyroVault(vaultInfo.vault), pricedTokens);
+    }
+
+    function _clampPricedTokens(DataTypes.PricedToken[] memory tokens, bool clampAbove)
+        internal
+        pure
+        returns (DataTypes.PricedToken[] memory)
+    {
         DataTypes.PricedToken[] memory protocolPricedTokens = new DataTypes.PricedToken[](
             tokens.length
         );
         for (uint256 i = 0; i < tokens.length; i++) {
             protocolPricedTokens[i].tokenAddress = tokens[i].tokenAddress;
             protocolPricedTokens[i].isStable = tokens[i].isStable;
-            protocolPricedTokens[i].price = tokens[i].price < STABLECOIN_IDEAL_PRICE
-                ? tokens[i].price
-                : STABLECOIN_IDEAL_PRICE;
+            if (tokens[i].isStable && clampAbove == tokens[i].price < STABLECOIN_IDEAL_PRICE)
+                protocolPricedTokens[i].price = STABLECOIN_IDEAL_PRICE;
+            else protocolPricedTokens[i].price = tokens[i].price;
         }
         return protocolPricedTokens;
     }
