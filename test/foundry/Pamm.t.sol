@@ -100,19 +100,40 @@ contract PammTest is Test {
         setParams(params);
         PrimaryAMMV1.DerivedParams memory derived = tpamm.computeDerivedParams();
 
+        // TODO: Once we have convinced ourselves that these tests always pass (up to rounding errors), the following variables can be eliminated:
+        // - derived.xlThresholdIIHL -> Replace by 1.0
+        // - derived.xlThresholdIIIHL -> Replace by 1.0
+        // - derived.alphaThresholdIIIHL -> Replace by theta = 1.0 - thetaBar.
         if (derived.baThresholdRegionI > derived.baThresholdIIHL && derived.baThresholdIIHL > derived.baThresholdRegionII) {
-            // TODO when this test passes consistently, remove xlThresholdIIHL and replace by 1. Instead, check the result of that method against 1.
-            assertApproxEqAbs(derived.xlThresholdIIHL, 1e18, DELTA_MED);
+            // Make sure we can always use 1 here.
+            uint xl1 = tpamm.testComputeLowerRedemptionThreshold(derived.baThresholdIIHL,
+                                                                FixedPoint.ONE, params.alphaBar,
+                                                                derived.xuThresholdIIHL, false);
+            uint xl2 = tpamm.testComputeLowerRedemptionThreshold(derived.baThresholdIIHL,
+                                                                 FixedPoint.ONE, false);
+            assertApproxEqAbs(xl1, 1e18, DELTA_MED);
+            assertApproxEqAbs(xl2, 1e18, DELTA_MED);
         } else {
             assertEq(derived.xlThresholdIIHL, 0);
         }
 
         if (derived.baThresholdRegionII > derived.baThresholdIIIHL) {
-            assertApproxEqAbs(derived.xlThresholdIIIHL, 1e18, DELTA_MED);
             uint theta = FixedPoint.ONE - params.thetaBar;
-            assertApproxEqAbs(derived.alphaThresholdIIIHL, theta, DELTA_MED);
+            uint alpha1 = tpamm.testComputeSlope(derived.baThresholdIIIHL, FixedPoint.ONE,
+                                                 params.thetaBar, params.alphaBar);
+            assertApproxEqAbs(alpha1, 1e18, DELTA_MED);
+
+            // Make sure we can always use 1 and theta here, respectively.
+            uint xl1 = tpamm.testComputeLowerRedemptionThreshold(derived.baThresholdIIIHL,
+                                                                FixedPoint.ONE, alpha1,
+                                                                0, false);
+            uint xl2 = tpamm.testComputeLowerRedemptionThreshold(derived.baThresholdIIIHL,
+                                                                 FixedPoint.ONE, false);
+            assertApproxEqAbs(xl1, theta, DELTA_MED);
+            assertApproxEqAbs(xl2, theta, DELTA_MED);
         } else {
             assertEq(derived.xlThresholdIIIHL, 0);
+            assertEq(derived.alphaThresholdIIIHL, 0);
         }
     }
 

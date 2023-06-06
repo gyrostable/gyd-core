@@ -230,6 +230,13 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         return computeAlpha(ba, ya, thetaFloor, alphaMin);
     }
 
+    function testComputeSlope(
+        uint256 ba,
+        uint256 ya
+    ) external view returns (uint256) {
+        return computeAlpha(ba, ya, systemParams.thetaBar, systemParams.alphaBar);
+    }
+
     function testComputeUpperRedemptionThreshold(
         uint256 ba,
         uint256 ya,
@@ -238,6 +245,26 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 targetUtilizationCeiling
     ) external pure returns (uint256) {
         return computeXu(ba, ya, alpha, stableRedeemThresholdUpperBound, targetUtilizationCeiling);
+    }
+
+    function testComputeLowerRedemptionThreshold(
+        uint256 ba,
+        uint256 ya,
+        uint256 alpha,
+        uint256 xu,
+        bool ignoreUnderflow
+    ) external pure returns (uint256) {
+        return computeXl(ba, ya, alpha, xu, ignoreUnderflow);
+    }
+
+    function testComputeLowerRedemptionThreshold(
+        uint256 ba,
+        uint256 ya,
+        bool ignoreUnderflow
+    ) external view returns (uint256) {
+        uint256 alpha = computeAlpha(ba, ya, systemParams.thetaBar, systemParams.alphaBar);
+        uint256 xu = computeXu(ba, ya, alpha, systemParams.xuBar, FixedPoint.ONE - systemParams.thetaBar);
+        return computeXl(ba, ya, alpha, xu, ignoreUnderflow);
     }
 
     function computeDerivedParams() external view returns (DerivedParams memory) {
