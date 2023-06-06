@@ -14,6 +14,8 @@ import "../libraries/ConfigHelpers.sol";
 
 import "./auth/Governable.sol";
 
+import "forge-std/console2.sol";
+
 /// @notice Implements the primary AMM pricing mechanism
 contract PrimaryAMMV1 is IPAMM, Governable {
     using LogExpMath for uint256;
@@ -216,7 +218,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     /// @dev Algorithm 1 (section 7) of the paper
     function createDerivedParams(Params memory params)
         internal
-        pure
+        view
         returns (DerivedParams memory)
     {
         DerivedParams memory derived;
@@ -243,7 +245,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 theta = ONE - params.thetaBar;
 
         {
-            uint256 subtrahend = (theta**2) / (2 * params.alphaBar);
+            uint256 subtrahend = (theta**2) / (2 * uint256(params.alphaBar));
             derived.baThresholdIIHL = ONE >= subtrahend ? ONE - subtrahend : 0;
         }
 
@@ -403,7 +405,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             if (
                 normalizedState.reserveValue -
                     uint256(params.thetaBar).mulDown(normalizedState.totalGyroSupply) >=
-                theta**2 / (2 * params.alphaBar)
+                theta**2 / (2 * uint256(params.alphaBar))
             ) return Region.CASE_i;
             return Region.CASE_II_L;
         }
@@ -453,7 +455,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             return
                 vars.ya -
                 (vars.ya - params.xuBar).mulDown(vars.u) +
-                (vars.u**2 / (2 * params.alphaBar));
+                (vars.u**2 / (2 * uint256(params.alphaBar)));
 
         if (region == Region.CASE_II_H) {
             uint256 delta = (params.alphaBar *
@@ -464,7 +466,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
 
         if (region == Region.CASE_II_L) {
             uint256 p = vars.theta.mulDown(
-                vars.theta.divDown(2 * params.alphaBar) + normalizedState.totalGyroSupply
+                vars.theta.divDown(2 * uint256(params.alphaBar)) + normalizedState.totalGyroSupply
             );
             uint256 d = 2 *
                 (vars.theta**2 / params.alphaBar).mulDown(
