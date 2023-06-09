@@ -108,9 +108,6 @@ contract PammTest is Test {
         uint256 alphaBar = mapToInterval(alphaBar0, 0.0001e18, type(uint64).max);
         uint256 xuBar = mapToInterval(xuBar0, 0.0001e18, 1e18 - 0.0001e18);
         uint256 thetaBar = mapToInterval(thetaBar0, 0.0001e18, 1e18 - 0.0001e18);
-        console.log("alphaBar = %e", alphaBar);
-        console.log("xuBar = %e", xuBar);
-        console.log("thetaBar = %e", thetaBar);
 
         checkDerivedValues(mkParams(alphaBar, xuBar, thetaBar));
     }
