@@ -23,6 +23,9 @@ contract PammTest is Test {
     uint256 public constant DELTA_SMALL = 10; // 1e-17
     uint256 public constant DELTA_MED = 1e10; // 1e-8
 
+    // For checking xl against when it should theoretically be 1 or some other known number.
+    uint256 public constant DELTA_XL_1 = 0.00000001e18;  // 1e-8
+
     address public constant governorAddress = address(0);
     GyroConfig internal gyroConfig;
     TestingPAMMV1 internal tpamm;
@@ -138,9 +141,12 @@ contract PammTest is Test {
                 FixedPoint.ONE,
                 false
             );
-            assertApproxEqAbs(xl1, 1e18, DELTA_MED);
-            assertApproxEqAbs(xl2, 1e18, DELTA_MED);
+            console.log("at baIIHL, xl1 = 1");
+            assertApproxEqAbs(xl1, 1e18, DELTA_XL_1);
+            console.log("at baIIHL, xl2 = 1");
+            assertApproxEqAbs(xl2, 1e18, DELTA_XL_1);
         } else {
+            console.log("if IIHL is out of range, default xl = 0");
             assertEq(derived.xlThresholdIIHL, 0);
         }
 
@@ -152,7 +158,8 @@ contract PammTest is Test {
                 params.thetaBar,
                 params.alphaBar
             );
-            assertApproxEqAbs(alpha1, 1e18, DELTA_MED);
+            console.log("at baIIIHL, alpha = theta");
+            assertApproxEqAbs(alpha1, theta, DELTA_XL_1);
 
             // Make sure we can always use 1 and theta here, respectively.
             uint256 xl1 = tpamm.testComputeLowerRedemptionThreshold(
@@ -167,10 +174,14 @@ contract PammTest is Test {
                 FixedPoint.ONE,
                 false
             );
-            assertApproxEqAbs(xl1, theta, DELTA_MED);
-            assertApproxEqAbs(xl2, theta, DELTA_MED);
+            console.log("at baIIIHL, xl1 = 1");
+            assertApproxEqAbs(xl1, 1e18, DELTA_XL_1);
+            console.log("at baIIIHL, xl2 = 1");
+            assertApproxEqAbs(xl2, 1e18, DELTA_XL_1);
         } else {
+            console.log("if IIIHL is out of range, default xl = 0");
             assertEq(derived.xlThresholdIIIHL, 0);
+            console.log("if IIIHL is out of range, default alpha = 0");
             assertEq(derived.alphaThresholdIIIHL, 0);
         }
     }
