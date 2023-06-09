@@ -218,6 +218,7 @@ contract PammTest is Test {
         uint256 ya = mapToInterval(ya0, 0.0001e18, 1e11 * 1e18);
         uint256 ba = mapToInterval(ba0, (ramin * ya) / 1e18, (1.01e18 * ya) / 1e18);
         uint256 x = mapToInterval(x0, 0, ya);
+        vm.assume(ya > ba && ba > ya.mulDown(params.thetaBar));
 
         checkRegionReconstruction(x, ba, ya, params);
     }
@@ -343,6 +344,7 @@ contract PammTest is Test {
         uint256 ba = mapToInterval(ba0, (ramin * ya) / 1e18, (1.01e18 * ya) / 1e18);
         uint256 x = mapToInterval(x0, 0, ya);
         vm.assume(x < ya); // we could've excluded the endpoint above somehow but that's painful.
+        vm.assume(ya > ba && ba > ya.mulDown(params.thetaBar));
         uint256 dx = mapToInterval(dx0, 0, ya - x);
 
         checkRedeemFromBa(dx, x, ba, ya, params);
