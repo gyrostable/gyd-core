@@ -210,6 +210,10 @@ contract PammTest is Test {
         checkRegionReconstruction(0.3e18, 0.9e18, 1e18, mkParams(0.3e18, 0.5e18, 0.3e18)); // II l does not exist and we're in II ii
     }
 
+    function testFuzzRegression_RegionDetection() public {
+        testFuzz_RegionDetection(1, 4254, 12, 4180781539, 0, 0);
+    }
+
     function testFuzz_RegionDetection(
         uint32 x0,
         uint32 ba0,
