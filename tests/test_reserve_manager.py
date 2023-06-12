@@ -1,7 +1,7 @@
 import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
 from brownie import interface  # type: ignore
-from tests.support import error_codes
+from tests.support import config_keys, error_codes
 from tests.support.quantized_decimal import DecimalLike
 from tests.support.types import VaultConfiguration, VaultInfo
 from tests.support.utils import scale
@@ -65,8 +65,14 @@ def test_set_vaults(
 
 
 def test_cannot_remove_valuable_vault(
-    admin, reserve_manager, mock_vaults, reserve, static_percentage_fee_handler
+    admin,
+    reserve_manager,
+    mock_vaults,
+    reserve,
+    static_percentage_fee_handler,
+    gyro_config,
 ):
+    gyro_config.setUint(config_keys.VAULT_DUST_THRESHOLD, scale(100))
     reserve_manager.setVaults(
         [
             _make_vault_config(mock_vaults[0], static_percentage_fee_handler, "0.5"),

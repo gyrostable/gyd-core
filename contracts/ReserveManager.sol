@@ -23,7 +23,7 @@ contract ReserveManager is IReserveManager, Governable {
     using ConfigHelpers for IGyroConfig;
     using DecimalScale for uint256;
 
-    uint256 public constant VAULT_DUST_THRESHOLD = 100e18;
+    uint256 public constant DEFAULT_VAULT_DUST_THRESHOLD = 500e18;
 
     IVaultRegistry public immutable vaultRegistry;
     IAssetRegistry public immutable assetRegistry;
@@ -180,11 +180,15 @@ contract ReserveManager is IReserveManager, Governable {
     function _isValuableVaultRemoved(
         DataTypes.VaultInfo memory vaultInfo,
         DataTypes.VaultConfiguration[] memory vaults
-    ) internal pure returns (bool) {
+    ) internal view returns (bool) {
         for (uint256 j; j < vaults.length; j++) {
             if (vaultInfo.vault == vaults[j].vaultAddress) return false;
         }
         uint256 vaultUSDAmount = vaultInfo.price.mulDown(vaultInfo.reserveBalance);
-        return vaultUSDAmount >= VAULT_DUST_THRESHOLD;
+        uint256 vaultDustThreshold = gyroConfig.getUint(
+            ConfigKeys.VAULT_DUST_THRESHOLD,
+            DEFAULT_VAULT_DUST_THRESHOLD
+        );
+        return vaultUSDAmount >= vaultDustThreshold;
     }
 }
