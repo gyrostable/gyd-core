@@ -36,4 +36,6 @@ library ConfigKeys {
 
     bytes32 internal constant SAFETY_BLOCKS_AUTOMATIC = "SAFETY_BLOCKS_AUTOMATIC";
     bytes32 internal constant SAFETY_BLOCKS_GUARDIAN = "SAFETY_BLOCKS_GUARDIAN";
+
+    bytes32 internal constant REDEEM_DISCOUNT_RATIO = "REDEEM_DISCOUNT_RATIO";
 }

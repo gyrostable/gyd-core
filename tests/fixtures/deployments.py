@@ -121,6 +121,7 @@ def lp_token(Token):
 def mock_pamm(admin, MockPAMM, gyro_config):
     pamm = admin.deploy(MockPAMM)
     gyro_config.setAddress(config_keys.PAMM_ADDRESS, pamm, {"from": admin})
+    gyro_config.setUint(config_keys.REDEEM_DISCOUNT_RATIO, 0, {"from": admin})
     return pamm
 
 
@@ -264,7 +265,7 @@ def motherboard(admin, Motherboard, gyro_config, gyd_token, reserve, request):
 
 @pytest.fixture(scope="module")
 def pamm(admin, TestingPAMMV1, gyro_config):
-    return TestingPAMMV1.deploy(
+    pamm = TestingPAMMV1.deploy(
         admin,
         gyro_config,
         PammParams(
@@ -275,6 +276,8 @@ def pamm(admin, TestingPAMMV1, gyro_config):
         ),
         {"from": admin},
     )
+    gyro_config.setUint(config_keys.REDEEM_DISCOUNT_RATIO, 0, {"from": admin})
+    return pamm
 
 
 @pytest.fixture(scope="module")

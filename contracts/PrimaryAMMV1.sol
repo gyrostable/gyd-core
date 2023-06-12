@@ -462,14 +462,37 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         revert("unknown region");
     }
 
+    /// @dev redeemDiscountRatio is expected to be a small value along the lines of 1%
+    /// this means that the first condition should always be true unless if the system
+    /// is in a extreme state
+    function _computeDiscountedReserveValue(uint256 reserveValue, uint256 totalGyroSupply)
+        internal
+        view
+        returns (uint256)
+    {
+        uint256 redeemDiscountRatio = gyroConfig.getUint(ConfigKeys.REDEEM_DISCOUNT_RATIO);
+
+        if (reserveValue > 2 * redeemDiscountRatio.mulDown(totalGyroSupply)) {
+            uint256 discounted = reserveValue - redeemDiscountRatio.mulDown(totalGyroSupply);
+            return discounted.min(totalGyroSupply);
+        }
+
+        return reserveValue;
+    }
+
     function computeRedeemAmount(
         State memory state,
         Params memory params,
         DerivedParams memory derived,
         uint256 amount
-    ) internal pure returns (uint256) {
+    ) internal view returns (uint256) {
         State memory normalizedState;
         uint256 ya = state.totalGyroSupply + state.redemptionLevel;
+
+        state.reserveValue = _computeDiscountedReserveValue(
+            state.reserveValue,
+            state.totalGyroSupply
+        );
 
         normalizedState.redemptionLevel = state.redemptionLevel.divDown(ya);
         normalizedState.reserveValue = state.reserveValue.divDown(ya);
