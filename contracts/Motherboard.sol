@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
@@ -33,6 +34,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     using FixedPoint for uint256;
     using DecimalScale for uint256;
     using SafeERC20 for IERC20;
+    using SafeERC20 for IERC20Permit;
     using SafeERC20Upgradeable for IGYDToken;
     using ConfigHelpers for IGyroConfig;
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -132,7 +134,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.MintAsset[] calldata assets,
         uint256 minReceivedAmount,
         ExternalAction[] calldata actions
-    ) external returns (uint256 mintedGYDAmount) {
+    ) public returns (uint256 mintedGYDAmount) {
         for (uint256 i = 0; i < actions.length; i++) {
             require(
                 externalCallWhitelist.contains(actions[i].target),
@@ -141,6 +143,25 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             actions[i].target.functionCall(actions[i].data, Errors.EXTERNAL_ACTION_FAILED);
         }
 
+        return mint(assets, minReceivedAmount);
+    }
+
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount,
+        DataTypes.PermitData[] calldata permits,
+        ExternalAction[] calldata actions
+    ) external returns (uint256 mintedGYDAmount) {
+        _executePermits(permits);
+        return mint(assets, minReceivedAmount, actions);
+    }
+
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount,
+        DataTypes.PermitData[] calldata permits
+    ) external returns (uint256 mintedGYDAmount) {
+        _executePermits(permits);
         return mint(assets, minReceivedAmount);
     }
 
@@ -594,5 +615,20 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         ops[0].kind = IVault.UserBalanceOpKind.WITHDRAW_INTERNAL;
         ops[0].sender = address(this);
         balancerVault.manageUserBalance(ops);
+    }
+
+    function _executePermits(DataTypes.PermitData[] calldata permits) internal {
+        for (uint256 i = 0; i < permits.length; i++) {
+            DataTypes.PermitData calldata permit = permits[i];
+            IERC20Permit(permit.target).safePermit(
+                permit.owner,
+                permit.spender,
+                permit.amount,
+                permit.deadline,
+                permit.v,
+                permit.r,
+                permit.s
+            );
+        }
     }
 }
