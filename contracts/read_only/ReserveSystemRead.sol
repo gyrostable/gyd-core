@@ -48,9 +48,11 @@ contract ReserveSystemRead {
         return ReadValues(reserveState, systemParams, redemptionLevel, redemptionPrice);
     }
 
-    function readWithoutReserveState(
-        uint256 totalUSDValue
-    ) external view returns (ReadValuesWithoutReserveState memory) {
+    function readWithoutReserveState(uint256 totalUSDValue)
+        external
+        view
+        returns (ReadValuesWithoutReserveState memory)
+    {
         (uint64 alphaBar, uint64 xuBar, uint64 thetaBar, uint64 outflowMemory) = primaryAMMV1
             .systemParams();
 
