@@ -10,11 +10,17 @@ import "../../libraries/Errors.sol";
 contract TellorOracle is IUSDPriceOracle, UsingTellor {
     address public immutable wethAddress;
     bytes32 internal immutable queryId;
+    uint256 public immutable stalePriceDelay;
 
-    constructor(address payable _tellorAddress, address _wethAddress) UsingTellor(_tellorAddress) {
+    constructor(
+        address payable _tellorAddress,
+        address _wethAddress,
+        uint256 _stalePriceDelay
+    ) UsingTellor(_tellorAddress) {
         wethAddress = _wethAddress;
         bytes memory _queryData = abi.encode("SpotPrice", abi.encode("eth", "usd"));
         queryId = keccak256(_queryData);
+        stalePriceDelay = _stalePriceDelay;
     }
 
     function getPriceUSD(address tokenAddress) external view returns (uint256) {
@@ -24,7 +30,7 @@ contract TellorOracle is IUSDPriceOracle, UsingTellor {
             block.timestamp - 10 minutes
         );
         require(_timestampRetrieved > 0, Errors.STALE_PRICE);
-        require(block.timestamp - _timestampRetrieved < 24 hours, Errors.STALE_PRICE);
+        require(block.timestamp - _timestampRetrieved < stalePriceDelay, Errors.STALE_PRICE);
         return abi.decode(_value, (uint256));
     }
 }

@@ -8,7 +8,9 @@ TELLOR_ORACLE_ADDRESS = "0xD9157453E2668B2fc45b7A803D3FEF3642430cC0"
 
 @pytest.fixture(scope="module")
 def tellor_oracle(admin, TellorOracle):
-    return admin.deploy(TellorOracle, TELLOR_ORACLE_ADDRESS, TokenAddresses.WETH)
+    return admin.deploy(
+        TellorOracle, TELLOR_ORACLE_ADDRESS, TokenAddresses.WETH, 24 * 86400
+    )
 
 
 @pytest.mark.mainnetFork
