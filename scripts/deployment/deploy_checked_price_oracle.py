@@ -23,7 +23,7 @@ def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
     tx_params = {"from": deployer, **make_tx_params()}
     governance_proxy.executeCall(
         checked_price_oracle,
-        checked_price_oracle.addSignedPriceSource.encode_input(coinbase_price_oracle),
+        checked_price_oracle.addETHPriceOracle.encode_input(coinbase_price_oracle),
         tx_params,
     )
     governance_proxy.executeCall(

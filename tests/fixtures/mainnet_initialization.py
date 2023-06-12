@@ -142,7 +142,7 @@ def full_checked_price_oracle(
         uniswap_v3_twap_oracle,
         TokenAddresses.WETH,
     )
-    mainnet_checked_price_oracle.addSignedPriceSource(
+    mainnet_checked_price_oracle.addETHPriceOracle(
         mainnet_coinbase_price_oracle, {"from": admin}
     )
     mainnet_checked_price_oracle.addQuoteAssetsForPriceLevelTwap(
