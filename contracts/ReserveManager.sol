@@ -80,7 +80,7 @@ contract ReserveManager is IReserveManager, Governable {
                 reserveBalance: reserveBalance,
                 price: 0,
                 currentWeight: 0,
-                idealWeight: 0,
+                targetWeight: 0,
                 pricedTokens: pricedTokens
             });
         }
@@ -98,31 +98,31 @@ contract ReserveManager is IReserveManager, Governable {
         for (uint256 i = 0; i < length; i++) {
             /// Only zero at initialization
             vaultsInfo[i].currentWeight = reserveUSDValue == 0
-                ? vaultsInfo[i].persistedMetadata.targetWeight
+                ? vaultsInfo[i].persistedMetadata.weightAtLastCalibration
                 : usdValues[i].divDown(reserveUSDValue);
         }
 
         uint256 returnsSum = 0;
         uint256[] memory weightedReturns = new uint256[](length);
         for (uint256 i = 0; i < length; i++) {
-            uint256 initialPrice = vaultsInfo[i].persistedMetadata.initialPrice;
+            uint256 initialPrice = vaultsInfo[i].persistedMetadata.priceAtLastCalibration;
             if (initialPrice == 0) continue;
             weightedReturns[i] = vaultsInfo[i].price.divDown(initialPrice).mulDown(
-                vaultsInfo[i].persistedMetadata.targetWeight
+                vaultsInfo[i].persistedMetadata.weightAtLastCalibration
             );
             returnsSum += weightedReturns[i];
         }
 
         // only 0 at initialization
         if (returnsSum > 0) {
-            uint256 totalIdealWeight = 0;
+            uint256 totaltargetWeight = 0;
             for (uint256 i = 0; i < length; i++) {
-                uint256 idealWeight = weightedReturns[i].divUp(returnsSum);
-                if (totalIdealWeight + idealWeight > FixedPoint.ONE) {
-                    idealWeight = FixedPoint.ONE - totalIdealWeight;
+                uint256 targetWeight = weightedReturns[i].divUp(returnsSum);
+                if (totaltargetWeight + targetWeight > FixedPoint.ONE) {
+                    targetWeight = FixedPoint.ONE - totaltargetWeight;
                 }
-                vaultsInfo[i].idealWeight = idealWeight;
-                totalIdealWeight += idealWeight;
+                vaultsInfo[i].targetWeight = targetWeight;
+                totaltargetWeight += targetWeight;
             }
         }
 
@@ -131,39 +131,7 @@ contract ReserveManager is IReserveManager, Governable {
 
     function setVaults(DataTypes.VaultConfiguration[] calldata vaults) external governanceOnly {
         _ensureValuableVaultsNotRemoved(vaults);
-
-        DataTypes.VaultInternalConfiguration[]
-            memory vaultConfigs = new DataTypes.VaultInternalConfiguration[](vaults.length);
-        for (uint256 i; i < vaults.length; i++) {
-            vaultConfigs[i] = _makeVaultInternalConfiguration(vaults[i]);
-        }
-
-        vaultRegistry.setVaults(vaultConfigs);
-
-        DataTypes.ReserveState memory reserveState = getReserveState();
-        for (uint256 i = 0; i < reserveState.vaults.length; i++) {
-            vaultRegistry.setInitialPrice(
-                reserveState.vaults[i].vault,
-                reserveState.vaults[i].price
-            );
-        }
-    }
-
-    function _makeVaultInternalConfiguration(DataTypes.VaultConfiguration calldata vaultConfig)
-        internal
-        pure
-        returns (DataTypes.VaultInternalConfiguration memory)
-    {
-        return
-            DataTypes.VaultInternalConfiguration({
-                vaultAddress: vaultConfig.vaultAddress,
-                metadata: DataTypes.PersistedVaultMetadata({
-                    initialPrice: 0,
-                    targetWeight: vaultConfig.targetWeight,
-                    shortFlowMemory: vaultConfig.shortFlowMemory,
-                    shortFlowThreshold: vaultConfig.shortFlowThreshold
-                })
-            });
+        vaultRegistry.setVaults(vaults);
     }
 
     function _ensureValuableVaultsNotRemoved(DataTypes.VaultConfiguration[] memory vaults)

@@ -7,7 +7,7 @@ from hypothesis import settings
 from tests.reserve import object_creation
 from tests.reserve.reserve_math_implementation import (
     build_metadata,
-    calculate_ideal_weights,
+    calculate_target_weights,
     calculate_weights_and_total,
     is_mint_safe,
     is_redeem_safe,
@@ -64,12 +64,12 @@ def _create_vault_info(
     current_weight: DecimalLike,
     is_stable: bool = False,
     decimals: int = 18,
-    ideal_weight: Optional[DecimalLike] = None,
+    target_weight: Optional[DecimalLike] = None,
     initial_weight: Optional[DecimalLike] = None,
     initial_price: Optional[DecimalLike] = None,
 ):
-    if ideal_weight is None:
-        ideal_weight = current_weight
+    if target_weight is None:
+        target_weight = current_weight
     if initial_weight is None:
         initial_weight = current_weight
     if initial_price is None:
@@ -81,10 +81,10 @@ def _create_vault_info(
         vault=accounts.add().address,
         decimals=decimals,
         current_weight=int(scale(current_weight)),
-        ideal_weight=int(scale(ideal_weight)),
+        target_weight=int(scale(target_weight)),
         persisted_metadata=PersistedVaultMetadata(
-            initial_price=int(scale(initial_price)),
-            target_weight=int(scale(initial_weight)),
+            price_at_last_calibration=int(scale(initial_price)),
+            weight_at_last_calibration=int(scale(initial_weight)),
             short_flow_memory=int(constants.OUTFLOW_MEMORY),
             short_flow_threshold=int(scale(1_000_000)),
         ),
@@ -244,7 +244,7 @@ def test_calculate_weights_and_total(reserve_safety_manager, amounts_and_prices)
         object_creation.vault_lists(vault_metadatas), global_metadatas
     )
 )
-def test_check_any_off_peg_vault_would_move_closer_to_ideal_weight(
+def test_check_any_off_peg_vault_would_move_closer_to_target_weight(
     reserve_safety_manager, bundle_metadata, mock_vaults, mock_price_oracle
 ):
     metadata = object_creation.bundle_to_metadata(

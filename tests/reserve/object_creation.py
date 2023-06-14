@@ -77,7 +77,6 @@ def bundle_to_vault_info(bundle, mock_vaults):
 def bundle_to_order(
     order_bundle, mint, mock_vaults, mock_price_oracle, stable_assets=None
 ):
-
     (
         initial_prices,
         initial_weights,
@@ -85,7 +84,7 @@ def bundle_to_order(
         current_vault_prices,
         amounts,
         current_weights,
-        ideal_weights,
+        target_weights,
     ) = [list(v) for v in zip(*order_bundle)]
 
     return order_builder(
@@ -96,7 +95,7 @@ def bundle_to_order(
         current_vault_prices,
         amounts,
         current_weights,
-        ideal_weights,
+        target_weights,
         mock_vaults,
         mock_price_oracle,
         stable_assets,
@@ -111,7 +110,7 @@ def order_builder(
     current_vault_prices,
     amounts,
     current_weights,
-    ideal_weights,
+    target_weights,
     mock_vaults,
     mock_price_oracle,
     stable_assets=None,
@@ -119,7 +118,6 @@ def order_builder(
     vaults_with_amount = []
 
     for i in range(len(initial_prices)):
-
         persisted_metadata = (
             initial_prices[i],
             initial_weights[i],
@@ -143,7 +141,7 @@ def order_builder(
             persisted_metadata,
             reserve_balances[i],
             current_weights[i],
-            ideal_weights[i],
+            target_weights[i],
             token_with_prices,
         )
 
@@ -154,7 +152,6 @@ def order_builder(
 
 
 def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults, mock_price_oracle):
-
     (
         initial_prices,
         initial_weights,
@@ -162,7 +159,7 @@ def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults, mock_price_o
         current_vault_prices,
         amounts,
         current_weights,
-        ideal_weights,
+        target_weights,
         short_flow_memory,
         short_flow_threshold,
     ) = [list(v) for v in zip(*order_bundle)]
@@ -175,7 +172,7 @@ def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults, mock_price_o
         current_vault_prices,
         amounts,
         current_weights,
-        ideal_weights,
+        target_weights,
         mock_vaults,
         short_flow_memory,
         short_flow_threshold,
@@ -191,7 +188,7 @@ def order_builder_vary_persisted(
     current_vault_prices,
     amounts,
     current_weights,
-    ideal_weights,
+    target_weights,
     mock_vaults,
     short_flow_memory,
     short_flow_threshold,
@@ -200,7 +197,6 @@ def order_builder_vary_persisted(
     vaults_with_amount = []
 
     for i in range(len(initial_prices)):
-
         persisted_metadata = (
             initial_prices[i],
             initial_weights[i],
@@ -221,7 +217,7 @@ def order_builder_vary_persisted(
             persisted_metadata,
             reserve_balances[i],
             current_weights[i],
-            ideal_weights[i],
+            target_weights[i],
             token_with_prices,
         )
 

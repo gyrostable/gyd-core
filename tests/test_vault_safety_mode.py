@@ -22,11 +22,11 @@ def _create_vault_info(admin, MockGyroVault, decimals, short_flow_threshold):
         current_weight=0,
         decimals=decimals,
         price=0,
-        ideal_weight=0,
+        target_weight=0,
         persisted_metadata=PersistedVaultMetadata(
-            initial_price=0,
+            price_at_last_calibration=int(scale(1)),
             short_flow_memory=int(scale("0.9", 18)),
-            target_weight=int(scale("0.5", 18)),
+            weight_at_last_calibration=int(scale("0.5", 18)),
             short_flow_threshold=short_flow_threshold,
         ),
         priced_tokens=[],
@@ -333,8 +333,7 @@ def test_pause_protocol(
         v = _create_vault_info(admin, MockGyroVault, 18, 10**19)
         mock_price_oracle.setUSDPrice(v.vault, scale(1), {"from": admin})
         static_percentage_fee_handler.setVaultFees(v.vault, 0, 0, {"from": admin})
-        metadata = list(v.persisted_metadata)[1:]
-        vault_configurations.append(VaultConfiguration(v.vault, *metadata))
+        vault_configurations.append(VaultConfiguration(v.vault, v.persisted_metadata))
         vaults.append(v)
     reserve_manager.setVaults(vault_configurations, {"from": admin})
 

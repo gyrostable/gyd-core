@@ -42,8 +42,8 @@ library DataTypes {
 
     /// @notice Persisted metadata about the vault
     struct PersistedVaultMetadata {
-        uint256 initialPrice;
-        uint256 targetWeight;
+        uint256 priceAtLastCalibration;
+        uint256 weightAtLastCalibration;
         uint256 shortFlowMemory;
         uint256 shortFlowThreshold;
     }
@@ -83,14 +83,14 @@ library DataTypes {
         PersistedVaultMetadata persistedMetadata;
         uint256 reserveBalance;
         uint256 currentWeight;
-        uint256 idealWeight;
+        uint256 targetWeight;
         PricedToken[] pricedTokens;
     }
 
     /// @notice Vault metadata
     struct VaultMetadata {
         address vault;
-        uint256 idealWeight;
+        uint256 targetWeight;
         uint256 currentWeight;
         uint256 resultingWeight;
         uint256 price;
@@ -138,15 +138,8 @@ library DataTypes {
         bytes32 s;
     }
 
-    struct VaultInternalConfiguration {
-        address vaultAddress;
-        DataTypes.PersistedVaultMetadata metadata;
-    }
-
     struct VaultConfiguration {
         address vaultAddress;
-        uint256 targetWeight;
-        uint256 shortFlowMemory;
-        uint256 shortFlowThreshold;
+        DataTypes.PersistedVaultMetadata metadata;
     }
 }

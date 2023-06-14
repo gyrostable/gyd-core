@@ -2,7 +2,11 @@ import pytest
 from brownie import accounts
 from .mainnet_contracts import TokenAddresses
 from tests.support import config_keys, constants
-from tests.support.types import PammParams, VaultConfiguration
+from tests.support.types import (
+    PammParams,
+    PersistedVaultMetadata,
+    VaultConfiguration,
+)
 from tests.support.utils import scale
 
 
@@ -403,7 +407,12 @@ def set_fees_usdc_dai(static_percentage_fee_handler, usdc_vault, dai_vault, admi
 @pytest.fixture
 def register_usdc_vault(reserve_manager, usdc_vault, admin):
     reserve_manager.setVaults(
-        [VaultConfiguration(usdc_vault, int(scale(1)), 0, 0)], {"from": admin}
+        [
+            VaultConfiguration(
+                usdc_vault, PersistedVaultMetadata(0, int(scale(1)), 0, 0)
+            )
+        ],
+        {"from": admin},
     )
 
 
@@ -411,8 +420,12 @@ def register_usdc_vault(reserve_manager, usdc_vault, admin):
 def register_usdc_and_dai_vaults(reserve_manager, usdc_vault, dai_vault, admin):
     reserve_manager.setVaults(
         [
-            VaultConfiguration(dai_vault, int(scale("0.6")), 0, 0),
-            VaultConfiguration(usdc_vault, int(scale("0.4")), 0, 0),
+            VaultConfiguration(
+                dai_vault, PersistedVaultMetadata(0, int(scale("0.6")), 0, 0)
+            ),
+            VaultConfiguration(
+                usdc_vault, PersistedVaultMetadata(0, int(scale("0.4")), 0, 0)
+            ),
         ],
         {"from": admin},
     )

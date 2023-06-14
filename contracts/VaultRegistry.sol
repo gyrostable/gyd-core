@@ -52,7 +52,7 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
     }
 
     /// @inheritdoc IVaultRegistry
-    function setVaults(DataTypes.VaultInternalConfiguration[] calldata vaults)
+    function setVaults(DataTypes.VaultConfiguration[] calldata vaults)
         external
         override
         reserveManagerOnly
@@ -66,7 +66,7 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
             require(gyroConfig.getFeeHandler().isVaultSupported(vault), Errors.VAULT_NOT_FOUND);
             require(vaultAddresses.add(vault), Errors.INVALID_ARGUMENT);
             vaultsMetadata[vault] = vaults[i].metadata;
-            totalWeight += vaults[i].metadata.targetWeight;
+            totalWeight += vaults[i].metadata.weightAtLastCalibration;
         }
 
         require(totalWeight == FixedPoint.ONE, Errors.INVALID_ARGUMENT);
@@ -75,8 +75,8 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
 
     function setInitialPrice(address vault, uint256 initialPrice) external reserveManagerOnly {
         require(vaultAddresses.contains(vault), Errors.VAULT_NOT_FOUND);
-        require(vaultsMetadata[vault].initialPrice == 0, Errors.INVALID_ARGUMENT);
-        vaultsMetadata[vault].initialPrice = initialPrice;
+        require(vaultsMetadata[vault].priceAtLastCalibration == 0, Errors.INVALID_ARGUMENT);
+        vaultsMetadata[vault].priceAtLastCalibration = initialPrice;
     }
 
     function updatePersistedVaultFlowParams(

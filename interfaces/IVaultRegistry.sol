@@ -5,7 +5,7 @@ pragma solidity ^0.8.4;
 import "../libraries/DataTypes.sol";
 
 interface IVaultRegistry {
-    event VaultsSet(DataTypes.VaultInternalConfiguration[] vaults);
+    event VaultsSet(DataTypes.VaultConfiguration[] vaults);
 
     /// @notice Returns the metadata for the given vault
     function getVaultMetadata(address vault)
@@ -17,7 +17,7 @@ interface IVaultRegistry {
     function listVaults() external view returns (address[] memory);
 
     /// @notice Registers a new vault
-    function setVaults(DataTypes.VaultInternalConfiguration[] calldata vaults) external;
+    function setVaults(DataTypes.VaultConfiguration[] calldata vaults) external;
 
     /// @notice sets the initial price of a vault
     function setInitialPrice(address vault, uint256 initialPrice) external;

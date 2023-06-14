@@ -3,7 +3,11 @@ from brownie.test.managers.runner import RevertContextManager as reverts
 from brownie import interface  # type: ignore
 from tests.support import config_keys, error_codes
 from tests.support.quantized_decimal import DecimalLike
-from tests.support.types import VaultConfiguration, VaultInfo
+from tests.support.types import (
+    PersistedVaultMetadata,
+    VaultConfiguration,
+    VaultInfo,
+)
 from tests.support.utils import scale
 
 
@@ -28,9 +32,12 @@ def _make_vault_config(
     fee_handler.setVaultFees(vault_address, 0, 0)
     return VaultConfiguration(
         vault_address=vault_address,
-        target_weight=int(scale(weight)),
-        short_flow_memory=0,
-        short_flow_threshold=0,
+        metadata=PersistedVaultMetadata(
+            price_at_last_calibration=0,
+            weight_at_last_calibration=int(scale(weight)),
+            short_flow_memory=0,
+            short_flow_threshold=0,
+        ),
     )
 
 

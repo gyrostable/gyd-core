@@ -11,6 +11,7 @@ from tests.support.retrieve_coinbase_prices import fetch_prices, find_price
 from tests.support.types import (
     DeployedVault,
     PammParams,
+    PersistedVaultMetadata,
     VaultConfiguration,
     VaultToDeploy,
     VaultType,
@@ -61,9 +62,12 @@ def mainnet_reserve_manager(
             [
                 VaultConfiguration(
                     vault.address,
-                    vault.vault_to_deploy.initial_weight,
-                    vault.vault_to_deploy.short_flow_memory,
-                    vault.vault_to_deploy.short_flow_threshold,
+                    PersistedVaultMetadata(
+                        scale(1),
+                        vault.vault_to_deploy.initial_weight,
+                        vault.vault_to_deploy.short_flow_memory,
+                        vault.vault_to_deploy.short_flow_threshold,
+                    ),
                 )
             ],
             {"from": admin},

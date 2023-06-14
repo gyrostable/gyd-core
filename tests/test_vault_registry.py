@@ -4,7 +4,7 @@ from brownie.test.managers.runner import RevertContextManager as reverts
 from tests.support import error_codes
 from tests.support.config_keys import RESERVE_MANAGER_ADDRESS
 from tests.support.quantized_decimal import DecimalLike
-from tests.support.types import PersistedVaultMetadata, VaultInternalConfiguration
+from tests.support.types import PersistedVaultMetadata, VaultConfiguration
 from tests.support.utils import scale
 
 
@@ -13,10 +13,10 @@ def set_reserve_manager(admin, gyro_config):
     gyro_config.setAddress(RESERVE_MANAGER_ADDRESS, admin, {"from": admin})
 
 
-def _make_vault_config(fee_handler, weight: DecimalLike) -> VaultInternalConfiguration:
+def _make_vault_config(fee_handler, weight: DecimalLike) -> VaultConfiguration:
     vault_address = accounts.add()
     fee_handler.setVaultFees(vault_address, 0, 0)
-    return VaultInternalConfiguration(
+    return VaultConfiguration(
         vault_address=vault_address.address,
         metadata=PersistedVaultMetadata(0, int(scale(weight)), 0, 0),
     )
