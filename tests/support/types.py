@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from typing import List, NamedTuple
+from tests.support import constants
 
 from tests.support.quantized_decimal import DecimalLike
+from tests.support.utils import scale
 
 
 class MintAsset(NamedTuple):
@@ -53,10 +55,16 @@ class PersistedVaultMetadata(NamedTuple):
     time_of_calibration: int = 0
 
 
+class Range(NamedTuple):
+    floor: int = int(scale("1") - constants.STABLECOIN_MAX_DEVIATION)
+    ceiling: int = int(scale("1") + constants.STABLECOIN_MAX_DEVIATION)
+
+
 class PricedToken(NamedTuple):
     tokenAddress: str
     is_stable: bool
     price: int
+    price_range: Range = Range()
 
 
 class VaultInfo(NamedTuple):

@@ -1,7 +1,8 @@
 import brownie
 from brownie.test.managers.runner import RevertContextManager as reverts
 from tests.support import error_codes
-from tests.support.utils import format_to_bytes
+from tests.support.types import Range
+from tests.support.utils import format_to_bytes, scale
 from tests.fixtures.mainnet_contracts import TokenAddresses
 
 
@@ -81,3 +82,15 @@ def test_remove_asset(asset_registry):
     assert not asset_registry.isAssetNameRegistered("DAI")
     assert not asset_registry.isAssetAddressRegistered(TokenAddresses.DAI)
     assert not asset_registry.isAssetStable(TokenAddresses.DAI)
+
+
+def test_default_asset_range(asset_registry):
+    asset_registry.setAssetAddress("DAI", TokenAddresses.DAI)
+    assert asset_registry.getAssetRange(TokenAddresses.DAI) == Range()
+
+
+def test_set_asset_range(admin, asset_registry):
+    asset_registry.setAssetAddress("DAI", TokenAddresses.DAI)
+    price_range = Range(scale("0.95"), scale("1.02"))
+    asset_registry.setAssetRange(TokenAddresses.DAI, price_range, {"from": admin})
+    assert asset_registry.getAssetRange(TokenAddresses.DAI) == price_range

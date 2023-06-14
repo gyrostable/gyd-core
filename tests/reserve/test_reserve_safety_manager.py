@@ -24,6 +24,7 @@ from tests.support.types import (
     Order,
     PersistedVaultMetadata,
     PricedToken,
+    Range,
     VaultInfo,
     VaultWithAmount,
 )
@@ -65,6 +66,7 @@ def _create_vault_info(
     current_weight: DecimalLike,
     is_stable: bool = False,
     decimals: int = 18,
+    price_range: Optional[Range] = None,
     target_weight: Optional[DecimalLike] = None,
     initial_weight: Optional[DecimalLike] = None,
     initial_price: Optional[DecimalLike] = None,
@@ -75,6 +77,8 @@ def _create_vault_info(
         initial_weight = current_weight
     if initial_price is None:
         initial_price = price
+    if price_range is None:
+        price_range = Range()
 
     underlying_address = accounts.add().address
 
@@ -95,6 +99,7 @@ def _create_vault_info(
                 tokenAddress=underlying_address,
                 price=int(scale(price)),
                 is_stable=is_stable,
+                price_range=price_range,
             )
         ],
         reserve_balance=int(scale(reserve_balance, decimals)),
@@ -1161,3 +1166,44 @@ def test_does_not_prevent_redeem_with_depeg_stablecoin(reserve_safety_manager, d
             ],
         )
         assert reserve_safety_manager.isRedeemSafe(order) == ""
+
+
+def test_does_not_prevent_mint_with_custom_stablecoin(reserve_safety_manager, dai):
+    for price in ["0.95", "1.1"]:
+        order = Order(
+            mint=True,
+            vaults_with_amount=[
+                _create_vault_with_amount(
+                    1,
+                    [
+                        PricedToken(
+                            tokenAddress=dai,
+                            price=int(scale(price)),
+                            is_stable=True,
+                            price_range=Range(scale("0.95"), scale("1.1")),
+                        )
+                    ],
+                )
+            ],
+        )
+        assert reserve_safety_manager.isMintSafe(order) == ""
+
+
+def test_does_prevent_mint_with_underpeg_custom_stablecoin(reserve_safety_manager, dai):
+    order = Order(
+        mint=True,
+        vaults_with_amount=[
+            _create_vault_with_amount(
+                1,
+                [
+                    PricedToken(
+                        tokenAddress=dai,
+                        price=int(scale("0.94")),
+                        is_stable=True,
+                        price_range=Range(scale("0.95"), scale("1.1")),
+                    )
+                ],
+            )
+        ],
+    )
+    assert reserve_safety_manager.isMintSafe(order) == error_codes.NOT_SAFE_TO_MINT

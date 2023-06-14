@@ -4,6 +4,7 @@ from brownie import AssetRegistry, TrustedSignerPriceOracleProfiler  # type: ign
 from brownie import accounts
 from scripts.profiling.profiling_utils import comput_gas_stats
 from tests.fixtures.mainnet_contracts import TokenAddresses
+from tests.support import constants
 from tests.support.price_signing import make_message, sign_message
 from tests.support.utils import scale
 
@@ -25,7 +26,9 @@ def main():
         "0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c3773"
     )
 
-    asset_registry = accounts[0].deploy(AssetRegistry)
+    asset_registry = accounts[0].deploy(
+        AssetRegistry, constants.STABLECOIN_MAX_DEVIATION
+    )
 
     admin = accounts[0]
 

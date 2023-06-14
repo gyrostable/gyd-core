@@ -1,4 +1,4 @@
-from brownie import GovernanceProxy, AssetRegistry  # type: ignore
+from brownie import GovernanceProxy, AssetRegistry, GyroConfig  # type: ignore
 from brownie import ETH_ADDRESS
 
 from scripts.utils import (
@@ -10,7 +10,7 @@ from scripts.utils import (
     with_gas_usage,
 )
 from tests.fixtures.mainnet_contracts import TokenAddresses
-from tests.support import config_keys
+from tests.support import config_keys, constants
 
 
 @with_gas_usage
@@ -81,6 +81,7 @@ def proxy(governance_proxy, asset_registry):
 
 @with_gas_usage
 @as_singleton(AssetRegistry)
-def main():
+@with_deployed(GyroConfig)
+def main(gyro_config):
     deployer = get_deployer()
-    deployer.deploy(AssetRegistry, **make_tx_params())
+    deployer.deploy(AssetRegistry, gyro_config, **make_tx_params())

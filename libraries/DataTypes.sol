@@ -11,10 +11,12 @@ library DataTypes {
     }
 
     /// @notice Contains a token and the price associated with it
+    /// @dev The price range is only relevant for stablecoins
     struct PricedToken {
         address tokenAddress;
         bool isStable;
         uint256 price;
+        Range priceRange;
     }
 
     /// @notice A route from/to a token to a vault
@@ -144,5 +146,10 @@ library DataTypes {
     struct VaultConfiguration {
         address vaultAddress;
         DataTypes.PersistedVaultMetadata metadata;
+    }
+
+    struct Range {
+        uint256 floor;
+        uint256 ceiling;
     }
 }
