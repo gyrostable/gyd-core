@@ -4,7 +4,7 @@ from functools import lru_cache, wraps
 from typing import Any, Dict, cast
 
 import brownie
-from brownie import AssetRegistry, GyroConfig, GovernanceProxy, FreezableTransparentUpgradeableProxy, ProxyAdmin  # type: ignore
+from brownie import AssetRegistry, GyroConfig, GovernanceProxy, FreezableTransparentUpgradeableProxy, ProxyAdmin, interface  # type: ignore
 from brownie import accounts, network
 from brownie.network.account import ClefAccount, LocalAccount
 
@@ -15,6 +15,7 @@ MAINNET_DEPLOYER_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 GYRO_CONFIG_POLYGON_ADDRESS = "0x3c00e4663be7262E50251380EBE5fE4A17e68B51"
 GYRO_ASSET_REGISTRY_ADDRESS = "0x0FEfDfCa029822C18ae73c2b76c4602949621fe1"
+GYFI_TOKEN_POLYGON_ADDRESS = "0x815c288dD62a761025f69B7dac2C93143Da4c0a8"
 
 BROWNIE_GWEI = os.environ.get("BROWNIE_GWEI", "35")
 BROWNIE_PRIORITY_GWEI = os.environ.get("BROWNIE_PRIORITY_GWEI")
@@ -119,6 +120,12 @@ def get_gyro_config():
     if brownie.chain.id == 137:
         return GyroConfig.at(GYRO_CONFIG_POLYGON_ADDRESS)
     return GyroConfig[0]
+
+
+def get_gyfi_token():
+    if brownie.chain.id == 137:
+        return interface.ERC20(GYFI_TOKEN_POLYGON_ADDRESS)
+    raise ValueError("GYFI token not available on this network")
 
 
 def get_asset_registry():
