@@ -381,9 +381,8 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             // case I
             if (normalizedState.redemptionLevel <= params.xuBar) return Region.CASE_i;
 
-            uint256 lhs = normalizedState.reserveValue.divDown(normalizedState.totalGyroSupply);
-            uint256 rhs = ONE -
-                uint256(params.alphaBar).mulDown(normalizedState.redemptionLevel - params.xuBar);
+            uint256 lhs = normalizedState.reserveValue.divDown(normalizedState.totalGyroSupply) + uint256(params.alphaBar).mulDown(normalizedState.redemptionLevel - params.xuBar);
+            uint256 rhs = ONE;
             if (lhs <= rhs) return Region.CASE_I_ii;
             return Region.CASE_I_iii;
         }
