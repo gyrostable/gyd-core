@@ -387,8 +387,11 @@ contract PammTest is Test {
         uint256 b = tpamm.computeReserveValueFromAnchor(anchoredState);
         uint256 y = anchoredState.totalGyroSupply - anchoredState.redemptionLevel;
 
-        PrimaryAMMV1.State memory anchoredState1 = anchoredState;
-        anchoredState1.redemptionLevel += dx;
+        PrimaryAMMV1.State memory anchoredState1 = PrimaryAMMV1.State({
+            redemptionLevel: anchoredState.redemptionLevel + dx,
+            totalGyroSupply: anchoredState.totalGyroSupply,
+            reserveValue: anchoredState.reserveValue
+        });
 
         uint256 b1 = tpamm.computeReserveValueFromAnchor(anchoredState1);
 
