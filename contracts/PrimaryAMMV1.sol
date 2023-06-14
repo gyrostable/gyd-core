@@ -65,7 +65,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     /// @notice parameters of the primary AMM
-    Params public systemParams;
+    Params internal _systemParams;
 
     /// @notice current redemption level of the primary AMM
     uint256 public redemptionLevel;
@@ -81,12 +81,17 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     ) Governable(_governor) {
         require(_gyroConfig != address(0), Errors.INVALID_ARGUMENT);
         gyroConfig = IGyroConfig(_gyroConfig);
-        systemParams = params;
+        _systemParams = params;
+    }
+
+    /// @inheritdoc IPAMM
+    function systemParams() external view returns (Params memory) {
+        return _systemParams;
     }
 
     /// @inheritdoc IPAMM
     function setSystemParams(Params memory params) external governanceOnly {
-        systemParams = params;
+        _systemParams = params;
 
         // NOTE: this is not strictly needed but ensures that the given
         // parameters allow to compute the derived parameters without underflowing
@@ -115,7 +120,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         if (ra >= (ONE + thetaBar) / 2) {
             alphaHat = TWO.mulDown(ONE - ra).divDown(ya);
         } else {
-            uint256 numerator = (ONE - thetaBar)**2;
+            uint256 numerator = (ONE - thetaBar) ** 2;
             uint256 denominator = ba - thetaBar.mulDown(ya);
             alphaHat = numerator / (denominator * 2);
         }
@@ -172,7 +177,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 delta = ya - ba;
         uint256 xuMax = xuBar.mulDown(ya);
         uint256 xu;
-        if (alpha.mulDown(delta) <= theta**2 / TWO) {
+        if (alpha.mulDown(delta) <= theta ** 2 / TWO) {
             uint256 rh = ((TWO * delta) / alpha);
             uint256 rhSqrt = rh.sqrt();
             xu = rhSqrt >= ya ? 0 : ya - rhSqrt;
@@ -193,15 +198,13 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         if (ONE >= params.thetaBar + alpha.mulDown(yz))
             return ANCHOR - (alpha * yz.squareDown()) / TWO;
         uint256 theta = ONE - params.thetaBar;
-        return ANCHOR - theta.mulDown(yz) + theta**2 / (2 * alpha);
+        return ANCHOR - theta.mulDown(yz) + theta ** 2 / (2 * alpha);
     }
 
     /// @dev Algorithm 1 (section 7) of the paper
-    function createDerivedParams(Params memory params)
-        internal
-        pure
-        returns (DerivedParams memory)
-    {
+    function createDerivedParams(
+        Params memory params
+    ) internal pure returns (DerivedParams memory) {
         DerivedParams memory derived;
 
         derived.baThresholdRegionI = computeBa(params.xuBar, params);
@@ -224,7 +227,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         );
 
         uint256 theta = ONE - params.thetaBar;
-        derived.baThresholdIIHL = ONE - (theta**2) / (2 * params.alphaBar);
+        derived.baThresholdIIHL = ONE - (theta ** 2) / (2 * params.alphaBar);
 
         derived.xuThresholdIIHL = computeXu(
             derived.baThresholdIIHL,
@@ -323,11 +326,10 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             );
     }
 
-    function isInThirdRegionHigh(State memory normalizedState, DerivedParams memory derived)
-        internal
-        pure
-        returns (bool)
-    {
+    function isInThirdRegionHigh(
+        State memory normalizedState,
+        DerivedParams memory derived
+    ) internal pure returns (bool) {
         return
             normalizedState.reserveValue >=
             computeReserveFixedParams(
@@ -371,7 +373,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             if (
                 normalizedState.reserveValue -
                     uint256(params.thetaBar).mulDown(normalizedState.totalGyroSupply) >=
-                theta**2 / (2 * params.alphaBar)
+                theta ** 2 / (2 * params.alphaBar)
             ) return Region.CASE_i;
             return Region.CASE_II_L;
         }
@@ -421,7 +423,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             return
                 vars.ya -
                 (vars.ya - params.xuBar).mulDown(vars.u) +
-                (vars.u**2 / (2 * params.alphaBar));
+                (vars.u ** 2 / (2 * params.alphaBar));
 
         if (region == Region.CASE_II_H) {
             uint256 delta = (params.alphaBar *
@@ -435,7 +437,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
                 vars.theta.divDown(2 * params.alphaBar) + normalizedState.totalGyroSupply
             );
             uint256 d = 2 *
-                (vars.theta**2 / params.alphaBar).mulDown(
+                (vars.theta ** 2 / params.alphaBar).mulDown(
                     normalizedState.reserveValue -
                         normalizedState.totalGyroSupply.mulDown(params.thetaBar)
                 );
@@ -516,23 +518,21 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     /// @notice Computes the USD value to redeem given an ammount of Gyro dollars
-    function computeRedeemAmount(uint256 gydAmount, uint256 reserveUSDValue)
-        external
-        view
-        returns (uint256)
-    {
+    function computeRedeemAmount(
+        uint256 gydAmount,
+        uint256 reserveUSDValue
+    ) external view returns (uint256) {
         if (gydAmount == 0) return 0;
-        Params memory params = systemParams;
+        Params memory params = _systemParams;
         DerivedParams memory derived = createDerivedParams(params);
         State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
         return computeRedeemAmount(currentState, params, derived, gydAmount);
     }
 
-    function computeStartingRedeemState(uint256 reserveUSDValue, Params memory params)
-        internal
-        view
-        returns (State memory currentState)
-    {
+    function computeStartingRedeemState(
+        uint256 reserveUSDValue,
+        Params memory params
+    ) internal view returns (State memory currentState) {
         return
             State({
                 reserveValue: reserveUSDValue,
@@ -548,13 +548,12 @@ contract PrimaryAMMV1 is IPAMM, Governable {
 
     /// @notice Computes and records the USD value to redeem given an ammount of Gyro dollars
     // NB reserveValue does not need to be stored as part of state - could be passed around
-    function redeem(uint256 gydAmount, uint256 reserveUSDValue)
-        public
-        onlyMotherboard
-        returns (uint256)
-    {
+    function redeem(
+        uint256 gydAmount,
+        uint256 reserveUSDValue
+    ) public onlyMotherboard returns (uint256) {
         if (gydAmount == 0) return 0;
-        Params memory params = systemParams;
+        Params memory params = _systemParams;
         State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
         DerivedParams memory derived = createDerivedParams(params);
         uint256 redeemAmount = computeRedeemAmount(currentState, params, derived, gydAmount);

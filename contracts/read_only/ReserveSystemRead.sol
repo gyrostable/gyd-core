@@ -9,8 +9,8 @@ import "../../libraries/DataTypes.sol";
 
 /// @title ReserveSystemRead is a view only contract which allows the UI to retrieve important reserve variables in one RPC call
 contract ReserveSystemRead {
-    ReserveManager immutable reserveManager;
-    PrimaryAMMV1 immutable primaryAMMV1;
+    ReserveManager public immutable reserveManager;
+    PrimaryAMMV1 public immutable primaryAMMV1;
 
     struct ReadValues {
         DataTypes.ReserveState reserveState;
@@ -33,13 +33,8 @@ contract ReserveSystemRead {
     function read() external view returns (ReadValues memory) {
         DataTypes.ReserveState memory reserveState = reserveManager.getReserveState();
 
-        (uint64 alphaBar, uint64 xuBar, uint64 thetaBar, uint64 outflowMemory) = primaryAMMV1
-            .systemParams();
-
+        IPAMM.Params memory systemParams = primaryAMMV1.systemParams();
         uint256 redemptionLevel = primaryAMMV1.redemptionLevel();
-
-        IPAMM.Params memory systemParams = IPAMM.Params(alphaBar, xuBar, thetaBar, outflowMemory);
-
         uint256 redemptionPrice = primaryAMMV1.computeRedeemAmount(
             1e18,
             reserveState.totalUSDValue
@@ -48,18 +43,11 @@ contract ReserveSystemRead {
         return ReadValues(reserveState, systemParams, redemptionLevel, redemptionPrice);
     }
 
-    function readWithoutReserveState(uint256 totalUSDValue)
-        external
-        view
-        returns (ReadValuesWithoutReserveState memory)
-    {
-        (uint64 alphaBar, uint64 xuBar, uint64 thetaBar, uint64 outflowMemory) = primaryAMMV1
-            .systemParams();
-
+    function readWithoutReserveState(
+        uint256 totalUSDValue
+    ) external view returns (ReadValuesWithoutReserveState memory) {
+        IPAMM.Params memory systemParams = primaryAMMV1.systemParams();
         uint256 redemptionLevel = primaryAMMV1.redemptionLevel();
-
-        IPAMM.Params memory systemParams = IPAMM.Params(alphaBar, xuBar, thetaBar, outflowMemory);
-
         uint256 redemptionPrice = primaryAMMV1.computeRedeemAmount(1e18, totalUSDValue);
 
         return ReadValuesWithoutReserveState(systemParams, redemptionLevel, redemptionPrice);
