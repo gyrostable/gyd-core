@@ -123,6 +123,9 @@ def order_builder(
             initial_weights[i],
             0,
             0,
+            86400 * 7,
+            0,
+            0,
         )
         vault = mock_vaults[i]
 
