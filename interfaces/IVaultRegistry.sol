@@ -13,11 +13,14 @@ interface IVaultRegistry {
         view
         returns (DataTypes.PersistedVaultMetadata memory);
 
+    /// @notice Returns the weight of the vault given its schedule
+    function getScheduleVaultWeight(address vault) external view returns (uint256);
+
     /// @notice Get the list of all vaults
     function listVaults() external view returns (address[] memory);
 
     /// @notice Registers a new vault
-    function setVaults(DataTypes.VaultConfiguration[] calldata vaults) external;
+    function setVaults(DataTypes.VaultConfiguration[] memory vaults) external;
 
     /// @notice sets the initial price of a vault
     function setInitialPrice(address vault, uint256 initialPrice) external;

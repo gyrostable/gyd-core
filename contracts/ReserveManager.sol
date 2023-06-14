@@ -8,6 +8,7 @@ import "../libraries/FixedPoint.sol";
 import "../libraries/ConfigHelpers.sol";
 import "../libraries/DecimalScale.sol";
 import "../libraries/ConfigKeys.sol";
+import "../libraries/VaultMetadataExtension.sol";
 
 import "../interfaces/IReserveManager.sol";
 import "../interfaces/oracles/IBatchVaultPriceOracle.sol";
@@ -22,6 +23,7 @@ contract ReserveManager is IReserveManager, Governable {
     using FixedPoint for uint256;
     using ConfigHelpers for IGyroConfig;
     using DecimalScale for uint256;
+    using VaultMetadataExtension for DataTypes.PersistedVaultMetadata;
 
     uint256 public constant DEFAULT_VAULT_DUST_THRESHOLD = 500e18;
 
@@ -98,17 +100,17 @@ contract ReserveManager is IReserveManager, Governable {
         for (uint256 i = 0; i < length; i++) {
             /// Only zero at initialization
             vaultsInfo[i].currentWeight = reserveUSDValue == 0
-                ? vaultsInfo[i].persistedMetadata.weightAtLastCalibration
+                ? vaultsInfo[i].persistedMetadata.scheduleWeight()
                 : usdValues[i].divDown(reserveUSDValue);
         }
 
         uint256 returnsSum = 0;
         uint256[] memory weightedReturns = new uint256[](length);
         for (uint256 i = 0; i < length; i++) {
-            uint256 initialPrice = vaultsInfo[i].persistedMetadata.priceAtLastCalibration;
+            uint256 initialPrice = vaultsInfo[i].persistedMetadata.priceAtCalibration;
             if (initialPrice == 0) continue;
             weightedReturns[i] = vaultsInfo[i].price.divDown(initialPrice).mulDown(
-                vaultsInfo[i].persistedMetadata.weightAtLastCalibration
+                vaultsInfo[i].persistedMetadata.scheduleWeight()
             );
             returnsSum += weightedReturns[i];
         }

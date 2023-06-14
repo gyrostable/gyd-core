@@ -13,11 +13,14 @@ def set_reserve_manager(admin, gyro_config):
     gyro_config.setAddress(RESERVE_MANAGER_ADDRESS, admin, {"from": admin})
 
 
-def _make_vault_config(fee_handler, weight: DecimalLike) -> VaultConfiguration:
-    vault_address = accounts.add()
+def _make_vault_config(
+    fee_handler, weight: DecimalLike, vault_address: str = None
+) -> VaultConfiguration:
+    if vault_address is None:
+        vault_address = accounts.add().address
     fee_handler.setVaultFees(vault_address, 0, 0)
     return VaultConfiguration(
-        vault_address=vault_address.address,
+        vault_address=vault_address,
         metadata=PersistedVaultMetadata(0, int(scale(weight)), 0, 0),
     )
 
@@ -30,6 +33,54 @@ def test_set_vaults(admin, vault_registry, static_percentage_fee_handler):
     ]
     vault_registry.setVaults(vaults, {"from": admin})
     assert vault_registry.listVaults() == [v.vault_address for v in vaults]
+
+
+def test_set_vaults_schedule(
+    admin, vault_registry, static_percentage_fee_handler, chain
+):
+    vaults = [
+        _make_vault_config(static_percentage_fee_handler, "0.3"),
+        _make_vault_config(static_percentage_fee_handler, "0.2"),
+        _make_vault_config(static_percentage_fee_handler, "0.5"),
+    ]
+    vault_registry.setVaults(vaults, {"from": admin})
+
+    vaults = [
+        _make_vault_config(
+            static_percentage_fee_handler, weight, vault_address=vaults[i].vault_address
+        )
+        for i, weight in enumerate(["0.6", "0.2", "0.2"])
+    ]
+    vault_registry.setVaults(vaults, {"from": admin})
+
+    chain.sleep(86400)
+    chain.mine()
+
+    assert vault_registry.getScheduleVaultWeight(
+        vaults[0].vault_address
+    ) / 1e18 == pytest.approx(0.3 + 0.3 / 7)
+    assert vault_registry.getScheduleVaultWeight(vaults[1].vault_address) / 1e18 == 0.2
+    assert vault_registry.getScheduleVaultWeight(
+        vaults[2].vault_address
+    ) / 1e18 == pytest.approx(0.5 - 0.3 / 7)
+
+    chain.sleep(4 * 86400)
+    chain.mine()
+
+    assert vault_registry.getScheduleVaultWeight(
+        vaults[0].vault_address
+    ) / 1e18 == pytest.approx(0.3 + 0.3 * 5 / 7)
+    assert vault_registry.getScheduleVaultWeight(vaults[1].vault_address) / 1e18 == 0.2
+    assert vault_registry.getScheduleVaultWeight(
+        vaults[2].vault_address
+    ) / 1e18 == pytest.approx(0.5 - 0.3 * 5 / 7)
+
+    chain.sleep(3 * 86400)
+    chain.mine()
+
+    assert vault_registry.getScheduleVaultWeight(vaults[0].vault_address) / 1e18 == 0.6
+    assert vault_registry.getScheduleVaultWeight(vaults[1].vault_address) / 1e18 == 0.2
+    assert vault_registry.getScheduleVaultWeight(vaults[2].vault_address) / 1e18 == 0.2
 
 
 def test_set_vaults_weights_not_summing_to_1(

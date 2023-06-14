@@ -33,8 +33,8 @@ def _make_vault_config(
     return VaultConfiguration(
         vault_address=vault_address,
         metadata=PersistedVaultMetadata(
-            price_at_last_calibration=0,
-            weight_at_last_calibration=int(scale(weight)),
+            price_at_calibration=0,
+            weight_at_calibration=int(scale(weight)),
             short_flow_memory=0,
             short_flow_threshold=0,
         ),

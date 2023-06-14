@@ -42,10 +42,13 @@ library DataTypes {
 
     /// @notice Persisted metadata about the vault
     struct PersistedVaultMetadata {
-        uint256 priceAtLastCalibration;
-        uint256 weightAtLastCalibration;
+        uint256 priceAtCalibration;
+        uint256 weightAtCalibration;
         uint256 shortFlowMemory;
         uint256 shortFlowThreshold;
+        uint64 weightTransitionDuration;
+        uint64 weightAtPreviousCalibration;
+        uint64 timeOfCalibration;
     }
 
     /// @notice Directional (in or out) flow data for the vaults

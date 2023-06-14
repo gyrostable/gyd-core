@@ -24,9 +24,9 @@ def _create_vault_info(admin, MockGyroVault, decimals, short_flow_threshold):
         price=0,
         target_weight=0,
         persisted_metadata=PersistedVaultMetadata(
-            price_at_last_calibration=int(scale(1)),
+            price_at_calibration=int(scale(1)),
             short_flow_memory=int(scale("0.9", 18)),
-            weight_at_last_calibration=int(scale("0.5", 18)),
+            weight_at_calibration=int(scale("0.5", 18)),
             short_flow_threshold=short_flow_threshold,
         ),
         priced_tokens=[],

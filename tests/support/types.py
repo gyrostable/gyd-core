@@ -44,10 +44,13 @@ class JoinPoolRequest(NamedTuple):
 
 
 class PersistedVaultMetadata(NamedTuple):
-    price_at_last_calibration: int
-    weight_at_last_calibration: int
+    price_at_calibration: int
+    weight_at_calibration: int
     short_flow_memory: int
     short_flow_threshold: int
+    weight_transition_duration: int = 86_400 * 7
+    weight_at_previous_calibration: int = 0
+    time_of_calibration: int = 0
 
 
 class PricedToken(NamedTuple):

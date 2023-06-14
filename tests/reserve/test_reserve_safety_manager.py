@@ -83,8 +83,8 @@ def _create_vault_info(
         current_weight=int(scale(current_weight)),
         target_weight=int(scale(target_weight)),
         persisted_metadata=PersistedVaultMetadata(
-            price_at_last_calibration=int(scale(initial_price)),
-            weight_at_last_calibration=int(scale(initial_weight)),
+            price_at_calibration=int(scale(initial_price)),
+            weight_at_calibration=int(scale(initial_weight)),
             short_flow_memory=int(constants.OUTFLOW_MEMORY),
             short_flow_threshold=int(scale(1_000_000)),
         ),

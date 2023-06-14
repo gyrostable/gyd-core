@@ -10,6 +10,7 @@ import "../libraries/ConfigKeys.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/ConfigHelpers.sol";
 import "../libraries/EnumerableExtensions.sol";
+import "../libraries/VaultMetadataExtension.sol";
 
 import "../interfaces/IVaultRegistry.sol";
 import "../interfaces/IGyroConfig.sol";
@@ -17,6 +18,7 @@ import "../interfaces/IGyroConfig.sol";
 contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using ConfigHelpers for IGyroConfig;
+    using VaultMetadataExtension for DataTypes.PersistedVaultMetadata;
 
     IGyroConfig public immutable gyroConfig;
 
@@ -52,11 +54,23 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
     }
 
     /// @inheritdoc IVaultRegistry
-    function setVaults(DataTypes.VaultConfiguration[] calldata vaults)
+    function getScheduleVaultWeight(address vault) external view override returns (uint256) {
+        return vaultsMetadata[vault].scheduleWeight();
+    }
+
+    /// @inheritdoc IVaultRegistry
+    function setVaults(DataTypes.VaultConfiguration[] memory vaults)
         external
         override
         reserveManagerOnly
     {
+        for (uint256 i; i < vaults.length; i++) {
+            vaults[i].metadata.weightAtPreviousCalibration = uint64(
+                vaultsMetadata[vaults[i].vaultAddress].weightAtCalibration
+            );
+            vaults[i].metadata.timeOfCalibration = uint64(block.timestamp);
+        }
+
         _removeAllVaults();
 
         uint256 totalWeight;
@@ -66,7 +80,7 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
             require(gyroConfig.getFeeHandler().isVaultSupported(vault), Errors.VAULT_NOT_FOUND);
             require(vaultAddresses.add(vault), Errors.INVALID_ARGUMENT);
             vaultsMetadata[vault] = vaults[i].metadata;
-            totalWeight += vaults[i].metadata.weightAtLastCalibration;
+            totalWeight += vaults[i].metadata.weightAtCalibration;
         }
 
         require(totalWeight == FixedPoint.ONE, Errors.INVALID_ARGUMENT);
@@ -75,8 +89,8 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
 
     function setInitialPrice(address vault, uint256 initialPrice) external reserveManagerOnly {
         require(vaultAddresses.contains(vault), Errors.VAULT_NOT_FOUND);
-        require(vaultsMetadata[vault].priceAtLastCalibration == 0, Errors.INVALID_ARGUMENT);
-        vaultsMetadata[vault].priceAtLastCalibration = initialPrice;
+        require(vaultsMetadata[vault].priceAtCalibration == 0, Errors.INVALID_ARGUMENT);
+        vaultsMetadata[vault].priceAtCalibration = initialPrice;
     }
 
     function updatePersistedVaultFlowParams(
