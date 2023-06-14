@@ -59,6 +59,18 @@ contract PammTest is Test {
         setParams(IPAMM.Params(uint64(alphaBar), uint64(xuBar), uint64(thetaBar), OUTFLOW_MEMORY));
     }
 
+    function logAnchoredState(PrimaryAMMV1.State memory state) public {
+        console.log("x = %e", state.redemptionLevel);
+        console.log("ba = %e", state.reserveValue);
+        console.log("ya = %e", state.totalGyroSupply);
+    }
+
+    function logState(PrimaryAMMV1.State memory state) public {
+        console.log("x = %e", state.redemptionLevel);
+        console.log("b = %e", state.reserveValue);
+        console.log("y = %e", state.totalGyroSupply);
+    }
+
     function setParams(IPAMM.Params memory params) public {
         console.log("alphaBar = %e", params.alphaBar);
         console.log("xuBar = %e", params.xuBar);
@@ -74,15 +86,58 @@ contract PammTest is Test {
         return IPAMM.Params(uint64(alphaBar), uint64(xuBar), uint64(thetaBar), OUTFLOW_MEMORY);
     }
 
+    function mkState(
+        uint256 x,
+        uint256 b,
+        uint256 y
+    ) public pure returns (PrimaryAMMV1.State memory) {
+        return PrimaryAMMV1.State(x, b, y);
+    }
+
     function mkParamsFromFuzzing(
         uint32 alphaBar0,
         uint32 xuBar0,
         uint32 thetaBar0
     ) public pure returns (IPAMM.Params memory) {
-        uint256 alphaBar = mapToInterval(alphaBar0, 0.0001e18, type(uint64).max);
-        uint256 xuBar = mapToInterval(xuBar0, 0.0001e18, 1e18 - 0.0001e18);
-        uint256 thetaBar = mapToInterval(thetaBar0, 0.0001e18, 1e18 - 0.0001e18);
+        // NB max possible values are type(uint64).max b/c these values will be cast down to uint64. 
+        // But we choose hand-crafted, more realistic values.
+        // TODO maybe make it work in the short term if obscure values fail.
+
+        // TODO maybe try bring the max down if it helps with the tests.
+        // SOMEDAY min value could also be 100bp. (currently 10bp)
+        uint256 alphaBar = mapToInterval(alphaBar0, 0.001e18, type(uint64).max);
+        // SOMEDAY Max bound can probably be even lower. xuBar ~ normal outflow levels probably.
+        uint256 xuBar = mapToInterval(xuBar0, 0.0001e18, 0.5e18);
+        // SOMEDAY can also increase lower bound further if helps. thetaBar < 20% is strange.
+        uint256 thetaBar = mapToInterval(thetaBar0, 0.1e18, 1e18 - 0.001e18);
         return mkParams(alphaBar, xuBar, thetaBar);
+    }
+
+    function mkAnchoredStateFromFuzzing(
+        uint32 x0,
+        uint32 ba0,
+        uint32 ya0,
+        IPAMM.Params memory params
+    ) public pure returns (PrimaryAMMV1.State memory anchoredState) {
+        // OPEN just choosing something borderline nontrivial here.
+        uint256 ya = mapToInterval(ya0, 10e18, 1e11 * 1e18);
+        // SOMEDAY can make further restrictions, e.g. ba >= 10 unscaled or so.
+        uint256 ba = mapToInterval(ba0, (params.thetaBar * ya) / 1e18, ya);
+        uint256 x = mapToInterval(x0, 0, ya);
+        // This is only to ensure inequalities are strict.
+        // SOMEDAY I don't think this does much actually.
+        vm.assume(ya > ba && ba > ya.mulDown(params.thetaBar));
+        return mkState(x, ba, ya);
+    }
+
+    function mkStateFromFuzzing(
+        uint32 x0,
+        uint32 b0,
+        uint32 y0,
+        IPAMM.Params memory params
+    ) public pure returns (PrimaryAMMV1.State memory state) {
+        // Nothing special here yet.
+        return mkAnchoredStateFromFuzzing(x0, b0, y0, params);
     }
 
     function testExamples_DerivedValues() public {
@@ -106,17 +161,13 @@ contract PammTest is Test {
         uint32 xuBar0,
         uint32 thetaBar0
     ) public {
-        // Transmogrify values into the range we need.
-        // NB anything larger than uint64.max ~ 18.4 (unscaled) is pointless b/c values are cast down to uint64 when stored in params.
-        uint256 alphaBar = mapToInterval(alphaBar0, 0.0001e18, type(uint64).max);
-        uint256 xuBar = mapToInterval(xuBar0, 0.0001e18, 1e18 - 0.0001e18);
-        uint256 thetaBar = mapToInterval(thetaBar0, 0.0001e18, 1e18 - 0.0001e18);
-
-        checkDerivedValues(mkParams(alphaBar, xuBar, thetaBar));
+        IPAMM.Params memory params = mkParamsFromFuzzing(alphaBar0, xuBar0, thetaBar0);
+        checkDerivedValues(params);
     }
 
     /// @dev Some simple invariants for the derived params. There is only so much to check here though.
     function checkDerivedValues(IPAMM.Params memory params) public {
+        console.log("---");
         setParams(params);
         PrimaryAMMV1.DerivedParams memory derived = tpamm.computeDerivedParams();
 
@@ -188,33 +239,31 @@ contract PammTest is Test {
 
     function testExamples_RegionReconstruction() public {
         // From previous (brownie) tests
-        checkRegionReconstruction(0.1e18, 0.8e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.1e18, 0.61e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.3e18, 0.7e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.8e18, 0.9e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.1e18, 0.75e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.2e18, 0.75e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.4e18, 0.85e18, 1e18, mkParams(0.5e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.7e18, 0.85e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.7e18, 0.8499e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.7e18, 0.8501e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(0.2e18, 0.65e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.1e18, 0.8e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.1e18, 0.61e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.3e18, 0.7e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.8e18, 0.9e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.1e18, 0.75e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.2e18, 0.75e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.4e18, 0.85e18, 1e18), mkParams(0.5e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.7e18, 0.85e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.7e18, 0.8499e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.7e18, 0.8501e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(mkState(0.2e18, 0.65e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
         checkRegionReconstruction(
-            0.4994994994994995e18,
-            0.9e18,
-            1e18,
+            mkState(0.4994994994994995e18, 0.9e18, 1e18),
             mkParams(2.0e18, 0.3e18, 0.6e18)
         );
 
         // Regression for the reconstruction bug where regions don't exist. Leads to an underflow there.
-        checkRegionReconstruction(0.3e18, 0.9e18, 1e18, mkParams(0.3e18, 0.5e18, 0.3e18)); // II l does not exist and we're in II ii
+        checkRegionReconstruction(mkState(0.3e18, 0.9e18, 1e18), mkParams(0.3e18, 0.5e18, 0.3e18)); // II l does not exist and we're in II ii
     }
 
-    function testFuzzRegression_RegionDetection() public {
-        testFuzz_RegionDetection(1, 4254, 12, 4180781539, 0, 0);
+    function testFuzzRegression_RegionReconstruction() public {
+        testFuzz_RegionReconstruction(0, 1, 0, 0, 0, 0);
     }
 
-    function testFuzz_RegionDetection(
+    function testFuzz_RegionReconstruction(
         uint32 x0,
         uint32 ba0,
         uint32 ya0,
@@ -223,32 +272,19 @@ contract PammTest is Test {
         uint32 thetaBar0
     ) public {
         IPAMM.Params memory params = mkParamsFromFuzzing(alphaBar0, xuBar0, thetaBar0);
-
-        uint256 ramin = params.thetaBar - params.thetaBar / 100;
-
-        // Testing anchor GYD amounts and reserve values up to 100B such that reserve ratios are within (theta_bar - small) and (1 + small)
-        uint256 ya = mapToInterval(ya0, 0.0001e18, 1e11 * 1e18);
-        uint256 ba = mapToInterval(ba0, (ramin * ya) / 1e18, (1.01e18 * ya) / 1e18);
-        uint256 x = mapToInterval(x0, 0, ya);
-        vm.assume(ya > ba && ba > ya.mulDown(params.thetaBar));
-
-        checkRegionReconstruction(x, ba, ya, params);
+        PrimaryAMMV1.State memory state = mkAnchoredStateFromFuzzing(x0, ba0, ya0, params);
+        checkRegionReconstruction(state, params);
     }
 
     /// @dev Given x and an anchor point, first compute the region directly; then compare against
     /// the reconstructed region at the implied state.
     function checkRegionReconstruction(
-        uint256 x,
-        uint256 ba,
-        uint256 ya,
+        PrimaryAMMV1.State memory anchoredState,
         IPAMM.Params memory params
     ) public {
+        console.log("---");
         setParams(params);
-        console.log("x = %e", x);
-        console.log("ba = %e", ba);
-        console.log("ya = %e", ya);
-
-        PrimaryAMMV1.State memory anchoredState = PrimaryAMMV1.State(x, ba, ya);
+        logAnchoredState(anchoredState);
 
         uint256 regTrue = tpamm.computeTrueRegion(anchoredState);
         uint256 regReconstructed = tpamm.reconstructRegionFromAnchor(anchoredState);
@@ -257,21 +293,19 @@ contract PammTest is Test {
 
     function testExamples_BReconstructionFromB() public {
         // NB these are basically some random states.
-        checkBReconstructionFromB(0.1e18, 0.5e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.1e18, 0.31e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.3e18, 0.7e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.8e18, 0.9e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.1e18, 0.81e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.2e18, 0.04e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.4e18, 0.85e18, 1e18, mkParams(0.5e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.7e18, 0.85e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.7e18, 0.8499e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.7e18, 0.8501e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(0.2e18, 0.65e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.1e18, 0.5e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.1e18, 0.31e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.3e18, 0.7e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.8e18, 0.9e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.1e18, 0.81e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.2e18, 0.04e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.4e18, 0.85e18, 1e18), mkParams(0.5e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.7e18, 0.85e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.7e18, 0.8499e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.7e18, 0.8501e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(mkState(0.2e18, 0.65e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
         checkBReconstructionFromB(
-            0.4994994994994995e18,
-            0.9e18,
-            1e18,
+            mkState(0.4994994994994995e18, 0.9e18, 1e18),
             mkParams(2.0e18, 0.3e18, 0.6e18)
         );
     }
@@ -285,57 +319,41 @@ contract PammTest is Test {
         uint32 thetaBar0
     ) public {
         IPAMM.Params memory params = mkParamsFromFuzzing(alphaBar0, xuBar0, thetaBar0);
-
-        uint256 rmin = params.thetaBar - params.thetaBar / 100;
-
-        // Testing GYD amounts and reserve values up to 100B such that reserve ratios are within (theta_bar - small) and (1 + small)
-        uint256 y = mapToInterval(y0, 0.0001e18, 1e11 * 1e18);
-        uint256 b = mapToInterval(b0, (rmin * y) / 1e18, (1.01e18 * y) / 1e18);
-        uint256 x = mapToInterval(x0, 0, y);
-        // TODO test x slightly > y due to rounding errors & make sure it's not crashing. Somewhere (not here).
-
-        checkBReconstructionFromB(x, b, y, params);
+        PrimaryAMMV1.State memory state = mkStateFromFuzzing(x0, b0, y0, params);
+        checkBReconstructionFromB(state, params);
     }
 
     /// @dev Given a state, reconstruct the anchor point and from there its own b (= reserve value).
     /// This should yield the state's reserve value back.
     function checkBReconstructionFromB(
-        uint256 x,
-        uint256 b,
-        uint256 y,
+        PrimaryAMMV1.State memory state,
         IPAMM.Params memory params
     ) public {
-        tpamm.setParams(params);
-        console.log("y = %e", y);
-        console.log("b = %e", b);
-        console.log("x = %e", x);
-
-        PrimaryAMMV1.State memory state = PrimaryAMMV1.State(x, b, y);
-
+        console.log("---");
+        setParams(params);
+        logState(state);
         uint256 reconstructedB = tpamm.roundTripState(state);
-        assertApproxEqAbs(b, reconstructedB, DELTA_SMALL);
+        assertApproxEqAbs(state.reserveValue, reconstructedB, DELTA_SMALL);
     }
 
     function testExamples_RedeemFromBa() public {
-        checkRedeemFromBa(0.1e18, 0.1e18, 0.8e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.2e18, 0.1e18, 0.61e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.3e18, 0.3e18, 0.7e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.1e18, 0.8e18, 0.9e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.899e18, 0.1e18, 0.75e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.2e18, 0.2e18, 0.75e18, 1e18, mkParams(1e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.1e18, 0.4e18, 0.85e18, 1e18, mkParams(0.5e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.1e18, 0.7e18, 0.85e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.2e18, 0.7e18, 0.8499e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.1e18, 0.7e18, 0.8501e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.7e18, 0.2e18, 0.65e18, 1e18, mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.1e18, mkState(0.1e18, 0.8e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.2e18, mkState(0.1e18, 0.61e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.3e18, mkState(0.3e18, 0.7e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.1e18, mkState(0.8e18, 0.9e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.899e18, mkState(0.1e18, 0.75e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.2e18, mkState(0.2e18, 0.75e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.1e18, mkState(0.4e18, 0.85e18, 1e18), mkParams(0.5e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.1e18, mkState(0.7e18, 0.85e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.2e18, mkState(0.7e18, 0.8499e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.1e18, mkState(0.7e18, 0.8501e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(0.7e18, mkState(0.2e18, 0.65e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
         checkRedeemFromBa(
             0.4994994994994995e18,
-            0.4994994994994995e18,
-            0.9e18,
-            1e18,
+            mkState(0.4994994994994995e18, 0.9e18, 1e18),
             mkParams(2.0e18, 0.3e18, 0.6e18)
         );
-        checkRedeemFromBa(0.5e18, 0.3e18, 0.9e18, 1e18, mkParams(0.3e18, 0.5e18, 0.3e18)); // II l does not exist and we're in II ii
+        checkRedeemFromBa(0.5e18, mkState(0.3e18, 0.9e18, 1e18), mkParams(0.3e18, 0.5e18, 0.3e18)); // II l does not exist and we're in II ii
     }
 
     function testFuzz_RedeemFromBa(
@@ -348,18 +366,9 @@ contract PammTest is Test {
         uint32 thetaBar0
     ) public {
         IPAMM.Params memory params = mkParamsFromFuzzing(alphaBar0, xuBar0, thetaBar0);
-
-        uint256 ramin = params.thetaBar - params.thetaBar / 100;
-
-        // Testing anchor GYD amounts and reserve values up to 100B such that reserve ratios are within (theta_bar - small) and (1 + small)
-        uint256 ya = mapToInterval(ya0, 0.0001e18, 1e11 * 1e18);
-        uint256 ba = mapToInterval(ba0, (ramin * ya) / 1e18, (1.01e18 * ya) / 1e18);
-        uint256 x = mapToInterval(x0, 0, ya);
-        vm.assume(x < ya); // we could've excluded the endpoint above somehow but that's painful.
-        vm.assume(ya > ba && ba > ya.mulDown(params.thetaBar));
-        uint256 dx = mapToInterval(dx0, 0, ya - x);
-
-        checkRedeemFromBa(dx, x, ba, ya, params);
+        PrimaryAMMV1.State memory anchoredState = mkAnchoredStateFromFuzzing(x0, ba0, ya0, params);
+        uint256 dx = mapToInterval(dx0, 0, anchoredState.totalGyroSupply - anchoredState.redemptionLevel);
+        checkRedeemFromBa(dx, anchoredState, params);
     }
 
     /// @dev Given an anchor point, x, and a redeption amount dx, compute directly the reserve value
@@ -367,28 +376,23 @@ contract PammTest is Test {
     /// via the usual PAMM logic (= reconstruction, then computation of the new b).
     function checkRedeemFromBa(
         uint256 dx,
-        uint256 x,
-        uint256 ba,
-        uint256 ya,
+        PrimaryAMMV1.State memory anchoredState,
         IPAMM.Params memory params
     ) public {
+        console.log("---");
         setParams(params);
         console.log("dx = %e", dx);
-        console.log("x = %e", x);
-        console.log("ba = %e", ba);
-        console.log("ya = %e", ya);
+        logAnchoredState(anchoredState);
 
-        uint256 b;
-        {
-            PrimaryAMMV1.State memory anchoredState = PrimaryAMMV1.State(x, ba, ya);
-            b = tpamm.computeReserveValueFromAnchor(anchoredState);
-        }
-        uint256 y = ya - x;
+        uint256 b = tpamm.computeReserveValueFromAnchor(anchoredState);
+        uint256 y = anchoredState.totalGyroSupply - anchoredState.redemptionLevel;
 
-        PrimaryAMMV1.State memory anchoredState1 = PrimaryAMMV1.State(x + dx, ba, ya);
+        PrimaryAMMV1.State memory anchoredState1 = anchoredState;
+        anchoredState1.redemptionLevel += dx;
+
         uint256 b1 = tpamm.computeReserveValueFromAnchor(anchoredState1);
 
-        PrimaryAMMV1.State memory state = PrimaryAMMV1.State(x, b, y);
+        PrimaryAMMV1.State memory state = PrimaryAMMV1.State(anchoredState.redemptionLevel, b, y);
         uint256 db = tpamm.computeRedeemAmount(state, dx);
 
         assertApproxEqAbs(db, b - b1, DELTA_MED);

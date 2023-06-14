@@ -38,13 +38,15 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             _systemParams
         );
         uint256 y = anchoredState.totalGyroSupply - anchoredState.redemptionLevel;
-        State memory state = State({
-            redemptionLevel: anchoredState.redemptionLevel,
-            reserveValue: b,
-            totalGyroSupply: y
+        State memory normalizedState = State({
+            redemptionLevel: anchoredState.redemptionLevel.divDown(anchoredState.totalGyroSupply),
+            reserveValue: b.divDown(anchoredState.totalGyroSupply),
+            totalGyroSupply: y.divDown(anchoredState.totalGyroSupply)
         });
 
-        uint256 normalizedNav = state.reserveValue.divDown(state.totalGyroSupply);
+        uint256 normalizedNav = normalizedState.reserveValue.divDown(
+            normalizedState.totalGyroSupply
+        );
         if (normalizedNav >= ONE) {
             return 20;
         }
@@ -52,7 +54,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             return 10;
         }
 
-        return uint256(computeReserveValueRegion(state, _systemParams, derived));
+        return uint256(computeReserveValueRegion(normalizedState, _systemParams, derived));
     }
 
     /// @dev Reconstruct region at given (raw/market) state. Returns the "extended" state flags like reconstructRegionFromAnchor().
@@ -208,7 +210,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 alpha,
         uint256 xu,
         uint256 xl
-    ) external pure returns (uint256) {
+    ) external view returns (uint256) {
         return computeReserveFixedParams(x, ba, ya, alpha, xu, xl);
     }
 
@@ -217,7 +219,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 ba,
         uint256 ya,
         Params memory params
-    ) external pure returns (uint256) {
+    ) external view returns (uint256) {
         return computeReserve(x, ba, ya, params);
     }
 
@@ -226,7 +228,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 ya,
         uint256 thetaFloor,
         uint256 alphaMin
-    ) external pure returns (uint256) {
+    ) external view returns (uint256) {
         return computeAlpha(ba, ya, thetaFloor, alphaMin);
     }
 
@@ -240,7 +242,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 alpha,
         uint256 stableRedeemThresholdUpperBound,
         uint256 targetUtilizationCeiling
-    ) external pure returns (uint256) {
+    ) external view returns (uint256) {
         return computeXu(ba, ya, alpha, stableRedeemThresholdUpperBound, targetUtilizationCeiling);
     }
 
@@ -250,7 +252,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 alpha,
         uint256 xu,
         bool ignoreUnderflow
-    ) external pure returns (uint256) {
+    ) external view returns (uint256) {
         return computeXl(ba, ya, alpha, xu, ignoreUnderflow);
     }
 
