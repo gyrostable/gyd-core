@@ -8,7 +8,14 @@ from tests.fixtures.mainnet_contracts import (
 )
 from tests.support import config_keys, constants
 from tests.support.retrieve_coinbase_prices import fetch_prices, find_price
-from tests.support.types import DeployedVault, PammParams, VaultToDeploy, VaultType
+from tests.support.types import (
+    DeployedVault,
+    PammParams,
+    PersistedVaultMetadata,
+    VaultConfiguration,
+    VaultToDeploy,
+    VaultType,
+)
 from tests.support.utils import scale
 from scripts.config import vaults
 
@@ -51,11 +58,18 @@ def mainnet_reserve_manager(
         config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager, {"from": admin}
     )
     for vault in mainnet_vaults:
-        reserve_manager.registerVault(
-            vault.address,
-            vault.vault_to_deploy.initial_weight,
-            vault.vault_to_deploy.short_flow_memory,
-            vault.vault_to_deploy.short_flow_threshold,
+        reserve_manager.setVaults(
+            [
+                VaultConfiguration(
+                    vault.address,
+                    PersistedVaultMetadata(
+                        scale(1),
+                        vault.vault_to_deploy.initial_weight,
+                        vault.vault_to_deploy.short_flow_memory,
+                        vault.vault_to_deploy.short_flow_threshold,
+                    ),
+                )
+            ],
             {"from": admin},
         )
 

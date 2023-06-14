@@ -44,10 +44,13 @@ class JoinPoolRequest(NamedTuple):
 
 
 class PersistedVaultMetadata(NamedTuple):
-    initial_price: int
-    initial_weight: int
+    price_at_calibration: int
+    weight_at_calibration: int
     short_flow_memory: int
     short_flow_threshold: int
+    weight_transition_duration: int = 86_400 * 7
+    weight_at_previous_calibration: int = 0
+    time_of_calibration: int = 0
 
 
 class PricedToken(NamedTuple):
@@ -64,7 +67,7 @@ class VaultInfo(NamedTuple):
     persisted_metadata: PersistedVaultMetadata
     reserve_balance: int
     current_weight: int
-    ideal_weight: int
+    target_weight: int
     priced_tokens: List[PricedToken]
 
     @classmethod
@@ -141,3 +144,8 @@ class PammParams(NamedTuple):
 class ExternalAction(NamedTuple):
     target: str
     data: str
+
+
+class VaultConfiguration(NamedTuple):
+    vault_address: str
+    metadata: PersistedVaultMetadata

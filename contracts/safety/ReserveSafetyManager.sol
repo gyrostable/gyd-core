@@ -145,7 +145,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             );
 
             metaData.vaultMetadata[i].vault = vaultsWithAmount[i].vaultInfo.vault;
-            metaData.vaultMetadata[i].idealWeight = vaultsWithAmount[i].vaultInfo.idealWeight;
+            metaData.vaultMetadata[i].targetWeight = vaultsWithAmount[i].vaultInfo.targetWeight;
             metaData.vaultMetadata[i].currentWeight = vaultsWithAmount[i].vaultInfo.currentWeight;
             metaData.vaultMetadata[i].price = vaultsWithAmount[i].vaultInfo.price;
             metaData.vaultMetadata[i].pricedTokens = vaultsWithAmount[i].vaultInfo.pricedTokens;
@@ -167,8 +167,8 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
         for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
             DataTypes.VaultMetadata memory vaultData = metaData.vaultMetadata[i];
-            uint256 scaledEpsilon = vaultData.idealWeight.mulUp(maxAllowedVaultDeviation);
-            bool withinEpsilon = vaultData.idealWeight.absSub(vaultData.resultingWeight) <=
+            uint256 scaledEpsilon = vaultData.targetWeight.mulUp(maxAllowedVaultDeviation);
+            bool withinEpsilon = vaultData.targetWeight.absSub(vaultData.resultingWeight) <=
                 scaledEpsilon;
 
             metaData.vaultMetadata[i].vaultWithinEpsilon = withinEpsilon;
@@ -244,10 +244,10 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             }
 
             uint256 distanceResultingToIdeal = vaultMetadata.resultingWeight.absSub(
-                vaultMetadata.idealWeight
+                vaultMetadata.targetWeight
             );
             uint256 distanceCurrentToIdeal = vaultMetadata.currentWeight.absSub(
-                vaultMetadata.idealWeight
+                vaultMetadata.targetWeight
             );
 
             if (distanceResultingToIdeal >= distanceCurrentToIdeal) {

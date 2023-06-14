@@ -38,4 +38,5 @@ library ConfigKeys {
     bytes32 internal constant SAFETY_BLOCKS_GUARDIAN = "SAFETY_BLOCKS_GUARDIAN";
 
     bytes32 internal constant REDEEM_DISCOUNT_RATIO = "REDEEM_DISCOUNT_RATIO";
+    bytes32 internal constant VAULT_DUST_THRESHOLD = "VAULT_DUST_THRESHOLD";
 }

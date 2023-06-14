@@ -3,7 +3,11 @@ import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
 from brownie import chain, interface  # type: ignore
 
-from tests.support.types import MintAsset
+from tests.support.types import (
+    MintAsset,
+    PersistedVaultMetadata,
+    VaultConfiguration,
+)
 from tests.support.utils import scale
 
 from tests.support import config_keys, constants
@@ -22,7 +26,10 @@ def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
 
 @pytest.fixture(scope="module")
 def register_dai_vault_module(reserve_manager, dai_vault, admin):
-    reserve_manager.registerVault(dai_vault, scale(1), 0, 0, {"from": admin})
+    reserve_manager.setVaults(
+        [VaultConfiguration(dai_vault, PersistedVaultMetadata(0, int(scale(1)), 0, 0))],
+        {"from": admin},
+    )
 
 
 def mint_gyd_from_dai(dai, dai_vault, motherboard, account, amount):
@@ -310,8 +317,12 @@ def test_rewards_noburn(alice, bob, gyd_recovery, gyd_token, chain):
     alice_expected = compute_expected(2)
     bob_expected = compute_expected(4)
 
-    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(alice_expected, rel=5e-6, abs=1e-12)
-    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(bob_expected, rel=5e-6, abs=1e-12)
+    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(
+        alice_expected, rel=5e-6, abs=1e-12
+    )
+    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(
+        bob_expected, rel=5e-6, abs=1e-12
+    )
 
     # Withdraw and check: initiateWithdrawal changes staked balance, executing
     # the withdrawal does not.
@@ -372,8 +383,12 @@ def test_rewards_partialburn_sync(
     alice_expected = compute_expected(2)
     bob_expected = compute_expected(4)
 
-    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(alice_expected, rel=5e-6, abs=1e-12)
-    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(bob_expected, rel=5e-6, abs=1e-12)
+    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(
+        alice_expected, rel=5e-6, abs=1e-12
+    )
+    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(
+        bob_expected, rel=5e-6, abs=1e-12
+    )
 
 
 @pytest.mark.usefixtures("gyd_alice", "gyd_bob", "gyd_recovery_mining")
@@ -416,8 +431,12 @@ def test_rewards_fullburn_async(
     alice_expected = (burn_time - deposit_time_alice) * emission_rate
     bob_expected = (end_time - deposit_time_bob) * emission_rate
 
-    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(alice_expected, rel=5e-6, abs=1e-12)
-    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(bob_expected, rel=5e-6, abs=1e-12)
+    assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(
+        alice_expected, rel=5e-6, abs=1e-12
+    )
+    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(
+        bob_expected, rel=5e-6, abs=1e-12
+    )
 
 
 @pytest.mark.usefixtures("gyd_alice", "gyd_bob", "gyd_recovery_mining")
@@ -480,4 +499,6 @@ def test_rewards_partialburn_async(
     assert int(gyd_recovery.claimableRewards(alice)) == pytest.approx(
         int(alice_expected), rel=5e-6, abs=1e-12
     )
-    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(int(bob_expected), rel=5e-6, abs=1e-12)
+    assert int(gyd_recovery.claimableRewards(bob)) == pytest.approx(
+        int(bob_expected), rel=5e-6, abs=1e-12
+    )

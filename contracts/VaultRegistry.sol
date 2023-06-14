@@ -7,16 +7,18 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./auth/GovernableUpgradeable.sol";
 
 import "../libraries/ConfigKeys.sol";
+import "../libraries/FixedPoint.sol";
 import "../libraries/ConfigHelpers.sol";
 import "../libraries/EnumerableExtensions.sol";
+import "../libraries/VaultMetadataExtension.sol";
 
 import "../interfaces/IVaultRegistry.sol";
 import "../interfaces/IGyroConfig.sol";
 
 contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
-    using EnumerableExtensions for EnumerableSet.AddressSet;
     using ConfigHelpers for IGyroConfig;
+    using VaultMetadataExtension for DataTypes.PersistedVaultMetadata;
 
     IGyroConfig public immutable gyroConfig;
 
@@ -38,7 +40,7 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
 
     /// @inheritdoc IVaultRegistry
     function listVaults() external view override returns (address[] memory) {
-        return vaultAddresses.toArray();
+        return vaultAddresses.values();
     }
 
     /// @inheritdoc IVaultRegistry
@@ -52,32 +54,43 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
     }
 
     /// @inheritdoc IVaultRegistry
-    function registerVault(address vault, DataTypes.PersistedVaultMetadata memory persistedMetadata)
+    function getScheduleVaultWeight(address vault) external view override returns (uint256) {
+        return vaultsMetadata[vault].scheduleWeight();
+    }
+
+    /// @inheritdoc IVaultRegistry
+    function setVaults(DataTypes.VaultConfiguration[] memory vaults)
         external
         override
         reserveManagerOnly
     {
-        require(!vaultAddresses.contains(vault), Errors.VAULT_ALREADY_EXISTS);
-        require(gyroConfig.getFeeHandler().isVaultSupported(vault), Errors.VAULT_NOT_FOUND);
-        vaultAddresses.add(vault);
-        vaultsMetadata[vault] = persistedMetadata;
-        emit VaultRegistered(vault);
+        for (uint256 i; i < vaults.length; i++) {
+            vaults[i].metadata.weightAtPreviousCalibration = uint64(
+                vaultsMetadata[vaults[i].vaultAddress].weightAtCalibration
+            );
+            vaults[i].metadata.timeOfCalibration = uint64(block.timestamp);
+        }
+
+        _removeAllVaults();
+
+        uint256 totalWeight;
+
+        for (uint256 i; i < vaults.length; i++) {
+            address vault = vaults[i].vaultAddress;
+            require(gyroConfig.getFeeHandler().isVaultSupported(vault), Errors.VAULT_NOT_FOUND);
+            require(vaultAddresses.add(vault), Errors.INVALID_ARGUMENT);
+            vaultsMetadata[vault] = vaults[i].metadata;
+            totalWeight += vaults[i].metadata.weightAtCalibration;
+        }
+
+        require(totalWeight == FixedPoint.ONE, Errors.INVALID_ARGUMENT);
+        emit VaultsSet(vaults);
     }
 
     function setInitialPrice(address vault, uint256 initialPrice) external reserveManagerOnly {
         require(vaultAddresses.contains(vault), Errors.VAULT_NOT_FOUND);
-        require(vaultsMetadata[vault].initialPrice == 0, Errors.INVALID_ARGUMENT);
-        vaultsMetadata[vault].initialPrice = initialPrice;
-    }
-
-    function updateInitialWeights(address[] memory vaultsToUpdate, uint256[] memory weights)
-        external
-        governanceOnly
-    {
-        for (uint256 i = 0; i < vaultsToUpdate.length; i++) {
-            require(vaultAddresses.contains(vaultsToUpdate[i]), Errors.VAULT_NOT_FOUND);
-            vaultsMetadata[vaultsToUpdate[i]].initialWeight = weights[i];
-        }
+        require(vaultsMetadata[vault].priceAtCalibration == 0, Errors.INVALID_ARGUMENT);
+        vaultsMetadata[vault].priceAtCalibration = initialPrice;
     }
 
     function updatePersistedVaultFlowParams(
@@ -92,11 +105,11 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
         }
     }
 
-    /// @inheritdoc IVaultRegistry
-    function deregisterVault(address vault) external override governanceOnly {
-        require(vaultAddresses.contains(vault), Errors.VAULT_NOT_FOUND);
-        vaultAddresses.remove(vault);
-        delete vaultsMetadata[vault];
-        emit VaultDeregistered(vault);
+    function _removeAllVaults() internal {
+        address[] memory vaults = vaultAddresses.values();
+        for (uint256 i; i < vaults.length; i++) {
+            delete vaultsMetadata[vaults[i]];
+            vaultAddresses.remove(vaults[i]);
+        }
     }
 }
