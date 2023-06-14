@@ -25,6 +25,7 @@ import "../libraries/ConfigHelpers.sol";
 import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/DecimalScale.sol";
+import "../libraries/ReserveStateExtensions.sol";
 
 import "./auth/GovernableUpgradeable.sol";
 
@@ -38,6 +39,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     using SafeERC20Upgradeable for IGYDToken;
     using ConfigHelpers for IGyroConfig;
     using EnumerableSet for EnumerableSet.AddressSet;
+    using ReserveStateExtensions for DataTypes.ReserveState;
+    using ReserveStateExtensions for DataTypes.VaultInfo;
     using Address for address;
 
     uint256 internal constant _REDEEM_DEVIATION_EPSILON = 1e13; // 0.001 %
@@ -177,11 +180,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             .getReserveManager()
             .getReserveState();
 
+        uint256 reserveRedeemUSDValue = reserveState.computeLowerBoundUSDValue(_oracle());
+
         // order matters!
         gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
         gyroConfig.getGydRecovery().checkAndRun(reserveState);
 
-        uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveState.totalUSDValue);
+        uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveRedeemUSDValue);
         require(
             usdValueToRedeem <= gydToRedeem.mulDown(FixedPoint.ONE + _REDEEM_DEVIATION_EPSILON),
             Errors.REDEEM_AMOUNT_BUG
@@ -268,10 +273,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
-        uint256 usdValueToRedeem = pamm().computeRedeemAmount(
-            gydToRedeem,
-            reserveState.totalUSDValue
-        );
+        uint256 reserveRedeemUSDValue = reserveState.computeLowerBoundUSDValue(_oracle());
+        uint256 usdValueToRedeem = pamm().computeRedeemAmount(gydToRedeem, reserveRedeemUSDValue);
+
         DataTypes.Order memory order = _createRedeemOrder(
             usdValueToRedeem,
             assets,
@@ -430,12 +434,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.VaultInfo memory vaultInfo,
         uint256 usdValueToRedeem,
         DataTypes.RedeemAsset[] calldata redeemAssets
-    ) internal pure returns (uint256, uint256) {
+    ) internal view returns (uint256, uint256) {
         for (uint256 i = 0; i < redeemAssets.length; i++) {
             DataTypes.RedeemAsset calldata asset = redeemAssets[i];
             if (asset.originVault == vaultInfo.vault) {
+                uint256 vaultPrice = vaultInfo.computeUpperBoundUSDPrice(_oracle());
                 uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(asset.valueRatio);
-                uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultInfo.price);
+                uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultPrice);
                 uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vaultInfo.decimals);
 
                 return (scaledVaultTokenAmount, asset.valueRatio);
@@ -448,7 +453,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         uint256 usdValueToRedeem,
         DataTypes.RedeemAsset[] calldata assets,
         DataTypes.VaultInfo[] memory vaultsInfo
-    ) internal pure returns (DataTypes.Order memory) {
+    ) internal view returns (DataTypes.Order memory) {
         _ensureNoDuplicates(assets);
 
         DataTypes.Order memory order = DataTypes.Order({
@@ -575,15 +580,15 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
     function _getBasketUSDValue(DataTypes.Order memory order)
         internal
-        pure
+        view
         returns (uint256 result)
     {
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             DataTypes.VaultWithAmount memory vaultWithAmount = order.vaultsWithAmount[i];
-            uint256 scaledAmount = vaultWithAmount.amount.scaleFrom(
-                vaultWithAmount.vaultInfo.decimals
-            );
-            result += scaledAmount.mulDown(vaultWithAmount.vaultInfo.price);
+            DataTypes.VaultInfo memory vaultInfo = vaultWithAmount.vaultInfo;
+            uint256 vaultPrice = vaultInfo.computeLowerBoundUSDPrice(_oracle());
+            uint256 scaledAmount = vaultWithAmount.amount.scaleFrom(vaultInfo.decimals);
+            result += scaledAmount.mulDown(vaultPrice);
         }
     }
 
@@ -630,5 +635,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
                 permit.s
             );
         }
+    }
+
+    function _oracle() internal view returns (IBatchVaultPriceOracle) {
+        return gyroConfig.getRootPriceOracle();
     }
 }

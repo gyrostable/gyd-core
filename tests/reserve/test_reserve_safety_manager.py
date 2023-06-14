@@ -1,7 +1,6 @@
-from typing import Optional
-
+from typing import List, Optional
 import hypothesis.strategies as st
-from brownie import accounts
+from brownie import accounts, ZERO_ADDRESS
 from brownie.test import given
 from hypothesis import settings
 
@@ -928,7 +927,6 @@ def test_is_redeem_safe_small_prices(
 def test_safe_to_execute_outside_epsilon_redeem_rebalance_narrowing(
     reserve_safety_manager, mock_vaults, mock_price_oracle
 ):
-
     bundle_metadata = (
         [
             (
@@ -983,7 +981,6 @@ def test_safe_to_execute_outside_epsilon_redeem_rebalance_narrowing(
 def test_safe_to_execute_outside_epsilon_redeem_rebalance_widening(
     reserve_safety_manager, mock_vaults, mock_price_oracle
 ):
-
     bundle_metadata = (
         [
             (
@@ -1038,7 +1035,6 @@ def test_safe_to_execute_outside_epsilon_redeem_rebalance_widening(
 def test_update_metadata_with_epsilon_status_spot_check(
     reserve_safety_manager, mock_vaults, mock_price_oracle
 ):
-
     bundle_metadata = (
         [
             (
@@ -1089,3 +1085,79 @@ def test_update_metadata_with_epsilon_status_spot_check(
 
     assert result_sol[0][0][7] == True
     assert result_sol[0][1][7] == False
+
+
+def _create_vault_with_amount(
+    unscaled_amount: int, priced_tokens: List[PricedToken]
+) -> VaultWithAmount:
+    return VaultWithAmount(
+        amount=int(scale(unscaled_amount)),
+        vault_info=VaultInfo(
+            current_weight=int(scale(1)),
+            decimals=18,
+            target_weight=int(scale(1)),
+            persisted_metadata=PersistedVaultMetadata(
+                price_at_calibration=int(scale(1)),
+                weight_at_calibration=int(scale(1)),
+                short_flow_memory=0,
+                short_flow_threshold=0,
+            ),
+            price=int(scale("0.999")),  # not used in this check
+            priced_tokens=priced_tokens,
+            reserve_balance=int(scale(100)),
+            underlying=ZERO_ADDRESS,
+            vault=ZERO_ADDRESS,
+        ),
+    )
+
+
+def test_prevents_minting_with_underpeg_stablecoin(reserve_safety_manager, dai):
+    order = Order(
+        mint=True,
+        vaults_with_amount=[
+            _create_vault_with_amount(
+                1,
+                [
+                    PricedToken(
+                        tokenAddress=dai, price=int(scale("0.9")), is_stable=True
+                    )
+                ],
+            )
+        ],
+    )
+    assert reserve_safety_manager.isMintSafe(order) == error_codes.NOT_SAFE_TO_MINT
+
+
+def test_does_not_prevent_minting_with_overpeg_stablecoin(reserve_safety_manager, dai):
+    order = Order(
+        mint=True,
+        vaults_with_amount=[
+            _create_vault_with_amount(
+                1,
+                [
+                    PricedToken(
+                        tokenAddress=dai, price=int(scale("1.11")), is_stable=True
+                    )
+                ],
+            )
+        ],
+    )
+    assert reserve_safety_manager.isMintSafe(order) == ""
+
+
+def test_does_not_prevent_redeem_with_depeg_stablecoin(reserve_safety_manager, dai):
+    for price in ["0.9", "1.11"]:
+        order = Order(
+            mint=False,
+            vaults_with_amount=[
+                _create_vault_with_amount(
+                    1,
+                    [
+                        PricedToken(
+                            tokenAddress=dai, price=int(scale(price)), is_stable=True
+                        )
+                    ],
+                )
+            ],
+        )
+        assert reserve_safety_manager.isRedeemSafe(order) == ""

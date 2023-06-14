@@ -7,11 +7,13 @@ import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IReserveStewardshipIncentives.sol";
 import "../libraries/ConfigHelpers.sol";
+import "../libraries/ReserveStateExtensions.sol";
 import "../libraries/FixedPoint.sol";
 
 contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governable {
     using ConfigHelpers for IGyroConfig;
     using FixedPoint for uint256;
+    using ReserveStateExtensions for DataTypes.ReserveState;
 
     uint256 internal constant MAX_REWARD_PERCENTAGE = 0.5e18;
     uint256 internal constant OVERESTIMATION_PENALTY_FACTOR = 0.1e18; // SOMEDAY maybe review
@@ -69,7 +71,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
             .getReserveState();
         uint256 gydSupply = gydToken.totalSupply();
 
-        uint256 collateralRatio = reserveState.totalUSDValue.divDown(gydSupply);
+        uint256 collateralRatio = _getReserveUSDValue(reserveState).divDown(gydSupply);
         require(collateralRatio >= minCollateralRatio, "collateral ratio too low");
 
         reserveHealthViolations = ReserveHealthViolations(0, 0);
@@ -138,7 +140,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         if (nowTime > endTime) return;
 
         // Update reserveHealthViolations. (only if the active initiative is still running)
-        uint256 collateralRatio = reserveState.totalUSDValue.divDown(gydSupply);
+        uint256 collateralRatio = _getReserveUSDValue(reserveState).divDown(gydSupply);
         if (collateralRatio < activeInitiative.minCollateralRatio) {
             uint256 today = timestampToDatestamp(block.timestamp);
             if (reserveHealthViolations.lastViolatedDate < today) {
@@ -182,7 +184,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         uint256 targetReward = initiative.rewardPercentage.mulDown(avgGYDSupply);
 
         // Compute max available reward
-        uint256 maxAllowedGYDSupply = reserveState.totalUSDValue.divDown(
+        uint256 maxAllowedGYDSupply = _getReserveUSDValue(reserveState).divDown(
             initiative.minCollateralRatio
         );
 
@@ -218,5 +220,13 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
     /// all we need here.
     function timestampToDatestamp(uint256 timestamp) internal pure returns (uint256) {
         return timestamp / 1 days;
+    }
+
+    function _getReserveUSDValue(DataTypes.ReserveState memory reserveState)
+        internal
+        view
+        returns (uint256)
+    {
+        return reserveState.computeLowerBoundUSDValue(gyroConfig.getRootPriceOracle());
     }
 }

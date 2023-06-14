@@ -60,7 +60,6 @@ contract ReserveManager is IReserveManager, Governable {
 
             IERC20Metadata vault = IERC20Metadata(vaultAddresses[i]);
             uint256 reserveBalance = vault.balanceOf(reserveAddress);
-            reserveBalance = reserveBalance.scaleFrom(vault.decimals());
 
             IERC20[] memory tokens = IGyroVault(vaultAddresses[i]).getTokens();
             DataTypes.PricedToken[] memory pricedTokens = new DataTypes.PricedToken[](
@@ -93,7 +92,9 @@ contract ReserveManager is IReserveManager, Governable {
         uint256[] memory usdValues = new uint256[](length);
 
         for (uint256 i = 0; i < length; i++) {
-            uint256 usdValue = vaultsInfo[i].price.mulDown(vaultsInfo[i].reserveBalance);
+            DataTypes.VaultInfo memory vaultInfo = vaultsInfo[i];
+            uint256 scaledReserveBalance = vaultInfo.reserveBalance.scaleFrom(vaultInfo.decimals);
+            uint256 usdValue = vaultsInfo[i].price.mulDown(scaledReserveBalance);
             usdValues[i] = usdValue;
             reserveUSDValue += usdValue;
         }
