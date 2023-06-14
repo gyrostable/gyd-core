@@ -28,7 +28,7 @@ def _create_order(vault_amounts: Iterable[Tuple[Contract, int]], mint: bool) -> 
                 decimals=18,
                 underlying=vault.underlying(),
                 price=0,
-                persisted_metadata=PersistedVaultMetadata(0, 0, 0, 0),
+                persisted_metadata=PersistedVaultMetadata(int(scale(1)), 0, 0, 0),
                 reserve_balance=0,
                 current_weight=0,
                 target_weight=0,

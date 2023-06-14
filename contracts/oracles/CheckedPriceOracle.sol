@@ -38,8 +38,9 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     EnumerableSet.AddressSet internal ethPriceOracles;
 
-    /// This list is going to be used for the twaps to be input into the price level checks.
-    /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT
+    /// These are the addresses of the assets to be paired with ETH e.g. USDC or USDT.
+    /// Subset of (assetsForRelativePriceCheck union ultimate reserve assets).
+    /// Must all be stablecoins.
     EnumerableSet.AddressSet internal quoteAssetsForPriceLevelTWAPS;
 
     /// @dev This list is used to check if the relative price of the tokens are consistent
@@ -256,6 +257,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
             }
         }
 
+        // avoid fetching the price of WETH twice
         if (priceLevel == 0) {
             priceLevel = usdOracle.getPriceUSD(wethAddress);
         }

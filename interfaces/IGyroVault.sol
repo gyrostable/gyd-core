@@ -32,14 +32,13 @@ interface IGyroVault is IERC20Metadata, IERC20Permit {
     /// @return The exchange rate between an underlying tokens and the token of this vault
     function exchangeRate() external view returns (uint256);
 
-    /// @notice Deposits `underlyingAmount` of LP token supported
+    /// @notice Deposits `underlyingAmount` of underlying (usually LP) token supported
     /// and sends back the received vault tokens
     /// @param underlyingAmount the amount of underlying to deposit
     /// @return vaultTokenAmount the amount of vault token sent back
-    function deposit(
-        uint256 underlyingAmount,
-        uint256 minVaultTokensOut
-    ) external returns (uint256 vaultTokenAmount);
+    function deposit(uint256 underlyingAmount, uint256 minVaultTokensOut)
+        external
+        returns (uint256 vaultTokenAmount);
 
     /// @notice Simlar to `deposit(uint256 underlyingAmount)` but credits the tokens
     /// to `beneficiary` instead of `msg.sender`
@@ -50,25 +49,24 @@ interface IGyroVault is IERC20Metadata, IERC20Permit {
     ) external returns (uint256 vaultTokenAmount);
 
     /// @notice Dry-run version of deposit
-    function dryDeposit(
-        uint256 underlyingAmount,
-        uint256 minVaultTokensOut
-    ) external view returns (uint256 vaultTokenAmount, string memory error);
+    function dryDeposit(uint256 underlyingAmount, uint256 minVaultTokensOut)
+        external
+        view
+        returns (uint256 vaultTokenAmount, string memory error);
 
     /// @notice Withdraws `vaultTokenAmount` of LP token supported
     /// and burns the vault tokens
     /// @param vaultTokenAmount the amount of vault token to withdraw
     /// @return underlyingAmount the amount of LP token sent back
-    function withdraw(
-        uint256 vaultTokenAmount,
-        uint256 minUnderlyingOut
-    ) external returns (uint256 underlyingAmount);
+    function withdraw(uint256 vaultTokenAmount, uint256 minUnderlyingOut)
+        external
+        returns (uint256 underlyingAmount);
 
     /// @notice Dry-run version of `withdraw`
-    function dryWithdraw(
-        uint256 vaultTokenAmount,
-        uint256 minUnderlyingOut
-    ) external view returns (uint256 underlyingAmount, string memory error);
+    function dryWithdraw(uint256 vaultTokenAmount, uint256 minUnderlyingOut)
+        external
+        view
+        returns (uint256 underlyingAmount, string memory error);
 
     /// @return The address of the current strategy used by the vault
     function strategy() external view returns (address);

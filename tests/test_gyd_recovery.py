@@ -27,7 +27,7 @@ def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
 @pytest.fixture(scope="module")
 def register_dai_vault_module(reserve_manager, dai_vault, admin):
     reserve_manager.setVaults(
-        [VaultConfiguration(dai_vault, PersistedVaultMetadata(0, int(scale(1)), 0, 0))],
+        [VaultConfiguration(dai_vault, PersistedVaultMetadata(int(scale(1)), int(scale(1)), 0, 0))],
         {"from": admin},
     )
 

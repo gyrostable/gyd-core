@@ -72,6 +72,8 @@ contract BatchVaultPriceOracle is IBatchVaultPriceOracle, Governable {
         uint256[] memory underlyingPrices
     ) internal pure {
         for ((uint256 i, uint256 j) = (0, 0); i < vaultInfo.pricedTokens.length; i++) {
+            // Here we make use of the fact that both vaultInfo.pricedTokens and tokens are sorted by
+            // token address, so we don't have to reset j.
             while (tokens[j] != vaultInfo.pricedTokens[i].tokenAddress) j++;
             vaultInfo.pricedTokens[i].price = underlyingPrices[j];
         }

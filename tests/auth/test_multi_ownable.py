@@ -20,5 +20,5 @@ def test_remove_owner(multi_ownable, admin, alice):
     assert multi_ownable.owners() == [admin]
     with reverts(error_codes.INVALID_ARGUMENT):
         multi_ownable.removeOwner(alice, {"from": admin})
-    with reverts(error_codes.NOT_AUTHORIZED):
+    with reverts(error_codes.INVALID_ARGUMENT):
         multi_ownable.removeOwner(admin, {"from": admin})

@@ -18,6 +18,7 @@ import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/ICapAuthentication.sol";
 import "../interfaces/IGydRecovery.sol";
+import "../interfaces/IPAMM.sol";
 import "../interfaces/IReserveStewardshipIncentives.sol";
 import "../interfaces/balancer/IVault.sol";
 
@@ -29,6 +30,10 @@ library ConfigHelpers {
         returns (IBatchVaultPriceOracle)
     {
         return IBatchVaultPriceOracle(gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS));
+    }
+
+    function getPAMM(IGyroConfig gyroConfig) internal view returns (IPAMM) {
+        return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
     }
 
     function getRootSafetyCheck(IGyroConfig gyroConfig) internal view returns (ISafetyCheck) {

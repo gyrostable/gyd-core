@@ -291,7 +291,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
     /// @inheritdoc IMotherboard
     function pamm() public view override returns (IPAMM) {
-        return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
+        return gyroConfig.getPAMM();
     }
 
     function addToExternalCallWhitelist(address whitelistedAddress)

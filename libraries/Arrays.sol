@@ -5,12 +5,14 @@ pragma solidity ^0.8.4;
 import "../libraries/Errors.sol";
 
 library Arrays {
+    /// @dev sorts in-place.
     function sort(address[] memory data) internal view returns (address[] memory) {
         if (data.length == 0) return data;
         _sort(data, int256(0), int256(data.length - 1));
         return data;
     }
 
+    /// @dev Quicksort implementation
     function _sort(
         address[] memory arr,
         int256 left,
@@ -33,6 +35,7 @@ library Arrays {
         if (i < right) _sort(arr, i, right);
     }
 
+    /// @dev Remove duplicates from a sorted array.
     function dedup(address[] memory data) internal pure returns (address[] memory) {
         uint256 duplicatedCount = 0;
         for (uint256 i = 1; i < data.length; i++) {

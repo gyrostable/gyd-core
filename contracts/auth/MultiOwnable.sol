@@ -28,9 +28,8 @@ abstract contract MultiOwnable is Initializable {
     }
 
     function removeOwner(address owner) external onlyOwner {
-        require(owner != msg.sender, Errors.NOT_AUTHORIZED);
-        require(_owners.contains(owner), Errors.INVALID_ARGUMENT);
-        _owners.remove(owner);
+        require(_owners.length() > 1, Errors.INVALID_ARGUMENT);
+        require(_owners.remove(owner), Errors.INVALID_ARGUMENT);
     }
 
     function owners() external view returns (address[] memory) {

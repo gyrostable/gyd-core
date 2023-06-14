@@ -37,10 +37,6 @@ contract ReserveManager is IReserveManager, Governable {
         assetRegistry = _gyroConfig.getAssetRegistry();
         reserveAddress = address(_gyroConfig.getReserve());
 
-        require(address(vaultRegistry) != address(0), Errors.INVALID_ARGUMENT);
-        require(address(assetRegistry) != address(0), Errors.INVALID_ARGUMENT);
-        require(reserveAddress != address(0), Errors.INVALID_ARGUMENT);
-
         gyroConfig = _gyroConfig;
     }
 
@@ -99,7 +95,9 @@ contract ReserveManager is IReserveManager, Governable {
             reserveUSDValue += usdValue;
         }
         for (uint256 i = 0; i < length; i++) {
-            /// Only zero at initialization
+            // Only zero at initialization
+            // (or in a theoretical corner case when literally all GYD have been redeemed at collateralization ==
+            // exactly 1)
             vaultsInfo[i].currentWeight = reserveUSDValue == 0
                 ? vaultsInfo[i].persistedMetadata.scheduleWeight()
                 : usdValues[i].divDown(reserveUSDValue);
@@ -109,7 +107,6 @@ contract ReserveManager is IReserveManager, Governable {
         uint256[] memory weightedReturns = new uint256[](length);
         for (uint256 i = 0; i < length; i++) {
             uint256 initialPrice = vaultsInfo[i].persistedMetadata.priceAtCalibration;
-            if (initialPrice == 0) continue;
             weightedReturns[i] = vaultsInfo[i].price.divDown(initialPrice).mulDown(
                 vaultsInfo[i].persistedMetadata.scheduleWeight()
             );

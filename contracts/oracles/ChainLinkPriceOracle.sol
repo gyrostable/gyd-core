@@ -25,11 +25,17 @@ contract ChainlinkPriceOracle is BaseChainlinkPriceOracle {
 
     /// @notice Allows to set Chainlink feeds
     /// This can only be called by governance
+    /// @param feed the Chainlink feed address. If this is 0, the asset is removed (i.e. not supported anymore)
     function setFeed(address asset, address feed) external virtual governanceOnly {
         address previousFeed = feeds[asset];
         require(feed != previousFeed, Errors.INVALID_ARGUMENT);
-        _supportedAssets.add(asset);
-        feeds[asset] = feed;
+        if (feed == address(0)) {
+            _supportedAssets.remove(asset);
+            delete feeds[asset];
+        } else {
+            _supportedAssets.add(asset);
+            feeds[asset] = feed;
+        }
         emit FeedUpdated(asset, previousFeed, feed);
     }
 }
