@@ -65,7 +65,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     /// @notice parameters of the primary AMM
-    Params public systemParams;
+    Params internal _systemParams;
 
     /// @notice current redemption level of the primary AMM
     uint256 public redemptionLevel;
@@ -81,12 +81,17 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     ) Governable(_governor) {
         require(_gyroConfig != address(0), Errors.INVALID_ARGUMENT);
         gyroConfig = IGyroConfig(_gyroConfig);
-        systemParams = params;
+        _systemParams = params;
+    }
+
+    /// @inheritdoc IPAMM
+    function systemParams() external view returns (Params memory) {
+        return _systemParams;
     }
 
     /// @inheritdoc IPAMM
     function setSystemParams(Params memory params) external governanceOnly {
-        systemParams = params;
+        _systemParams = params;
 
         // NOTE: this is not strictly needed but ensures that the given
         // parameters allow to compute the derived parameters without underflowing
@@ -545,7 +550,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         returns (uint256)
     {
         if (gydAmount == 0) return 0;
-        Params memory params = systemParams;
+        Params memory params = _systemParams;
         DerivedParams memory derived = createDerivedParams(params);
         State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
         return computeRedeemAmount(currentState, params, derived, gydAmount);
@@ -577,7 +582,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         returns (uint256)
     {
         if (gydAmount == 0) return 0;
-        Params memory params = systemParams;
+        Params memory params = _systemParams;
         State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
         DerivedParams memory derived = createDerivedParams(params);
         uint256 redeemAmount = computeRedeemAmount(currentState, params, derived, gydAmount);
