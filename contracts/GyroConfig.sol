@@ -12,8 +12,10 @@ contract GyroConfig is IGyroConfig, GovernableUpgradeable {
     uint8 internal constant ADDRESS_TYPE = 1;
     uint8 internal constant UINT_TYPE = 2;
 
+    /// @notice Actual configuration values
     mapping(bytes32 => uint256) internal _config;
 
+    /// @notice Configuration metadata such as existence, type, and frozen status
     EnumerableMapping.Bytes32ToUIntMap internal _configMeta;
 
     /// @inheritdoc IGyroConfig

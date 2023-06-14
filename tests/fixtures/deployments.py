@@ -409,7 +409,7 @@ def register_usdc_vault(reserve_manager, usdc_vault, admin):
     reserve_manager.setVaults(
         [
             VaultConfiguration(
-                usdc_vault, PersistedVaultMetadata(0, int(scale(1)), 0, 0)
+                usdc_vault, PersistedVaultMetadata(int(scale(1)), int(scale(1)), 0, 0)
             )
         ],
         {"from": admin},
@@ -421,10 +421,12 @@ def register_usdc_and_dai_vaults(reserve_manager, usdc_vault, dai_vault, admin):
     reserve_manager.setVaults(
         [
             VaultConfiguration(
-                dai_vault, PersistedVaultMetadata(0, int(scale("0.6")), 0, 0)
+                dai_vault,
+                PersistedVaultMetadata(int(scale(1)), int(scale("0.6")), 0, 0),
             ),
             VaultConfiguration(
-                usdc_vault, PersistedVaultMetadata(0, int(scale("0.4")), 0, 0)
+                usdc_vault,
+                PersistedVaultMetadata(int(scale(1)), int(scale("0.4")), 0, 0),
             ),
         ],
         {"from": admin},

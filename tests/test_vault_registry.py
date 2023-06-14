@@ -21,7 +21,7 @@ def _make_vault_config(
     fee_handler.setVaultFees(vault_address, 0, 0)
     return VaultConfiguration(
         vault_address=vault_address,
-        metadata=PersistedVaultMetadata(0, int(scale(weight)), 0, 0),
+        metadata=PersistedVaultMetadata(int(scale(1)), int(scale(weight)), 0, 0),
     )
 
 
