@@ -43,9 +43,11 @@ contract ReserveSystemRead {
         return ReadValues(reserveState, systemParams, redemptionLevel, redemptionPrice);
     }
 
-    function readWithoutReserveState(
-        uint256 totalUSDValue
-    ) external view returns (ReadValuesWithoutReserveState memory) {
+    function readWithoutReserveState(uint256 totalUSDValue)
+        external
+        view
+        returns (ReadValuesWithoutReserveState memory)
+    {
         IPAMM.Params memory systemParams = primaryAMMV1.systemParams();
         uint256 redemptionLevel = primaryAMMV1.redemptionLevel();
         uint256 redemptionPrice = primaryAMMV1.computeRedeemAmount(1e18, totalUSDValue);
