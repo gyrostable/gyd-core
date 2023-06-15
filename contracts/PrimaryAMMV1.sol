@@ -566,7 +566,15 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             params
         );
         // we are redeeming so the next reserve value must be smaller than the current one
-        return state.reserveValue - nextReserveValue;
+        uint256 redeemAmount = state.reserveValue - nextReserveValue;
+
+        // Defensive programming. The following conditions could only occur due to numerical inaccuracy in extreme situations.
+        if (redeemAmount > amount)
+            redeemAmount = amount;
+        if (redeemAmount > state.totalGyroSupply)
+            redeemAmount = state.totalGyroSupply;
+
+        return redeemAmount;
     }
 
     /// @notice Returns the USD value to mint given an ammount of Gyro dollars
