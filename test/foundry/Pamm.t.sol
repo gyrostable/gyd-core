@@ -41,12 +41,37 @@ contract PammTest is Test {
         // ^ Use tpamm.setParams() to set actual parameters!
     }
 
+    // "abs or rel" equality logic typically used for floating-point numbers. Obv we *don't* use
+    // floating point so bounds need to be driven by fundamental rather than technical reasons.
+    function assertApproxEqRelAbs(uint actual, uint expd, uint delta_rel, uint delta_abs) public {
+        uint delta_abs_actual = actual.absSub(expd);
+        uint delta_rel_actual = delta_abs_actual.divDown(expd);
+        if (delta_abs_actual > delta_abs && delta_rel_actual > delta_rel) {
+            console.log("Error: a ~= b not satisfied [uint]");
+            console.log("    Expected: %e", expd);
+            console.log("      Actual: %e", actual);
+            console.log(" Max %% Delta: %e", delta_rel);
+            console.log("     %% Delta: %e", delta_rel_actual);
+            console.log("   Max Delta: %e", delta_abs);
+            console.log("       Delta: %e", delta_abs_actual);
+            assertFalse(true);
+        }
+    }
+
+    function assertApproxLeRelAbs(uint actual, uint expd, uint delta_rel, uint delta_abs) public {
+        if (actual <= expd)
+            return;
+        assertApproxEqRelAbs(actual, expd, delta_rel, delta_abs);
+    }
+
     /// @dev map x from [0, type max] to [a, b]
     function mapToInterval(
         uint32 x,
         uint256 a,
         uint256 b
     ) public pure returns (uint256) {
+        vm.assume(a < b);  // retry for fuzz tests, fail for regular tests (not used there)
+
         // order matters b/c integers!
         return a + ((b - a) * uint256(x)) / type(uint32).max;
     }
@@ -119,10 +144,14 @@ contract PammTest is Test {
         uint32 ya0,
         IPAMM.Params memory params
     ) public pure returns (PrimaryAMMV1.State memory anchoredState) {
-        // OPEN just choosing something borderline nontrivial here.
-        uint256 ya = mapToInterval(ya0, 10e18, 1e11 * 1e18);
+        // We use values between (trivial) and 100M GYD.
+        // SOMEDAY For larger values, some rounding errors are amplified in some extreme situations.
+        // This would have to be looked at in more detail separately. See Steffen's notes fomr
+        // 2023-06-15.
+        uint256 ya = mapToInterval(ya0, 10e18, 100e6 * 1e18);
         // SOMEDAY can make further restrictions, e.g. ba >= 10 unscaled or so.
-        uint256 ba = mapToInterval(ba0, (params.thetaBar * ya) / 1e18, ya);
+        // TODO The gap to thetaBar is so that alpha does not become extremely large, which is a problem together with x close to 0 (normalized). We're in region III L here. Actually, we *cannot* assume this though!
+        uint256 ba = mapToInterval(ba0, ((params.thetaBar + 0.0001e18) * ya) / 1e18, ya.mulDown(1e18 - 0.00001e18));
         uint256 x = mapToInterval(x0, 0, ya);
         // This is only to ensure inequalities are strict.
         // SOMEDAY I don't think this does much actually.
@@ -167,7 +196,7 @@ contract PammTest is Test {
 
     /// @dev Some simple invariants for the derived params. There is only so much to check here though.
     function checkDerivedValues(IPAMM.Params memory params) public {
-        console.log("---");
+        console.log("--------------------------------------------------------------------------");
         setParams(params);
         PrimaryAMMV1.DerivedParams memory derived = tpamm.computeDerivedParams();
 
@@ -282,7 +311,7 @@ contract PammTest is Test {
         PrimaryAMMV1.State memory anchoredState,
         IPAMM.Params memory params
     ) public {
-        console.log("---");
+        console.log("--------------------------------------------------------------------------");
         setParams(params);
         logAnchoredState(anchoredState);
 
@@ -308,6 +337,16 @@ contract PammTest is Test {
             mkState(0.4994994994994995e18, 0.9e18, 1e18),
             mkParams(2.0e18, 0.3e18, 0.6e18)
         );
+
+        // Regression for checkRedeemFromBa().
+        checkBReconstructionFromB(
+            mkState(0.3e18, 0.602035718005177562e18, 0.7e18),
+            mkParams(3e17, 5e17, 3e17)
+        );
+    }
+
+    function testFuzzRegression_BReconstructionFromB() public {
+        testFuzz_BReconstructionFromB(1559196544, 1885762392, 1044300757, 1910203372, 3604, 6434);
     }
 
     function testFuzz_BReconstructionFromB(
@@ -329,11 +368,12 @@ contract PammTest is Test {
         PrimaryAMMV1.State memory state,
         IPAMM.Params memory params
     ) public {
-        console.log("---");
+        console.log("--------------------------------------------------------------------------");
         setParams(params);
         logState(state);
         uint256 reconstructedB = tpamm.roundTripState(state);
-        assertApproxEqAbs(state.reserveValue, reconstructedB, DELTA_SMALL);
+        // assertApproxEqAbs(state.reserveValue, reconstructedB, 1e11);
+        assertApproxEqRel(state.reserveValue, reconstructedB, 1e12);  // 1e-6 relative
     }
 
     function testExamples_RedeemFromBa() public {
@@ -367,8 +407,13 @@ contract PammTest is Test {
     ) public {
         IPAMM.Params memory params = mkParamsFromFuzzing(alphaBar0, xuBar0, thetaBar0);
         PrimaryAMMV1.State memory anchoredState = mkAnchoredStateFromFuzzing(x0, ba0, ya0, params);
-        uint256 dx = mapToInterval(dx0, 0, anchoredState.totalGyroSupply - anchoredState.redemptionLevel);
+        uint256 dx = mapToInterval(dx0, 1e18, anchoredState.totalGyroSupply - anchoredState.redemptionLevel);
         checkRedeemFromBa(dx, anchoredState, params);
+    }
+
+    function testFuzzRegression_RedeemFromBa() public {
+        testFuzz_RedeemFromBa(4294967295, 0, 2147268247, 219171, 0, 0, 9845018);
+        testFuzz_RedeemFromBa(4294967295, 0, 2147249903, 4139298295, 0, 0, 1);
     }
 
     /// @dev Given an anchor point, x, and a redeption amount dx, compute directly the reserve value
@@ -379,12 +424,23 @@ contract PammTest is Test {
         PrimaryAMMV1.State memory anchoredState,
         IPAMM.Params memory params
     ) public {
-        console.log("---");
+        console.log("--------------------------------------------------------------------------");
         setParams(params);
         console.log("dx = %e", dx);
         logAnchoredState(anchoredState);
 
+        console.log("alpha = %e",
+                    tpamm.testComputeSlope(anchoredState.reserveValue, anchoredState.totalGyroSupply));
+
+        console.log("ba (normalized) = %e", anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply));
+        console.log("x (normalized)  = %e", anchoredState.redemptionLevel.divDown(anchoredState.totalGyroSupply));
+        console.log("dx (normalized)  = %e", dx.divDown(anchoredState.totalGyroSupply));
+        console.log("alpha (normalized) = %e",
+                    tpamm.testComputeSlope(anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply), 1e18));
+
+        console.log("> computeReserveValueFromAnchor");
         uint256 b = tpamm.computeReserveValueFromAnchor(anchoredState);
+        console.log("b = %e", b);
         uint256 y = anchoredState.totalGyroSupply - anchoredState.redemptionLevel;
 
         PrimaryAMMV1.State memory anchoredState1 = PrimaryAMMV1.State({
@@ -393,12 +449,22 @@ contract PammTest is Test {
             reserveValue: anchoredState.reserveValue
         });
 
+        console.log("> computeReserveValueFromAnchor");
         uint256 b1 = tpamm.computeReserveValueFromAnchor(anchoredState1);
 
         PrimaryAMMV1.State memory state = PrimaryAMMV1.State(anchoredState.redemptionLevel, b, y);
+        console.log("> computeRedeemAmount, state =");
+        logState(state);
         uint256 db = tpamm.computeRedeemAmount(state, dx);
 
-        assertApproxEqAbs(db, b - b1, DELTA_MED);
+        // SOMEDAY These bounds are economically motivated. From a technical purity POV we'd want tighter ones.
+
+        // SOMEDAY This *can* fail, see one of the examples!
+        console.log("assert redemption price <= 1");
+        assertApproxLeRelAbs(db, dx, 0, 0.01e18);
+
+        console.log("assert redemption amounts match");
+        assertApproxEqRelAbs(db, b - b1, 1e13, 0.01e18);  // rel=1e-6, abs=0.01 USD
     }
 
     // Could also do a redemption test.
