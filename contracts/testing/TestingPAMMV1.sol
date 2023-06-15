@@ -232,7 +232,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         return computeAlpha(ba, ya, thetaFloor, alphaMin);
     }
 
-    function testComputeSlope(uint256 ba, uint256 ya) external view returns (uint256) {
+    function testComputeSlope(uint256 ba, uint256 ya) public view returns (uint256) {
         return computeAlpha(ba, ya, _systemParams.thetaBar, _systemParams.alphaBar);
     }
 
@@ -244,6 +244,15 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 targetUtilizationCeiling
     ) external view returns (uint256) {
         return computeXu(ba, ya, alpha, stableRedeemThresholdUpperBound, targetUtilizationCeiling);
+    }
+
+    function testComputeUpperRedemptionThreshold(uint256 ba, uint256 ya)
+        external
+        view
+        returns (uint256)
+    {
+        uint256 alpha = testComputeSlope(ba, ya);
+        return computeXu(ba, ya, alpha, _systemParams.xuBar, ONE - _systemParams.thetaBar);
     }
 
     function testComputeLowerRedemptionThreshold(
