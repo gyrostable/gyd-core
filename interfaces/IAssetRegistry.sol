@@ -2,6 +2,8 @@
 // for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 pragma solidity ^0.8.4;
 
+import "../libraries/DataTypes.sol";
+
 interface IAssetRegistry {
     /// @notice Emitted when an asset address is updated
     /// If `previousAddress` was 0, it means that the asset was added to the registry
@@ -16,6 +18,9 @@ interface IAssetRegistry {
 
     /// @notice Emitted when an asset is unset as being stable
     event StableAssetRemoved(address indexed asset);
+
+    /// @notice Emitted when an asset range is updated
+    event AssetRangeUpdated(address indexed assetAddress, DataTypes.Range range);
 
     /// @notice Returns the address associated with the given asset name
     /// e.g. "DAI" -> 0x6B175474E89094C44Da98b954EedeAC495271d0F
@@ -37,12 +42,18 @@ interface IAssetRegistry {
     /// @return true if the asset address is registered
     function isAssetAddressRegistered(address assetAddress) external view returns (bool);
 
+    /// @return the price range of the asset
+    function getAssetRange(address asset) external view returns (DataTypes.Range memory);
+
     /// @return true if the asset name is stable
     function isAssetStable(address assetAddress) external view returns (bool);
 
     /// @notice Adds a stable asset to the registry
     /// The asset must already be registered in the registry
     function addStableAsset(address assetAddress) external;
+
+    /// @notice Sets the price range (floor and ceiling) for the given asset
+    function setAssetRange(address asset, DataTypes.Range memory range) external;
 
     /// @notice Removes a stable asset to the registry
     /// The asset must already be a stable asset

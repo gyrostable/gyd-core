@@ -113,6 +113,9 @@ def mock_balancer_vault(admin, gyro_config, MockBalVault):
 def gyro_config(admin, GyroConfig):
     config = admin.deploy(GyroConfig)
     config.initialize(admin)
+    config.setUint(
+        config_keys.STABLECOIN_MAX_DEVIATION, constants.STABLECOIN_MAX_DEVIATION
+    )
     return config
 
 
@@ -140,7 +143,7 @@ def mock_price_oracle(admin, MockPriceOracle, gyro_config):
 
 @pytest.fixture(scope="module")
 def asset_registry(admin, AssetRegistry, gyro_config):
-    asset_registry = admin.deploy(AssetRegistry)
+    asset_registry = admin.deploy(AssetRegistry, gyro_config)
     asset_registry.initialize(admin)
     gyro_config.setAddress(
         config_keys.ASSET_REGISTRY_ADDRESS, asset_registry, {"from": admin}
@@ -290,7 +293,6 @@ def reserve_safety_manager(admin, TestingReserveSafetyManager):
         TestingReserveSafetyManager,
         admin,
         constants.MAX_ALLOWED_VAULT_DEVIATION,
-        constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
     )
 

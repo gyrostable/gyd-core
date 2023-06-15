@@ -62,10 +62,16 @@ contract ReserveManager is IReserveManager, Governable {
                 tokens.length
             );
             for (uint256 j = 0; j < tokens.length; j++) {
+                bool isStable = assetRegistry.isAssetStable(address(tokens[j]));
+                DataTypes.Range memory range;
+                if (isStable) {
+                    range = assetRegistry.getAssetRange(address(tokens[j]));
+                }
                 pricedTokens[j] = DataTypes.PricedToken({
                     tokenAddress: address(tokens[j]),
-                    isStable: assetRegistry.isAssetStable(address(tokens[j])),
-                    price: 0
+                    isStable: isStable,
+                    price: 0,
+                    priceRange: range
                 });
             }
 

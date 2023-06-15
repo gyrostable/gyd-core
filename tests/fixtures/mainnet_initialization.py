@@ -219,7 +219,6 @@ def mainnet_reserve_safety_manager(admin, ReserveSafetyManager, mainnet_asset_re
     return admin.deploy(
         ReserveSafetyManager,
         scale("0.2"),  # large deviation to avoid failing test because of price changes
-        constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
         mainnet_asset_registry,
     )

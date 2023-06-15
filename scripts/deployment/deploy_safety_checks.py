@@ -37,7 +37,6 @@ def reserve_safety_manager(governance_proxy):
         ReserveSafetyManager,
         governance_proxy,
         scale("0.1"),
-        constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
         **make_tx_params(),
     )

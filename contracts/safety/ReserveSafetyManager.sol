@@ -19,20 +19,14 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     using DecimalScale for uint256;
 
     uint256 public maxAllowedVaultDeviation;
-    uint256 public stablecoinMaxDeviation;
     uint256 public minTokenPrice;
-
-    /// @notice a stablecoin should be equal to 1 USD
-    uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
 
     constructor(
         address _governor,
         uint256 _maxAllowedVaultDeviation,
-        uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice
     ) Governable(_governor) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
-        stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;
     }
 
@@ -42,10 +36,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
     function setMinTokenPrice(uint256 _minTokenPrice) external governanceOnly {
         minTokenPrice = _minTokenPrice;
-    }
-
-    function setStablecoinMaxDeviation(uint256 _stablecoinMaxDeviation) external governanceOnly {
-        stablecoinMaxDeviation = _stablecoinMaxDeviation;
     }
 
     /// @notice For given token amounts and token prices, calculates the weight of each token with
@@ -107,7 +97,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     /// and the amount that the user can mint/redeem
     function _canOperateWithDepeggedStablecoins(DataTypes.Metadata memory metaData)
         internal
-        view
+        pure
         returns (bool)
     {
         if (!metaData.mint) return true;
@@ -116,10 +106,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             DataTypes.VaultMetadata memory vaultData = metaData.vaultMetadata[i];
             for (uint256 j; j < vaultData.pricedTokens.length; j++) {
                 DataTypes.PricedToken memory pricedToken = vaultData.pricedTokens[j];
-                if (
-                    pricedToken.isStable &&
-                    pricedToken.price < STABLECOIN_IDEAL_PRICE - stablecoinMaxDeviation
-                ) {
+                if (pricedToken.isStable && pricedToken.price < pricedToken.priceRange.floor) {
                     return false;
                 }
             }
@@ -217,10 +204,15 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         vaultMetadata.allStablecoinsOnPeg = true;
         vaultMetadata.atLeastOnePriceLargeEnough = false;
         for (uint256 i = 0; i < vaultMetadata.pricedTokens.length; i++) {
-            uint256 tokenPrice = vaultMetadata.pricedTokens[i].price;
+            DataTypes.PricedToken memory pricedToken = vaultMetadata.pricedTokens[i];
+            uint256 tokenPrice = pricedToken.price;
             bool isStable = vaultMetadata.pricedTokens[i].isStable;
 
-            if (isStable && tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
+            if (
+                isStable &&
+                (tokenPrice < pricedToken.priceRange.floor ||
+                    tokenPrice > pricedToken.priceRange.ceiling)
+            ) {
                 vaultMetadata.allStablecoinsOnPeg = false;
             }
             if (tokenPrice >= minTokenPrice) {
@@ -284,7 +276,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         return true;
     }
 
-    function _isStablecoinSafe(DataTypes.Metadata memory metaData) internal view returns (bool) {
+    function _isStablecoinSafe(DataTypes.Metadata memory metaData) internal pure returns (bool) {
         return
             metaData.allStablecoinsAllVaultsOnPeg ||
             _canOperateWithDepeggedStablecoins(metaData) ||

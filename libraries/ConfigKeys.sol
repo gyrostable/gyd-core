@@ -39,4 +39,5 @@ library ConfigKeys {
 
     bytes32 internal constant REDEEM_DISCOUNT_RATIO = "REDEEM_DISCOUNT_RATIO";
     bytes32 internal constant VAULT_DUST_THRESHOLD = "VAULT_DUST_THRESHOLD";
+    bytes32 internal constant STABLECOIN_MAX_DEVIATION = "STABLECOIN_MAX_DEVIATION";
 }
