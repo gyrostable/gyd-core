@@ -171,6 +171,10 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 ya,
         uint256 alpha,
         uint256 xu,
+        // TODO should these just *always* be ignored? So we return ya and never use this value. Probably.
+        // - In principle, these underflows shouldn't occur even in regions like III H. Then xl=ya.
+        // - I've seen quite large but unproblematic values here, like 2.5e5 (unscaled, not normalized) but only when ya is large (e.g. 9.6e7).
+        // TODO users of this value should be eliminated except for maybe in computeReserve().
         bool ignoreUnderflow
     ) internal pure returns (uint256) {
         require(ba < ya, Errors.INVALID_ARGUMENT);
