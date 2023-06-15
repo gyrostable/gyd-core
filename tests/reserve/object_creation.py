@@ -1,5 +1,6 @@
 import hypothesis.strategies as st
 from tests.support import constants
+from tests.support.types import Range
 
 
 def vault_lists(*args, **kwargs):
@@ -44,7 +45,8 @@ def bundle_to_metadata(
         prices = mock_price_oracle.getPricesUSD(tokens)
         if token_stables is None:
             token_stables = [False] * len(tokens)
-        token_with_prices = list(zip(tokens, token_stables, prices))
+        price_ranges = [Range() for _ in tokens]
+        token_with_prices = list(zip(tokens, token_stables, prices, price_ranges))
         vaults_metadata.append((mock_vaults[i],) + v + (token_with_prices,))
     return (vaults_metadata,) + global_metadata
 
@@ -133,7 +135,8 @@ def order_builder(
         prices = mock_price_oracle.getPricesUSD(tokens)
         if stable_assets is None:
             stable_assets = [False] * len(tokens)
-        token_with_prices = list(zip(tokens, stable_assets, prices))
+        price_ranges = [Range() for _ in tokens]
+        token_with_prices = list(zip(tokens, stable_assets, prices, price_ranges))
         underlying = vault.underlying()
 
         vault_info = (
@@ -209,7 +212,10 @@ def order_builder_vary_persisted(
 
         tokens = mock_vaults[i].getTokens()
         prices = mock_price_oracle.getPricesUSD(tokens)
-        token_with_prices = list(zip(tokens, [False] * len(tokens), prices))
+        price_ranges = [Range() for _ in tokens]
+        token_with_prices = list(
+            zip(tokens, [False] * len(tokens), prices, price_ranges)
+        )
         underlying = mock_vaults[i].underlying()
 
         vault_info = (
