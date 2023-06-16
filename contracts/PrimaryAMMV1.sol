@@ -307,7 +307,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     ) internal pure returns (uint256) {
         uint256 alpha = computeAlpha(ba, ya, params.thetaBar, params.alphaBar);
         uint256 xu = computeXu(ba, ya, alpha, params.xuBar, ONE - params.thetaBar);
-        uint256 xl = computeXl(ba, ya, alpha, xu, false);
+        uint256 xl = computeXl(ba, ya, alpha, xu, true);
         return computeReserveFixedParams(x, ba, ya, alpha, xu, xl);
     }
 
