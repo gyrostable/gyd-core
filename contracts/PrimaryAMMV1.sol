@@ -22,9 +22,9 @@ contract PrimaryAMMV1 is IPAMM, Governable {
 
     IGyroConfig public immutable gyroConfig;
 
-    /// @dev we tolerate underflows due to numerical issues up to 1e8, so 1e-10
+    /// @dev we tolerate underflows due to numerical issues up to 1e10, so 1e-8
     /// given our 1e18 scale
-    uint256 internal constant _UNDERFLOW_EPSILON = 1e8;
+    uint256 internal constant _UNDERFLOW_EPSILON = 1e10;
 
     uint256 internal constant ONE = 1e18;
     uint256 internal constant TWO = 2e18;
