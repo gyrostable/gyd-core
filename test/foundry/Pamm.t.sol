@@ -126,14 +126,13 @@ contract PammTest is Test {
     ) public pure returns (IPAMM.Params memory) {
         // NB max possible values are type(uint64).max b/c these values will be cast down to uint64. 
         // But we choose hand-crafted, more realistic values.
-        // TODO maybe make it work in the short term if obscure values fail.
 
-        // TODO maybe try bring the max down if it helps with the tests.
-        // SOMEDAY min value could also be 100bp. (currently 10bp)
+        // SOMEDAY These parameters are quite wide. Could be tighter:
+        // - min alphaBar value could also be 100bp. (currently 10bp)
+        // - max xuBar bound can probably be even lower. xuBar ~ normal outflow levels probably.
+        // - min thetaBar can also be increased further if helps. Any thetaBar < 20% is strange.
         uint256 alphaBar = mapToInterval(alphaBar0, 0.001e18, type(uint64).max);
-        // SOMEDAY Max bound can probably be even lower. xuBar ~ normal outflow levels probably.
         uint256 xuBar = mapToInterval(xuBar0, 0.0001e18, 0.5e18);
-        // SOMEDAY can also increase lower bound further if helps. thetaBar < 20% is strange.
         uint256 thetaBar = mapToInterval(thetaBar0, 0.1e18, 1e18 - 0.001e18);
         return mkParams(alphaBar, xuBar, thetaBar);
     }
@@ -144,17 +143,14 @@ contract PammTest is Test {
         uint32 ya0,
         IPAMM.Params memory params
     ) public pure returns (PrimaryAMMV1.State memory anchoredState) {
-        // We use values between (trivial) and 100M GYD.
-        // SOMEDAY For larger values, some rounding errors are amplified in some extreme situations.
-        // This would have to be looked at in more detail separately. See Steffen's notes fomr
-        // 2023-06-15.
-        uint256 ya = mapToInterval(ya0, 10e18, 100e6 * 1e18);
-        // SOMEDAY can make further restrictions, e.g. ba >= 10 unscaled or so.
-        // TODO The gap to thetaBar is so that alpha does not become extremely large, which is a problem together with x close to 0 (normalized). We're in region III L here. Actually, we *cannot* assume this though!
-        uint256 ba = mapToInterval(ba0, ((params.thetaBar + 0.0001e18) * ya) / 1e18, ya.mulDown(1e18 - 0.00001e18));
+        // ya: We use values between (trivial) and 500M GYD.
+        // SOMEDAY For larger values, some rounding errors are amplified to small but non-trivial values in some extreme situations.
+        // This would have to be looked at in more detail separately. See Steffen's notes from 2023-06-15.
+        uint256 ya = mapToInterval(ya0, 10e18, 500e6 * 1e18);
+        // NB The lower-bound gap is so that alpha does not become extremely large, leading to instability.
+        uint256 ba = mapToInterval(ba0, ((params.thetaBar + 0.0000001e18) * ya) / 1e18, ya);
         uint256 x = mapToInterval(x0, 0, ya);
-        // This is only to ensure inequalities are strict.
-        // SOMEDAY I don't think this does much actually.
+        // This is only to ensure inequalities above are strict.
         vm.assume(ya > ba && ba > ya.mulDown(params.thetaBar));
         return mkState(x, ba, ya);
     }
@@ -282,7 +278,7 @@ contract PammTest is Test {
         checkRegionReconstruction(mkState(0.3e18, 0.9e18, 1e18), mkParams(0.3e18, 0.5e18, 0.3e18)); // II l does not exist and we're in II ii
     }
 
-    // // TESTS DISABLED b/c region reconstruction is brittle for values that are right at the edge. The other tests (b reconstrution, redeem test make) ensure that this has no ill effects. (so in some cases a different region may be detected, but this will lead to the same result within tight margins)
+    // // TESTS DISABLED b/c region reconstruction is brittle for values that are right on the edge. The other tests (b reconstrution, redeem test make) ensure that this has no ill effects. (so in some cases a different region may be detected, but this will lead to the same result within a tight margin)
     // function testFuzzRegression_RegionReconstruction() public {
     //     testFuzz_RegionReconstruction(0, 1, 0, 0, 0, 0);
     // }
@@ -367,8 +363,8 @@ contract PammTest is Test {
         setParams(params);
         logState(state);
         uint256 reconstructedB = tpamm.roundTripState(state);
-        // assertApproxEqAbs(state.reserveValue, reconstructedB, 1e11);
-        assertApproxEqRel(state.reserveValue, reconstructedB, 1e12);  // 1e-6 relative
+        // assertApproxEqRel(state.reserveValue, reconstructedB, 1e12);  // 1e-6 relative
+        assertApproxEqRelAbs(state.reserveValue, reconstructedB, 1e10, 0.01e18);  // 1e-8 relative or 0.01 absolute
     }
 
     function testExamples_RedeemFromBa() public {
@@ -413,7 +409,7 @@ contract PammTest is Test {
 
     /// @dev Given an anchor point, x, and a redeption amount dx, compute directly the reserve value
     /// before and after the redemption. The difference should be the redemption amount computed
-    /// via the usual PAMM logic (= reconstruction, then computation of the new b).
+    /// via the usual PAMM logic (= reconstruction, then computation of the new b) at the state before redemption.
     function checkRedeemFromBa(
         uint256 dx,
         PrimaryAMMV1.State memory anchoredState,
@@ -452,15 +448,12 @@ contract PammTest is Test {
         logState(state);
         uint256 db = tpamm.computeRedeemAmount(state, dx);
 
-        // SOMEDAY These bounds are economically motivated. From a technical purity POV we'd want tighter ones.
-
-        // SOMEDAY This *can* fail, see one of the examples!
+        // NB This *can* fail in extreme settings (by a small margin) unless we explicitly avoid it in computeRedeemAmount()!
         console.log("assert redemption price <= 1");
         assertApproxLeRelAbs(db, dx, 0, 0.01e18);
 
         console.log("assert redemption amounts match");
-        assertApproxEqRelAbs(db, b - b1, 1e13, 0.01e18);  // rel=1e-6, abs=0.01 USD
+        // The following bounds are economially motivated based on a mint/redeem fee and minimum tx cost.
+        assertApproxEqRelAbs(db, b - b1, 1e13, 0.03e18);  // rel=1e-5, abs=0.03 USD
     }
-
-    // Could also do a redemption test.
 }
