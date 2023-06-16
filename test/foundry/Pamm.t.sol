@@ -200,10 +200,10 @@ contract PammTest is Test {
         setParams(params);
         PrimaryAMMV1.DerivedParams memory derived = tpamm.computeDerivedParams();
 
-        // TODO: Once we have convinced ourselves that these tests always pass (up to rounding errors), the following variables can be eliminated:
-        // - derived.xlThresholdIIHL -> Replace by 1.0
-        // - derived.xlThresholdIIIHL -> Replace by 1.0
-        // - derived.alphaThresholdIIIHL -> Replace by theta = 1.0 - thetaBar.
+        // The following checks theory and justifies the following replacements we made for values that don't actually need to be computed.
+        // - derived.xlThresholdIIHL -> 1.0
+        // - derived.xlThresholdIIIHL -> 1.0
+        // - derived.alphaThresholdIIIHL -> theta = 1.0 - thetaBar.
         if (
             derived.baThresholdRegionI > derived.baThresholdIIHL &&
             derived.baThresholdIIHL > derived.baThresholdRegionII
@@ -225,10 +225,8 @@ contract PammTest is Test {
             assertApproxEqAbs(xl1, 1e18, DELTA_XL_1);
             console.log("at baIIHL, xl2 = 1");
             assertApproxEqAbs(xl2, 1e18, DELTA_XL_1);
-        } else {
-            console.log("if IIHL is out of range, default xl = 0");
-            assertEq(derived.xlThresholdIIHL, 0);
         }
+        // else, this value is not used.
 
         if (derived.baThresholdRegionII > derived.baThresholdIIIHL) {
             uint256 theta = FixedPoint.ONE - params.thetaBar;
@@ -258,12 +256,8 @@ contract PammTest is Test {
             assertApproxEqAbs(xl1, 1e18, DELTA_XL_1);
             console.log("at baIIIHL, xl2 = 1");
             assertApproxEqAbs(xl2, 1e18, DELTA_XL_1);
-        } else {
-            console.log("if IIIHL is out of range, default xl = 0");
-            assertEq(derived.xlThresholdIIIHL, 0);
-            console.log("if IIIHL is out of range, default alpha = 0");
-            assertEq(derived.alphaThresholdIIIHL, 0);
         }
+        // else, these values are not used.
     }
 
     function testExamples_RegionReconstruction() public {
