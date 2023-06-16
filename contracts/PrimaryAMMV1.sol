@@ -149,8 +149,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         }
         if (x <= xl) {
             uint256 pos = ba + (alpha * (x - xu).squareDown()) / TWO;
-            if (pos >= x)
-                return pos - x;
+            if (pos >= x) return pos - x;
             else {
                 require(pos + _UNDERFLOW_EPSILON.mulDown(ya) >= x, Errors.SUB_OVERFLOW);
                 return 0;
@@ -328,11 +327,11 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             );
     }
 
-    function isInThirdRegionHigh(State memory normalizedState, Params memory params, DerivedParams memory derived)
-        internal
-        pure
-        returns (bool)
-    {
+    function isInThirdRegionHigh(
+        State memory normalizedState,
+        Params memory params,
+        DerivedParams memory derived
+    ) internal pure returns (bool) {
         if (derived.baThresholdIIIHL >= derived.baThresholdRegionII) return false;
         return
             normalizedState.reserveValue >=
@@ -355,7 +354,8 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             // case I
             if (normalizedState.redemptionLevel <= params.xuBar) return Region.CASE_i;
 
-            uint256 lhs = normalizedState.reserveValue.divDown(normalizedState.totalGyroSupply) + uint256(params.alphaBar).mulDown(normalizedState.redemptionLevel - params.xuBar);
+            uint256 lhs = normalizedState.reserveValue.divDown(normalizedState.totalGyroSupply) +
+                uint256(params.alphaBar).mulDown(normalizedState.redemptionLevel - params.xuBar);
             uint256 rhs = ONE;
             if (lhs <= rhs) return Region.CASE_I_ii;
             return Region.CASE_I_iii;
@@ -533,10 +533,8 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 redeemAmount = state.reserveValue - nextReserveValue;
 
         // Defensive programming. The following conditions could only occur due to numerical inaccuracy in extreme situations.
-        if (redeemAmount > amount)
-            redeemAmount = amount;
-        if (redeemAmount > state.totalGyroSupply)
-            redeemAmount = state.totalGyroSupply;
+        if (redeemAmount > amount) redeemAmount = amount;
+        if (redeemAmount > state.totalGyroSupply) redeemAmount = state.totalGyroSupply;
 
         return redeemAmount;
     }
