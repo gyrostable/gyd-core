@@ -64,16 +64,12 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     struct DerivedParams {
         uint256 baThresholdRegionI; // b_a^{I/II}
         uint256 baThresholdRegionII; // b_a^{II/III}
+        // SOMEDAY knowing that these are at their respective thresholds, the xl and xu calculations could be further simplified.
         uint256 xlThresholdAtThresholdI; // x_L^{I/II}
         uint256 xlThresholdAtThresholdII; // x_L^{II/III}
         uint256 baThresholdIIHL; // ba^{h/l}
         uint256 baThresholdIIIHL; // ba^{H/L}
         uint256 xuThresholdIIHL; // x_U^{h/l}
-        // TODO check if we can just replace this by 1. (we should)
-        uint256 xlThresholdIIHL; // x_L^{h/l}
-        uint256 alphaThresholdIIIHL; // α^{H/L}
-        // TODO check if we can just replace this by 1. (we should)
-        uint256 xlThresholdIIIHL; // x_L^{H/L}
     }
 
     /// @notice parameters of the primary AMM
@@ -268,33 +264,9 @@ contract PrimaryAMMV1 is IPAMM, Governable {
                 params.xuBar,
                 theta
             );
-            derived.xlThresholdIIHL = computeXl(
-                derived.baThresholdIIHL,
-                ONE,
-                params.alphaBar,
-                derived.xuThresholdIIHL,
-                true
-            );
         }
 
         derived.baThresholdIIIHL = (ONE + params.thetaBar) / 2;
-
-        if (derived.baThresholdRegionII > derived.baThresholdIIIHL) {
-            derived.alphaThresholdIIIHL = computeAlpha(
-                derived.baThresholdIIIHL,
-                ONE,
-                params.thetaBar,
-                params.alphaBar
-            );
-
-            derived.xlThresholdIIIHL = computeXl(
-                derived.baThresholdIIIHL,
-                ONE,
-                derived.alphaThresholdIIIHL,
-                0,
-                true
-            );
-        }
 
         return derived;
     }
@@ -360,11 +332,11 @@ contract PrimaryAMMV1 is IPAMM, Governable {
                 ONE,
                 alphaBar,
                 derived.xuThresholdIIHL,
-                derived.xlThresholdIIHL
+                ONE
             );
     }
 
-    function isInThirdRegionHigh(State memory normalizedState, DerivedParams memory derived)
+    function isInThirdRegionHigh(State memory normalizedState, Params memory params, DerivedParams memory derived)
         internal
         pure
         returns (bool)
@@ -376,9 +348,9 @@ contract PrimaryAMMV1 is IPAMM, Governable {
                 normalizedState.redemptionLevel,
                 derived.baThresholdIIIHL,
                 ONE,
-                derived.alphaThresholdIIIHL,
+                ONE - params.thetaBar,
                 0,
-                derived.xlThresholdIIIHL
+                ONE
             );
     }
 
@@ -417,7 +389,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             return Region.CASE_II_L;
         }
 
-        if (isInThirdRegionHigh(normalizedState, derived)) {
+        if (isInThirdRegionHigh(normalizedState, params, derived)) {
             return Region.CASE_III_H;
         }
 
