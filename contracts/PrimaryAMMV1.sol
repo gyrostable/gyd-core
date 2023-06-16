@@ -166,12 +166,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 ba,
         uint256 ya,
         uint256 alpha,
-        uint256 xu,
-        // TODO should these just *always* be ignored? So we return ya and never use this value. Probably.
-        // - In principle, these underflows shouldn't occur even in regions like III H. Then xl=ya.
-        // - I've seen quite large but unproblematic values here, like 2.5e5 (unscaled, not normalized) but only when ya is large (e.g. 9.6e7).
-        // TODO users of this value should be eliminated except for maybe in computeReserve().
-        bool ignoreUnderflow
+        uint256 xu
     ) internal pure returns (uint256) {
         require(ba < ya, Errors.INVALID_ARGUMENT);
         uint256 left = (ya - xu).squareUp();
@@ -179,7 +174,6 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         if (left >= right) {
             return ya - (left - right).sqrt();
         } else {
-            require(ignoreUnderflow || left + _UNDERFLOW_EPSILON >= right, Errors.SUB_OVERFLOW);
             return ya;
         }
     }
@@ -235,15 +229,13 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             derived.baThresholdRegionI,
             ONE,
             params.alphaBar,
-            params.xuBar,
-            true
+            params.xuBar
         );
         derived.xlThresholdAtThresholdII = computeXl(
             derived.baThresholdRegionII,
             ONE,
             params.alphaBar,
-            0,
-            true
+            0
         );
 
         uint256 theta = ONE - params.thetaBar;
@@ -279,7 +271,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     ) internal pure returns (uint256) {
         uint256 alpha = computeAlpha(ba, ya, params.thetaBar, params.alphaBar);
         uint256 xu = computeXu(ba, ya, alpha, params.xuBar, ONE - params.thetaBar);
-        uint256 xl = computeXl(ba, ya, alpha, xu, true);
+        uint256 xl = computeXl(ba, ya, alpha, xu);
         return computeReserveFixedParams(x, ba, ya, alpha, xu, xl);
     }
 

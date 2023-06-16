@@ -89,7 +89,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 x = anchoredState.redemptionLevel; // shorthand
         uint256 alpha = computeAlpha(ba, ya, _systemParams.thetaBar, _systemParams.alphaBar);
         uint256 xu = computeXu(ba, ya, alpha, _systemParams.xuBar, theta);
-        uint256 xl = computeXl(ba, ya, alpha, xu, false);
+        uint256 xl = computeXl(ba, ya, alpha, xu);
         if (x <= xu) return uint256(Region.CASE_i);
         // Now x > xu
         if (xu == _systemParams.xuBar) {
@@ -262,7 +262,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         uint256 xu,
         bool ignoreUnderflow
     ) external view returns (uint256) {
-        return computeXl(ba, ya, alpha, xu, ignoreUnderflow);
+        return computeXl(ba, ya, alpha, xu);
     }
 
     function testComputeLowerRedemptionThreshold(
@@ -278,7 +278,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             _systemParams.xuBar,
             FixedPoint.ONE - _systemParams.thetaBar
         );
-        return computeXl(ba, ya, alpha, xu, ignoreUnderflow);
+        return computeXl(ba, ya, alpha, xu);
     }
 
     function computeDerivedParams() external view returns (DerivedParams memory) {
