@@ -24,11 +24,14 @@ library BalancerLPSharePricing {
     uint256 internal constant MAX_REL_PRICE_3CLP = 1e22; // 1e4 scaled
     uint256 internal constant MIN_PRICE_ECLP = 1e11; // 1e-7 scaled
 
-    /** @dev Calculates the value of Balancer pool tokens (BPT) that use constant product invariant
+    /** @dev Calculates the value of Balancer pool tokens (BPT) that use constant product invariant.
      *  @param weights = weights of underlying assets
      *  @param underlyingPrices = prices of underlying assets, in same order as weights
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool */
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe for invariantDivSupply >= 1e-6.
+     *  Then max error 3e-12 (rel) + 1e-18 (abs).
+     */
     function priceBptCPMM(
         uint256[] memory weights,
         uint256 invariantDivSupply,
@@ -50,12 +53,15 @@ library BalancerLPSharePricing {
         }
     }
 
-    /** @dev Efficiently calculates the value of Balancer pool tokens (BPT) for two asset pools with constant product invariant
+    /** @dev Efficiently calculates the value of Balancer pool tokens (BPT) for two asset pools with
+     * constant product invariant.
      *  @param weights = weights of underlying assets
      *  @param underlyingPrices = prices of underlying assets, in same order as weights
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool
-     *  However, numerical imprecision may occur with extremely large or small prices */
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe for invariantDivSupply >= 1e-6.
+     *  Then max error 3e-12 (rel) + 1e-18 (abs).
+     */
     function priceBptTwoAssetCPMM(
         uint256[] memory weights,
         uint256 invariantDivSupply,
@@ -89,10 +95,12 @@ library BalancerLPSharePricing {
         bptPrice = invariantDivSupply.mulDown(secondTerm).mulDown(thirdTerm);
     }
 
-    /** @dev Calculates value of BPT for constant product invariant with equal weights
-     *  Compared to general CPMM, everything can be grouped into one fractional power to save gas
-     *  This calculation is robust to price manipulation within the Balancer pool
-     *  However, numerical imprecision may occur with extremely large or small prices */
+    /** @dev Calculates value of BPT for constant product invariant with equal weights.
+     *  Compared to general CPMM, everything can be grouped into one fractional power to save gas.
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe for invariantDivSupply >= 1e-6.
+     *  Then max error 3e-12 (rel) + 1e-18 (abs).
+     */
     function priceBptCPMMEqualWeights(
         uint256 weight,
         uint256 invariantDivSupply,
@@ -112,12 +120,17 @@ library BalancerLPSharePricing {
         bptPrice = invariantDivSupply.mulDown(prod);
     }
 
-    /** @dev Calculates the value of BPT for 2CLP pools
-     *  these are constant product invariant 2-pools with 1/2 weights and virtual reserves
+    /** @dev Calculates the value of BPT for 2CLP pools.
+     *  These are constant product invariant 2-pools with 1/2 weights and virtual reserves.
      *  @param sqrtAlpha = sqrt of lower price bound
      *  @param sqrtBeta = sqrt of upper price bound
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool */
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe for alpha, beta in [0.1, 10.0]
+     *  with relative price range width (beta/alpha-1) >= 1bp. This yields relative error at most
+     *  0.1bp. This assumes invariantDivSupply >= 2 or the total redemption amount being at least 1
+     *  USD.
+     */
     function priceBpt2CLP(
         uint256 sqrtAlpha,
         uint256 sqrtBeta,
@@ -156,8 +169,14 @@ library BalancerLPSharePricing {
      *  @param cbrtAlpha = cube root of alpha (lower price bound)
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
      *  @param underlyingPrices = array of three prices for the
-     *  This calculation is robust to price manipulation within the Balancer pool.
-     *  The calculation includes a kind of no-arbitrage equilibrium computation, see the Gyroscope Oracles document, p. 7. */
+     *  This calculation is robust to price manipulation within the Balancer pool. The calculation
+     *  includes a kind of no-arbitrage equilibrium computation, see the Gyroscope Oracles document,
+     *  p. 7.
+     *  Bounds on underlying prices are enforced to make this safe for alpha <= 0.9995, i.e.,
+     *  relative price range width >= about 10bp and relative prices all within [1e-4, 1e4]. This
+     *  yields relative error at most 0.1bp. This assumes invariantDivSupply >= 2 or the total
+     *  redemption amount being at least 1 USD.
+     */
     function priceBpt3CLP(
         uint256 cbrtAlpha,
         uint256 invariantDivSupply,
@@ -247,7 +266,14 @@ library BalancerLPSharePricing {
      *  @param params = ECLP pool parameters
      *  @param derivedParams = (tau(alpha), tau(beta))
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool */
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe across a range of typical pool
+     *  parameter combinations, see `ECLP_precision_analysis_iteration.sage`. These include typical
+     *  stable pair configs and the following parameter combinations: alpha in [0.05, 0.999], beta
+     *  in [1.001, 1.1], relative price range width (beta/alpha-1) >= 10bp, min-curvature price q =
+     *  1.0, lambda in [1, 1e8]. This yields relative error at most 0.1bp, assuming
+     *  invariantDivSupply >= 2 or total redemption amount at least 1 USD.
+     */
     function priceBptECLP(
         IECLP.Params memory params,
         IECLP.DerivedParams memory derivedParams,
