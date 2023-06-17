@@ -91,8 +91,8 @@ library BalancerLPSharePricing {
 
     /** @dev Calculates value of BPT for constant product invariant with equal weights
      *  Compared to general CPMM, everything can be grouped into one fractional power to save gas
-     *  Note: loss of precision arises when multiple prices are too low (e.g., < 1e-5). This pricing formula
-     *  should not be relied on precisely in such extremes */
+     *  This calculation is robust to price manipulation within the Balancer pool
+     *  However, numerical imprecision may occur with extremely large or small prices */
     function priceBptCPMMEqualWeights(
         uint256 weight,
         uint256 invariantDivSupply,
