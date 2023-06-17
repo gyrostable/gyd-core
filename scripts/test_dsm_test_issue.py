@@ -82,14 +82,14 @@ def main():
                                        scale(ALPHA_MIN_REL_U)))
     xu_solidity = unscale(pamm.computeXu(scale(BA_U), scale(YA_U), scale(alpha_solidity),
                                          scale(XU_MAX_REL_U), scale(1-THETA_FLOOR_U)))
-    xl_solidity = unscale(pamm.computeXl(*scale([BA_U, YA_U, alpha_solidity, xu_solidity]), False))
+    xl_solidity = unscale(pamm.computeXl(*scale([BA_U, YA_U, alpha_solidity, xu_solidity])))
     print("solidity:")
     print(dict(alpha=alpha_solidity, xu=xu_solidity, xl=xl_solidity))
     print()
 
     print("region:")
     reg_python = pypamm.compute_region_ext(X_U, BA_U, YA_U, pyparams)
-    reg_solidity = pamm.computeRegion(state).return_value
+    reg_solidity = pamm.reconstructRegionFromAnchor(state).return_value
     print(f"python direct: {reg_python}")# = {reg_python.value}")
     print(f"solidity reconstructed: {reg_solidity}")
     print()

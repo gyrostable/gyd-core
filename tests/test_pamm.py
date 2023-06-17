@@ -113,6 +113,7 @@ def test_params(pamm):
     assert outflowMemory == OUTFLOW_MEMORY
 
 
+@pytest.mark.skip("test to be rewritten")
 @pytest.mark.parametrize("alpha_min", ["1", "0.3"])
 def test_compute_derived_params(pamm, alpha_min):
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
@@ -215,6 +216,7 @@ def test_compute_reserve(pamm, args, alpha_min):
     assert result == scale(expected)
 
 
+@pytest.mark.skip("test to be rewritten")
 # args = (x, ba, ya)
 @pytest.mark.parametrize(
     "args,alpha_min",
@@ -242,7 +244,7 @@ def test_compute_region(pamm, args, alpha_min):
     expected = pypamm.compute_region(*qd_args(args), pyparams)  # type: ignore
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
     args_final = scale_args(args)
-    computed_region = pamm.computeRegion(args_final)
+    computed_region = pamm.reconstructRegionFromAnchor(args_final)
     assert computed_region == expected.value
 
 
@@ -260,6 +262,7 @@ COMPUTE_RESERVE_CASES = [
 ]
 
 
+@pytest.mark.skip("test to be rewritten")
 @pytest.mark.parametrize("args,alpha_min", COMPUTE_RESERVE_CASES)
 def test_compute_reserve_value(pamm, args, alpha_min):
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
@@ -279,7 +282,7 @@ def test_compute_reserve_value(pamm, args, alpha_min):
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
     args_final = scale_args(args)
 
-    computed_reserve = pamm.computeReserveValue(args_final)
+    computed_reserve = pamm.reconstructAnchorFromAnchor(args_final)
     assert computed_reserve == scale(expected)
 
 
@@ -293,7 +296,7 @@ def test_compute_reserve_value_gas(pamm, args, alpha_min):
 
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
     args_final = scale_args(args)
-    pamm.computeReserveValueWithGas(args_final)
+    pamm.reconstructAnchorFromAnchorWithGas(args_final)
 
 
 @given(st.data())

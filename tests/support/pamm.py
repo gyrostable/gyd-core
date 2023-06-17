@@ -106,6 +106,7 @@ class Params:
 
     @cached_property
     def xl_threshold_II_hl(self):  # x_L^{h/l}
+        # TODO check if we can just replace this by D(1)
         return compute_lower_redemption_threshold(
             self.ba_threshold_II_hl,
             D(1),
@@ -126,6 +127,7 @@ class Params:
 
     @cached_property
     def xl_threshold_III_HL(self):  # x_L^{H/L}
+        # TODO check if we can just replace this by D(1)
         return compute_lower_redemption_threshold(
             self.ba_threshold_III_hl, D(1), self.slope_threshold_III_HL, D(0)
         )
@@ -288,6 +290,25 @@ def compute_region(
     r = compute_region_ext(x, ba, ya, params, prec)
     return Region.from_pieces(*r)
 
+def compute_price(
+    x: D, ba: D, ya: D, params: Params
+) -> D:
+    """Spot price."""
+    if ba >= ya:
+        return D(1)
+    if ba <= ya * params.target_reserve_ratio_floor:
+        return ba/ya
+
+    alpha = compute_slope(ba, ya, params.target_reserve_ratio_floor, params.decay_slope_lower_bound)
+    xu = compute_upper_redemption_threshold(ba, ya, alpha, params.stable_redeem_threshold_upper_bound, params.target_utilization_ceiling)
+    xl = compute_lower_redemption_threshold(ba, ya, alpha, xu)
+    if x <= xu:
+        return D(1)
+    elif x <= xl:
+        return D(1) - alpha * (x - xu)
+    else:
+        return D(1) - alpha * (xl - xu)
+
 
 class Pamm:
     def __init__(self, params: Params):
@@ -302,7 +323,6 @@ class Pamm:
             self.params.ba_threshold_region_I,
             D(1),
             self.params.decay_slope_lower_bound,
-            # self.params.slope_threshold_III_HL,  # todo previously this. Seems wrong.
             self.params.stable_redeem_threshold_upper_bound,
             self.params.xl_threshold_at_threshold_I,
         )
@@ -318,6 +338,12 @@ class Pamm:
         )
 
     def _is_in_second_subcase(self, scaled_reserve: D, scaled_redemption: D) -> bool:
+        """Assuming we're in case II, whether we're in case h (or otherwise l)"""
+        # Check if case l or h, respectively, even exist. This is required!
+        if self.params.ba_threshold_II_hl >= self.params.ba_threshold_region_I:
+            return False
+        elif self.params.ba_threshold_II_hl <= self.params.ba_threshold_region_II:
+            return True
         return scaled_reserve >= compute_fixed_reserve(
             scaled_redemption,
             self.params.ba_threshold_II_hl,
@@ -328,6 +354,10 @@ class Pamm:
         )
 
     def _is_in_high_subcase(self, scaled_reserve: D, scaled_redemption: D) -> bool:
+        """Assuming we're in case III, whether we're in case H (or otherwise L)"""
+        # Check if case L or H, respectively, even exist. This is required!
+        if self.params.ba_threshold_III_hl >= self.params.ba_threshold_region_II:
+            return False
         return scaled_reserve >= compute_fixed_reserve(
             scaled_redemption,
             self.params.ba_threshold_III_hl,
@@ -494,7 +524,8 @@ class Pamm:
         """Extended reconstructed region. For testing only."""
         reserve_ratio = self.reserve_value / self.total_gyro_supply
         if reserve_ratio >= 1:
-            return None, None, "i"
+            # Special marker for this case.
+            return "A", None, "i"
         if reserve_ratio <= self.params.target_reserve_ratio_floor:
             return None, None, "iii"
         return Region.to_pieces(self._compute_normalized_current_region())
