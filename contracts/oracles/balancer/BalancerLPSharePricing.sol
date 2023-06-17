@@ -17,11 +17,21 @@ library BalancerLPSharePricing {
 
     uint256 internal constant ONEHALF = 0.5e18;
 
-    /** @dev Calculates the value of Balancer pool tokens (BPT) that use constant product invariant
+    uint256 internal constant MIN_PRICE_CPMM = 2.0002e11; // 2.0002e-7 scaled
+    uint256 internal constant MIN_PRICE_2CLP = 2.0002e11; // 2.0002e-7 scaled
+    uint256 internal constant MIN_PRICE_ASSET2_3CLP = 4e13; // 4e-5 scaled
+    uint256 internal constant MIN_REL_PRICE_3CLP = 1e14; // 1e-4 scaled
+    uint256 internal constant MAX_REL_PRICE_3CLP = 1e22; // 1e4 scaled
+    uint256 internal constant MIN_PRICE_ECLP = 1e11; // 1e-7 scaled
+
+    /** @dev Calculates the value of Balancer pool tokens (BPT) that use constant product invariant.
      *  @param weights = weights of underlying assets
      *  @param underlyingPrices = prices of underlying assets, in same order as weights
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool */
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe for invariantDivSupply >= 1e-6.
+     *  Then max error 3e-12 (rel) + 1e-18 (abs).
+     */
     function priceBptCPMM(
         uint256[] memory weights,
         uint256 invariantDivSupply,
@@ -34,6 +44,8 @@ library BalancerLPSharePricing {
         **********************************************************************************************/
         uint256 prod = FixedPoint.ONE;
         for (uint256 i = 0; i < weights.length; i++) {
+            require(underlyingPrices[i] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
+
             prod = prod.mulDown(
                 FixedPoint.powDown(underlyingPrices[i].divDown(weights[i]), weights[i])
             );
@@ -41,12 +53,15 @@ library BalancerLPSharePricing {
         }
     }
 
-    /** @dev Efficiently calculates the value of Balancer pool tokens (BPT) for two asset pools with constant product invariant
+    /** @dev Efficiently calculates the value of Balancer pool tokens (BPT) for two asset pools with
+     * constant product invariant.
      *  @param weights = weights of underlying assets
      *  @param underlyingPrices = prices of underlying assets, in same order as weights
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool
-     *  However, numerical imprecision may occur with extremely large or small prices */
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe for invariantDivSupply >= 1e-6.
+     *  Then max error 3e-12 (rel) + 1e-18 (abs).
+     */
     function priceBptTwoAssetCPMM(
         uint256[] memory weights,
         uint256 invariantDivSupply,
@@ -60,6 +75,8 @@ library BalancerLPSharePricing {
         // firstTerm is invariantDivSupply
 
         require(weights.length == 2, Errors.INVALID_NUMBER_WEIGHTS);
+        require(underlyingPrices[0] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
+        require(underlyingPrices[1] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
 
         (uint256 i, uint256 j) = weights[1].mulDown(underlyingPrices[0]) >
             weights[0].mulDown(underlyingPrices[1])
@@ -78,10 +95,12 @@ library BalancerLPSharePricing {
         bptPrice = invariantDivSupply.mulDown(secondTerm).mulDown(thirdTerm);
     }
 
-    /** @dev Calculates value of BPT for constant product invariant with equal weights
-     *  Compared to general CPMM, everything can be grouped into one fractional power to save gas
-     *  Note: loss of precision arises when multiple prices are too low (e.g., < 1e-5). This pricing formula
-     *  should not be relied on precisely in such extremes */
+    /** @dev Calculates value of BPT for constant product invariant with equal weights.
+     *  Compared to general CPMM, everything can be grouped into one fractional power to save gas.
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe for invariantDivSupply >= 1e-6.
+     *  Then max error 3e-12 (rel) + 1e-18 (abs).
+     */
     function priceBptCPMMEqualWeights(
         uint256 weight,
         uint256 invariantDivSupply,
@@ -94,18 +113,24 @@ library BalancerLPSharePricing {
         **********************************************************************************************/
         uint256 prod = FixedPoint.ONE;
         for (uint256 i = 0; i < underlyingPrices.length; i++) {
+            require(underlyingPrices[i] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
             prod = prod.mulDown(underlyingPrices[i].divDown(weight));
         }
         prod = FixedPoint.powDown(prod, weight);
         bptPrice = invariantDivSupply.mulDown(prod);
     }
 
-    /** @dev Calculates the value of BPT for 2CLP pools
-     *  these are constant product invariant 2-pools with 1/2 weights and virtual reserves
+    /** @dev Calculates the value of BPT for 2CLP pools.
+     *  These are constant product invariant 2-pools with 1/2 weights and virtual reserves.
      *  @param sqrtAlpha = sqrt of lower price bound
      *  @param sqrtBeta = sqrt of upper price bound
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool */
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe for alpha, beta in [0.1, 10.0]
+     *  with relative price range width (beta/alpha-1) >= 1bp. This yields relative error at most
+     *  0.1bp. This assumes invariantDivSupply >= 2 or the total redemption amount being at least 1
+     *  USD.
+     */
     function priceBpt2CLP(
         uint256 sqrtAlpha,
         uint256 sqrtBeta,
@@ -121,6 +146,9 @@ library BalancerLPSharePricing {
         // When p_x/p_y > beta: bptPrice = L/S * p_y (sqrt(beta) - sqrt(alpha))         //
         **********************************************************************************************/
         (uint256 px, uint256 py) = (underlyingPrices[0], underlyingPrices[1]);
+        require(px >= MIN_PRICE_2CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+        require(py >= MIN_PRICE_2CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+
         uint256 one = FixedPoint.ONE;
         if (px.divDown(py) <= sqrtAlpha.mulUp(sqrtAlpha)) {
             bptPrice = invariantDivSupply.mulDown(px).mulDown(
@@ -141,20 +169,38 @@ library BalancerLPSharePricing {
      *  @param cbrtAlpha = cube root of alpha (lower price bound)
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
      *  @param underlyingPrices = array of three prices for the
-     *  This calculation is robust to price manipulation within the Balancer pool.
-     *  The calculation includes a kind of no-arbitrage equilibrium computation, see the Gyroscope Oracles document, p. 7. */
+     *  This calculation is robust to price manipulation within the Balancer pool. The calculation
+     *  includes a kind of no-arbitrage equilibrium computation, see the Gyroscope Oracles document,
+     *  p. 7.
+     *  Bounds on underlying prices are enforced to make this safe for alpha <= 0.9995, i.e.,
+     *  relative price range width >= about 10bp and relative prices all within [1e-4, 1e4]. This
+     *  yields relative error at most 0.1bp. This assumes invariantDivSupply >= 2 or the total
+     *  redemption amount being at least 1 USD.
+     */
     function priceBpt3CLP(
         uint256 cbrtAlpha,
         uint256 invariantDivSupply,
         uint256[] memory underlyingPrices
     ) internal pure returns (uint256 bptPrice) {
         require(underlyingPrices.length == 3, Errors.INVALID_ARGUMENT);
+        require(underlyingPrices[2] >= MIN_PRICE_ASSET2_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+
         uint256 pXZPool;
         uint256 pYZPool;
         {
             uint256 alpha = cbrtAlpha.mulDown(cbrtAlpha).mulDown(cbrtAlpha);
             uint256 pXZ = underlyingPrices[0].divDown(underlyingPrices[2]);
             uint256 pYZ = underlyingPrices[1].divDown(underlyingPrices[2]);
+
+            // Checks on relative prices to protect against excessive rounding error.
+            uint256 pXY = underlyingPrices[0].divDown(underlyingPrices[1]);
+            require(pXZ >= MIN_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pXZ <= MAX_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pYZ >= MIN_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pYZ <= MAX_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pXY >= MIN_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+            require(pXY <= MAX_REL_PRICE_3CLP, Errors.TOKEN_PRICES_TOO_SMALL);
+
             (pXZPool, pYZPool) = relativeEquilibriumPrices3CLP(alpha, pXZ, pYZ);
         }
 
@@ -220,7 +266,14 @@ library BalancerLPSharePricing {
      *  @param params = ECLP pool parameters
      *  @param derivedParams = (tau(alpha), tau(beta)) in 18 decimals. The other elements are not used.
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
-     *  This calculation is robust to price manipulation within the Balancer pool */
+     *  This calculation is robust to price manipulation within the Balancer pool.
+     *  Bounds on underlying prices are enforced to make this safe across a range of typical pool
+     *  parameter combinations, see `ECLP_precision_analysis_iteration.sage`. These include typical
+     *  stable pair configs and the following parameter combinations: alpha in [0.05, 0.999], beta
+     *  in [1.001, 1.1], relative price range width (beta/alpha-1) >= 10bp, min-curvature price q =
+     *  1.0, lambda in [1, 1e8]. This yields relative error at most 0.1bp, assuming
+     *  invariantDivSupply >= 2 or total redemption amount at least 1 USD.
+     */
     function priceBptECLP(
         IECLP.Params memory params,
         IECLP.DerivedParams memory derivedParams,
@@ -237,7 +290,10 @@ library BalancerLPSharePricing {
         // When p_x/p_y > beta:                                                                      //
         //      bptPrice = L/S * p_y (e_y A^{-1} tau(alpha) - e_y A^{-1} tau(beta) )                 //
         **********************************************************************************************/
+        require(underlyingPrices[0] >= MIN_PRICE_ECLP, Errors.TOKEN_PRICES_TOO_SMALL);
+        require(underlyingPrices[1] >= MIN_PRICE_ECLP, Errors.TOKEN_PRICES_TOO_SMALL);
         (int256 px, int256 py) = (underlyingPrices[0].toInt256(), underlyingPrices[1].toInt256());
+
         int256 pxIny = px.divDownMag(py);
         if (pxIny < params.alpha) {
             int256 bP = (mulAinv(params, derivedParams.tauBeta).x -

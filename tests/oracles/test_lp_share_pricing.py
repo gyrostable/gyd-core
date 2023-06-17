@@ -61,7 +61,7 @@ def test_price_bpt_cpmm_2(
         weights, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-5"))
 
 
 @given(
@@ -83,7 +83,7 @@ def test_price_bpt_cpmm_3(
         weights, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-5"))
 
 
 @given(
@@ -107,7 +107,7 @@ def test_price_bpt_cpmm_4(
         weights, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-5"))
 
 
 ######################################################################
@@ -128,7 +128,7 @@ def test_price_bpt_cpmm_equal_weights_2(
         weight, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-5"))
 
 
 @given(
@@ -151,7 +151,7 @@ def test_price_bpt_cpmm_equal_weights_3(
         weight, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-5"))
 
 
 @given(
@@ -166,7 +166,7 @@ def test_price_bpt_cpmm_equal_weights_3(
 def test_price_bpt_cpmm_equal_weights_4(
     gyro_lp_price_testing, invariant_div_supply, underlying_prices
 ):
-    weight = D(1 / 4)
+    weight = D('0.25')
     bpt_price_sol = gyro_lp_price_testing.priceBptCPMMEqualWeights(
         scale(weight), scale(invariant_div_supply), scale(underlying_prices)
     )
@@ -175,7 +175,9 @@ def test_price_bpt_cpmm_equal_weights_4(
         weight, invariant_div_supply, underlying_prices
     )
 
-    assert int(bpt_price_sol) == scale(bpt_price).approxed(rel=D("10") ** -4)
+    # TODO this test fails sometimes for prices all ~1e-4. Rounding errors to be
+    # reviewed, perhaps make price requirements stricter.
+    assert unscale(bpt_price_sol) == bpt_price.approxed(rel=D("1e-5"))
 
 
 ######################################################################
@@ -216,7 +218,7 @@ def test_price_bpt_2CLP(
         sqrt_alpha, sqrt_beta, invariant_div_supply, underlying_prices
     )
 
-    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed()
+    assert to_decimal(bpt_price_sol) == scale(bpt_price).approxed(rel=D("1e-5"))
 
 
 ######################################################################
@@ -230,8 +232,22 @@ def gen_root3Alpha():
     return qdecimals(min_value=ROOT_ALPHA_MIN, max_value=ROOT_ALPHA_MAX, places=4)
 
 
-def gen_three_prices(min_price=MIN_PRICE, max_price=MAX_PRICE):
-    return st.tuples(*([qdecimals(min_price, max_price)] * 3))
+@st.composite
+def gen_three_prices(draw, min_price=MIN_PRICE, max_price=MAX_PRICE, max_rel_price = None):
+    if max_rel_price is not None:
+        max_rel_price = to_decimal(max_rel_price)
+    min_price = to_decimal(min_price)
+    max_price = to_decimal(min_price)
+    pz = draw(qdecimals(min_price, max_price))
+    if max_rel_price is not None:
+        min_price = max(min_price, pz / max_rel_price + D('2e-18'))
+        max_price = min(max_price, pz * max_rel_price - D('2e-18'))
+    px = draw(qdecimals(min_price, max_price))
+    if max_rel_price is not None:
+        min_price = max(min_price, px / max_rel_price + D('2e-18'))
+        max_price = min(max_price, px * max_rel_price - D('2e-18'))
+    py = draw(qdecimals(min_price, max_price))
+    return px, py, pz
 
 
 # Consistency check equilibrium prices
