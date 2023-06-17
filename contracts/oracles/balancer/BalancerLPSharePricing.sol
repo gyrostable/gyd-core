@@ -103,11 +103,9 @@ library BalancerLPSharePricing {
         //            bptPrice = ---  ( Π   p_i / w )^                                  //
         //                        S     i=1                                             //
         **********************************************************************************************/
-        require(underlyingPrices[0] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
-        require(underlyingPrices[1] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
-
         uint256 prod = FixedPoint.ONE;
         for (uint256 i = 0; i < underlyingPrices.length; i++) {
+            require(underlyingPrices[i] >= MIN_PRICE_CPMM, Errors.TOKEN_PRICES_TOO_SMALL);
             prod = prod.mulDown(underlyingPrices[i].divDown(weight));
         }
         prod = FixedPoint.powDown(prod, weight);
