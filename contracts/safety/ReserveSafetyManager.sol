@@ -19,20 +19,14 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
     using DecimalScale for uint256;
 
     uint256 public maxAllowedVaultDeviation;
-    uint256 public stablecoinMaxDeviation;
     uint256 public minTokenPrice;
-
-    /// @notice a stablecoin should be equal to 1 USD
-    uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
 
     constructor(
         address _governor,
         uint256 _maxAllowedVaultDeviation,
-        uint256 _stablecoinMaxDeviation,
         uint256 _minTokenPrice
     ) Governable(_governor) {
         maxAllowedVaultDeviation = _maxAllowedVaultDeviation;
-        stablecoinMaxDeviation = _stablecoinMaxDeviation;
         minTokenPrice = _minTokenPrice;
     }
 
@@ -42,10 +36,6 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
     function setMinTokenPrice(uint256 _minTokenPrice) external governanceOnly {
         minTokenPrice = _minTokenPrice;
-    }
-
-    function setStablecoinMaxDeviation(uint256 _stablecoinMaxDeviation) external governanceOnly {
-        stablecoinMaxDeviation = _stablecoinMaxDeviation;
     }
 
     /// @notice For given token amounts and token prices, calculates the weight of each token with
@@ -101,6 +91,29 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         return true;
     }
 
+    /// @notice we allow minting only if depegged stablecoins are above peg
+    /// we allow redeeming regardless of whether depegged stablecoins are above or under peg
+    /// the price of the stablecoin is adjusted later when computing the reserve value
+    /// and the amount that the user can mint/redeem
+    function _canOperateWithDepeggedStablecoins(DataTypes.Metadata memory metaData)
+        internal
+        pure
+        returns (bool)
+    {
+        if (!metaData.mint) return true;
+
+        for (uint256 i; i < metaData.vaultMetadata.length; i++) {
+            DataTypes.VaultMetadata memory vaultData = metaData.vaultMetadata[i];
+            for (uint256 j; j < vaultData.pricedTokens.length; j++) {
+                DataTypes.PricedToken memory pricedToken = vaultData.pricedTokens[j];
+                if (pricedToken.isStable && pricedToken.price < pricedToken.priceRange.floor) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     function isRedeemFeasible(DataTypes.Order memory order) internal pure returns (bool) {
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             if (
@@ -145,7 +158,7 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             );
 
             metaData.vaultMetadata[i].vault = vaultsWithAmount[i].vaultInfo.vault;
-            metaData.vaultMetadata[i].idealWeight = vaultsWithAmount[i].vaultInfo.idealWeight;
+            metaData.vaultMetadata[i].targetWeight = vaultsWithAmount[i].vaultInfo.targetWeight;
             metaData.vaultMetadata[i].currentWeight = vaultsWithAmount[i].vaultInfo.currentWeight;
             metaData.vaultMetadata[i].price = vaultsWithAmount[i].vaultInfo.price;
             metaData.vaultMetadata[i].pricedTokens = vaultsWithAmount[i].vaultInfo.pricedTokens;
@@ -167,8 +180,8 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
 
         for (uint256 i = 0; i < metaData.vaultMetadata.length; i++) {
             DataTypes.VaultMetadata memory vaultData = metaData.vaultMetadata[i];
-            uint256 scaledEpsilon = vaultData.idealWeight.mulUp(maxAllowedVaultDeviation);
-            bool withinEpsilon = vaultData.idealWeight.absSub(vaultData.resultingWeight) <=
+            uint256 scaledEpsilon = vaultData.targetWeight.mulUp(maxAllowedVaultDeviation);
+            bool withinEpsilon = vaultData.targetWeight.absSub(vaultData.resultingWeight) <=
                 scaledEpsilon;
 
             metaData.vaultMetadata[i].vaultWithinEpsilon = withinEpsilon;
@@ -191,10 +204,15 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         vaultMetadata.allStablecoinsOnPeg = true;
         vaultMetadata.atLeastOnePriceLargeEnough = false;
         for (uint256 i = 0; i < vaultMetadata.pricedTokens.length; i++) {
-            uint256 tokenPrice = vaultMetadata.pricedTokens[i].price;
+            DataTypes.PricedToken memory pricedToken = vaultMetadata.pricedTokens[i];
+            uint256 tokenPrice = pricedToken.price;
             bool isStable = vaultMetadata.pricedTokens[i].isStable;
 
-            if (isStable && tokenPrice.absSub(STABLECOIN_IDEAL_PRICE) > stablecoinMaxDeviation) {
+            if (
+                isStable &&
+                (tokenPrice < pricedToken.priceRange.floor ||
+                    tokenPrice > pricedToken.priceRange.ceiling)
+            ) {
                 vaultMetadata.allStablecoinsOnPeg = false;
             }
             if (tokenPrice >= minTokenPrice) {
@@ -244,10 +262,10 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             }
 
             uint256 distanceResultingToIdeal = vaultMetadata.resultingWeight.absSub(
-                vaultMetadata.idealWeight
+                vaultMetadata.targetWeight
             );
             uint256 distanceCurrentToIdeal = vaultMetadata.currentWeight.absSub(
-                vaultMetadata.idealWeight
+                vaultMetadata.targetWeight
             );
 
             if (distanceResultingToIdeal >= distanceCurrentToIdeal) {
@@ -256,6 +274,13 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
         }
 
         return true;
+    }
+
+    function _isStablecoinSafe(DataTypes.Metadata memory metaData) internal pure returns (bool) {
+        return
+            metaData.allStablecoinsAllVaultsOnPeg ||
+            _canOperateWithDepeggedStablecoins(metaData) ||
+            _vaultWeightWithOffPegFalls(metaData);
     }
 
     /// @inheritdoc ISafetyCheck
@@ -269,12 +294,10 @@ contract ReserveSafetyManager is Governable, ISafetyCheck {
             return Errors.TOKEN_PRICES_TOO_SMALL;
         }
 
-        bool stableCoinsSafe = metaData.allStablecoinsAllVaultsOnPeg ||
-            _vaultWeightWithOffPegFalls(metaData);
         bool epsilonSafe = metaData.allVaultsWithinEpsilon ||
             _safeToExecuteOutsideEpsilon(metaData);
 
-        if (stableCoinsSafe && epsilonSafe) {
+        if (_isStablecoinSafe(metaData) && epsilonSafe) {
             return "";
         }
 

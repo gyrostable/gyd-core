@@ -7,9 +7,12 @@ import "../libraries/FixedPoint.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../libraries/ConfigKeys.sol";
 import "../libraries/ConfigHelpers.sol";
+import "../libraries/ReserveStateExtensions.sol";
 
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "./LiquidityMining.sol";
 
 import "../interfaces/IGydRecovery.sol";
@@ -17,9 +20,10 @@ import "../interfaces/IGydRecovery.sol";
 contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     using FixedPoint for uint256;
     using ConfigHelpers for IGyroConfig;
-    using SafeERC20 for IGYDToken;
     using SafeERC20 for IERC20;
+    using SafeERC20Upgradeable for IGYDToken;
     using EnumerableSet for EnumerableSet.UintSet;
+    using ReserveStateExtensions for DataTypes.ReserveState;
 
     /* We account for burn actions (= when the mechanism is triggered) in two ways:
     - For partial burns, where less than the whole underlying supply is burnt, we store the percentage that has been burned in a cumulative adjustment factor. We can convert from and to "adjusted" amounts by multiplying/dividing by the adjustment factor. The "staked amounts" for liquidity mining are in units of *adjusted amounts*.
@@ -297,16 +301,26 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     }
 
     function shouldRun() external view returns (bool) {
-        return shouldRun(gyroConfig.getReserveManager().getReserveState());
+        DataTypes.ReserveState memory reserveState = gyroConfig
+            .getReserveManager()
+            .getReserveState();
+        uint256 reserveUSDValue = reserveState.computeLowerBoundUSDValue(
+            gyroConfig.getRootPriceOracle()
+        );
+        return _shouldRun(reserveState, reserveUSDValue);
     }
 
     /// @dev Whether or not the recovery module should run and would run next time it's called.
-    function shouldRun(DataTypes.ReserveState memory reserveState) public view returns (bool) {
+    function _shouldRun(DataTypes.ReserveState memory reserveState, uint256 reserveUSDValue)
+        internal
+        view
+        returns (bool)
+    {
         if (totalUnderlying() == 0) {
             // *Not* a corner case! This happens after a full burn!
             return false;
         }
-        uint256 currentCR = reserveState.totalUSDValue.divDown(gydToken.totalSupply());
+        uint256 currentCR = reserveUSDValue.divDown(gydToken.totalSupply());
         uint256 triggerCR = gyroConfig.getUint(ConfigKeys.GYD_RECOVERY_TRIGGER_CR);
         uint256 maxTriggerCR_ = maxTriggerCR;
         if (triggerCR > maxTriggerCR_) triggerCR = maxTriggerCR_;
@@ -314,11 +328,14 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
     }
 
     function _checkAndRun(DataTypes.ReserveState memory reserveState) internal returns (bool) {
-        if (!shouldRun(reserveState)) return false;
+        uint256 reserveUSDValue = reserveState.computeLowerBoundUSDValue(
+            gyroConfig.getRootPriceOracle()
+        );
+        if (!_shouldRun(reserveState, reserveUSDValue)) return false;
 
         // Compute amount to burn to reach target CR.
         uint256 targetCR = gyroConfig.getUint(ConfigKeys.GYD_RECOVERY_TARGET_CR);
-        uint256 targetGYDSupply = reserveState.totalUSDValue.divDown(targetCR);
+        uint256 targetGYDSupply = reserveUSDValue.divDown(targetCR);
         uint256 currentGYDSupply = gydToken.totalSupply();
 
         if (targetGYDSupply >= currentGYDSupply) {

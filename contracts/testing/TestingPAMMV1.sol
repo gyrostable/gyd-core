@@ -16,14 +16,19 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
         Params memory params
     ) PrimaryAMMV1(_governor, gyroConfig, params) {}
 
-    function computeRegion(State calldata normalizedState) external view returns (Region) {
-        DerivedParams memory derived = createDerivedParams(systemParams);
+    /** @dev returns Region plus additional values for situations that would be caught *before*
+     * region detection even runs:
+     * 10 = reserve ratio <= theta_bar
+     * 20 = reserve ratio >= 1
+     */
+    function computeRegion(State calldata normalizedState) external view returns (uint256) {
+        DerivedParams memory derived = createDerivedParams(_systemParams);
 
         uint256 b = computeReserve(
             normalizedState.redemptionLevel,
             normalizedState.reserveValue,
             normalizedState.totalGyroSupply,
-            systemParams
+            _systemParams
         );
         uint256 y = normalizedState.totalGyroSupply - normalizedState.redemptionLevel;
         State memory state = State({
@@ -32,17 +37,25 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
             totalGyroSupply: y
         });
 
-        return computeReserveValueRegion(state, systemParams, derived);
+        uint256 normalizedNav = state.reserveValue.divDown(state.totalGyroSupply);
+        if (normalizedNav >= ONE) {
+            return 20;
+        }
+        if (normalizedNav <= _systemParams.thetaBar) {
+            return 10;
+        }
+
+        return uint256(computeReserveValueRegion(state, _systemParams, derived));
     }
 
     function computeReserveValue(State calldata normalizedState) public view returns (uint256) {
-        Params memory params = systemParams;
-        DerivedParams memory derived = createDerivedParams(systemParams);
+        Params memory params = _systemParams;
+        DerivedParams memory derived = createDerivedParams(_systemParams);
         uint256 b = computeReserve(
             normalizedState.redemptionLevel,
             normalizedState.reserveValue,
             normalizedState.totalGyroSupply,
-            systemParams
+            _systemParams
         );
         uint256 y = normalizedState.totalGyroSupply - normalizedState.redemptionLevel;
         State memory state = State({
@@ -102,7 +115,7 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
     }
 
     function computeDerivedParams() external view returns (DerivedParams memory) {
-        return createDerivedParams(systemParams);
+        return createDerivedParams(_systemParams);
     }
 
     function setState(State calldata newState) external {
@@ -111,11 +124,11 @@ contract TestingPAMMV1 is PrimaryAMMV1 {
     }
 
     function setParams(Params calldata newParams) external {
-        systemParams = newParams;
+        _systemParams = newParams;
     }
 
     function setDecaySlopeLowerBound(uint64 alpha) external {
-        systemParams.alphaBar = alpha;
+        _systemParams.alphaBar = alpha;
     }
 
     function redeemTwice(

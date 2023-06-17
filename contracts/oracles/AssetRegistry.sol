@@ -5,8 +5,11 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../../interfaces/IAssetRegistry.sol";
+import "../../interfaces/IGyroConfig.sol";
 
 import "../../libraries/Errors.sol";
+import "../../libraries/DataTypes.sol";
+import "../../libraries/ConfigKeys.sol";
 import "../../libraries/EnumerableExtensions.sol";
 
 import "../auth/GovernableUpgradeable.sol";
@@ -17,11 +20,21 @@ contract AssetRegistry is IAssetRegistry, GovernableUpgradeable {
     using EnumerableExtensions for EnumerableSet.Bytes32Set;
     using EnumerableExtensions for EnumerableSet.AddressSet;
 
+    /// @notice a stablecoin should be equal to 1 USD
+    uint256 public constant STABLECOIN_IDEAL_PRICE = 1e18;
+
     mapping(string => address) internal assets;
+    mapping(address => DataTypes.Range) internal assetRanges;
+
+    IGyroConfig public immutable gyroConfig;
 
     EnumerableSet.Bytes32Set internal assetNames;
     EnumerableSet.AddressSet internal assetAddresses;
     EnumerableSet.AddressSet internal stableAssetAddresses;
+
+    constructor(IGyroConfig _gyroConfig) {
+        gyroConfig = _gyroConfig;
+    }
 
     /// @inheritdoc IAssetRegistry
     function isAssetNameRegistered(string calldata assetName)
@@ -41,6 +54,19 @@ contract AssetRegistry is IAssetRegistry, GovernableUpgradeable {
     /// @inheritdoc IAssetRegistry
     function isAssetStable(address assetAddress) external view returns (bool) {
         return stableAssetAddresses.contains(assetAddress);
+    }
+
+    /// @inheritdoc IAssetRegistry
+    function getAssetRange(address asset) external view override returns (DataTypes.Range memory) {
+        DataTypes.Range memory range = assetRanges[asset];
+        if (range.ceiling == 0) {
+            uint256 maxDeviation = gyroConfig.getUint(ConfigKeys.STABLECOIN_MAX_DEVIATION);
+            range = DataTypes.Range(
+                STABLECOIN_IDEAL_PRICE - maxDeviation,
+                STABLECOIN_IDEAL_PRICE + maxDeviation
+            );
+        }
+        return range;
     }
 
     /// @inheritdoc IAssetRegistry
@@ -88,6 +114,14 @@ contract AssetRegistry is IAssetRegistry, GovernableUpgradeable {
         require(assetAddresses.contains(asset), Errors.ASSET_NOT_SUPPORTED);
         stableAssetAddresses.add(asset);
         emit StableAssetAdded(asset);
+    }
+
+    /// @inheritdoc IAssetRegistry
+    function setAssetRange(address asset, DataTypes.Range memory range) external governanceOnly {
+        require(assetAddresses.contains(asset), Errors.ASSET_NOT_SUPPORTED);
+        require(range.floor < range.ceiling, Errors.INVALID_ARGUMENT);
+        assetRanges[asset] = range;
+        emit AssetRangeUpdated(asset, range);
     }
 
     /// @inheritdoc IAssetRegistry

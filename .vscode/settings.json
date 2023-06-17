@@ -4,9 +4,9 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "python.formatting.provider": "black",
-  "solidity.formatter": "prettier",
   "[solidity]": {
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "solidity.remappings": [
     "@balancer-labs/v2-solidity-utils=packages/balancer-labs/balancer-v2-monorepo@tob-audit-phantom-stable/pkg/solidity-utils",

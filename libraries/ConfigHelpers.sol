@@ -13,12 +13,12 @@ import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IVaultRegistry.sol";
 import "../interfaces/IAssetRegistry.sol";
 import "../interfaces/IReserveManager.sol";
-import "../interfaces/IFeeBank.sol";
 import "../interfaces/IReserve.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/ICapAuthentication.sol";
 import "../interfaces/IGydRecovery.sol";
+import "../interfaces/IPAMM.sol";
 import "../interfaces/IReserveStewardshipIncentives.sol";
 import "../interfaces/balancer/IVault.sol";
 
@@ -30,6 +30,10 @@ library ConfigHelpers {
         returns (IBatchVaultPriceOracle)
     {
         return IBatchVaultPriceOracle(gyroConfig.getAddress(ConfigKeys.ROOT_PRICE_ORACLE_ADDRESS));
+    }
+
+    function getPAMM(IGyroConfig gyroConfig) internal view returns (IPAMM) {
+        return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
     }
 
     function getRootSafetyCheck(IGyroConfig gyroConfig) internal view returns (ISafetyCheck) {
@@ -46,10 +50,6 @@ library ConfigHelpers {
 
     function getReserveManager(IGyroConfig gyroConfig) internal view returns (IReserveManager) {
         return IReserveManager(gyroConfig.getAddress(ConfigKeys.RESERVE_MANAGER_ADDRESS));
-    }
-
-    function getFeeBank(IGyroConfig gyroConfig) internal view returns (IFeeBank) {
-        return IFeeBank(gyroConfig.getAddress(ConfigKeys.FEE_BANK_ADDRESS));
     }
 
     function getReserve(IGyroConfig gyroConfig) internal view returns (IReserve) {
@@ -72,8 +72,15 @@ library ConfigHelpers {
         return IGydRecovery(gyroConfig.getAddress(ConfigKeys.GYD_RECOVERY_ADDRESS));
     }
 
-    function getReserveStewardshipIncentives(IGyroConfig gyroConfig) internal view returns (IReserveStewardshipIncentives) {
-        return IReserveStewardshipIncentives(gyroConfig.getAddress(ConfigKeys.STEWARDSHIP_INC_ADDRESS));
+    function getReserveStewardshipIncentives(IGyroConfig gyroConfig)
+        internal
+        view
+        returns (IReserveStewardshipIncentives)
+    {
+        return
+            IReserveStewardshipIncentives(
+                gyroConfig.getAddress(ConfigKeys.STEWARDSHIP_INC_ADDRESS)
+            );
     }
 
     function getBalancerVault(IGyroConfig gyroConfig) internal view returns (IVault) {
@@ -84,11 +91,19 @@ library ConfigHelpers {
         return gyroConfig.getUint(ConfigKeys.GYD_GLOBAL_SUPPLY_CAP, type(uint256).max);
     }
 
-    function getStewardshipIncMinCollateralRatio(IGyroConfig gyroConfig) internal view returns (uint256) {
+    function getStewardshipIncMinCollateralRatio(IGyroConfig gyroConfig)
+        internal
+        view
+        returns (uint256)
+    {
         return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MIN_CR);
     }
 
-    function getStewardshipIncMaxHealthViolations(IGyroConfig gyroConfig) internal view returns (uint256) {
+    function getStewardshipIncMaxHealthViolations(IGyroConfig gyroConfig)
+        internal
+        view
+        returns (uint256)
+    {
         return gyroConfig.getUint(ConfigKeys.STEWARDSHIP_INC_MAX_VIOLATIONS);
     }
 

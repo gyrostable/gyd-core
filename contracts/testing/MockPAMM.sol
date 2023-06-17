@@ -30,4 +30,6 @@ contract MockPAMM is IPAMM {
     function setSystemParams(Params memory params) external pure {
         return;
     }
+
+    function systemParams() external view returns (Params memory) {}
 }

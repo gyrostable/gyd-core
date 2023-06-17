@@ -28,8 +28,8 @@ def calculate_weights_and_total(
     return weights, total
 
 
-def calculate_ideal_weights(vaults_info: List[Tuple]) -> List[D]:
-    implied_ideal_weights = []
+def calculate_target_weights(vaults_info: List[Tuple]) -> List[D]:
+    implied_target_weights = []
     weighted_returns = []
 
     returns_sum = D("0")
@@ -40,10 +40,10 @@ def calculate_ideal_weights(vaults_info: List[Tuple]) -> List[D]:
         weighted_returns.append(weighted_return)
 
     for i, vault in enumerate(vaults_info):
-        implied_ideal_weight = weighted_returns[i] / returns_sum
-        implied_ideal_weights.append(implied_ideal_weight)
+        implied_target_weight = weighted_returns[i] / returns_sum
+        implied_target_weights.append(implied_target_weight)
 
-    return implied_ideal_weights
+    return implied_target_weights
 
 
 def vault_weight_off_peg_falls(metadata) -> bool:
@@ -80,7 +80,6 @@ def update_metadata_with_epsilon_status(metadata):
 
 
 def build_metadata(order: List[Tuple], tokens: None) -> List[D]:
-
     vaults_with_amount = order[0]
     mint = order[1]
 
@@ -91,7 +90,6 @@ def build_metadata(order: List[Tuple], tokens: None) -> List[D]:
     prices = []
 
     for vault_with_amount in vaults_with_amount:
-
         if mint:
             resulting_amounts.append(
                 D(vault_with_amount[0][5]) + D(vault_with_amount[1])

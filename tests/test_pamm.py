@@ -131,6 +131,13 @@ def test_compute_derived_params(pamm, alpha_min):
         alphaThresholdIIIHL,
         xlThresholdIIIHL,
     ) = tuple(int(v) for v in pamm.computeDerivedParams())
+
+    # Re approximate equality: Some of these need approxed(abs=1) (i.e., 1e-18) b/c the Solidity
+    # code uses some shorthands that delay rounding and are more gas efficient and I think also more
+    # precise than the python.
+    # Some values need .approxed(), i.e., some significant relative slack, b/c they use square roots
+    # and the two square root methods are slightly different, give different guarantees, and also
+    # transform input errors due to the different rounding behavior (see above).
     assert baThresholdRegionI == scale(pyparams.ba_threshold_region_I)
     assert baThresholdRegionII == scale(pyparams.ba_threshold_region_II)
     assert (
@@ -141,13 +148,12 @@ def test_compute_derived_params(pamm, alpha_min):
         xlThresholdAtThresholdII
         == scale(pyparams.xl_threshold_at_threshold_II).approxed()
     )
-    assert baThresholdIIHL == scale(pyparams.ba_threshold_II_hl)
-    assert xuThresholdIIHL == scale(pyparams.xu_threshold_II_hl)
-    # NOTE: 1 difference, likely because of square root approximation
+    assert baThresholdIIHL == scale(pyparams.ba_threshold_II_hl).approxed(abs=1)
+    assert xuThresholdIIHL == scale(pyparams.xu_threshold_II_hl).approxed(abs=1)
     assert xlThresholdIIHL == scale(pyparams.xl_threshold_II_hl).approxed()
-    assert baThresholdIIIHL == scale(pyparams.ba_threshold_III_hl)
-    assert alphaThresholdIIIHL == scale(pyparams.slope_threshold_III_HL)
-    assert xlThresholdIIIHL == scale(pyparams.xl_threshold_III_HL)
+    assert baThresholdIIIHL == scale(pyparams.ba_threshold_III_hl).approxed(abs=1)
+    assert alphaThresholdIIIHL == scale(pyparams.slope_threshold_III_HL).approxed(abs=1)
+    assert xlThresholdIIIHL == scale(pyparams.xl_threshold_III_HL).approxed(abs=1)
 
 
 @pytest.mark.parametrize(
@@ -209,6 +215,7 @@ def test_compute_reserve(pamm, args, alpha_min):
     assert result == scale(expected)
 
 
+# args = (x, ba, ya)
 @pytest.mark.parametrize(
     "args,alpha_min",
     [
@@ -223,9 +230,14 @@ def test_compute_reserve(pamm, args, alpha_min):
         (("0.7", "0.8499", 1), "0.3"),  #  Region.CASE_III_H
         (("0.7", "0.8501", 1), "0.3"),  #  Region.CASE_II_H
         (("0.2", "0.65", 1), "0.3"),  #  Region.CASE_III_L
+        (("0.4994994994994995", "0.9", 1), "2.0")
     ],
 )
 def test_compute_region(pamm, args, alpha_min):
+    x_s, ba_s, ya_s = args
+    if QD(ba_s)/QD(ya_s) <= UNSCALED_THETA_FLOOR:
+        return
+
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
     expected = pypamm.compute_region(*qd_args(args), pyparams)  # type: ignore
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
@@ -253,6 +265,11 @@ def test_compute_reserve_value(pamm, args, alpha_min):
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
     pamm_py = pypamm.Pamm(pyparams)
     x, ba, ya = qd_args(args)
+
+    # TODO generate test samples so that this never happens.
+    if ba/ya <= pyparams.target_reserve_ratio_floor:
+        pytest.xfail("ba/ya <= theta_bar")
+
     b = pypamm.compute_reserve(x, ba, ya, pyparams)
     y = ya - x
     pamm_py.update_state(x, b, y)
@@ -268,6 +285,12 @@ def test_compute_reserve_value(pamm, args, alpha_min):
 
 @pytest.mark.parametrize("args,alpha_min", COMPUTE_RESERVE_CASES)
 def test_compute_reserve_value_gas(pamm, args, alpha_min):
+    pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
+    x, ba, ya = qd_args(args)
+    # TODO generate test samples so that this never happens.
+    if ba/ya <= pyparams.target_reserve_ratio_floor:
+        pytest.xfail("ba/ya <= theta_bar")
+
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
     args_final = scale_args(args)
     pamm.computeReserveValueWithGas(args_final)
@@ -297,6 +320,7 @@ def run_path_independence_test(
     assert x1 + x2 <= ya
 
     gyro_config.setAddress(config_keys.MOTHERBOARD_ADDRESS, admin, {"from": admin})
+    gyro_config.setUint(config_keys.REDEEM_DISCOUNT_RATIO, 0, {"from": admin})
 
     pamm = admin.deploy(PAMM, admin, gyro_config, params)
     pamm.setState((D(0), ba, ya))

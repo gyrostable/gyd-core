@@ -156,7 +156,7 @@ def relativeEquilibriumPrices3CLP(alpha: D, pXZ: D, pYZ: D) -> tuple[D, D]:
             return D(1), alpha
         else:
             sqrtAlpha = alpha.sqrt()
-            sqrtPXY = (pXZ/pYZ).sqrt()
+            sqrtPXY = (pXZ / pYZ).sqrt()
             return sqrtAlpha * sqrtPXY, sqrtAlpha / sqrtPXY
     else:
         return pXZ, pYZ

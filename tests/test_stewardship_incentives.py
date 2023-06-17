@@ -3,7 +3,11 @@ import pytest
 from brownie.test.managers.runner import RevertContextManager as reverts
 from brownie import chain
 
-from tests.support.types import MintAsset
+from tests.support.types import (
+    MintAsset,
+    PersistedVaultMetadata,
+    VaultConfiguration,
+)
 from tests.support.utils import scale, unscale, to_decimal
 
 from tests.support import config_keys, constants
@@ -18,7 +22,14 @@ def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
 
 @pytest.fixture(scope="module")
 def register_dai_vault_module(reserve_manager, dai_vault, admin):
-    reserve_manager.registerVault(dai_vault, scale(1), 0, 0, {"from": admin})
+    reserve_manager.setVaults(
+        [
+            VaultConfiguration(
+                dai_vault, PersistedVaultMetadata(int(scale(1)), int(scale(1)), 0, 0)
+            )
+        ],
+        {"from": admin},
+    )
 
 
 @pytest.fixture(scope="module")

@@ -47,17 +47,23 @@ contract BatchVaultPriceOracle is IBatchVaultPriceOracle, Governable {
 
         for (uint256 i = 0; i < vaultsInfo.length; i++) {
             _assignUnderlyingTokenPrices(vaultsInfo[i], tokens, underlyingPrices);
-            vaultsInfo[i].price = _getVaultPrice(vaultsInfo[i]);
+            vaultsInfo[i].price = getVaultPrice(
+                IGyroVault(vaultsInfo[i].vault),
+                vaultsInfo[i].pricedTokens
+            );
         }
 
         return vaultsInfo;
     }
 
-    function _getVaultPrice(DataTypes.VaultInfo memory vaultInfo) internal view returns (uint256) {
-        IGyroVault vault = IGyroVault(vaultInfo.vault);
+    function getVaultPrice(IGyroVault vault, DataTypes.PricedToken[] memory pricedTokens)
+        public
+        view
+        returns (uint256)
+    {
         IVaultPriceOracle vaultPriceOracle = vaultPriceOracles[vault.vaultType()];
         require(address(vaultPriceOracle) != address(0), Errors.ASSET_NOT_SUPPORTED);
-        return vaultPriceOracle.getPriceUSD(vault, vaultInfo.pricedTokens);
+        return vaultPriceOracle.getPriceUSD(vault, pricedTokens);
     }
 
     function _assignUnderlyingTokenPrices(
@@ -66,6 +72,8 @@ contract BatchVaultPriceOracle is IBatchVaultPriceOracle, Governable {
         uint256[] memory underlyingPrices
     ) internal pure {
         for ((uint256 i, uint256 j) = (0, 0); i < vaultInfo.pricedTokens.length; i++) {
+            // Here we make use of the fact that both vaultInfo.pricedTokens and tokens are sorted by
+            // token address, so we don't have to reset j.
             while (tokens[j] != vaultInfo.pricedTokens[i].tokenAddress) j++;
             vaultInfo.pricedTokens[i].price = underlyingPrices[j];
         }

@@ -22,6 +22,7 @@ library TypeConversion {
         return IECLP.Vector2(v.x / 1e20, v.y / 1e20);
     }
 
+    /// @dev Downscales DerivedParams from 38-decimal precision to the standard 18-decimal precision
     function downscaleDerivedParams(IECLP.DerivedParams memory params)
         internal
         pure
@@ -31,7 +32,8 @@ library TypeConversion {
             IECLP.DerivedParams(
                 downscaleVector(params.tauAlpha),
                 downscaleVector(params.tauBeta),
-                // the following variables are not used in the price calculation
+                // the following variables are not used in the price calculation and are not downscaled to save some
+                // gas.
                 params.u,
                 params.v,
                 params.w,

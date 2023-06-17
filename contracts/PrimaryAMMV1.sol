@@ -36,13 +36,13 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     enum Region {
-        CASE_i,
-        CASE_I_ii,
-        CASE_I_iii,
-        CASE_II_H,
-        CASE_II_L,
-        CASE_III_H,
-        CASE_III_L
+        CASE_i, // 0
+        CASE_I_ii, // 1
+        CASE_I_iii, // 2
+        CASE_II_H, // 3
+        CASE_II_L, // 4
+        CASE_III_H, // 5
+        CASE_III_L // 6
     }
 
     struct State {
@@ -65,7 +65,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     /// @notice parameters of the primary AMM
-    Params public systemParams;
+    Params internal _systemParams;
 
     /// @notice current redemption level of the primary AMM
     uint256 public redemptionLevel;
@@ -81,12 +81,17 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     ) Governable(_governor) {
         require(_gyroConfig != address(0), Errors.INVALID_ARGUMENT);
         gyroConfig = IGyroConfig(_gyroConfig);
-        systemParams = params;
+        _systemParams = params;
+    }
+
+    /// @inheritdoc IPAMM
+    function systemParams() external view returns (Params memory) {
+        return _systemParams;
     }
 
     /// @inheritdoc IPAMM
     function setSystemParams(Params memory params) external governanceOnly {
-        systemParams = params;
+        _systemParams = params;
 
         // NOTE: this is not strictly needed but ensures that the given
         // parameters allow to compute the derived parameters without underflowing
@@ -135,7 +140,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             return ba - x;
         }
         if (x <= xl) {
-            return ba - x + (alpha * (x - xu).squareDown()) / TWO;
+            return ba + (alpha * (x - xu).squareDown()) / TWO - x;
         }
         // x > xl:
         uint256 rl = ONE - alpha.mulDown(xl - xu);
@@ -190,7 +195,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 alpha = params.alphaBar;
 
         uint256 yz = ANCHOR - xu;
-        if (ONE - alpha.mulDown(yz) >= params.thetaBar)
+        if (ONE >= params.thetaBar + alpha.mulDown(yz))
             return ANCHOR - (alpha * yz.squareDown()) / TWO;
         uint256 theta = ONE - params.thetaBar;
         return ANCHOR - theta.mulDown(yz) + theta**2 / (2 * alpha);
@@ -205,6 +210,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         DerivedParams memory derived;
 
         derived.baThresholdRegionI = computeBa(params.xuBar, params);
+
         derived.baThresholdRegionII = computeBa(0, params);
 
         derived.xlThresholdAtThresholdI = computeXl(
@@ -461,14 +467,37 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         revert("unknown region");
     }
 
+    /// @dev redeemDiscountRatio is expected to be a small value along the lines of 1%
+    /// this means that the first condition should always be true unless if the system
+    /// is in a extreme state
+    function _computeDiscountedReserveValue(uint256 reserveValue, uint256 totalGyroSupply)
+        internal
+        view
+        returns (uint256)
+    {
+        uint256 redeemDiscountRatio = gyroConfig.getUint(ConfigKeys.REDEEM_DISCOUNT_RATIO);
+
+        if (reserveValue > 2 * redeemDiscountRatio.mulDown(totalGyroSupply)) {
+            uint256 discounted = reserveValue - redeemDiscountRatio.mulDown(totalGyroSupply);
+            return discounted.min(totalGyroSupply);
+        }
+
+        return reserveValue;
+    }
+
     function computeRedeemAmount(
         State memory state,
         Params memory params,
         DerivedParams memory derived,
         uint256 amount
-    ) internal pure returns (uint256) {
+    ) internal view returns (uint256) {
         State memory normalizedState;
         uint256 ya = state.totalGyroSupply + state.redemptionLevel;
+
+        state.reserveValue = _computeDiscountedReserveValue(
+            state.reserveValue,
+            state.totalGyroSupply
+        );
 
         normalizedState.redemptionLevel = state.redemptionLevel.divDown(ya);
         normalizedState.reserveValue = state.reserveValue.divDown(ya);
@@ -521,7 +550,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         returns (uint256)
     {
         if (gydAmount == 0) return 0;
-        Params memory params = systemParams;
+        Params memory params = _systemParams;
         DerivedParams memory derived = createDerivedParams(params);
         State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
         return computeRedeemAmount(currentState, params, derived, gydAmount);
@@ -553,7 +582,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         returns (uint256)
     {
         if (gydAmount == 0) return 0;
-        Params memory params = systemParams;
+        Params memory params = _systemParams;
         State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
         DerivedParams memory derived = createDerivedParams(params);
         uint256 redeemAmount = computeRedeemAmount(currentState, params, derived, gydAmount);

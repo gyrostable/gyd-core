@@ -11,10 +11,12 @@ library DataTypes {
     }
 
     /// @notice Contains a token and the price associated with it
+    /// @dev The price range is only relevant for stablecoins
     struct PricedToken {
         address tokenAddress;
         bool isStable;
         uint256 price;
+        Range priceRange;
     }
 
     /// @notice A route from/to a token to a vault
@@ -42,10 +44,13 @@ library DataTypes {
 
     /// @notice Persisted metadata about the vault
     struct PersistedVaultMetadata {
-        uint256 initialPrice;
-        uint256 initialWeight;
+        uint256 priceAtCalibration;
+        uint256 weightAtCalibration;
         uint256 shortFlowMemory;
         uint256 shortFlowThreshold;
+        uint64 weightTransitionDuration;
+        uint64 weightAtPreviousCalibration;
+        uint64 timeOfCalibration;
     }
 
     /// @notice Directional (in or out) flow data for the vaults
@@ -83,14 +88,14 @@ library DataTypes {
         PersistedVaultMetadata persistedMetadata;
         uint256 reserveBalance;
         uint256 currentWeight;
-        uint256 idealWeight;
+        uint256 targetWeight;
         PricedToken[] pricedTokens;
     }
 
     /// @notice Vault metadata
     struct VaultMetadata {
         address vault;
-        uint256 idealWeight;
+        uint256 targetWeight;
         uint256 currentWeight;
         uint256 resultingWeight;
         uint256 price;
@@ -125,5 +130,26 @@ library DataTypes {
     struct ReserveState {
         uint256 totalUSDValue;
         VaultInfo[] vaults;
+    }
+
+    struct PermitData {
+        address target;
+        address owner;
+        address spender;
+        uint256 amount;
+        uint256 deadline;
+        uint8 v;
+        bytes32 r;
+        bytes32 s;
+    }
+
+    struct VaultConfiguration {
+        address vaultAddress;
+        DataTypes.PersistedVaultMetadata metadata;
+    }
+
+    struct Range {
+        uint256 floor;
+        uint256 ceiling;
     }
 }

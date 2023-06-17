@@ -30,6 +30,7 @@ library Errors {
     string public constant KEY_FROZEN = "33";
     string public constant INSUFFICIENT_BALANCE = "34";
     string public constant INVALID_ASSET = "35";
+    string public constant FORBIDDEN_EXTERNAL_ACTION = "35";
 
     // Oracle related errors
     string public constant ASSET_NOT_SUPPORTED = "40";
@@ -42,6 +43,7 @@ library Errors {
     string public constant NOT_ENOUGH_TWAPS = "46";
     string public constant ZERO_PRICE_TWAP = "47";
     string public constant INVALID_NUMBER_WEIGHTS = "48";
+    string public constant NO_WETH_PRICE = "49";
 
     //Vault safety check related errors
     string public constant A_VAULT_HAS_ALL_STABLECOINS_OFF_PEG = "51";
@@ -52,6 +54,7 @@ library Errors {
     string public constant TRYING_TO_REDEEM_MORE_THAN_VAULT_CONTAINS = "56";
     string public constant CALLER_NOT_MOTHERBOARD = "57";
     string public constant CALLER_NOT_RESERVE_MANAGER = "58";
+    string public constant VAULT_CANNOT_BE_REMOVED = "59";
 
     string public constant VAULT_FLOW_TOO_HIGH = "60";
     string public constant OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED = "61";
@@ -62,4 +65,5 @@ library Errors {
 
     // misc errors
     string public constant REDEEM_AMOUNT_BUG = "100";
+    string public constant EXTERNAL_ACTION_FAILED = "101";
 }

@@ -8,7 +8,14 @@ from tests.fixtures.mainnet_contracts import (
 )
 from tests.support import config_keys, constants
 from tests.support.retrieve_coinbase_prices import fetch_prices, find_price
-from tests.support.types import DeployedVault, PammParams, VaultToDeploy, VaultType
+from tests.support.types import (
+    DeployedVault,
+    PammParams,
+    PersistedVaultMetadata,
+    VaultConfiguration,
+    VaultToDeploy,
+    VaultType,
+)
 from tests.support.utils import scale
 from scripts.config import vaults
 
@@ -51,11 +58,18 @@ def mainnet_reserve_manager(
         config_keys.RESERVE_MANAGER_ADDRESS, reserve_manager, {"from": admin}
     )
     for vault in mainnet_vaults:
-        reserve_manager.registerVault(
-            vault.address,
-            vault.vault_to_deploy.initial_weight,
-            vault.vault_to_deploy.short_flow_memory,
-            vault.vault_to_deploy.short_flow_threshold,
+        reserve_manager.setVaults(
+            [
+                VaultConfiguration(
+                    vault.address,
+                    PersistedVaultMetadata(
+                        scale(1),
+                        vault.vault_to_deploy.initial_weight,
+                        vault.vault_to_deploy.short_flow_memory,
+                        vault.vault_to_deploy.short_flow_threshold,
+                    ),
+                )
+            ],
             {"from": admin},
         )
 
@@ -142,7 +156,7 @@ def full_checked_price_oracle(
         uniswap_v3_twap_oracle,
         TokenAddresses.WETH,
     )
-    mainnet_checked_price_oracle.addSignedPriceSource(
+    mainnet_checked_price_oracle.addETHPriceOracle(
         mainnet_coinbase_price_oracle, {"from": admin}
     )
     mainnet_checked_price_oracle.addQuoteAssetsForPriceLevelTwap(
@@ -205,7 +219,6 @@ def mainnet_reserve_safety_manager(admin, ReserveSafetyManager, mainnet_asset_re
     return admin.deploy(
         ReserveSafetyManager,
         scale("0.2"),  # large deviation to avoid failing test because of price changes
-        constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
         mainnet_asset_registry,
     )
@@ -223,7 +236,6 @@ def initialize_safety_checks(
 def uninitialized_motherboard(admin, Motherboard, request, gyro_config, reserve):
     extra_dependencies = [
         "gyd_token",
-        "fee_bank",
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)

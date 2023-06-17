@@ -38,4 +38,6 @@ contract PAMMWrongRedeemQuote is IPAMM {
     }
 
     function setSystemParams(Params memory params) external {}
+
+    function systemParams() external view returns (Params memory) {}
 }

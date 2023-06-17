@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from typing import List, NamedTuple
+from tests.support import constants
 
 from tests.support.quantized_decimal import DecimalLike
+from tests.support.utils import scale
 
 
 class MintAsset(NamedTuple):
@@ -44,16 +46,25 @@ class JoinPoolRequest(NamedTuple):
 
 
 class PersistedVaultMetadata(NamedTuple):
-    initial_price: int
-    initial_weight: int
+    price_at_calibration: int
+    weight_at_calibration: int
     short_flow_memory: int
     short_flow_threshold: int
+    weight_transition_duration: int = 86_400 * 7
+    weight_at_previous_calibration: int = 0
+    time_of_calibration: int = 0
+
+
+class Range(NamedTuple):
+    floor: int = int(scale("1") - constants.STABLECOIN_MAX_DEVIATION)
+    ceiling: int = int(scale("1") + constants.STABLECOIN_MAX_DEVIATION)
 
 
 class PricedToken(NamedTuple):
     tokenAddress: str
     is_stable: bool
     price: int
+    price_range: Range = Range()
 
 
 class VaultInfo(NamedTuple):
@@ -64,7 +75,7 @@ class VaultInfo(NamedTuple):
     persisted_metadata: PersistedVaultMetadata
     reserve_balance: int
     current_weight: int
-    ideal_weight: int
+    target_weight: int
     priced_tokens: List[PricedToken]
 
     @classmethod
@@ -105,6 +116,7 @@ class VaultType:
     BALANCER_2CLP = 2
     BALANCER_3CLP = 3
     BALANCER_ECLP = 4
+    BALANCER_ECLPV2 = 5
 
 
 class FlowDirection:
@@ -135,3 +147,13 @@ class PammParams(NamedTuple):
     xu_bar: int  # x̄_U ∊ [0,1]
     theta_bar: int  # θ̄ ∊ [0,1]
     outflow_memory: int  #  [0,1]
+
+
+class ExternalAction(NamedTuple):
+    target: str
+    data: str
+
+
+class VaultConfiguration(NamedTuple):
+    vault_address: str
+    metadata: PersistedVaultMetadata

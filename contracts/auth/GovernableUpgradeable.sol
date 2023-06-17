@@ -3,7 +3,7 @@
 pragma solidity ^0.8.4;
 
 import "./GovernableBase.sol";
-import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract GovernableUpgradeable is GovernableBase, Initializable {
     // solhint-disable-next-line func-name-mixedcase

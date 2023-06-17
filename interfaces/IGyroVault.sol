@@ -5,13 +5,14 @@ pragma solidity ^0.8.4;
 import "../libraries/Vaults.sol";
 
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol";
 
 /// @notice A vault is one of the component of the reserve and has a one-to-one
 /// mapping to an underlying pool (e.g. Balancer pool, Curve pool, Uniswap pool...)
 /// It is itself an ERC-20 token that is used to track the ownership of the LP tokens
 /// deposited in the vault
 /// A vault can be associated with a strategy to generate yield on the deposited funds
-interface IGyroVault is IERC20Metadata {
+interface IGyroVault is IERC20Metadata, IERC20Permit {
     /// @return The type of the vault
     function vaultType() external view returns (Vaults.Type);
 
@@ -31,7 +32,7 @@ interface IGyroVault is IERC20Metadata {
     /// @return The exchange rate between an underlying tokens and the token of this vault
     function exchangeRate() external view returns (uint256);
 
-    /// @notice Deposits `underlyingAmount` of LP token supported
+    /// @notice Deposits `underlyingAmount` of underlying (usually LP) token supported
     /// and sends back the received vault tokens
     /// @param underlyingAmount the amount of underlying to deposit
     /// @return vaultTokenAmount the amount of vault token sent back

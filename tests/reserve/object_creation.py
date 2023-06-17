@@ -1,5 +1,6 @@
 import hypothesis.strategies as st
 from tests.support import constants
+from tests.support.types import Range
 
 
 def vault_lists(*args, **kwargs):
@@ -44,7 +45,8 @@ def bundle_to_metadata(
         prices = mock_price_oracle.getPricesUSD(tokens)
         if token_stables is None:
             token_stables = [False] * len(tokens)
-        token_with_prices = list(zip(tokens, token_stables, prices))
+        price_ranges = [Range() for _ in tokens]
+        token_with_prices = list(zip(tokens, token_stables, prices, price_ranges))
         vaults_metadata.append((mock_vaults[i],) + v + (token_with_prices,))
     return (vaults_metadata,) + global_metadata
 
@@ -77,7 +79,6 @@ def bundle_to_vault_info(bundle, mock_vaults):
 def bundle_to_order(
     order_bundle, mint, mock_vaults, mock_price_oracle, stable_assets=None
 ):
-
     (
         initial_prices,
         initial_weights,
@@ -85,7 +86,7 @@ def bundle_to_order(
         current_vault_prices,
         amounts,
         current_weights,
-        ideal_weights,
+        target_weights,
     ) = [list(v) for v in zip(*order_bundle)]
 
     return order_builder(
@@ -96,7 +97,7 @@ def bundle_to_order(
         current_vault_prices,
         amounts,
         current_weights,
-        ideal_weights,
+        target_weights,
         mock_vaults,
         mock_price_oracle,
         stable_assets,
@@ -111,7 +112,7 @@ def order_builder(
     current_vault_prices,
     amounts,
     current_weights,
-    ideal_weights,
+    target_weights,
     mock_vaults,
     mock_price_oracle,
     stable_assets=None,
@@ -119,10 +120,12 @@ def order_builder(
     vaults_with_amount = []
 
     for i in range(len(initial_prices)):
-
         persisted_metadata = (
             initial_prices[i],
             initial_weights[i],
+            0,
+            0,
+            86400 * 7,
             0,
             0,
         )
@@ -132,7 +135,8 @@ def order_builder(
         prices = mock_price_oracle.getPricesUSD(tokens)
         if stable_assets is None:
             stable_assets = [False] * len(tokens)
-        token_with_prices = list(zip(tokens, stable_assets, prices))
+        price_ranges = [Range() for _ in tokens]
+        token_with_prices = list(zip(tokens, stable_assets, prices, price_ranges))
         underlying = vault.underlying()
 
         vault_info = (
@@ -143,7 +147,7 @@ def order_builder(
             persisted_metadata,
             reserve_balances[i],
             current_weights[i],
-            ideal_weights[i],
+            target_weights[i],
             token_with_prices,
         )
 
@@ -154,7 +158,6 @@ def order_builder(
 
 
 def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults, mock_price_oracle):
-
     (
         initial_prices,
         initial_weights,
@@ -162,7 +165,7 @@ def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults, mock_price_o
         current_vault_prices,
         amounts,
         current_weights,
-        ideal_weights,
+        target_weights,
         short_flow_memory,
         short_flow_threshold,
     ) = [list(v) for v in zip(*order_bundle)]
@@ -175,7 +178,7 @@ def bundle_to_order_vary_persisted(order_bundle, mint, mock_vaults, mock_price_o
         current_vault_prices,
         amounts,
         current_weights,
-        ideal_weights,
+        target_weights,
         mock_vaults,
         short_flow_memory,
         short_flow_threshold,
@@ -191,7 +194,7 @@ def order_builder_vary_persisted(
     current_vault_prices,
     amounts,
     current_weights,
-    ideal_weights,
+    target_weights,
     mock_vaults,
     short_flow_memory,
     short_flow_threshold,
@@ -200,7 +203,6 @@ def order_builder_vary_persisted(
     vaults_with_amount = []
 
     for i in range(len(initial_prices)):
-
         persisted_metadata = (
             initial_prices[i],
             initial_weights[i],
@@ -210,7 +212,10 @@ def order_builder_vary_persisted(
 
         tokens = mock_vaults[i].getTokens()
         prices = mock_price_oracle.getPricesUSD(tokens)
-        token_with_prices = list(zip(tokens, [False] * len(tokens), prices))
+        price_ranges = [Range() for _ in tokens]
+        token_with_prices = list(
+            zip(tokens, [False] * len(tokens), prices, price_ranges)
+        )
         underlying = mock_vaults[i].underlying()
 
         vault_info = (
@@ -221,7 +226,7 @@ def order_builder_vary_persisted(
             persisted_metadata,
             reserve_balances[i],
             current_weights[i],
-            ideal_weights[i],
+            target_weights[i],
             token_with_prices,
         )
 

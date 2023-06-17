@@ -7,7 +7,6 @@ library ConfigKeys {
     // Addresses
     bytes32 internal constant GYD_TOKEN_ADDRESS = "GYD_TOKEN_ADDRESS";
     bytes32 internal constant PAMM_ADDRESS = "PAMM_ADDRESS";
-    bytes32 internal constant FEE_BANK_ADDRESS = "FEE_BANK_ADDRESS";
     bytes32 internal constant RESERVE_ADDRESS = "RESERVE_ADDRESS";
     bytes32 internal constant ROOT_PRICE_ORACLE_ADDRESS = "ROOT_PRICE_ORACLE_ADDRESS";
     bytes32 internal constant ROOT_SAFETY_CHECK_ADDRESS = "ROOT_SAFETY_CHECK_ADDRESS";
@@ -37,4 +36,8 @@ library ConfigKeys {
 
     bytes32 internal constant SAFETY_BLOCKS_AUTOMATIC = "SAFETY_BLOCKS_AUTOMATIC";
     bytes32 internal constant SAFETY_BLOCKS_GUARDIAN = "SAFETY_BLOCKS_GUARDIAN";
+
+    bytes32 internal constant REDEEM_DISCOUNT_RATIO = "REDEEM_DISCOUNT_RATIO";
+    bytes32 internal constant VAULT_DUST_THRESHOLD = "VAULT_DUST_THRESHOLD";
+    bytes32 internal constant STABLECOIN_MAX_DEVIATION = "STABLECOIN_MAX_DEVIATION";
 }

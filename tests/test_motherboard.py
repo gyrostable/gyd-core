@@ -5,8 +5,9 @@ from tests.support import config_keys, error_codes
 from tests.support.balancer import join_pool
 from tests.support.constants import BALANCER_POOL_IDS, address_from_pool_id
 from tests.support.quantized_decimal import QuantizedDecimal as D
-from tests.support.types import MintAsset, RedeemAsset
+from tests.support.types import MintAsset, RedeemAsset, ExternalAction
 from tests.support.utils import scale
+
 
 @pytest.fixture(scope="module", autouse=True)
 def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
@@ -14,9 +15,26 @@ def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
 
 
 @pytest.mark.usefixtures("register_usdc_vault")
-def test_dry_mint_vault_underlying(
-    motherboard, usdc, usdc_vault, alice, mock_balancer_vault
+def test_dry_mint_vault_underlying(motherboard, usdc, usdc_vault, alice):
+    decimals = usdc.decimals()
+    usdc_amount = scale(10, decimals)
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    gyd_minted, err = motherboard.dryMint([mint_asset], 0, alice, {"from": alice})
+    assert err == ""
+    assert gyd_minted == scale(10)
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_dry_mint_vault_underlying_over_peg(
+    motherboard, usdc, usdc_vault, alice, mock_price_oracle, asset_registry, admin
 ):
+    asset_registry.setAssetAddress("USDC", usdc, {"from": admin})
+    asset_registry.addStableAsset(usdc, {"from": admin})
+    mock_price_oracle.setUSDPrice(usdc, scale("1.1"))
+    mock_price_oracle.setUSDPrice(usdc_vault, scale("1.1"))
     decimals = usdc.decimals()
     usdc_amount = scale(10, decimals)
     usdc.approve(motherboard, usdc_amount, {"from": alice})
@@ -44,7 +62,7 @@ def test_dry_mint_above_cap(motherboard, usdc, usdc_vault, alice, gyro_config, a
 
 @pytest.mark.usefixtures("register_usdc_vault")
 def test_mint_vault_underlying(
-    motherboard, usdc, usdc_vault, alice, gyd_token, reserve
+    motherboard, usdc, usdc_vault, alice, gyd_token, reserve, reserve_manager
 ):
     usdc_amount = scale(10, usdc.decimals())
     usdc.approve(motherboard, usdc_amount, {"from": alice})
@@ -56,6 +74,32 @@ def test_mint_vault_underlying(
     assert gyd_token.balanceOf(alice) == scale(10)
     assert gyd_minted == scale(10)
     assert usdc_vault.balanceOf(reserve) == usdc_amount
+    total_usd_value, _ = reserve_manager.getReserveState()
+    assert total_usd_value == scale(10)
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_mint_with_external_call(
+    motherboard, usdc, usdc_vault, alice, bob, gyd_token, reserve
+):
+    usdc_amount = scale(10, usdc.decimals())
+    bob_transfer_amount = scale(1, usdc.decimals())
+    initial_bob_balance = usdc.balanceOf(bob)
+    usdc.approve(motherboard, usdc_amount + bob_transfer_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    motherboard.addToExternalCallWhitelist(usdc)
+    external_action = ExternalAction(
+        target=usdc,
+        data=usdc.transferFrom.encode_input(alice, bob, bob_transfer_amount),
+    )  # Send 1 USDC to bob
+    tx = motherboard.mint([mint_asset], 0, [external_action], {"from": alice})
+    gyd_minted = tx.return_value
+    assert gyd_token.balanceOf(alice) == scale(10)
+    assert gyd_minted == scale(10)
+    assert usdc_vault.balanceOf(reserve) == usdc_amount
+    assert usdc.balanceOf(bob) == bob_transfer_amount + initial_bob_balance
 
 
 @pytest.mark.usefixtures("register_usdc_and_dai_vaults")
@@ -136,7 +180,6 @@ def test_mint_above_user_cap_with_authentication(
     gyro_config,
     cap_authentication,
 ):
-
     cap_authentication.authenticate(alice, {"from": admin})
 
     gyro_config.setAddress(

@@ -6,7 +6,6 @@ import "./IGyroConfig.sol";
 import "./IGYDToken.sol";
 import "./IReserve.sol";
 import "./IPAMM.sol";
-import "./IFeeBank.sol";
 
 /// @title IMotherboard is the central contract connecting the different pieces
 /// of the Gyro protocol

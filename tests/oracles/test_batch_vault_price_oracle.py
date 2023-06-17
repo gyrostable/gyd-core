@@ -1,5 +1,6 @@
 from brownie import ZERO_ADDRESS
 from tests.support.types import PersistedVaultMetadata, PricedToken, VaultInfo
+from tests.support.utils import scale
 
 
 def _dummy_vault(tokens):
@@ -8,10 +9,10 @@ def _dummy_vault(tokens):
         decimals=18,
         underlying=ZERO_ADDRESS,
         price=0,
-        persisted_metadata=PersistedVaultMetadata(0, 0, 0, 0),
+        persisted_metadata=PersistedVaultMetadata(int(scale(1)), 0, 0, 0),
         reserve_balance=0,
         current_weight=0,
-        ideal_weight=0,
+        target_weight=0,
         priced_tokens=[PricedToken(t, False, 0) for t in tokens],
     )
 

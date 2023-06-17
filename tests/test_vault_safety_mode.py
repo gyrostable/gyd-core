@@ -5,6 +5,7 @@ from brownie.test.managers.runner import RevertContextManager as reverts
 from tests.support.types import (
     FlowDirection,
     Order,
+    VaultConfiguration,
     VaultWithAmount,
     VaultInfo,
     PersistedVaultMetadata,
@@ -21,11 +22,11 @@ def _create_vault_info(admin, MockGyroVault, decimals, short_flow_threshold):
         current_weight=0,
         decimals=decimals,
         price=0,
-        ideal_weight=0,
+        target_weight=0,
         persisted_metadata=PersistedVaultMetadata(
-            initial_price=0,
+            price_at_calibration=int(scale(1)),
             short_flow_memory=int(scale("0.9", 18)),
-            initial_weight=0,
+            weight_at_calibration=int(scale("0.5", 18)),
             short_flow_threshold=short_flow_threshold,
         ),
         priced_tokens=[],
@@ -327,13 +328,14 @@ def test_pause_protocol(
 ):
     tx = vault_safety_mode.addAddressToWhitelist(admin, {"from": admin})
     vaults = []
+    vault_configurations = []
     for _ in range(2):
         v = _create_vault_info(admin, MockGyroVault, 18, 10**19)
         mock_price_oracle.setUSDPrice(v.vault, scale(1), {"from": admin})
         static_percentage_fee_handler.setVaultFees(v.vault, 0, 0, {"from": admin})
-        metadata = list(v.persisted_metadata)[1:]
-        reserve_manager.registerVault(v.vault, *metadata, {"from": admin})
+        vault_configurations.append(VaultConfiguration(v.vault, v.persisted_metadata))
         vaults.append(v)
+    reserve_manager.setVaults(vault_configurations, {"from": admin})
 
     tx = vault_safety_mode.pauseProtocol(deposits_only, {"from": admin})
     if deposits_only:

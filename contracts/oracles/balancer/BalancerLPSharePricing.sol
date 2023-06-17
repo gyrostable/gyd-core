@@ -264,7 +264,7 @@ library BalancerLPSharePricing {
 
     /** @dev Calculates the value of BPT for constant ellipse (ECLP) pools of two assets
      *  @param params = ECLP pool parameters
-     *  @param derivedParams = (tau(alpha), tau(beta))
+     *  @param derivedParams = (tau(alpha), tau(beta)) in 18 decimals. The other elements are not used.
      *  @param invariantDivSupply = value of the pool invariant / supply of BPT
      *  This calculation is robust to price manipulation within the Balancer pool.
      *  Bounds on underlying prices are enforced to make this safe across a range of typical pool

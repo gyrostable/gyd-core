@@ -4,6 +4,11 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 import "../interfaces/IFeeHandler.sol";
 import "../interfaces/IMotherboard.sol";
@@ -12,7 +17,6 @@ import "../interfaces/ILPTokenExchanger.sol";
 import "../interfaces/IPAMM.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
-import "../interfaces/IFeeBank.sol";
 import "../interfaces/balancer/IVault.sol";
 
 import "../libraries/DataTypes.sol";
@@ -21,6 +25,7 @@ import "../libraries/ConfigHelpers.sol";
 import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/DecimalScale.sol";
+import "../libraries/ReserveStateExtensions.sol";
 
 import "./auth/GovernableUpgradeable.sol";
 
@@ -30,8 +35,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     using FixedPoint for uint256;
     using DecimalScale for uint256;
     using SafeERC20 for IERC20;
-    using SafeERC20 for IGYDToken;
+    using SafeERC20 for IERC20Permit;
+    using SafeERC20Upgradeable for IGYDToken;
     using ConfigHelpers for IGyroConfig;
+    using EnumerableSet for EnumerableSet.AddressSet;
+    using ReserveStateExtensions for DataTypes.ReserveState;
+    using ReserveStateExtensions for DataTypes.VaultInfo;
+    using Address for address;
 
     uint256 internal constant _REDEEM_DEVIATION_EPSILON = 1e13; // 0.001 %
 
@@ -46,6 +56,8 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
     // Balancer vault used for re-entrancy check.
     IVault internal immutable balancerVault;
+
+    EnumerableSet.AddressSet internal externalCallWhitelist;
 
     // Events
     event Mint(
@@ -64,17 +76,21 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.Order orderAfterFees
     );
 
+    struct ExternalAction {
+        address target;
+        bytes data;
+    }
+
     constructor(IGyroConfig _gyroConfig) {
         gyroConfig = _gyroConfig;
         gydToken = _gyroConfig.getGYDToken();
         reserve = _gyroConfig.getReserve();
         balancerVault = _gyroConfig.getBalancerVault();
-        gydToken.safeApprove(address(_gyroConfig.getFeeBank()), type(uint256).max);
     }
 
     /// @inheritdoc IMotherboard
     function mint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
-        external
+        public
         override
         returns (uint256 mintedGYDAmount)
     {
@@ -117,9 +133,44 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         emit Mint(msg.sender, mintedGYDAmount, usdValue, order, orderAfterFees);
     }
 
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount,
+        ExternalAction[] calldata actions
+    ) public returns (uint256 mintedGYDAmount) {
+        for (uint256 i = 0; i < actions.length; i++) {
+            require(
+                externalCallWhitelist.contains(actions[i].target),
+                Errors.FORBIDDEN_EXTERNAL_ACTION
+            );
+            actions[i].target.functionCall(actions[i].data, Errors.EXTERNAL_ACTION_FAILED);
+        }
+
+        return mint(assets, minReceivedAmount);
+    }
+
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount,
+        DataTypes.PermitData[] calldata permits,
+        ExternalAction[] calldata actions
+    ) external returns (uint256 mintedGYDAmount) {
+        _executePermits(permits);
+        return mint(assets, minReceivedAmount, actions);
+    }
+
+    function mint(
+        DataTypes.MintAsset[] calldata assets,
+        uint256 minReceivedAmount,
+        DataTypes.PermitData[] calldata permits
+    ) external returns (uint256 mintedGYDAmount) {
+        _executePermits(permits);
+        return mint(assets, minReceivedAmount);
+    }
+
     /// @inheritdoc IMotherboard
     function redeem(uint256 gydToRedeem, DataTypes.RedeemAsset[] calldata assets)
-        external
+        public
         override
         returns (uint256[] memory outputAmounts)
     {
@@ -129,11 +180,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             .getReserveManager()
             .getReserveState();
 
+        uint256 reserveRedeemUSDValue = reserveState.computeLowerBoundUSDValue(_oracle());
+
         // order matters!
         gyroConfig.getReserveStewardshipIncentives().checkpoint(reserveState);
         gyroConfig.getGydRecovery().checkAndRun(reserveState);
 
-        uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveState.totalUSDValue);
+        uint256 usdValueToRedeem = pamm().redeem(gydToRedeem, reserveRedeemUSDValue);
         require(
             usdValueToRedeem <= gydToRedeem.mulDown(FixedPoint.ONE + _REDEEM_DEVIATION_EPSILON),
             Errors.REDEEM_AMOUNT_BUG
@@ -152,6 +205,22 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         outputAmounts = _convertAndSendRedeemOutputAssets(assets, orderAfterFees);
 
         emit Redeem(msg.sender, gydToRedeem, usdValueToRedeem, order, orderAfterFees);
+    }
+
+    function redeem(
+        uint256 gydToRedeem,
+        DataTypes.RedeemAsset[] calldata assets,
+        ExternalAction[] calldata actions
+    ) external returns (uint256[] memory outputAmounts) {
+        for (uint256 i = 0; i < actions.length; i++) {
+            require(
+                externalCallWhitelist.contains(actions[i].target),
+                Errors.FORBIDDEN_EXTERNAL_ACTION
+            );
+            actions[i].target.functionCall(actions[i].data, Errors.EXTERNAL_ACTION_FAILED);
+        }
+
+        return redeem(gydToRedeem, assets);
     }
 
     /// @inheritdoc IMotherboard
@@ -204,10 +273,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
-        uint256 usdValueToRedeem = pamm().computeRedeemAmount(
-            gydToRedeem,
-            reserveState.totalUSDValue
-        );
+        uint256 reserveRedeemUSDValue = reserveState.computeLowerBoundUSDValue(_oracle());
+        uint256 usdValueToRedeem = pamm().computeRedeemAmount(gydToRedeem, reserveRedeemUSDValue);
+
         DataTypes.Order memory order = _createRedeemOrder(
             usdValueToRedeem,
             assets,
@@ -223,7 +291,23 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
     /// @inheritdoc IMotherboard
     function pamm() public view override returns (IPAMM) {
-        return IPAMM(gyroConfig.getAddress(ConfigKeys.PAMM_ADDRESS));
+        return gyroConfig.getPAMM();
+    }
+
+    function addToExternalCallWhitelist(address whitelistedAddress)
+        external
+        governanceOnly
+        returns (bool)
+    {
+        return externalCallWhitelist.add(whitelistedAddress);
+    }
+
+    function removeFromExternalCallWhitelist(address removedAddress)
+        external
+        governanceOnly
+        returns (bool)
+    {
+        return externalCallWhitelist.remove(removedAddress);
     }
 
     function mintStewardshipIncRewards(uint256 amount) external override {
@@ -233,6 +317,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         );
         address treasury = gyroConfig.getGovTreasuryAddress();
         gydToken.mint(treasury, amount);
+    }
+
+    function listExternalCallWhitelist() external view returns (address[] memory) {
+        return externalCallWhitelist.values();
     }
 
     function _dryConvertMintInputAssetsToVaultTokens(DataTypes.MintAsset[] calldata assets)
@@ -346,12 +434,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.VaultInfo memory vaultInfo,
         uint256 usdValueToRedeem,
         DataTypes.RedeemAsset[] calldata redeemAssets
-    ) internal pure returns (uint256, uint256) {
+    ) internal view returns (uint256, uint256) {
         for (uint256 i = 0; i < redeemAssets.length; i++) {
             DataTypes.RedeemAsset calldata asset = redeemAssets[i];
             if (asset.originVault == vaultInfo.vault) {
+                uint256 vaultPrice = vaultInfo.computeUpperBoundUSDPrice(_oracle());
                 uint256 vaultUsdValueToWithdraw = usdValueToRedeem.mulDown(asset.valueRatio);
-                uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultInfo.price);
+                uint256 vaultTokenAmount = vaultUsdValueToWithdraw.divDown(vaultPrice);
                 uint256 scaledVaultTokenAmount = vaultTokenAmount.scaleTo(vaultInfo.decimals);
 
                 return (scaledVaultTokenAmount, asset.valueRatio);
@@ -364,7 +453,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         uint256 usdValueToRedeem,
         DataTypes.RedeemAsset[] calldata assets,
         DataTypes.VaultInfo[] memory vaultsInfo
-    ) internal pure returns (DataTypes.Order memory) {
+    ) internal view returns (DataTypes.Order memory) {
         _ensureNoDuplicates(assets);
 
         DataTypes.Order memory order = DataTypes.Order({
@@ -491,15 +580,15 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
     function _getBasketUSDValue(DataTypes.Order memory order)
         internal
-        pure
+        view
         returns (uint256 result)
     {
         for (uint256 i = 0; i < order.vaultsWithAmount.length; i++) {
             DataTypes.VaultWithAmount memory vaultWithAmount = order.vaultsWithAmount[i];
-            uint256 scaledAmount = vaultWithAmount.amount.scaleFrom(
-                vaultWithAmount.vaultInfo.decimals
-            );
-            result += scaledAmount.mulDown(vaultWithAmount.vaultInfo.price);
+            DataTypes.VaultInfo memory vaultInfo = vaultWithAmount.vaultInfo;
+            uint256 vaultPrice = vaultInfo.computeLowerBoundUSDPrice(_oracle());
+            uint256 scaledAmount = vaultWithAmount.amount.scaleFrom(vaultInfo.decimals);
+            result += scaledAmount.mulDown(vaultPrice);
         }
     }
 
@@ -531,5 +620,24 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         ops[0].kind = IVault.UserBalanceOpKind.WITHDRAW_INTERNAL;
         ops[0].sender = address(this);
         balancerVault.manageUserBalance(ops);
+    }
+
+    function _executePermits(DataTypes.PermitData[] calldata permits) internal {
+        for (uint256 i = 0; i < permits.length; i++) {
+            DataTypes.PermitData calldata permit = permits[i];
+            IERC20Permit(permit.target).safePermit(
+                permit.owner,
+                permit.spender,
+                permit.amount,
+                permit.deadline,
+                permit.v,
+                permit.r,
+                permit.s
+            );
+        }
+    }
+
+    function _oracle() internal view returns (IBatchVaultPriceOracle) {
+        return gyroConfig.getRootPriceOracle();
     }
 }

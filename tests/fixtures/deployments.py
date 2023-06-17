@@ -2,7 +2,11 @@ import pytest
 from brownie import accounts
 from .mainnet_contracts import TokenAddresses
 from tests.support import config_keys, constants
-from tests.support.types import PammParams
+from tests.support.types import (
+    PammParams,
+    PersistedVaultMetadata,
+    VaultConfiguration,
+)
 from tests.support.utils import scale
 
 
@@ -49,18 +53,10 @@ def static_percentage_fee_handler(StaticPercentageFeeHandler, admin, gyro_config
 
 @pytest.fixture(scope="module")
 def gyd_token(admin, GydToken, gyro_config):
-    gyd_token = admin.deploy(GydToken, gyro_config)
-    gyd_token.initialize("GYD Token", "GYD")
+    gyd_token = admin.deploy(GydToken)
+    gyd_token.initialize(admin, "GYD Token", "GYD")
     gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token, {"from": admin})
     return gyd_token
-
-
-@pytest.fixture(scope="module")
-def fee_bank(admin, FeeBank, gyro_config):
-    fee_bank = admin.deploy(FeeBank)
-    fee_bank.initialize(admin)
-    gyro_config.setAddress(config_keys.FEE_BANK_ADDRESS, fee_bank, {"from": admin})
-    return fee_bank
 
 
 @pytest.fixture(scope="module")
@@ -117,6 +113,9 @@ def mock_balancer_vault(admin, gyro_config, MockBalVault):
 def gyro_config(admin, GyroConfig):
     config = admin.deploy(GyroConfig)
     config.initialize(admin)
+    config.setUint(
+        config_keys.STABLECOIN_MAX_DEVIATION, constants.STABLECOIN_MAX_DEVIATION
+    )
     return config
 
 
@@ -129,6 +128,7 @@ def lp_token(Token):
 def mock_pamm(admin, MockPAMM, gyro_config):
     pamm = admin.deploy(MockPAMM)
     gyro_config.setAddress(config_keys.PAMM_ADDRESS, pamm, {"from": admin})
+    gyro_config.setUint(config_keys.REDEEM_DISCOUNT_RATIO, 0, {"from": admin})
     return pamm
 
 
@@ -143,7 +143,7 @@ def mock_price_oracle(admin, MockPriceOracle, gyro_config):
 
 @pytest.fixture(scope="module")
 def asset_registry(admin, AssetRegistry, gyro_config):
-    asset_registry = admin.deploy(AssetRegistry)
+    asset_registry = admin.deploy(AssetRegistry, gyro_config)
     asset_registry.initialize(admin)
     gyro_config.setAddress(
         config_keys.ASSET_REGISTRY_ADDRESS, asset_registry, {"from": admin}
@@ -247,16 +247,14 @@ def root_safety_check(admin, RootSafetyCheck, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def motherboard(admin, Motherboard, gyro_config, reserve, request):
+def motherboard(admin, Motherboard, gyro_config, gyd_token, reserve, request):
     extra_dependencies = [
-        "fee_bank",
         "mock_pamm",
         "mock_price_oracle",
         "reserve_manager",
         "root_safety_check",
         "static_percentage_fee_handler",
         "mock_balancer_vault",
-        "gyd_token",
         "gyd_recovery",
         "stewardship_incentives",
     ]
@@ -268,12 +266,13 @@ def motherboard(admin, Motherboard, gyro_config, reserve, request):
     gyro_config.setAddress(
         config_keys.MOTHERBOARD_ADDRESS, motherboard, {"from": admin}
     )
+    gyd_token.addMinter(motherboard, {"from": admin})
     return motherboard
 
 
 @pytest.fixture(scope="module")
 def pamm(admin, TestingPAMMV1, gyro_config):
-    return TestingPAMMV1.deploy(
+    pamm = TestingPAMMV1.deploy(
         admin,
         gyro_config,
         PammParams(
@@ -284,6 +283,8 @@ def pamm(admin, TestingPAMMV1, gyro_config):
         ),
         {"from": admin},
     )
+    gyro_config.setUint(config_keys.REDEEM_DISCOUNT_RATIO, 0, {"from": admin})
+    return pamm
 
 
 @pytest.fixture(scope="module")
@@ -292,7 +293,6 @@ def reserve_safety_manager(admin, TestingReserveSafetyManager):
         TestingReserveSafetyManager,
         admin,
         constants.MAX_ALLOWED_VAULT_DEVIATION,
-        constants.STABLECOIN_MAX_DEVIATION,
         constants.MIN_TOKEN_PRICE,
     )
 
@@ -408,13 +408,31 @@ def set_fees_usdc_dai(static_percentage_fee_handler, usdc_vault, dai_vault, admi
 
 @pytest.fixture
 def register_usdc_vault(reserve_manager, usdc_vault, admin):
-    reserve_manager.registerVault(usdc_vault, scale(1), 0, 0, {"from": admin})
+    reserve_manager.setVaults(
+        [
+            VaultConfiguration(
+                usdc_vault, PersistedVaultMetadata(int(scale(1)), int(scale(1)), 0, 0)
+            )
+        ],
+        {"from": admin},
+    )
 
 
 @pytest.fixture
 def register_usdc_and_dai_vaults(reserve_manager, usdc_vault, dai_vault, admin):
-    reserve_manager.registerVault(dai_vault, scale("0.6"), 0, 0, {"from": admin})
-    reserve_manager.registerVault(usdc_vault, scale("0.4"), 0, 0, {"from": admin})
+    reserve_manager.setVaults(
+        [
+            VaultConfiguration(
+                dai_vault,
+                PersistedVaultMetadata(int(scale(1)), int(scale("0.6")), 0, 0),
+            ),
+            VaultConfiguration(
+                usdc_vault,
+                PersistedVaultMetadata(int(scale(1)), int(scale("0.4")), 0, 0),
+            ),
+        ],
+        {"from": admin},
+    )
 
 
 @pytest.fixture(scope="module")
