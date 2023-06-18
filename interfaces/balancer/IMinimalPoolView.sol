@@ -8,4 +8,8 @@ interface IMinimalPoolView {
     function getLastInvariant() external view returns (uint256);
 
     function totalSupply() external view returns (uint256);
+
+    // NOTE: We do NOT currently support old v1 pools that don't have this function but instead pay
+    // protocol fees in pool tokens.
+    function getActualSupply() external view returns (uint256);
 }
