@@ -24,7 +24,7 @@ contract Balancer2CLPPriceOracle is BaseBalancerPriceOracle {
             BalancerLPSharePricing.priceBpt2CLP(
                 sqrtAlpha,
                 sqrtBeta,
-                getInvariantDivSupply(pool),
+                pool.getInvariantDivActualSupply(),
                 underlyingPricedTokens.pluckPrices()
             );
     }

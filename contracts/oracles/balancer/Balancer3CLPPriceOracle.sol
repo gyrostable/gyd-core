@@ -22,7 +22,7 @@ contract Balancer3CLPPriceOracle is BaseBalancerPriceOracle {
         return
             BalancerLPSharePricing.priceBpt3CLP(
                 pool.getRoot3Alpha(),
-                getInvariantDivSupply(pool),
+                pool.getInvariantDivActualSupply(),
                 underlyingPricedTokens.pluckPrices()
             );
     }

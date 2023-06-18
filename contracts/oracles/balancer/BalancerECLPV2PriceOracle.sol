@@ -32,7 +32,7 @@ contract BalancerECLPV2PriceOracle is BaseBalancerPriceOracle {
             BalancerLPSharePricing.priceBptECLP(
                 params,
                 derivedParams.downscaleDerivedParams(),
-                getInvariantDivSupply(pool),
+                pool.getInvariantDivActualSupply(),
                 underlyingPrices
             );
     }

@@ -22,7 +22,7 @@ contract BalancerCPMMPriceOracle is BaseBalancerPriceOracle {
         return
             BalancerLPSharePricing.priceBptCPMM(
                 pool.getNormalizedWeights(),
-                getInvariantDivSupply(pool),
+                getInvariantDivActualSupply(pool),
                 underlyingPricedTokens.pluckPrices()
             );
     }
