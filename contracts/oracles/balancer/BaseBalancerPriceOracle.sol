@@ -15,7 +15,12 @@ abstract contract BaseBalancerPriceOracle is BaseVaultPriceOracle {
 
     /// @dev This function is not used for Gyro CLPs, which have a separate view function to get
     ///the same thing in a more gas-efficient way.
-    function getInvariantDivActualSupply(IMinimalPoolView pool) internal view virtual returns (uint256) {
+    function getInvariantDivActualSupply(IMinimalPoolView pool)
+        internal
+        view
+        virtual
+        returns (uint256)
+    {
         uint256 invariant = pool.getInvariant();
         uint256 actualSupply = pool.getActualSupply();
         return invariant.divDown(actualSupply);
