@@ -37,7 +37,7 @@ contract MintRedeemTest is PolygonAddresses, Test {
 
         DataTypes.ReserveState memory reserveState = abi.decode(data, (DataTypes.ReserveState));
 
-        for (uint i; i < reserveState.vaults.length; i++) {
+        for (uint256 i; i < reserveState.vaults.length; i++) {
             DataTypes.VaultInfo memory vault = reserveState.vaults[i];
 
             console.log("NEW VAULT");
@@ -47,11 +47,11 @@ contract MintRedeemTest is PolygonAddresses, Test {
             console.log("Price: ", vault.price);
             console.log("Reserve balance: ", vault.reserveBalance);
             console.log("Current weight: ", vault.currentWeight);
-            console.log("Ideal weight: ", vault.idealWeight);
+            console.log("Target weight: ", vault.targetWeight);
 
             console.log("My balance of underlying: ", ERC20(vault.underlying).balanceOf(tester));
 
-            for (uint j; j < vault.pricedTokens.length; j++) {
+            for (uint256 j; j < vault.pricedTokens.length; j++) {
                 DataTypes.PricedToken memory pricedToken = vault.pricedTokens[j];
                 console.log("------------");
                 console.log("Priced token", (j + 1));

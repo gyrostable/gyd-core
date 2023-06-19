@@ -22,7 +22,6 @@ contract ReserveSafetyManagerTest is Test {
         reserveSafetyManager = new TestingReserveSafetyManager(
             governorAddress,
             _maxAllowedVaultDeviation,
-            _stablecoinMaxDeviation,
             _minTokenPrice
         );
     }
@@ -103,7 +102,7 @@ contract ReserveSafetyManagerTest is Test {
     function testRedeemFailsWhenOutsideEpsilonAndDivergesFromIdealWeight() public {
         DataTypes.Order memory order = _buildIdealOrder(false);
 
-        uint ratio = _maxAllowedVaultDeviation + 0.2e18;
+        uint256 ratio = _maxAllowedVaultDeviation + 0.2e18;
 
         order.vaultsWithAmount[0].amount = ratio.mulDown(
             order.vaultsWithAmount[0].vaultInfo.reserveBalance
@@ -139,19 +138,20 @@ contract ReserveSafetyManagerTest is Test {
         order.mint = isMint;
     }
 
-    function _buildIdealVaultInfo(
-        uint256 vaultIndex,
-        bool isWETH
-    ) internal view returns (DataTypes.VaultInfo memory vaultInfo) {
+    function _buildIdealVaultInfo(uint256 vaultIndex, bool isWETH)
+        internal
+        view
+        returns (DataTypes.VaultInfo memory vaultInfo)
+    {
         address vault = address(uint160(vaultIndex));
         uint8 decimals = 18;
         // Random address
         address underlying = address(
-            uint160(uint(keccak256(abi.encodePacked(vaultIndex, blockhash(block.number)))))
+            uint160(uint256(keccak256(abi.encodePacked(vaultIndex, blockhash(block.number)))))
         );
         uint256 price = isWETH ? 0.125e18 : 1e18;
         DataTypes.PersistedVaultMetadata memory persistedMetadata = DataTypes
-            .PersistedVaultMetadata(1e18, isWETH ? 0.04e18 : 0.32e18, 0, 0);
+            .PersistedVaultMetadata(1e18, isWETH ? 0.04e18 : 0.32e18, 0, 0, 0, 0, 0);
         uint256 reserveBalance = 1_000_000e18;
         uint256 currentWeight = isWETH ? 0.04e18 : 0.32e18;
         uint256 idealWeight = isWETH ? 0.04e18 : 0.32e18;
@@ -170,9 +170,11 @@ contract ReserveSafetyManagerTest is Test {
         );
     }
 
-    function _buildIdealPricedTokens(
-        bool isStablecoinPair
-    ) internal pure returns (DataTypes.PricedToken[] memory) {
+    function _buildIdealPricedTokens(bool isStablecoinPair)
+        internal
+        pure
+        returns (DataTypes.PricedToken[] memory)
+    {
         DataTypes.PricedToken[] memory pricedTokens = new DataTypes.PricedToken[](
             isStablecoinPair ? 2 : 1
         );
@@ -180,12 +182,14 @@ contract ReserveSafetyManagerTest is Test {
             DataTypes.PricedToken memory pricedToken0 = DataTypes.PricedToken(
                 address(uint160(1)),
                 true,
-                1e18
+                1e18,
+                DataTypes.Range(0, UINT256_MAX)
             );
             DataTypes.PricedToken memory pricedToken1 = DataTypes.PricedToken(
                 address(uint160(2)),
                 true,
-                1e18
+                1e18,
+                DataTypes.Range(0, UINT256_MAX)
             );
             pricedTokens[0] = pricedToken0;
             pricedTokens[1] = pricedToken1;
@@ -193,7 +197,8 @@ contract ReserveSafetyManagerTest is Test {
             DataTypes.PricedToken memory pricedToken = DataTypes.PricedToken(
                 address(uint160(3)),
                 false,
-                1000e18
+                1000e18,
+                DataTypes.Range(0, UINT256_MAX)
             );
             pricedTokens[0] = pricedToken;
         }
