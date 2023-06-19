@@ -50,7 +50,6 @@ contract DryMint is Test {
         reserveSafetyManager = new TestingReserveSafetyManager(
             governorAddress,
             _maxAllowedVaultDeviation,
-            _stablecoinMaxDeviation,
             _minTokenPrice
         );
 
@@ -65,7 +64,6 @@ contract DryMint is Test {
         reserveSafetyManager = new TestingReserveSafetyManager(
             governorAddress,
             allowedDeviations[index],
-            _stablecoinMaxDeviation,
             _minTokenPrice
         );
         gyroConfig.setAddress(ConfigKeys.ROOT_SAFETY_CHECK_ADDRESS, address(reserveSafetyManager));
@@ -108,10 +106,10 @@ contract DryMint is Test {
                 );
                 resultingWeights[i] = newValue.divDown(totalValueAfter);
             }
-            uint256 scaledEpsilon = reserveState.vaults[i].idealWeight.mulUp(
+            uint256 scaledEpsilon = reserveState.vaults[i].targetWeight.mulUp(
                 allowedDeviations[index]
             );
-            bool withinEpsilon = reserveState.vaults[i].idealWeight.absSub(resultingWeights[i]) <=
+            bool withinEpsilon = reserveState.vaults[i].targetWeight.absSub(resultingWeights[i]) <=
                 scaledEpsilon;
 
             if (!withinEpsilon) expectFail = true;
@@ -159,7 +157,10 @@ contract MockReserveManager {
                 1592300000000000000000,
                 20000000000000000,
                 999941468093248996,
-                12000000000000000000
+                12000000000000000000,
+                0,
+                0,
+                0
             );
 
         DataTypes.PersistedVaultMetadata memory persistedMetadata1 = DataTypes
@@ -167,7 +168,10 @@ contract MockReserveManager {
                 1765024354913935136283,
                 330000000000000000,
                 999941468093248996,
-                11325052200493400000
+                11325052200493400000,
+                0,
+                0,
+                0
             );
 
         DataTypes.PersistedVaultMetadata memory persistedMetadata2 = DataTypes
@@ -175,7 +179,10 @@ contract MockReserveManager {
                 501288984245543,
                 320000000000000000,
                 999941468093248996,
-                39895019889899642339860000
+                39895019889899642339860000,
+                0,
+                0,
+                0
             );
 
         DataTypes.PersistedVaultMetadata memory persistedMetadata3 = DataTypes
@@ -183,7 +190,10 @@ contract MockReserveManager {
                 2496643050889703,
                 330000000000000000,
                 999941468093248996,
-                8008320448663566239740000
+                8008320448663566239740000,
+                0,
+                0,
+                0
             );
 
         // Priced Tokens
@@ -192,7 +202,8 @@ contract MockReserveManager {
         pricedTokens0[0] = DataTypes.PricedToken(
             0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619,
             false,
-            1573380000000000000000
+            1573380000000000000000,
+            DataTypes.Range(0, type(uint256).max)
         );
 
         DataTypes.PricedToken[] memory pricedTokens1 = new DataTypes.PricedToken[](2);
@@ -200,13 +211,15 @@ contract MockReserveManager {
         pricedTokens1[0] = DataTypes.PricedToken(
             0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,
             true,
-            999952440000000000
+            999952440000000000,
+            DataTypes.Range(0, type(uint256).max)
         );
 
         pricedTokens1[1] = DataTypes.PricedToken(
             0x2e1AD108fF1D8C782fcBbB89AAd783aC49586756,
             true,
-            1000485210000000000
+            1000485210000000000,
+            DataTypes.Range(0, type(uint256).max)
         );
 
         DataTypes.PricedToken[] memory pricedTokens2 = new DataTypes.PricedToken[](3);
@@ -214,19 +227,22 @@ contract MockReserveManager {
         pricedTokens2[0] = DataTypes.PricedToken(
             0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,
             true,
-            999952440000000000
+            999952440000000000,
+            DataTypes.Range(0, type(uint256).max)
         );
 
         pricedTokens2[1] = DataTypes.PricedToken(
             0x9C9e5fD8bbc25984B178FdCE6117Defa39d2db39,
             true,
-            1000031900000000000
+            1000031900000000000,
+            DataTypes.Range(0, type(uint256).max)
         );
 
         pricedTokens2[2] = DataTypes.PricedToken(
             0xc2132D05D31c914a87C6611C10748AEb04B58e8F,
             true,
-            1000024100000000000
+            1000024100000000000,
+            DataTypes.Range(0, type(uint256).max)
         );
 
         DataTypes.PricedToken[] memory pricedTokens3 = new DataTypes.PricedToken[](2);
@@ -234,13 +250,15 @@ contract MockReserveManager {
         pricedTokens3[0] = DataTypes.PricedToken(
             0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,
             true,
-            999952440000000000
+            999952440000000000,
+            DataTypes.Range(0, type(uint256).max)
         );
 
         pricedTokens3[1] = DataTypes.PricedToken(
             0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063,
             true,
-            999760000000000000
+            999760000000000000,
+            DataTypes.Range(0, type(uint256).max)
         );
 
         // VaultInfo
@@ -304,9 +322,11 @@ contract MockPAMMV1 {
 }
 
 contract MockFeeHandler {
-    function applyFees(
-        DataTypes.Order memory order
-    ) external pure returns (DataTypes.Order memory) {
+    function applyFees(DataTypes.Order memory order)
+        external
+        pure
+        returns (DataTypes.Order memory)
+    {
         return order;
     }
 }
