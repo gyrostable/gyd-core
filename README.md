@@ -31,10 +31,14 @@ For each vault, a number of weights on the interval [0,1] are defined:
 Each calibration event (e.g., when adding a vault to the reserve) provides an opportunity to reset the `priceAtCalibration` and therefore change the `targetWeight` for a particular vault.
 The price of the vault is expected to deviate from this `targetWeight` over time as the price of the vault tokens evolves.
 
+During each `mint` and `redeem` operation, the safety checks ensure that the vault weight that would arise from the proposed operation is within some acceptable bounds.
+These bounds are calculated as a multiplicative term of the `targetWeight` of the vault, set at the most recent calibration, and the `maxAllowedVaultDeviation`, set as a scaled percentage.
+
 # How vault weight changes are effected
 
 Each calibration event defines a new `targetWeight` for each vault.
 However, for a vault that changes `targetWeight` between calibrations, the vault follows a ramping up/down schedule that linearly moves the `targetWeight` from the `weightAtPreviousCalibration` to the new `targetWeight`, according to a given `weightTransitionDuration`.
+The motivation for this is to ensure a smooth transition between different weights in the reserve.
 
 # What if a stablecoin in the reserve depegs?
 
@@ -69,3 +73,16 @@ The Gyroscope reserve should not grow its holdings of stablecoins below peg.
 When the amount to redeem is calculated in terms of USD, the lower bound is taken. The reserve is priced at true USD value (using the below peg values), and this is piped into the PAMM. When the redeem order is created, upper bound USD prices are used for individual vault tokens, so a below peg stablecoin is priced instead at 1USD.
 
 The result: anyone redeeming for a below peg stablecoin receives a better price for their output stablecoin than the true price.
+
+# Safety checks performed for a `mint` operation
+
+1. Check whether all vaults are using prices that are large enough (preventing an attack vector with dust-like prices), otherwise mint fails.
+2. Check on the vault balance safety. This means either all the vaults would be sufficiently close to the target weights OR that a vault outside the accepted deviation is being rebalanced towards the target weight. If either of these conditions is true, balance safety is true.
+3. Check whether EITHER: A. All stablecoins in all vaults are on peg (in the sense defined above) OR B. Any depegged stablecoin is above its floor price OR C. The result of the mint operation is that the vault weight falls.
+4. If one of (A-C) is true, and the balance safety is true, then the mint can take place.
+
+# Safety checks performed for a `redeem` operation
+
+1. Check whether all vaults are using prices that are large enough (preventing an attack vector with dust-like prices), otherwise redeem fails.
+2. Check whether either: (A) all of the vaults resulting from the redeem operation would be sufficiently close to the target weights OR (B) that a vault outside the accepted deviation is being rebalanced towards the target weight.
+3. If one of (A) or (B) is true, then the redeem can take place.
