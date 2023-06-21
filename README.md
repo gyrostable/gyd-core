@@ -6,15 +6,66 @@ The documentation here is intended for contributors to this repository.
 
 For the general Gyro documentation, please visit https://docs.gyro.finance
 
-## Setup
+# Setup
 
 Install Brownie as described [here](https://eth-brownie.readthedocs.io/en/stable/install.html).
 
-## Tests
+# Tests
 
 To run all tests in `/tests`, run `brownie test` from the project root.
 
-
-## Licensing
+# Licensing
 
 Superluminal Labs Ltd. is the owner of this software and any accompanying files contained herein (collectively, this “Software”). This Software is not covered by the General Public License ("GPL") and does not confer any rights to the user thereunder. None of the code incorporated into the Software was GPL-licensed, and Superluminal Labs Ltd. has received prior custom licenses for all such code, including a special hybrid license between Superluminal Labs Ltd and Balancer Labs OÜ [Special Licence](./license/GyroscopeBalancerLicense.pdf).
+
+# How vaults are kept balanced
+
+The reserve is a set of vaults owned by the reserve.
+Each vault owns tokens, for example, LP shares of an underlying CLP.
+For each vault, a number of weights on the interval [0,1] are defined:
+
+- `targetWeight`: the weight that governance would like the particular vault to have in the reserve
+- `currentWeight`: the weight that the vault actually has in the reserve
+- `resultingWeight`: an ephemeral weight used during `mint` and `redeem` operations that allows the safety checks to reason about what the state of the reserve would be were a proposed `mint` or `redeem` operation to take place.
+
+Each calibration event (e.g., when adding a vault to the reserve) provides an opportunity to reset the `priceAtCalibration` and therefore change the `targetWeight` for a particular vault.
+The price of the vault is expected to deviate from this `targetWeight` over time as the price of the vault tokens evolves.
+
+# How vault weight changes are effected
+
+Each calibration event defines a new `targetWeight` for each vault.
+However, for a vault that changes `targetWeight` between calibrations, the vault follows a ramping up/down schedule that linearly moves the `targetWeight` from the `weightAtPreviousCalibration` to the new `targetWeight`, according to a given `weightTransitionDuration`.
+
+# What if a stablecoin in the reserve depegs?
+
+In the Gyroscope system, each asset that is declared as a stablecoin in `AssetRegistry.sol` as a stablecoin has a floor and ceiling price around its peg.
+By default this range is symmetric, with asset deviation `STABLECOIN_MAX_DEVIATION`, resulting in a floor price (e.g. 0.98) and a ceiling price (e.g. 0.98).
+The system supports custom ranges per asset for a stablecoin that, for instance, is often depegged to the upside but rarely to the downside.
+
+A stablecoin is considered depegged if it is outside of the interval [`floor`, `ceiling`].
+
+## Case I: a reserve asset stablecoin is above peg.
+
+    Minting: allowed.
+
+When the USD value of the input basket is calculated, any above peg stablecoin is computed using the lower bound USD price, that is, the stablecoin is priced at 1 USD (rather than the actual price >1 USD). This is piped into the PAMM.
+
+The result: anyone minting with an input basket containing above peg stablecoins will receive a lower than market price for their stablecoins in GYD.
+
+    Redeeming: allowed.
+
+When the amount to redeem is calculated in terms of USD, the lower bound is taken. Above peg stablecoins are priced at 1 USD. This value is piped into the PAMM. When the redeem order is created, the upper bound USD prices are used for the USD price, such that the price used is the above peg stablecoin price.
+
+The result: anyone redeeming for above peg stablecoins receives fewer than 1:1 units of the output stablecoin.
+
+## Case II: a reserve asset stablecoin is below peg.
+
+    Minting: not allowed.
+
+The Gyroscope reserve should not grow its holdings of stablecoins below peg.
+
+    Redeeming: allowed.
+
+When the amount to redeem is calculated in terms of USD, the lower bound is taken. The reserve is priced at true USD value (using the below peg values), and this is piped into the PAMM. When the redeem order is created, upper bound USD prices are used for individual vault tokens, so a below peg stablecoin is priced instead at 1USD.
+
+The result: anyone redeeming for a below peg stablecoin receives a better price for their output stablecoin than the true price.
