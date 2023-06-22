@@ -74,15 +74,21 @@ When the amount to redeem is calculated in terms of USD, the lower bound is take
 
 The result: anyone redeeming for a below peg stablecoin receives a better price for their output stablecoin than the true price.
 
-# Safety checks performed for a `mint` operation
+# ReserveSafetyManager safety checks performed for a `mint` operation
 
 1. Check whether all vaults are using prices that are large enough (preventing an attack vector with dust-like prices), otherwise mint fails.
 2. Check on the vault balance safety. This means either all the vaults would be sufficiently close to the target weights OR that a vault outside the accepted deviation is being rebalanced towards the target weight. If either of these conditions is true, balance safety is true.
 3. Check whether EITHER: A. All stablecoins in all vaults are on peg (in the sense defined above) OR B. Any depegged stablecoin is above its floor price OR C. The result of the mint operation is that the vault weight falls.
-4. If one of (A-C) is true, and the balance safety is true, then the mint can take place.
+4. If one of (A-C) is true, and the balance safety is true, then the mint can take place
 
-# Safety checks performed for a `redeem` operation
+# ReserveSafetyManager safety checks performed for a `redeem` operation
 
 1. Check whether all vaults are using prices that are large enough (preventing an attack vector with dust-like prices), otherwise redeem fails.
 2. Check whether either: (A) all of the vaults resulting from the redeem operation would be sufficiently close to the target weights OR (B) that a vault outside the accepted deviation is being rebalanced towards the target weight.
 3. If one of (A) or (B) is true, then the redeem can take place.
+
+# Vault Safety Mode checks performed for a `mint` or `redeem` operation
+
+1. Check whether safety mode is already active
+2. Check to ensure that the vault flow amount is not too high (higher than the `shortFlowThreshold`). If higher than that, abort.
+3. Check whether, while safe to proceed, the operation needs to activate safety mode. This happens when the new in flow is greater than a proportion of the `shortFlowThreshold` (e.g., 80%).
