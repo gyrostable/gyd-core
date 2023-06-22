@@ -178,7 +178,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
             }
 
             uint256 shortFlowThreshold = vault.persistedMetadata.shortFlowThreshold;
-            uint256 newFlow = order.vaultsWithAmount[i].amount +
+            uint256 newFlow = amount +
                 Flow.updateFlow(
                     directionalData.shortFlow,
                     block.number,
@@ -186,7 +186,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
                     vault.persistedMetadata.shortFlowMemory
                 );
 
-            if (newFlow > shortFlowThreshold) {
+            if (amount > 0 && newFlow > shortFlowThreshold) {
                 err = Errors.VAULT_FLOW_TOO_HIGH;
                 break;
             }
