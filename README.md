@@ -64,7 +64,7 @@ The result: anyone redeeming for above peg stablecoins receives fewer than 1:1 u
 
 ## Case II: a reserve asset stablecoin is below peg.
 
-    Minting: not allowed.
+    Minting: not allowed except when the minting order would bring the reserve weights closer to the target weights.
 
 The Gyroscope reserve should not grow its holdings of stablecoins below peg.
 
