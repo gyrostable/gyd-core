@@ -77,6 +77,7 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
 
         for (uint256 i; i < vaults.length; i++) {
             address vault = vaults[i].vaultAddress;
+            _ensureTokensSorted(IGyroVault(vault));
             require(gyroConfig.getFeeHandler().isVaultSupported(vault), Errors.VAULT_NOT_FOUND);
             require(vaultAddresses.add(vault), Errors.INVALID_ARGUMENT);
             vaultsMetadata[vault] = vaults[i].metadata;
@@ -102,6 +103,13 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
             require(vaultAddresses.contains(vaultsToUpdate[i]), Errors.VAULT_NOT_FOUND);
             vaultsMetadata[vaultsToUpdate[i]].shortFlowMemory = newShortFlowMemory[i];
             vaultsMetadata[vaultsToUpdate[i]].shortFlowThreshold = newShortFlowThreshold[i];
+        }
+    }
+
+    function _ensureTokensSorted(IGyroVault vault) internal view {
+        IERC20[] memory tokens = vault.getTokens();
+        for (uint256 i = 1; i < tokens.length; i++) {
+            require(tokens[i - 1] < tokens[i], Errors.TOKENS_NOT_SORTED);
         }
     }
 

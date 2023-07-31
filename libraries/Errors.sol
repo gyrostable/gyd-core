@@ -66,4 +66,5 @@ library Errors {
     // misc errors
     string public constant REDEEM_AMOUNT_BUG = "100";
     string public constant EXTERNAL_ACTION_FAILED = "101";
+    string public constant TOKENS_NOT_SORTED = "102";
 }
