@@ -3,10 +3,10 @@ name: "Setup environment"
 runs:
   using: "composite"
   steps:
-    - name: Use Python 3.10.8
+    - name: Use Python 3.9.17
       uses: actions/setup-python@v2
       with:
-        python-version: 3.10.8
+        python-version: 3.9.17
     - name: Install Requirements
       run: pip3 install install -r requirements.txt
       shell: bash
