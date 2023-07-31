@@ -126,8 +126,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
         require(mintedGYDAmount >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
 
-        require(!_isOverCap(msg.sender, mintedGYDAmount), Errors.SUPPLY_CAP_EXCEEDED);
-
         gydToken.mint(msg.sender, mintedGYDAmount);
 
         emit Mint(msg.sender, mintedGYDAmount, usdValue, order, orderAfterFees);
@@ -255,10 +253,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
         if (mintedGYDAmount < minReceivedAmount) {
             return (mintedGYDAmount, Errors.TOO_MUCH_SLIPPAGE);
-        }
-
-        if (_isOverCap(account, mintedGYDAmount)) {
-            return (mintedGYDAmount, Errors.SUPPLY_CAP_EXCEEDED);
         }
     }
 
@@ -590,16 +584,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             uint256 scaledAmount = vaultWithAmount.amount.scaleFrom(vaultInfo.decimals);
             result += scaledAmount.mulDown(vaultPrice);
         }
-    }
-
-    function _isOverCap(address account, uint256 mintedGYDAmount) internal view returns (bool) {
-        uint256 globalSupplyCap = gyroConfig.getGlobalSupplyCap();
-        if (gydToken.totalSupply() + mintedGYDAmount > globalSupplyCap) {
-            return true;
-        }
-        bool isAuthenticated = gyroConfig.isAuthenticated(account);
-        uint256 perUserSupplyCap = gyroConfig.getPerUserSupplyCap(isAuthenticated);
-        return gydToken.balanceOf(account) + mintedGYDAmount > perUserSupplyCap;
     }
 
     function _ensureNoDuplicates(DataTypes.RedeemAsset[] calldata redeemAssets) internal pure {
