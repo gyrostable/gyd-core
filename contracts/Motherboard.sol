@@ -5,8 +5,6 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
@@ -17,6 +15,7 @@ import "../interfaces/ILPTokenExchanger.sol";
 import "../interfaces/IPAMM.sol";
 import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
+import "../interfaces/IExternalActionExecutor.sol";
 import "../interfaces/balancer/IVault.sol";
 
 import "../libraries/DataTypes.sol";
@@ -27,6 +26,7 @@ import "../libraries/FixedPoint.sol";
 import "../libraries/DecimalScale.sol";
 import "../libraries/ReserveStateExtensions.sol";
 
+import "./ExternalActionExecutor.sol";
 import "./auth/GovernableUpgradeable.sol";
 
 /// @title MotherBoard is the central contract connecting the different pieces
@@ -35,13 +35,11 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     using FixedPoint for uint256;
     using DecimalScale for uint256;
     using SafeERC20 for IERC20;
-    using SafeERC20 for IERC20Permit;
     using SafeERC20Upgradeable for IGYDToken;
     using ConfigHelpers for IGyroConfig;
     using EnumerableSet for EnumerableSet.AddressSet;
     using ReserveStateExtensions for DataTypes.ReserveState;
     using ReserveStateExtensions for DataTypes.VaultInfo;
-    using Address for address;
 
     uint256 internal constant _REDEEM_DEVIATION_EPSILON = 1e13; // 0.001 %
 
@@ -54,10 +52,12 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     /// @inheritdoc IMotherboard
     IGyroConfig public immutable override gyroConfig;
 
+    /// @notice Used to execute permits and other actions, such as oracle updates,
+    /// that do not require any privilege
+    IExternalActionExecutor public immutable externalActionExecutor;
+
     // Balancer vault used for re-entrancy check.
     IVault internal immutable balancerVault;
-
-    EnumerableSet.AddressSet internal externalCallWhitelist;
 
     // Events
     event Mint(
@@ -76,16 +76,12 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         DataTypes.Order orderAfterFees
     );
 
-    struct ExternalAction {
-        address target;
-        bytes data;
-    }
-
     constructor(IGyroConfig _gyroConfig) {
         gyroConfig = _gyroConfig;
         gydToken = _gyroConfig.getGYDToken();
         reserve = _gyroConfig.getReserve();
         balancerVault = _gyroConfig.getBalancerVault();
+        externalActionExecutor = new ExternalActionExecutor();
     }
 
     /// @inheritdoc IMotherboard
@@ -136,35 +132,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     function mint(
         DataTypes.MintAsset[] calldata assets,
         uint256 minReceivedAmount,
-        ExternalAction[] calldata actions
+        DataTypes.ExternalAction[] calldata actions
     ) public returns (uint256 mintedGYDAmount) {
-        for (uint256 i = 0; i < actions.length; i++) {
-            require(
-                externalCallWhitelist.contains(actions[i].target),
-                Errors.FORBIDDEN_EXTERNAL_ACTION
-            );
-            actions[i].target.functionCall(actions[i].data, Errors.EXTERNAL_ACTION_FAILED);
-        }
-
-        return mint(assets, minReceivedAmount);
-    }
-
-    function mint(
-        DataTypes.MintAsset[] calldata assets,
-        uint256 minReceivedAmount,
-        DataTypes.PermitData[] calldata permits,
-        ExternalAction[] calldata actions
-    ) external returns (uint256 mintedGYDAmount) {
-        _executePermits(permits);
-        return mint(assets, minReceivedAmount, actions);
-    }
-
-    function mint(
-        DataTypes.MintAsset[] calldata assets,
-        uint256 minReceivedAmount,
-        DataTypes.PermitData[] calldata permits
-    ) external returns (uint256 mintedGYDAmount) {
-        _executePermits(permits);
+        externalActionExecutor.executeActions(actions);
         return mint(assets, minReceivedAmount);
     }
 
@@ -210,16 +180,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     function redeem(
         uint256 gydToRedeem,
         DataTypes.RedeemAsset[] calldata assets,
-        ExternalAction[] calldata actions
+        DataTypes.ExternalAction[] calldata actions
     ) external returns (uint256[] memory outputAmounts) {
-        for (uint256 i = 0; i < actions.length; i++) {
-            require(
-                externalCallWhitelist.contains(actions[i].target),
-                Errors.FORBIDDEN_EXTERNAL_ACTION
-            );
-            actions[i].target.functionCall(actions[i].data, Errors.EXTERNAL_ACTION_FAILED);
-        }
-
+        externalActionExecutor.executeActions(actions);
         return redeem(gydToRedeem, assets);
     }
 
@@ -294,22 +257,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return gyroConfig.getPAMM();
     }
 
-    function addToExternalCallWhitelist(address whitelistedAddress)
-        external
-        governanceOnly
-        returns (bool)
-    {
-        return externalCallWhitelist.add(whitelistedAddress);
-    }
-
-    function removeFromExternalCallWhitelist(address removedAddress)
-        external
-        governanceOnly
-        returns (bool)
-    {
-        return externalCallWhitelist.remove(removedAddress);
-    }
-
     function mintStewardshipIncRewards(uint256 amount) external override {
         require(
             msg.sender == address(gyroConfig.getReserveStewardshipIncentives()),
@@ -317,10 +264,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         );
         address treasury = gyroConfig.getGovTreasuryAddress();
         gydToken.mint(treasury, amount);
-    }
-
-    function listExternalCallWhitelist() external view returns (address[] memory) {
-        return externalCallWhitelist.values();
     }
 
     function _dryConvertMintInputAssetsToVaultTokens(DataTypes.MintAsset[] calldata assets)
@@ -620,21 +563,6 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         ops[0].kind = IVault.UserBalanceOpKind.WITHDRAW_INTERNAL;
         ops[0].sender = address(this);
         balancerVault.manageUserBalance(ops);
-    }
-
-    function _executePermits(DataTypes.PermitData[] calldata permits) internal {
-        for (uint256 i = 0; i < permits.length; i++) {
-            DataTypes.PermitData calldata permit = permits[i];
-            IERC20Permit(permit.target).safePermit(
-                permit.owner,
-                permit.spender,
-                permit.amount,
-                permit.deadline,
-                permit.v,
-                permit.r,
-                permit.s
-            );
-        }
     }
 
     function _oracle() internal view returns (IBatchVaultPriceOracle) {

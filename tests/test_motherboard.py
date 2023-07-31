@@ -85,11 +85,13 @@ def test_mint_with_external_call(
     usdc_amount = scale(10, usdc.decimals())
     bob_transfer_amount = scale(1, usdc.decimals())
     initial_bob_balance = usdc.balanceOf(bob)
-    usdc.approve(motherboard, usdc_amount + bob_transfer_amount, {"from": alice})
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    usdc.approve(
+        motherboard.externalActionExecutor(), bob_transfer_amount, {"from": alice}
+    )
     mint_asset = MintAsset(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
-    motherboard.addToExternalCallWhitelist(usdc)
     external_action = ExternalAction(
         target=usdc,
         data=usdc.transferFrom.encode_input(alice, bob, bob_transfer_amount),
