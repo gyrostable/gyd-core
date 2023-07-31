@@ -68,10 +68,9 @@ def test_start(
 
     reward_percentage = scale("0.01")
 
-    start_time = chain.time()
-    end_time = start_time + constants.STEWARDSHIP_INC_DURATION
-
     tx = stewardship_incentives.startInitiative(reward_percentage, {"from": admin})
+    start_time = tx.timestamp
+    end_time = start_time + constants.STEWARDSHIP_INC_DURATION
     assert tx.events["InitiativeStarted"]["endTime"] == end_time
     assert (
         tx.events["InitiativeStarted"]["minCollateralRatio"]

@@ -288,8 +288,8 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         } else {
             totalStakedIntegral = _totalStakedIntegral;
             if (totalStaked > 0) {
-                totalStakedIntegral += (rewardsEmissionRate() *
-                    (block.timestamp - _lastCheckpointTime)).divDown(totalStaked);
+                totalStakedIntegral += (_rewardsEmissionRate *
+                    (_rewardsTimestamp() - _lastCheckpointTime)).divDown(totalStaked);
             }
         }
 
