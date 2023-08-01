@@ -40,7 +40,7 @@ contract CrashProtectedChainlinkPriceOracle is BaseChainlinkPriceOracle {
         uint256 previousUpdate;
         do {
             roundId -= 1;
-            (, previousAnswer, , previousUpdate, ) = AggregatorV2V3Interface(feed).getRoundData(
+            (, previousAnswer, , previousUpdate, ) = AggregatorV3Interface(feed).getRoundData(
                 roundId
             );
         } while (lastUpdate - previousUpdate < meta.minDiffTime);
@@ -50,7 +50,7 @@ contract CrashProtectedChainlinkPriceOracle is BaseChainlinkPriceOracle {
         uint256 deviation = previousPrice.absSub(price).divDown(price);
         require(deviation < meta.maxDeviation, Errors.TOO_MUCH_VOLATILITY);
 
-        return price.scaleFrom(AggregatorV2V3Interface(feed).decimals());
+        return price.scaleFrom(AggregatorV3Interface(feed).decimals());
     }
 
     /// @notice Allows to set Chainlink feeds with the metadata

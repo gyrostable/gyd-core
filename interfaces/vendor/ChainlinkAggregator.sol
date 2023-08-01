@@ -11,12 +11,12 @@ interface AggregatorInterface {
     function getAnswer(uint256 roundId) external view returns (int256);
 
     function getTimestamp(uint256 roundId) external view returns (uint256);
-
-    event AnswerUpdated(int256 indexed current, uint256 indexed roundId, uint256 updatedAt);
-    event NewRound(uint256 indexed roundId, address indexed startedBy, uint256 startedAt);
 }
 
 interface AggregatorV3Interface {
+    event AnswerUpdated(int256 indexed current, uint256 indexed roundId, uint256 updatedAt);
+    event NewRound(uint256 indexed roundId, address indexed startedBy, uint256 startedAt);
+
     function decimals() external view returns (uint8);
 
     function description() external view returns (string memory);
@@ -26,9 +26,7 @@ interface AggregatorV3Interface {
     // getRoundData and latestRoundData should both raise "No data present"
     // if they do not have data to report, instead of returning unset values
     // which could be misinterpreted as actual reported values.
-    function getRoundData(
-        uint80 _roundId
-    )
+    function getRoundData(uint80 _roundId)
         external
         view
         returns (
@@ -50,5 +48,3 @@ interface AggregatorV3Interface {
             uint80 answeredInRound
         );
 }
-
-interface AggregatorV2V3Interface is AggregatorInterface, AggregatorV3Interface {}
