@@ -6,6 +6,12 @@ import "./GovernableBase.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract GovernableUpgradeable is GovernableBase, Initializable {
+    uint256[50] internal __gap;
+
+    constructor() {
+        _disableInitializers();
+    }
+
     // solhint-disable-next-line func-name-mixedcase
     function __GovernableUpgradeable_initialize(address _governor) internal {
         governor = _governor;

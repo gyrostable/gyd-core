@@ -70,7 +70,7 @@ def test_mint_vault_underlying(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
     tx = motherboard.mint([mint_asset], 0, {"from": alice})
-    gyd_minted = tx.return_value
+    gyd_minted = tx.events["Mint"]["mintedGYDAmount"]
     assert gyd_token.balanceOf(alice) == scale(10)
     assert gyd_minted == scale(10)
     assert usdc_vault.balanceOf(reserve) == usdc_amount
@@ -95,7 +95,7 @@ def test_mint_with_external_call(
         data=usdc.transferFrom.encode_input(alice, bob, bob_transfer_amount),
     )  # Send 1 USDC to bob
     tx = motherboard.mint([mint_asset], 0, [external_action], {"from": alice})
-    gyd_minted = tx.return_value
+    gyd_minted = tx.events["Mint"]["mintedGYDAmount"]
     assert gyd_token.balanceOf(alice) == scale(10)
     assert gyd_minted == scale(10)
     assert usdc_vault.balanceOf(reserve) == usdc_amount
@@ -117,7 +117,7 @@ def test_mint_using_multiple_assets(
         MintAsset(inputToken=dai, inputAmount=dai_amount, destinationVault=dai_vault),
     ]
     tx = motherboard.mint(mint_assets, 0, {"from": alice})
-    gyd_minted = tx.return_value
+    gyd_minted = tx.events["Mint"]["mintedGYDAmount"]
     assert gyd_token.balanceOf(alice) == scale(15)
     assert gyd_minted == scale(15)
     assert usdc_vault.balanceOf(reserve) == usdc_amount
@@ -277,8 +277,9 @@ def test_mint_vault_token(motherboard, usdc, usdc_vault, alice, gyd_token):
         inputToken=usdc_vault, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
     tx = motherboard.mint([mint_asset], 0, {"from": alice})
+    gyd_minted = tx.events["Mint"]["mintedGYDAmount"]
     assert gyd_token.balanceOf(alice) == scale(10)
-    assert tx.return_value == scale(10)
+    assert gyd_minted == scale(10)
     assert usdc_vault.balanceOf(alice) == 0
 
 
@@ -435,7 +436,7 @@ def test_mint_vault_underlying_with_fees(
         usdc_vault, scale("0.1"), 0, {"from": admin}
     )
     tx = motherboard.mint([mint_asset], 0, {"from": alice})
-    gyd_minted = tx.return_value
+    gyd_minted = tx.events["Mint"]["mintedGYDAmount"]
     assert gyd_token.balanceOf(alice) == scale(9)
     assert gyd_minted == scale(9)
 

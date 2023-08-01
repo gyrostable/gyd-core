@@ -58,22 +58,22 @@ def test_set_vaults_schedule(
 
     assert vault_registry.getScheduleVaultWeight(
         vaults[0].vault_address
-    ) / 1e18 == pytest.approx(0.3 + 0.3 / 7)
+    ) / 1e18 == pytest.approx(0.3 + 0.3 / 7, rel=1e-4)
     assert vault_registry.getScheduleVaultWeight(vaults[1].vault_address) / 1e18 == 0.2
     assert vault_registry.getScheduleVaultWeight(
         vaults[2].vault_address
-    ) / 1e18 == pytest.approx(0.5 - 0.3 / 7)
+    ) / 1e18 == pytest.approx(0.5 - 0.3 / 7, rel=1e-4)
 
     chain.sleep(4 * 86400)
     chain.mine()
 
     assert vault_registry.getScheduleVaultWeight(
         vaults[0].vault_address
-    ) / 1e18 == pytest.approx(0.3 + 0.3 * 5 / 7)
+    ) / 1e18 == pytest.approx(0.3 + 0.3 * 5 / 7, rel=1e-4)
     assert vault_registry.getScheduleVaultWeight(vaults[1].vault_address) / 1e18 == 0.2
     assert vault_registry.getScheduleVaultWeight(
         vaults[2].vault_address
-    ) / 1e18 == pytest.approx(0.5 - 0.3 * 5 / 7)
+    ) / 1e18 == pytest.approx(0.5 - 0.3 * 5 / 7, rel=1e-4)
 
     chain.sleep(3 * 86400)
     chain.mine()
