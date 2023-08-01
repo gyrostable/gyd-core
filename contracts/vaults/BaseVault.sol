@@ -75,8 +75,6 @@ abstract contract BaseVault is IGyroVault, ERC20Permit, Governable {
         require(vaultTokensMinted >= minVaultTokensOut, Errors.TOO_MUCH_SLIPPAGE);
 
         _mint(beneficiary, vaultTokensMinted);
-
-        return vaultTokensMinted;
     }
 
     /// @inheritdoc IGyroVault
