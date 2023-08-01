@@ -87,12 +87,6 @@ contract VaultRegistry is IVaultRegistry, GovernableUpgradeable {
         emit VaultsSet(vaults);
     }
 
-    function setInitialPrice(address vault, uint256 initialPrice) external reserveManagerOnly {
-        require(vaultAddresses.contains(vault), Errors.VAULT_NOT_FOUND);
-        require(vaultsMetadata[vault].priceAtCalibration == 0, Errors.INVALID_ARGUMENT);
-        vaultsMetadata[vault].priceAtCalibration = initialPrice;
-    }
-
     function updatePersistedVaultFlowParams(
         address[] memory vaultsToUpdate,
         uint256[] memory newShortFlowMemory,

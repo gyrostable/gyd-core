@@ -21,7 +21,4 @@ interface IVaultRegistry {
 
     /// @notice Registers a new vault
     function setVaults(DataTypes.VaultConfiguration[] memory vaults) external;
-
-    /// @notice sets the initial price of a vault
-    function setInitialPrice(address vault, uint256 initialPrice) external;
 }
