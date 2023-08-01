@@ -3,7 +3,7 @@
 pragma solidity ^0.8.10;
 
 library StringExtensions {
-    function compareStrings(string memory a, string memory b) internal pure returns (bool) {
+    function equals(string memory a, string memory b) internal pure returns (bool) {
         if (bytes(a).length != bytes(b).length) {
             return false;
         }
