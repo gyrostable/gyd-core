@@ -20,7 +20,7 @@ contract ChainlinkPriceOracle is BaseChainlinkPriceOracle {
         address feed = feeds[asset];
         require(feed != address(0), Errors.ASSET_NOT_SUPPORTED);
         (, uint256 price, ) = _getLatestRoundData(feed);
-        return price.scaleFrom(AggregatorV2V3Interface(feed).decimals());
+        return price.scaleFrom(AggregatorV3Interface(feed).decimals());
     }
 
     /// @notice Allows to set Chainlink feeds

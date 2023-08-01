@@ -36,7 +36,7 @@ abstract contract BaseChainlinkPriceOracle is IUSDPriceOracle, Governable {
         )
     {
         int256 answer;
-        (roundId, answer, , updatedAt, ) = AggregatorV2V3Interface(feed).latestRoundData();
+        (roundId, answer, , updatedAt, ) = AggregatorV3Interface(feed).latestRoundData();
         require(block.timestamp <= updatedAt + MAX_LAG, Errors.STALE_PRICE);
         require(answer >= 0, Errors.NEGATIVE_PRICE);
         price = uint256(answer);
