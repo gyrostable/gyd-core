@@ -2,11 +2,15 @@
 // for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+
 import "../../libraries/Errors.sol";
 import "../../interfaces/IAssetRegistry.sol";
 import "../../interfaces/oracles/IUSDPriceOracle.sol";
 
 contract TrustedSignerPriceOracle is IUSDPriceOracle {
+    using ECDSA for bytes32;
+
     /// @notice prices posted should be scaled using `PRICE_DECIMALS` decimals
     uint8 public constant PRICE_DECIMALS = 6;
 
@@ -46,6 +50,7 @@ contract TrustedSignerPriceOracle is IUSDPriceOracle {
         address _priceSigner,
         bool _preventStalePrice
     ) {
+        require(_priceSigner != address(0), Errors.INVALID_ARGUMENT);
         assetRegistry = IAssetRegistry(_assetRegistry);
         trustedPriceSigner = _priceSigner;
         preventStalePrice = _preventStalePrice;
@@ -125,10 +130,8 @@ contract TrustedSignerPriceOracle is IUSDPriceOracle {
         pure
         returns (address)
     {
+        bytes32 signedHash = keccak256(message).toEthSignedMessageHash();
         (bytes32 r, bytes32 s, uint8 v) = abi.decode(signature, (bytes32, bytes32, uint8));
-        bytes32 signedHash = keccak256(
-            abi.encodePacked("\x19Ethereum Signed Message:\n32", keccak256(message))
-        );
-        return ecrecover(signedHash, v, r, s);
+        return signedHash.recover(v, r, s);
     }
 }
