@@ -377,20 +377,6 @@ def testing_fixed_point(admin, TestingFixedPoint):
 
 
 @pytest.fixture(scope="module")
-def multi_ownable(admin, TestingMultiOwnable):
-    multi_ownable = admin.deploy(TestingMultiOwnable)
-    multi_ownable.initialize(admin)
-    return multi_ownable
-
-
-@pytest.fixture(scope="module")
-def cap_authentication(admin, CapAuthentication):
-    cap_authentication = admin.deploy(CapAuthentication)
-    cap_authentication.initialize(admin)
-    return cap_authentication
-
-
-@pytest.fixture(scope="module")
 def set_mock_oracle_prices_usdc_dai(
     mock_price_oracle, usdc, usdc_vault, dai, dai_vault, admin
 ):

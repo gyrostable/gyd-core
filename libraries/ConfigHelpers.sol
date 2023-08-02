@@ -16,7 +16,6 @@ import "../interfaces/IReserveManager.sol";
 import "../interfaces/IReserve.sol";
 import "../interfaces/IGYDToken.sol";
 import "../interfaces/IFeeHandler.sol";
-import "../interfaces/ICapAuthentication.sol";
 import "../interfaces/IGydRecovery.sol";
 import "../interfaces/IPAMM.sol";
 import "../interfaces/IReserveStewardshipIncentives.sol";
@@ -113,23 +112,5 @@ library ConfigHelpers {
 
     function getGovTreasuryAddress(IGyroConfig gyroConfig) internal view returns (address) {
         return gyroConfig.getAddress(ConfigKeys.GOV_TREASURY_ADDRESS);
-    }
-
-    function getPerUserSupplyCap(IGyroConfig gyroConfig, bool authenticated)
-        internal
-        view
-        returns (uint256)
-    {
-        if (authenticated) {
-            return gyroConfig.getUint(ConfigKeys.GYD_AUTHENTICATED_USER_CAP, type(uint256).max);
-        }
-        return gyroConfig.getUint(ConfigKeys.GYD_USER_CAP, type(uint256).max);
-    }
-
-    function isAuthenticated(IGyroConfig gyroConfig, address user) internal view returns (bool) {
-        if (!gyroConfig.hasKey(ConfigKeys.CAP_AUTHENTICATION_ADDRESS)) return false;
-        return
-            ICapAuthentication(gyroConfig.getAddress(ConfigKeys.CAP_AUTHENTICATION_ADDRESS))
-                .isAuthenticated(user);
     }
 }
