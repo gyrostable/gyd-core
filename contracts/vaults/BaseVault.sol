@@ -16,6 +16,16 @@ abstract contract BaseVault is IGyroVault, ERC20Permit, Governable {
     using FixedPoint for uint256;
     using SafeERC20 for IERC20;
 
+    address internal constant _DEAD = 0x000000000000000000000000000000000000dEaD;
+
+    /// @dev the number of shares to burn on first mint
+    /// we burn 10 shares for low decimals assets (e.g. USDC with 6 decimals)
+    /// and 1000 shares for high decimals assets (e.g. WETH with 18 decimals)
+    /// this should be a negligible amount in all cases
+    uint256 internal constant _SHARES_LOW_DECIMALS = 10;
+    uint256 internal constant _SHARES_HIGH_DECIMALS = 1000;
+    uint8 internal constant _HIGH_DECIMALS_THRESHOLD = 8;
+
     /// @inheritdoc IGyroVault
     address public immutable override underlying;
 
@@ -72,6 +82,14 @@ abstract contract BaseVault is IGyroVault, ERC20Permit, Governable {
         IERC20(underlying).safeTransferFrom(msg.sender, address(this), underlyingAmount);
 
         vaultTokensMinted = underlyingAmount.divDown(rate);
+        require(vaultTokensMinted > 0, Errors.NO_SHARES_MINTED);
+
+        if (totalSupply() == 0) {
+            uint256 sharesToBurn = _sharesToBurn();
+            _mint(_DEAD, sharesToBurn);
+            vaultTokensMinted -= sharesToBurn;
+        }
+
         require(vaultTokensMinted >= minVaultTokensOut, Errors.TOO_MUCH_SLIPPAGE);
 
         _mint(beneficiary, vaultTokensMinted);
@@ -140,5 +158,9 @@ abstract contract BaseVault is IGyroVault, ERC20Permit, Governable {
             overAproximate
                 ? totalUnderlying_.divUp(totalSupply)
                 : totalUnderlying_.divDown(totalSupply);
+    }
+
+    function _sharesToBurn() internal view returns (uint256) {
+        return decimals() > _HIGH_DECIMALS_THRESHOLD ? _SHARES_HIGH_DECIMALS : _SHARES_LOW_DECIMALS;
     }
 }
