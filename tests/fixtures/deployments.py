@@ -11,9 +11,10 @@ from tests.support.utils import scale
 
 
 @pytest.fixture(scope="module")
-def vault_registry(admin, VaultRegistry, gyro_config):
-    vault_registry = admin.deploy(VaultRegistry, gyro_config)
-    vault_registry.initialize(admin)
+def vault_registry(admin, VaultRegistry, gyro_config, deploy_with_proxy):
+    vault_registry = deploy_with_proxy(
+        VaultRegistry, lambda c: c.initialize.encode_input(admin), gyro_config
+    )
     gyro_config.setAddress(
         config_keys.VAULT_REGISTRY_ADDRESS, vault_registry, {"from": admin}
     )
@@ -52,17 +53,17 @@ def static_percentage_fee_handler(StaticPercentageFeeHandler, admin, gyro_config
 
 
 @pytest.fixture(scope="module")
-def gyd_token(admin, GydToken, gyro_config):
-    gyd_token = admin.deploy(GydToken)
-    gyd_token.initialize(admin, "GYD Token", "GYD")
+def gyd_token(admin, GydToken, gyro_config, deploy_with_proxy):
+    gyd_token = deploy_with_proxy(
+        GydToken, lambda c: c.initialize.encode_input(admin, "GYD Token", "GYD")
+    )
     gyro_config.setAddress(config_keys.GYD_TOKEN_ADDRESS, gyd_token, {"from": admin})
     return gyd_token
 
 
 @pytest.fixture(scope="module")
-def reserve(admin, Reserve, gyro_config):
-    reserve = admin.deploy(Reserve)
-    reserve.initialize(admin)
+def reserve(admin, Reserve, gyro_config, deploy_with_proxy):
+    reserve = deploy_with_proxy(Reserve, lambda c: c.initialize.encode_input(admin))
     gyro_config.setAddress(config_keys.RESERVE_ADDRESS, reserve, {"from": admin})
     return reserve
 
@@ -110,9 +111,30 @@ def mock_balancer_vault(admin, gyro_config, MockBalVault):
 
 
 @pytest.fixture(scope="module")
-def gyro_config(admin, GyroConfig):
-    config = admin.deploy(GyroConfig)
-    config.initialize(admin)
+def proxy_admin(admin, ProxyAdmin):
+    return admin.deploy(ProxyAdmin)
+
+
+@pytest.fixture(scope="module")
+def deploy_with_proxy(admin, FreezableTransparentUpgradeableProxy, proxy_admin):
+    def _deploy_with_proxy(Contract, initialize, *args):
+        contract = admin.deploy(Contract, *args)
+        proxy = admin.deploy(
+            FreezableTransparentUpgradeableProxy,
+            contract,
+            proxy_admin,
+            initialize(contract),
+        )
+        FreezableTransparentUpgradeableProxy.remove(proxy)
+        contract = Contract.at(proxy, owner=admin)
+        return contract
+
+    return _deploy_with_proxy
+
+
+@pytest.fixture(scope="module")
+def gyro_config(admin, GyroConfig, deploy_with_proxy):
+    config = deploy_with_proxy(GyroConfig, lambda c: c.initialize.encode_input(admin))
     config.setUint(
         config_keys.STABLECOIN_MAX_DEVIATION, constants.STABLECOIN_MAX_DEVIATION
     )
@@ -142,9 +164,10 @@ def mock_price_oracle(admin, MockPriceOracle, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def asset_registry(admin, AssetRegistry, gyro_config):
-    asset_registry = admin.deploy(AssetRegistry, gyro_config)
-    asset_registry.initialize(admin)
+def asset_registry(admin, AssetRegistry, deploy_with_proxy, gyro_config):
+    asset_registry = deploy_with_proxy(
+        AssetRegistry, lambda c: c.initialize.encode_input(admin), gyro_config
+    )
     gyro_config.setAddress(
         config_keys.ASSET_REGISTRY_ADDRESS, asset_registry, {"from": admin}
     )
@@ -247,7 +270,9 @@ def root_safety_check(admin, RootSafetyCheck, gyro_config):
 
 
 @pytest.fixture(scope="module")
-def motherboard(admin, Motherboard, gyro_config, gyd_token, reserve, request):
+def motherboard(
+    admin, Motherboard, gyro_config, gyd_token, reserve, deploy_with_proxy, request
+):
     extra_dependencies = [
         "mock_pamm",
         "mock_price_oracle",
@@ -260,8 +285,9 @@ def motherboard(admin, Motherboard, gyro_config, gyd_token, reserve, request):
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
-    motherboard = admin.deploy(Motherboard, gyro_config)
-    motherboard.initialize(admin)
+    motherboard = deploy_with_proxy(
+        Motherboard, lambda c: c.initialize.encode_input(admin), gyro_config
+    )
     reserve.addManager(motherboard, {"from": admin})
     gyro_config.setAddress(
         config_keys.MOTHERBOARD_ADDRESS, motherboard, {"from": admin}
