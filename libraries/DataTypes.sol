@@ -132,17 +132,6 @@ library DataTypes {
         VaultInfo[] vaults;
     }
 
-    struct PermitData {
-        address target;
-        address owner;
-        address spender;
-        uint256 amount;
-        uint256 deadline;
-        uint8 v;
-        bytes32 r;
-        bytes32 s;
-    }
-
     struct VaultConfiguration {
         address vaultAddress;
         DataTypes.PersistedVaultMetadata metadata;
@@ -151,5 +140,11 @@ library DataTypes {
     struct Range {
         uint256 floor;
         uint256 ceiling;
+    }
+
+    /// @notice Action executed by calling `target` passing in `data`
+    struct ExternalAction {
+        address target;
+        bytes data;
     }
 }
