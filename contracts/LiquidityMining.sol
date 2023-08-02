@@ -47,9 +47,10 @@ abstract contract LiquidityMining is ILiquidityMining {
 
     function claimableRewards(address beneficiary) external view virtual returns (uint256) {
         uint256 totalStakedIntegral = _totalStakedIntegral;
-        if (totalStaked > 0) {
-            totalStakedIntegral += (rewardsEmissionRate() * (block.timestamp - _lastCheckpointTime))
-                .divDown(totalStaked);
+        uint256 rewardsTimestamp = _rewardsTimestamp();
+        if (totalStaked > 0 && rewardsTimestamp > _lastCheckpointTime) {
+            uint256 elapsedTime = rewardsTimestamp - _lastCheckpointTime;
+            totalStakedIntegral += (_rewardsEmissionRate * elapsedTime).divDown(totalStaked);
         }
 
         return
@@ -64,14 +65,15 @@ abstract contract LiquidityMining is ILiquidityMining {
     }
 
     function globalCheckpoint() public {
-        uint256 elapsedTime = block.timestamp - _lastCheckpointTime;
+        uint256 rewardsTimestamp = _rewardsTimestamp();
         uint256 totalStaked_ = totalStaked;
-        if (totalStaked_ > 0) {
-            uint256 newRewards = rewardsEmissionRate() * elapsedTime;
+        if (totalStaked_ > 0 && rewardsTimestamp > _lastCheckpointTime) {
+            uint256 elapsedTime = rewardsTimestamp - _lastCheckpointTime;
+            uint256 newRewards = _rewardsEmissionRate * elapsedTime;
             _totalStakedIntegral += newRewards.divDown(totalStaked_);
             _totalUnclaimedRewards += newRewards;
         }
-        _lastCheckpointTime = block.timestamp;
+        _lastCheckpointTime = rewardsTimestamp;
     }
 
     function userCheckpoint(address account) public virtual {
@@ -120,6 +122,7 @@ abstract contract LiquidityMining is ILiquidityMining {
         uint256 reimbursementAmount = rewardToken.balanceOf(address(this)) - _totalUnclaimedRewards;
         rewardToken.safeTransfer(reimbursementTo, reimbursementAmount);
         rewardsEmissionEndTime = 0;
+        _rewardsEmissionRate = 0;
         emit StopMining();
     }
 
@@ -128,7 +131,11 @@ abstract contract LiquidityMining is ILiquidityMining {
         return amount;
     }
 
-    function rewardsEmissionRate() public view override returns (uint256) {
+    function rewardsEmissionRate() external view override returns (uint256) {
         return block.timestamp <= rewardsEmissionEndTime ? _rewardsEmissionRate : 0;
+    }
+
+    function _rewardsTimestamp() internal view returns (uint256) {
+        return block.timestamp <= rewardsEmissionEndTime ? block.timestamp : rewardsEmissionEndTime;
     }
 }
