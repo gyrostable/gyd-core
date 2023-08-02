@@ -1,3 +1,4 @@
+from typing import Optional
 import pytest
 from brownie import accounts
 from brownie.test.managers.runner import RevertContextManager as reverts
@@ -13,43 +14,38 @@ def set_reserve_manager(admin, gyro_config):
     gyro_config.setAddress(RESERVE_MANAGER_ADDRESS, admin, {"from": admin})
 
 
-def _make_vault_config(
-    fee_handler, weight: DecimalLike, vault_address: str = None
-) -> VaultConfiguration:
-    if vault_address is None:
-        vault_address = accounts.add().address
-    fee_handler.setVaultFees(vault_address, 0, 0)
-    return VaultConfiguration(
-        vault_address=vault_address,
-        metadata=PersistedVaultMetadata(int(scale(1)), int(scale(weight)), 0, 0),
-    )
+@pytest.fixture(scope="module")
+def make_vault_config(admin, MockGyroVault, dai, static_percentage_fee_handler):
+    def _make_vault_config(
+        weight: DecimalLike, vault_address: Optional[str] = None
+    ) -> VaultConfiguration:
+        if vault_address is None:
+            vault = admin.deploy(MockGyroVault, dai)
+            vault_address = vault.address
+        assert vault_address is not None
+        static_percentage_fee_handler.setVaultFees(vault_address, 0, 0)
+        return VaultConfiguration(
+            vault_address=vault_address,
+            metadata=PersistedVaultMetadata(int(scale(1)), int(scale(weight)), 0, 0),
+        )
+
+    return _make_vault_config
 
 
-def test_set_vaults(admin, vault_registry, static_percentage_fee_handler):
-    vaults = [
-        _make_vault_config(static_percentage_fee_handler, "0.3"),
-        _make_vault_config(static_percentage_fee_handler, "0.2"),
-        _make_vault_config(static_percentage_fee_handler, "0.5"),
-    ]
+def test_set_vaults(admin, make_vault_config, vault_registry):
+    vaults = [make_vault_config(w) for w in ["0.3", "0.2", "0.5"]]
     vault_registry.setVaults(vaults, {"from": admin})
     assert vault_registry.listVaults() == [v.vault_address for v in vaults]
 
 
-def test_set_vaults_schedule(
-    admin, vault_registry, static_percentage_fee_handler, chain
-):
-    vaults = [
-        _make_vault_config(static_percentage_fee_handler, "0.3"),
-        _make_vault_config(static_percentage_fee_handler, "0.2"),
-        _make_vault_config(static_percentage_fee_handler, "0.5"),
-    ]
+def test_set_vaults_schedule(admin, make_vault_config, vault_registry, chain):
+    vaults = [make_vault_config(w) for w in ["0.3", "0.2", "0.5"]]
+
     vault_registry.setVaults(vaults, {"from": admin})
 
     vaults = [
-        _make_vault_config(
-            static_percentage_fee_handler, weight, vault_address=vaults[i].vault_address
-        )
-        for i, weight in enumerate(["0.6", "0.2", "0.2"])
+        make_vault_config(weight, vault_address=vault.vault_address)
+        for vault, weight in zip(vaults, ["0.6", "0.2", "0.2"])
     ]
     vault_registry.setVaults(vaults, {"from": admin})
 
@@ -83,20 +79,24 @@ def test_set_vaults_schedule(
     assert vault_registry.getScheduleVaultWeight(vaults[2].vault_address) / 1e18 == 0.2
 
 
-def test_set_vaults_weights_not_summing_to_1(
-    admin, vault_registry, static_percentage_fee_handler
-):
-    vaults = [
-        _make_vault_config(static_percentage_fee_handler, "0.7"),
-        _make_vault_config(static_percentage_fee_handler, "0.2"),
-        _make_vault_config(static_percentage_fee_handler, "0.5"),
-    ]
+def test_set_vaults_weights_not_summing_to_1(admin, make_vault_config, vault_registry):
+    vaults = [make_vault_config(w) for w in ["0.7", "0.2", "0.5"]]
     with reverts(error_codes.INVALID_ARGUMENT):
         vault_registry.setVaults(vaults, {"from": admin})
 
 
-def test_set_vaults_duplicate(admin, vault_registry, static_percentage_fee_handler):
-    vault_config = _make_vault_config(static_percentage_fee_handler, "0.5")
+def test_set_vaults_duplicate(admin, make_vault_config, vault_registry):
+    vault_config = make_vault_config("0.5")
     vaults = [vault_config, vault_config]
     with reverts(error_codes.INVALID_ARGUMENT):
+        vault_registry.setVaults(vaults, {"from": admin})
+
+
+def test_set_vaults_unordered_tokens(
+    admin, make_vault_config, vault_registry, MockGyroVault
+):
+    vaults = [make_vault_config(w) for w in ["0.5", "0.5"]]
+    vault = MockGyroVault.at(vaults[0].vault_address)
+    vault.setTokens(sorted([v.vault_address for v in vaults], reverse=True))
+    with reverts(error_codes.TOKENS_NOT_SORTED):
         vault_registry.setVaults(vaults, {"from": admin})
