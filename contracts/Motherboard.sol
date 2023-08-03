@@ -25,6 +25,7 @@ import "../libraries/Errors.sol";
 import "../libraries/FixedPoint.sol";
 import "../libraries/DecimalScale.sol";
 import "../libraries/ReserveStateExtensions.sol";
+import "../libraries/StringExtensions.sol";
 
 import "./ExternalActionExecutor.sol";
 import "./auth/GovernableUpgradeable.sol";
@@ -40,6 +41,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using ReserveStateExtensions for DataTypes.ReserveState;
     using ReserveStateExtensions for DataTypes.VaultInfo;
+    using StringExtensions for string;
 
     uint256 internal constant _REDEEM_DEVIATION_EPSILON = 1e13; // 0.001 %
 
@@ -206,7 +208,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         );
 
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
-        if (bytes(err).length > 0) {
+        if (
+            bytes(err).length > 0 &&
+            !err.equals(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)
+        ) {
             return (0, err);
         }
 
@@ -239,7 +244,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             reserveState.vaults
         );
         err = gyroConfig.getRootSafetyCheck().isRedeemSafe(order);
-        if (bytes(err).length > 0) {
+        if (
+            bytes(err).length > 0 &&
+            !err.equals(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)
+        ) {
             return (outputAmounts, err);
         }
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);

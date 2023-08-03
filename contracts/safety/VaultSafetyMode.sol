@@ -78,7 +78,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         (string memory err, FlowResult[] memory result) = _checkFlows(order);
 
         if (bytes(err).length > 0) {
-            if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
+            if (err.equals(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
                 emit SafetyStatus(err);
             } else {
                 revert(err);
@@ -106,7 +106,7 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         (string memory err, FlowResult[] memory result) = _checkFlows(order);
 
         if (bytes(err).length > 0) {
-            if (err.compareStrings(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
+            if (err.equals(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
                 emit SafetyStatus(err);
             } else {
                 revert(err);
