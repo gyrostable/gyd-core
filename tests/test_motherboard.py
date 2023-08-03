@@ -14,6 +14,14 @@ def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
     pass
 
 
+@pytest.fixture(autouse=True)
+def mint_vault_tokens(usdc_vault, usdc, dai, dai_vault, charlie):
+    for asset, vault in zip([usdc, dai], [usdc_vault, dai_vault]):
+        amount = scale(100, asset.decimals())
+        asset.approve(vault, amount, {"from": charlie})
+        vault.deposit(amount, 0, {"from": charlie})
+
+
 @pytest.mark.usefixtures("register_usdc_vault")
 def test_dry_mint_vault_underlying(motherboard, usdc, usdc_vault, alice):
     decimals = usdc.decimals()

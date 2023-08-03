@@ -24,10 +24,22 @@ def my_init(set_mock_oracle_prices_usdc_dai, set_fees_usdc_dai):
     pass
 
 
+@pytest.fixture(scope="module", autouse=True)
+def mint_vault_tokens(usdc_vault, usdc, dai, dai_vault, charlie):
+    for asset, vault in zip([usdc, dai], [usdc_vault, dai_vault]):
+        amount = scale(100, asset.decimals())
+        asset.approve(vault, amount, {"from": charlie})
+        vault.deposit(amount, 0, {"from": charlie})
+
+
 @pytest.fixture(scope="module")
 def register_dai_vault_module(reserve_manager, dai_vault, admin):
     reserve_manager.setVaults(
-        [VaultConfiguration(dai_vault, PersistedVaultMetadata(int(scale(1)), int(scale(1)), 0, 0))],
+        [
+            VaultConfiguration(
+                dai_vault, PersistedVaultMetadata(int(scale(1)), int(scale(1)), 0, 0)
+            )
+        ],
         {"from": admin},
     )
 
