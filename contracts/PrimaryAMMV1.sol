@@ -313,8 +313,8 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         uint256 alphaBar,
         DerivedParams memory derived
     ) internal pure returns (bool) {
-        if (derived.baThresholdIIHL >= derived.baThresholdRegionI) return false;
         if (derived.baThresholdIIHL <= derived.baThresholdRegionII) return true;
+        if (derived.baThresholdIIHL > derived.baThresholdRegionI) return false;
         return
             normalizedState.reserveValue >=
             computeReserveFixedParams(
@@ -332,7 +332,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         Params memory params,
         DerivedParams memory derived
     ) internal pure returns (bool) {
-        if (derived.baThresholdIIIHL >= derived.baThresholdRegionII) return false;
+        if (derived.baThresholdIIIHL > derived.baThresholdRegionII) return false;
         return
             normalizedState.reserveValue >=
             computeReserveFixedParams(
