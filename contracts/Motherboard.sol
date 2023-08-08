@@ -208,10 +208,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         );
 
         err = gyroConfig.getRootSafetyCheck().isMintSafe(order);
-        if (
-            bytes(err).length > 0 &&
-            !err.equals(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)
-        ) {
+        if (bytes(err).length > 0) {
             return (0, err);
         }
 
@@ -244,10 +241,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
             reserveState.vaults
         );
         err = gyroConfig.getRootSafetyCheck().isRedeemSafe(order);
-        if (
-            bytes(err).length > 0 &&
-            !err.equals(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)
-        ) {
+        if (bytes(err).length > 0) {
             return (outputAmounts, err);
         }
         DataTypes.Order memory orderAfterFees = gyroConfig.getFeeHandler().applyFees(order);
