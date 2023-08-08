@@ -8,6 +8,7 @@ import {PrimaryAMMV1} from "../../contracts/PrimaryAMMV1.sol";
 import {TestingPAMMV1} from "../../contracts/testing/TestingPAMMV1.sol";
 import {GyroConfig} from "../../contracts/GyroConfig.sol";
 import {DataTypes} from "../../libraries/DataTypes.sol";
+import "../../libraries/ConfigKeys.sol";
 import "../../libraries/DecimalScale.sol";
 import "../../libraries/FixedPoint.sol";
 import {FreezableTransparentUpgradeableProxy, ProxyAdmin} from "../../contracts/FreezableProxy.sol";
@@ -43,6 +44,9 @@ contract PammTest is Test {
         // gyroConfig.initialize(address(this));
         // NB pamm uses gyroconfig -> gydtoken.totalSupply(). If we wanna test
         // this, we need to set up a mock token.
+
+        // We don't test REDEEM_DISCOUNT_RATIO here, setting it to 0 is disable.
+        gyroConfig.setUint(ConfigKeys.REDEEM_DISCOUNT_RATIO, 0);
 
         IPAMM.Params memory dummyParams = IPAMM.Params(0, 0, 0, OUTFLOW_MEMORY);
         tpamm = new TestingPAMMV1(governorAddress, address(gyroConfig), dummyParams);
