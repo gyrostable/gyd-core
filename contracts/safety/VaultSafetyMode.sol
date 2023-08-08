@@ -67,6 +67,9 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     function isMintSafe(DataTypes.Order memory order) external view returns (string memory err) {
         if (order.mint) {
             (err, ) = _checkFlows(order);
+            if (err.equals(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
+                err = "";
+            }
         } else {
             err = Errors.INVALID_ARGUMENT;
         }
@@ -93,6 +96,9 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
     function isRedeemSafe(DataTypes.Order memory order) external view returns (string memory err) {
         if (!order.mint) {
             (err, ) = _checkFlows(order);
+            if (err.equals(Errors.OPERATION_SUCCEEDS_BUT_SAFETY_MODE_ACTIVATED)) {
+                err = "";
+            }
         } else {
             err = Errors.INVALID_ARGUMENT;
         }

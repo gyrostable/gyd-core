@@ -82,13 +82,14 @@ abstract contract BaseVault is IGyroVault, ERC20Permit, Governable {
         IERC20(underlying).safeTransferFrom(msg.sender, address(this), underlyingAmount);
 
         vaultTokensMinted = underlyingAmount.divDown(rate);
-        require(vaultTokensMinted > 0, Errors.NO_SHARES_MINTED);
 
         if (totalSupply() == 0) {
             uint256 sharesToBurn = _sharesToBurn();
             _mint(_DEAD, sharesToBurn);
             vaultTokensMinted -= sharesToBurn;
         }
+
+        require(vaultTokensMinted > 0, Errors.NO_SHARES_MINTED);
 
         require(vaultTokensMinted >= minVaultTokensOut, Errors.TOO_MUCH_SLIPPAGE);
 
