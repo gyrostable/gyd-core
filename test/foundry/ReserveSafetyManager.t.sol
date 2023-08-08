@@ -81,12 +81,24 @@ contract ReserveSafetyManagerTest is Test {
         assertEq("52", errString);
     }
 
-    function testMintFailsWhenVaultOutsideEpsilonAndUnsafeToExecute(uint256 amount) public {
+    /// @dev map x from [0, type max] to [a, b]
+    function mapToInterval(
+        uint32 x,
+        uint256 a,
+        uint256 b
+    ) public pure returns (uint256) {
+        vm.assume(a < b); // retry for fuzz tests, fail for regular tests (not used there)
+
+        // order matters b/c integers!
+        return a + ((b - a) * uint256(x)) / type(uint32).max;
+    }
+
+    function testMintFailsWhenVaultOutsideEpsilonAndUnsafeToExecute(uint32 amount0) public {
         DataTypes.Order memory order = _buildIdealOrder(true);
 
         uint256 lowerBound = 515_000e18; // Lower bound such that resulting weight ~41.6% for this vault
+        uint256 amount = mapToInterval(amount0, lowerBound, 1e30);
 
-        vm.assume(amount > lowerBound && amount < 1e30); // Upper bound some large number but << 1e256
         order.vaultsWithAmount[0].amount = amount;
 
         // Zero amount for other vaults, ensures vault weight rises for offpeg vault
