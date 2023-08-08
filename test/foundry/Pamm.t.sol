@@ -10,6 +10,7 @@ import {GyroConfig} from "../../contracts/GyroConfig.sol";
 import {DataTypes} from "../../libraries/DataTypes.sol";
 import "../../libraries/DecimalScale.sol";
 import "../../libraries/FixedPoint.sol";
+import {FreezableTransparentUpgradeableProxy, ProxyAdmin} from "../../contracts/FreezableProxy.sol";
 
 contract PammTest is Test {
     // NOTE: The test* functions call associated check* functions. See their documentation for what these tests do.
@@ -24,15 +25,22 @@ contract PammTest is Test {
     uint256 public constant DELTA_MED = 1e10; // 1e-8
 
     // For checking xl against when it should theoretically be 1 or some other known number.
-    uint256 public constant DELTA_XL_1 = 0.00000001e18;  // 1e-8
+    uint256 public constant DELTA_XL_1 = 0.00000001e18; // 1e-8
 
     address public constant governorAddress = address(0);
     GyroConfig internal gyroConfig;
     TestingPAMMV1 internal tpamm;
 
     function setUp() public virtual {
+        ProxyAdmin proxyAdmin = new ProxyAdmin();
         gyroConfig = new GyroConfig();
-        gyroConfig.initialize(address(this));
+        FreezableTransparentUpgradeableProxy proxy = new FreezableTransparentUpgradeableProxy(
+            address(gyroConfig),
+            address(proxyAdmin),
+            abi.encodeWithSelector(gyroConfig.initialize.selector, address(this))
+        );
+        gyroConfig = GyroConfig(address(proxy));
+        // gyroConfig.initialize(address(this));
         // NB pamm uses gyroconfig -> gydtoken.totalSupply(). If we wanna test
         // this, we need to set up a mock token.
 
@@ -43,9 +51,14 @@ contract PammTest is Test {
 
     // "abs or rel" equality logic typically used for floating-point numbers. Obv we *don't* use
     // floating point so bounds need to be driven by fundamental rather than technical reasons.
-    function assertApproxEqRelAbs(uint actual, uint expd, uint delta_rel, uint delta_abs) public {
-        uint delta_abs_actual = actual.absSub(expd);
-        uint delta_rel_actual = delta_abs_actual.divDown(expd);
+    function assertApproxEqRelAbs(
+        uint256 actual,
+        uint256 expd,
+        uint256 delta_rel,
+        uint256 delta_abs
+    ) public {
+        uint256 delta_abs_actual = actual.absSub(expd);
+        uint256 delta_rel_actual = delta_abs_actual.divDown(expd);
         if (delta_abs_actual > delta_abs && delta_rel_actual > delta_rel) {
             console.log("Error: a ~= b not satisfied [uint]");
             console.log("    Expected: %e", expd);
@@ -58,9 +71,13 @@ contract PammTest is Test {
         }
     }
 
-    function assertApproxLeRelAbs(uint actual, uint expd, uint delta_rel, uint delta_abs) public {
-        if (actual <= expd)
-            return;
+    function assertApproxLeRelAbs(
+        uint256 actual,
+        uint256 expd,
+        uint256 delta_rel,
+        uint256 delta_abs
+    ) public {
+        if (actual <= expd) return;
         assertApproxEqRelAbs(actual, expd, delta_rel, delta_abs);
     }
 
@@ -70,7 +87,7 @@ contract PammTest is Test {
         uint256 a,
         uint256 b
     ) public pure returns (uint256) {
-        vm.assume(a < b);  // retry for fuzz tests, fail for regular tests (not used there)
+        vm.assume(a < b); // retry for fuzz tests, fail for regular tests (not used there)
 
         // order matters b/c integers!
         return a + ((b - a) * uint256(x)) / type(uint32).max;
@@ -124,7 +141,7 @@ contract PammTest is Test {
         uint32 xuBar0,
         uint32 thetaBar0
     ) public pure returns (IPAMM.Params memory) {
-        // NB max possible values are type(uint64).max b/c these values will be cast down to uint64. 
+        // NB max possible values are type(uint64).max b/c these values will be cast down to uint64.
         // But we choose hand-crafted, more realistic values.
 
         // SOMEDAY These parameters are quite wide. Could be tighter:
@@ -266,8 +283,14 @@ contract PammTest is Test {
         checkRegionReconstruction(mkState(0.2e18, 0.75e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
         checkRegionReconstruction(mkState(0.4e18, 0.85e18, 1e18), mkParams(0.5e18, 0.3e18, 0.6e18));
         checkRegionReconstruction(mkState(0.7e18, 0.85e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(mkState(0.7e18, 0.8499e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRegionReconstruction(mkState(0.7e18, 0.8501e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRegionReconstruction(
+            mkState(0.7e18, 0.8499e18, 1e18),
+            mkParams(0.3e18, 0.3e18, 0.6e18)
+        );
+        checkRegionReconstruction(
+            mkState(0.7e18, 0.8501e18, 1e18),
+            mkParams(0.3e18, 0.3e18, 0.6e18)
+        );
         checkRegionReconstruction(mkState(0.2e18, 0.65e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
         checkRegionReconstruction(
             mkState(0.4994994994994995e18, 0.9e18, 1e18),
@@ -321,8 +344,14 @@ contract PammTest is Test {
         checkBReconstructionFromB(mkState(0.2e18, 0.04e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
         checkBReconstructionFromB(mkState(0.4e18, 0.85e18, 1e18), mkParams(0.5e18, 0.3e18, 0.6e18));
         checkBReconstructionFromB(mkState(0.7e18, 0.85e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(mkState(0.7e18, 0.8499e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkBReconstructionFromB(mkState(0.7e18, 0.8501e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkBReconstructionFromB(
+            mkState(0.7e18, 0.8499e18, 1e18),
+            mkParams(0.3e18, 0.3e18, 0.6e18)
+        );
+        checkBReconstructionFromB(
+            mkState(0.7e18, 0.8501e18, 1e18),
+            mkParams(0.3e18, 0.3e18, 0.6e18)
+        );
         checkBReconstructionFromB(mkState(0.2e18, 0.65e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
         checkBReconstructionFromB(
             mkState(0.4994994994994995e18, 0.9e18, 1e18),
@@ -355,16 +384,15 @@ contract PammTest is Test {
 
     /// @dev Given a state, reconstruct the anchor point and from there its own b (= reserve value).
     /// This should yield the state's reserve value back.
-    function checkBReconstructionFromB(
-        PrimaryAMMV1.State memory state,
-        IPAMM.Params memory params
-    ) public {
+    function checkBReconstructionFromB(PrimaryAMMV1.State memory state, IPAMM.Params memory params)
+        public
+    {
         console.log("--------------------------------------------------------------------------");
         setParams(params);
         logState(state);
         uint256 reconstructedB = tpamm.roundTripState(state);
         // assertApproxEqRel(state.reserveValue, reconstructedB, 1e12);  // 1e-6 relative
-        assertApproxEqRelAbs(state.reserveValue, reconstructedB, 1e10, 0.01e18);  // 1e-8 relative or 0.01 absolute
+        assertApproxEqRelAbs(state.reserveValue, reconstructedB, 1e10, 0.01e18); // 1e-8 relative or 0.01 absolute
     }
 
     function testExamples_RedeemFromBa() public {
@@ -376,8 +404,16 @@ contract PammTest is Test {
         checkRedeemFromBa(0.2e18, mkState(0.2e18, 0.75e18, 1e18), mkParams(1e18, 0.3e18, 0.6e18));
         checkRedeemFromBa(0.1e18, mkState(0.4e18, 0.85e18, 1e18), mkParams(0.5e18, 0.3e18, 0.6e18));
         checkRedeemFromBa(0.1e18, mkState(0.7e18, 0.85e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.2e18, mkState(0.7e18, 0.8499e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
-        checkRedeemFromBa(0.1e18, mkState(0.7e18, 0.8501e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
+        checkRedeemFromBa(
+            0.2e18,
+            mkState(0.7e18, 0.8499e18, 1e18),
+            mkParams(0.3e18, 0.3e18, 0.6e18)
+        );
+        checkRedeemFromBa(
+            0.1e18,
+            mkState(0.7e18, 0.8501e18, 1e18),
+            mkParams(0.3e18, 0.3e18, 0.6e18)
+        );
         checkRedeemFromBa(0.7e18, mkState(0.2e18, 0.65e18, 1e18), mkParams(0.3e18, 0.3e18, 0.6e18));
         checkRedeemFromBa(
             0.4994994994994995e18,
@@ -398,7 +434,11 @@ contract PammTest is Test {
     ) public {
         IPAMM.Params memory params = mkParamsFromFuzzing(alphaBar0, xuBar0, thetaBar0);
         PrimaryAMMV1.State memory anchoredState = mkAnchoredStateFromFuzzing(x0, ba0, ya0, params);
-        uint256 dx = mapToInterval(dx0, 1e18, anchoredState.totalGyroSupply - anchoredState.redemptionLevel);
+        uint256 dx = mapToInterval(
+            dx0,
+            1e18,
+            anchoredState.totalGyroSupply - anchoredState.redemptionLevel
+        );
         checkRedeemFromBa(dx, anchoredState, params);
     }
 
@@ -420,14 +460,27 @@ contract PammTest is Test {
         console.log("dx = %e", dx);
         logAnchoredState(anchoredState);
 
-        console.log("alpha = %e",
-                    tpamm.testComputeSlope(anchoredState.reserveValue, anchoredState.totalGyroSupply));
+        console.log(
+            "alpha = %e",
+            tpamm.testComputeSlope(anchoredState.reserveValue, anchoredState.totalGyroSupply)
+        );
 
-        console.log("ba (normalized) = %e", anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply));
-        console.log("x (normalized)  = %e", anchoredState.redemptionLevel.divDown(anchoredState.totalGyroSupply));
+        console.log(
+            "ba (normalized) = %e",
+            anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply)
+        );
+        console.log(
+            "x (normalized)  = %e",
+            anchoredState.redemptionLevel.divDown(anchoredState.totalGyroSupply)
+        );
         console.log("dx (normalized)  = %e", dx.divDown(anchoredState.totalGyroSupply));
-        console.log("alpha (normalized) = %e",
-                    tpamm.testComputeSlope(anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply), 1e18));
+        console.log(
+            "alpha (normalized) = %e",
+            tpamm.testComputeSlope(
+                anchoredState.reserveValue.divDown(anchoredState.totalGyroSupply),
+                1e18
+            )
+        );
 
         console.log("> computeReserveValueFromAnchor");
         uint256 b = tpamm.computeReserveValueFromAnchor(anchoredState);
@@ -454,6 +507,6 @@ contract PammTest is Test {
 
         console.log("assert redemption amounts match");
         // The following bounds are economially motivated based on a mint/redeem fee and minimum tx cost.
-        assertApproxEqRelAbs(db, b - b1, 1e13, 0.03e18);  // rel=1e-5, abs=0.03 USD
+        assertApproxEqRelAbs(db, b - b1, 1e13, 0.03e18); // rel=1e-5, abs=0.03 USD
     }
 }
