@@ -12,6 +12,7 @@ import {GyroConfig} from "../../contracts/GyroConfig.sol";
 import {GydToken} from "../../contracts/GydToken.sol";
 import {TestingReserveSafetyManager} from "../../contracts/testing/TestingReserveSafetyManager.sol";
 import {MockGyroVault} from "../../contracts/testing/MockGyroVault.sol";
+import {FreezableTransparentUpgradeableProxy, ProxyAdmin} from "../../contracts/FreezableProxy.sol";
 
 contract DryMint is Test {
     using FixedPoint for uint256;
@@ -36,8 +37,15 @@ contract DryMint is Test {
     address internal userAddress = addresses[99];
 
     function setUp() public virtual {
+        ProxyAdmin proxyAdmin = new ProxyAdmin();
         gyroConfig = new GyroConfig();
-        gyroConfig.initialize(address(this));
+        FreezableTransparentUpgradeableProxy proxy = new FreezableTransparentUpgradeableProxy(
+            address(gyroConfig),
+            address(proxyAdmin),
+            abi.encodeWithSelector(gyroConfig.initialize.selector, address(this))
+        );
+        gyroConfig = GyroConfig(address(proxy));
+
         gydToken = new GydToken();
         gyroConfig.setAddress(ConfigKeys.GYD_TOKEN_ADDRESS, address(gydToken));
         gyroConfig.setAddress(ConfigKeys.RESERVE_ADDRESS, addresses[0]);
