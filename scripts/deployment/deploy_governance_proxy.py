@@ -18,7 +18,7 @@ def proxy(proxy_admin, governance_proxy):
         governance_proxy,
         init_data=governance_proxy.initialize.encode_input(deployer),
     )
-    proxy_admin.transferOwnership(proxy, {"from": deployer})
+    proxy_admin.transferOwnership(proxy, {"from": deployer, **make_tx_params()})
 
 
 @with_gas_usage

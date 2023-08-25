@@ -79,9 +79,13 @@ def get_deployer():
         return cast(
             LocalAccount, accounts.load("gyro-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore
         )
+    if chain_id == 42161: # arbitrum
+        return cast(
+            LocalAccount, accounts.load("ftl-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore
+        )
     if chain_id == 10:  # optimism
         return cast(
-            LocalAccount, accounts.load("optimism-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore
+            LocalAccount, accounts.load("ftl-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore
         )
     if chain_id == 42:  # kovan
         return cast(
