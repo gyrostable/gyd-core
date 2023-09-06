@@ -164,6 +164,16 @@ contract VaultSafetyMode is ISafetyCheck, Governable {
         }
     }
 
+    function getAllPersistedFlowData() external view returns (DataTypes.FlowData[] memory) {
+        IVaultRegistry vaultRegistry = gyroConfig.getVaultRegistry();
+        address[] memory vaults = vaultRegistry.listVaults();
+        DataTypes.FlowData[] memory allFlowData = new DataTypes.FlowData[](vaults.length);
+        for (uint256 i = 0; i < vaults.length; i++) {
+            allFlowData[i] = persistedFlowData[vaults[i]];
+        }
+        return allFlowData;
+    }
+
     function _checkFlows(DataTypes.Order memory order)
         internal
         view
