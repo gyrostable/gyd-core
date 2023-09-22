@@ -146,6 +146,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     {
         _ensureBalancerVaultNotReentrant();
 
+        // Catch a corner case where the complete minted supply and some of the bootstrapping supply
+        // is redeemed, which would make actualSupply() underflow in following calls.
+        require(
+            gydToRedeem <= gydToken.actualSupply(),
+            Errors.TRYING_TO_REDEEM_MORE_THAN_SUPPLY
+        );
+
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();

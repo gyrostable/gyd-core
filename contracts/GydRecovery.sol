@@ -320,7 +320,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
             // *Not* a corner case! This happens after a full burn!
             return false;
         }
-        uint256 currentCR = reserveUSDValue.divDown(gydToken.totalSupply());
+        uint256 currentCR = reserveUSDValue.divDown(gydToken.actualSupply());
         uint256 triggerCR = gyroConfig.getUint(ConfigKeys.GYD_RECOVERY_TRIGGER_CR);
         uint256 maxTriggerCR_ = maxTriggerCR;
         if (triggerCR > maxTriggerCR_) triggerCR = maxTriggerCR_;
@@ -336,7 +336,7 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         // Compute amount to burn to reach target CR.
         uint256 targetCR = gyroConfig.getUint(ConfigKeys.GYD_RECOVERY_TARGET_CR);
         uint256 targetGYDSupply = reserveUSDValue.divDown(targetCR);
-        uint256 currentGYDSupply = gydToken.totalSupply();
+        uint256 currentGYDSupply = gydToken.actualSupply();
 
         if (targetGYDSupply >= currentGYDSupply) {
             // Sanity check. This can only happen if GYD_RECOVERY_TARGET_CR < GYD_RECOVERY_TRIGGER_CR, which is probably a buggy config.

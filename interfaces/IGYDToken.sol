@@ -28,4 +28,17 @@ interface IGYDToken is IERC20Upgradeable {
 
     /// @notice Burns `amount` of GYD token from `account`
     function burnFrom(address account, uint256 amount) external;
+
+    /// @notice Supply preminted for bootstrapping.
+    function bootstrappingSupply() view external returns (uint256);
+
+    /// @notice Total Supply except for the GYD that have been preminted for bootstrapping.
+    function actualSupply() view external returns (uint256);
+
+    /// @notice Like mint(account, amount) but account for as bootstrapping supply.
+    /// Intended to be used only ~once, at system bootstrapping.
+    function mintBootstrapping(address account, uint256 amount) external;
+
+    /// @notice Like burn(amount) but account for as bootstrapping supply.
+    function burnBootstrapping(uint256 amount) external;
 }
