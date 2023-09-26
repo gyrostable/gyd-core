@@ -76,4 +76,14 @@ interface IMotherboard {
 
     /// @notice Only callable from the reserve stewardship incentives module. Mints new GYD to the governance treasury.
     function mintStewardshipIncRewards(uint256 amount) external;
+
+    /// @notice Supply preminted for bootstrapping.
+    function bootstrappingSupply() view external returns (uint256);
+
+    /// @notice Total Supply except for the GYD that have been preminted for bootstrapping.
+    function actualSupply() view external returns (uint256);
+
+    /// @notice Set bootstrappingSupply. Only to be used by governance when setting up / unwinding
+    /// bootstrapping pools.
+    function setBootstrappingSupply(uint256 amount) external;
 }

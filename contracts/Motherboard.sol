@@ -61,6 +61,9 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     // Balancer vault used for re-entrancy check.
     IVault internal immutable balancerVault;
 
+    /// @inheritdoc IMotherboard
+    uint256 public override bootstrappingSupply;
+
     // Events
     event Mint(
         address indexed minter,
@@ -148,7 +151,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
         // Catch a corner case where the complete minted supply and some of the bootstrapping supply
         // is redeemed, which would make actualSupply() underflow in following calls.
-        require(gydToRedeem <= gydToken.actualSupply(), Errors.TRYING_TO_REDEEM_MORE_THAN_SUPPLY);
+        require(gydToRedeem <= actualSupply(), Errors.TRYING_TO_REDEEM_MORE_THAN_SUPPLY);
 
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
@@ -557,5 +560,13 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
     function _oracle() internal view returns (IBatchVaultPriceOracle) {
         return gyroConfig.getRootPriceOracle();
+    }
+
+    function actualSupply() view public returns (uint256) {
+        return gydToken.totalSupply() - bootstrappingSupply;
+    }
+
+    function setBootstrappingSupply(uint256 _bootstrappingSupply) external governanceOnly {
+        bootstrappingSupply = _bootstrappingSupply;
     }
 }

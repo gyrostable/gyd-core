@@ -17,8 +17,6 @@ contract GydToken is ERC20PermitUpgradeable, GovernableUpgradeable, IGYDToken {
 
     EnumerableSet.AddressSet internal _minters;
 
-    uint256 public override bootstrappingSupply;
-
     function initialize(
         address governor,
         string memory name,
@@ -59,23 +57,5 @@ contract GydToken is ERC20PermitUpgradeable, GovernableUpgradeable, IGYDToken {
 
     function burn(uint256 amount) external {
         _burn(_msgSender(), amount);
-    }
-
-    function actualSupply() external view returns (uint256) {
-        return totalSupply() - bootstrappingSupply;
-    }
-
-    function mintBootstrapping(address account, uint256 amount) external {
-        require(_minters.contains(_msgSender()), Errors.NOT_AUTHORIZED);
-        _mint(account, amount);
-        bootstrappingSupply += amount;
-    }
-
-    function burnBootstrapping(uint256 amount) external {
-        require(_minters.contains(_msgSender()), Errors.NOT_AUTHORIZED);
-        _burn(_msgSender(), amount);
-
-        // Reverts if trying to burn more than bootstrappingSupply.
-        bootstrappingSupply -= amount;
     }
 }
