@@ -600,6 +600,6 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     function _getGyroSupply() internal view virtual returns (uint256) {
-        return gyroConfig.getMotherboard().actualSupply();
+        return gyroConfig.getMotherboard().mintedSupply();
     }
 }

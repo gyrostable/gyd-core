@@ -80,8 +80,9 @@ interface IMotherboard {
     /// @notice Supply preminted for bootstrapping.
     function bootstrappingSupply() view external returns (uint256);
 
-    /// @notice Total Supply except for the GYD that have been preminted for bootstrapping.
-    function actualSupply() view external returns (uint256);
+    /// @notice Total supply created through minting via the reserve (`Motherboard.mint()`).
+    /// Excludes supply created for bootstrapping.
+    function mintedSupply() view external returns (uint256);
 
     /// @notice Set bootstrappingSupply. Only to be used by governance when setting up / unwinding
     /// bootstrapping pools.
