@@ -82,7 +82,7 @@ interface IMotherboard {
 
     /// @notice Total supply created through minting via the reserve (`Motherboard.mint()`).
     /// Excludes supply created for bootstrapping.
-    /// @dev Reverts if bootstrappingSupply() > totalSupply(), but this never / happens, assuming
+    /// @dev Reverts if bootstrappingSupply() > totalSupply(), but this never happens, assuming
     /// that governance consistently calls / setBootstrappingSupply() with minting/burning
     /// bootstrapping supply. 
     function mintedSupply() view external returns (uint256);
