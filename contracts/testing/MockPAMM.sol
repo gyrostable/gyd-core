@@ -32,4 +32,12 @@ contract MockPAMM is IPAMM {
     }
 
     function systemParams() external view returns (Params memory) {}
+
+    function getNormalizedAnchoredReserveValue(uint256 reserveUSDValue)
+        external
+        view
+        returns (uint256)
+    {
+        return 0;
+    }
 }

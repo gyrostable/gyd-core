@@ -55,4 +55,18 @@ interface IPAMM {
 
     /// @notice Retrieves the system parameters to be updated
     function systemParams() external view returns (Params memory);
+
+    /// @notice Internal value that may be useful to predict the state of the system under
+    /// different scenarios. This value is the 'anchor reserve value', normalized to 'anchor GYD
+    /// supply' = 1.
+    /// @dev This function extends the meaning of the anchor reserve value to cases where it's not
+    /// formally defined as follows. Let r be the current reserve value, discounted by the
+    /// configured redeem discount ratio.
+    /// - If r >= 1, this returns 1.
+    /// - If thetaBar < r < 1, this returns the normalized anchor reserve value like in the PAMM
+    ///   mathematics paper.
+    /// - If r <= thetaBar, this returns r.
+    /// Note that, in the two edge cases, the mapping is not 1:1 and the anchor reserve value is not
+    /// actually used by the PAMM to compute redemption amounts.
+    function getNormalizedAnchoredReserveValue(uint256 reserveUSDValue) external view returns (uint256);
 }
