@@ -35,6 +35,8 @@ interface IPAMM {
 
     /// @notice Quotes the output USD value given an amount of GYD
     /// @param gydAmount the amount GYD to redeem
+    /// @param reserveUSDValue total value of the reserve in USD. Can be pulled from
+    /// ReserveManager.getReserveState()
     /// @return the USD value to redeem
     function computeRedeemAmount(
         uint256 gydAmount,
@@ -43,6 +45,8 @@ interface IPAMM {
 
     /// @notice Quotes and records the output USD value given an amount of GYD
     /// @param gydAmount the amount GYD to redeem
+    /// @param reserveUSDValue total value of the reserve in USD. Can be pulled from
+    /// ReserveManager.getReserveState()
     /// @return the USD value to redeem
     function redeem(uint256 gydAmount, uint256 reserveUSDValue) external returns (uint256);
 
