@@ -539,6 +539,9 @@ def test_boostrapping_supply(
     gyd_token.mint(admin, bootstrapping_amount)
     tx = gyd_token.removeMinter(admin)
     assert tx.events["MinterRemoved"]["minter"] == admin
+    
+    with reverts(error_codes.NOT_AUTHORIZED):
+        motherboard.setBootstrappingSupply(bootstrapping_amount, {'from': alice})
     motherboard.setBootstrappingSupply(bootstrapping_amount)
 
     assert gyd_token.totalSupply() == bootstrapping_amount
