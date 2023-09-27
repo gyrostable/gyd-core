@@ -562,7 +562,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         return gyroConfig.getRootPriceOracle();
     }
 
-    function mintedSupply() view public returns (uint256) {
+    function mintedSupply() public view returns (uint256) {
         return gydToken.totalSupply() - bootstrappingSupply;
     }
 
