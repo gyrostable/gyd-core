@@ -68,4 +68,5 @@ library Errors {
     string public constant EXTERNAL_ACTION_FAILED = "101";
     string public constant TOKENS_NOT_SORTED = "102";
     string public constant NO_SHARES_MINTED = "103";
+    string public constant TRYING_TO_REDEEM_MORE_THAN_SUPPLY = "104";
 }

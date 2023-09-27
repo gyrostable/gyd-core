@@ -69,7 +69,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
-        uint256 gydSupply = gydToken.totalSupply();
+        uint256 gydSupply = gyroConfig.getMotherboard().mintedSupply();
 
         uint256 collateralRatio = _getReserveUSDValue(reserveState).divDown(gydSupply);
         require(collateralRatio >= minCollateralRatio, "collateral ratio too low");
@@ -133,7 +133,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         // Update aggSupply. If the active initiative has ended, we complete the update wrt. endTime to catch all of the
         // GYD supply during the period.
         uint256 aggSupplyUpdateTime = nowTime <= endTime ? nowTime : endTime;
-        uint256 gydSupply = gydToken.totalSupply();
+        uint256 gydSupply = gyroConfig.getMotherboard().mintedSupply();
         aggSupply.aggSupply += (aggSupplyUpdateTime - aggSupply.lastUpdatedTime) * gydSupply;
         aggSupply.lastUpdatedTime = aggSupplyUpdateTime;
 
@@ -178,7 +178,7 @@ contract ReserveStewardshipIncentives is IReserveStewardshipIncentives, Governab
         Initiative memory initiative
     ) internal view returns (uint256 reward, bool success) {
         // Compute target reward
-        uint256 gydSupply = gydToken.totalSupply();
+        uint256 gydSupply = gyroConfig.getMotherboard().mintedSupply();
         uint256 initiativeLength = initiative.endTime - initiative.startTime;
         uint256 avgGYDSupply = aggSupply.aggSupply / initiativeLength;
         uint256 targetReward = initiative.rewardPercentage.mulDown(avgGYDSupply);
