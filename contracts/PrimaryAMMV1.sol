@@ -539,12 +539,16 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         return redeemAmount;
     }
 
-    function getNormalizedAnchoredReserveValue(uint256 reserveUSDValue) external view returns (uint256) {
+    function getNormalizedAnchoredReserveValue(uint256 reserveUSDValue)
+        external
+        view
+        returns (uint256)
+    {
         // This is copied & adjusted from the two variants of computeRedeemAmount(), but we exit earlier.
         Params memory params = _systemParams;
         DerivedParams memory derived = createDerivedParams(params);
         State memory state = computeStartingRedeemState(reserveUSDValue, params);
-        
+
         State memory normalizedState;
         uint256 ya = state.totalGyroSupply + state.redemptionLevel;
 
@@ -570,11 +574,7 @@ contract PrimaryAMMV1 is IPAMM, Governable {
             return nav;
         }
 
-        return computeAnchoredReserveValue(
-            normalizedState,
-            params,
-            derived
-        );
+        return computeAnchoredReserveValue(normalizedState, params, derived);
     }
 
     /// @notice Returns the USD value to mint given an ammount of Gyro dollars
