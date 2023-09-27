@@ -526,3 +526,63 @@ def test_simple_redeem_bpt(
     new_balances = [t.balanceOf(alice) for t in tokens]
     for pb, nb, asset in zip(previous_balances, new_balances, redeem_assets):
         assert nb >= pb + asset.minOutputAmount
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_boostrapping_supply(
+    motherboard, usdc, usdc_vault, alice, gyd_token, reserve, reserve_manager, admin
+):
+    # Mint bootstrapping amount
+    bootstrapping_amount = scale(100)
+    tx = gyd_token.addMinter(admin)
+    assert tx.events["MinterAdded"]["minter"] == admin
+    gyd_token.mint(admin, bootstrapping_amount)
+    tx = gyd_token.removeMinter(admin)
+    assert tx.events["MinterRemoved"]["minter"] == admin
+    motherboard.setBootstrappingSupply(bootstrapping_amount)
+
+    assert gyd_token.totalSupply() == bootstrapping_amount
+    assert gyd_token.balanceOf(admin) == bootstrapping_amount
+    assert motherboard.mintedSupply() == 0
+
+    # Mint normally
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    tx = motherboard.mint([mint_asset], 0, {"from": alice})
+    gyd_minted = tx.events["Mint"]["mintedGYDAmount"]
+    assert gyd_token.balanceOf(alice) == scale(10)
+    assert gyd_minted == scale(10)
+    assert usdc_vault.balanceOf(reserve) == usdc_amount
+    total_usd_value, _ = reserve_manager.getReserveState()
+    assert total_usd_value == scale(10)
+
+    assert gyd_token.totalSupply() == bootstrapping_amount + scale(10)
+    assert motherboard.mintedSupply() == scale(10)
+
+    # We can't redeem the bootstrapping supply via the Motherboard (b/c it's too much)
+    redeem_asset = RedeemAsset(
+        outputToken=usdc, minOutputAmount=0, originVault=usdc_vault, valueRatio=scale(1)
+    )
+    with reverts(error_codes.TRYING_TO_REDEEM_MORE_THAN_SUPPLY):
+        motherboard.redeem(bootstrapping_amount, [redeem_asset], {"from": admin})
+
+    # Burn the bootstrapping amount and do proper accounting
+    gyd_token.burn(bootstrapping_amount)
+    motherboard.setBootstrappingSupply(0)
+
+    assert gyd_token.totalSupply() == scale(10)
+    assert gyd_token.balanceOf(admin) == 0
+    assert motherboard.mintedSupply() == scale(10)
+
+    # Now redeem the minted tokens.
+    redeem_asset = RedeemAsset(
+        outputToken=usdc, minOutputAmount=0, originVault=usdc_vault, valueRatio=scale(1)
+    )
+    tx = motherboard.redeem(scale(10), [redeem_asset], {"from": alice})
+
+    assert gyd_token.totalSupply() == 0
+    assert motherboard.mintedSupply() == 0
+
