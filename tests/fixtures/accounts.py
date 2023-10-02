@@ -32,6 +32,11 @@ def gov(accounts):
 
 
 @pytest.fixture(scope="session")
+def treasury(accounts):
+    return accounts[8]
+
+
+@pytest.fixture(scope="session")
 def price_signer(accounts):
     return accounts.add(
         "0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c3773"

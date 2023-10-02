@@ -87,10 +87,11 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         address _governor,
         address _gyroConfig,
         address _rewardToken,
+        address _daoTreasury,
         uint256 _withdrawalWaitDuration,
         uint256 _maxWithdrawalWaitDuration,
         uint256 _maxTriggerCR
-    ) Governable(_governor) LiquidityMining(_rewardToken) {
+    ) Governable(_governor) LiquidityMining(_rewardToken, _daoTreasury) {
         gyroConfig = IGyroConfig(_gyroConfig);
         gydToken = gyroConfig.getGYDToken();
         require(
@@ -110,8 +111,8 @@ contract GydRecovery is IGydRecovery, Governable, LiquidityMining {
         _startMining(rewardsFrom, amount, endTime);
     }
 
-    function stopMining(address reimbursementTo) external override governanceOnly {
-        _stopMining(reimbursementTo);
+    function stopMining() external override governanceOnly {
+        _stopMining();
     }
 
     function setWithdrawalWaitDuration(uint256 _duration) external governanceOnly {

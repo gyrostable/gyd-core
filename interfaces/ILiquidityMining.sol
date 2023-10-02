@@ -41,6 +41,7 @@ interface ILiquidityMining {
     /// @notice Deposit `amount` of the reward token from `rewardsFrom` and enable rewards until `endTime`. Typically governanceOnly. `amount` is spread evenly over the time period.
     function startMining(address rewardsFrom, uint256 amount, uint256 endTime) external;
 
-    /// @notice Stop liquidity mining early and reimburse leftover rewards to `reimbursementTo`. This may also be needed after the mining period has ended when we had `totalStaked() == 0` for a while, where no rewards accrue.
-    function stopMining(address reimbursementTo) external;
+    /// @notice Stop liquidity mining early and reimburse leftover rewards to the DAO treasury.
+    /// This may also be needed after the mining period has ended when we had `totalStaked() == 0` for a while, where no rewards accrue.
+    function stopMining() external;
 }

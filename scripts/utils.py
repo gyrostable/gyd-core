@@ -79,7 +79,7 @@ def get_deployer():
         return cast(
             LocalAccount, accounts.load("gyro-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore
         )
-    if chain_id == 42161: # arbitrum
+    if chain_id == 42161:  # arbitrum
         return cast(
             LocalAccount, accounts.load("ftl-deployer", BROWNIE_ACCOUNT_PASSWORD)  # type: ignore
         )
@@ -124,6 +124,12 @@ def get_gyro_config():
     if brownie.chain.id == 137:
         return GyroConfig.at(GYRO_CONFIG_POLYGON_ADDRESS)
     return GyroConfig[0]
+
+
+def get_dao_treasury():
+    if brownie.chain.id == 1337:
+        return accounts[8]
+    raise ValueError("GYFI token not available on this network")
 
 
 def get_gyfi_token():

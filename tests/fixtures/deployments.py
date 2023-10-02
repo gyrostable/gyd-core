@@ -69,12 +69,13 @@ def reserve(admin, Reserve, gyro_config, deploy_with_proxy):
 
 
 @pytest.fixture(scope="module")
-def gyd_recovery(admin, GydRecovery, gyro_config, mock_gyfi):
+def gyd_recovery(admin, GydRecovery, gyro_config, mock_gyfi, treasury):
     gyd_recovery = admin.deploy(
         GydRecovery,
         admin,
         gyro_config,
         mock_gyfi,
+        treasury,
         constants.GYD_RECOVERY_WITHDRAWAL_WAIT_DURATION,
         constants.GYD_RECOVERY_MAX_WITHDRAWAL_WAIT_DURATION,
         constants.GYD_RECOVERY_MAX_TRIGGER_CR,
