@@ -29,10 +29,12 @@ abstract contract LiquidityMining is ILiquidityMining {
     uint256 public override rewardsEmissionEndTime;
 
     IERC20 public immutable rewardToken;
+    address public immutable daoTreasury;
 
-    constructor(address _rewardToken) {
+    constructor(address _rewardToken, address _daoTreasury) {
         _lastCheckpointTime = block.timestamp;
         rewardToken = IERC20(_rewardToken);
+        daoTreasury = _daoTreasury;
     }
 
     function claimRewards() external returns (uint256) {
@@ -117,10 +119,10 @@ abstract contract LiquidityMining is ILiquidityMining {
     }
 
     /// @dev same as `_startLiquidityMining` but for stopping.
-    function _stopMining(address reimbursementTo) internal {
+    function _stopMining() internal {
         globalCheckpoint();
         uint256 reimbursementAmount = rewardToken.balanceOf(address(this)) - _totalUnclaimedRewards;
-        rewardToken.safeTransfer(reimbursementTo, reimbursementAmount);
+        rewardToken.safeTransfer(daoTreasury, reimbursementAmount);
         rewardsEmissionEndTime = 0;
         _rewardsEmissionRate = 0;
         emit StopMining();
