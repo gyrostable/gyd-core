@@ -11,7 +11,7 @@ from brownie.network.account import ClefAccount, LocalAccount
 DEV_CHAIN_IDS = {1337}
 
 REQUIRED_CONFIRMATIONS = 1
-MAINNET_DEPLOYER_ADDRESS = "0x0000000000000000000000000000000000000000"
+MAINNET_DEPLOYER_ADDRESS = "0x8780779CAF2bC6D402DA5c3EC79A5007bB2edD90"
 
 GYRO_CONFIG_POLYGON_ADDRESS = "0x3c00e4663be7262E50251380EBE5fE4A17e68B51"
 GYRO_ASSET_REGISTRY_ADDRESS = "0x0FEfDfCa029822C18ae73c2b76c4602949621fe1"
@@ -178,6 +178,7 @@ def deploy_proxy(contract, init_data=b"", config_key=None):
         ProxyAdmin[0],
         init_data,
         **make_tx_params(),
+        publish_source=True,
     )
     if config_key:
         gyro_config = get_gyro_config()

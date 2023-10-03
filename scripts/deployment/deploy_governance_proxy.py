@@ -25,4 +25,4 @@ def proxy(proxy_admin, governance_proxy):
 @as_singleton(GovernanceProxy)
 def main():
     deployer = get_deployer()
-    deployer.deploy(GovernanceProxy, **make_tx_params())
+    deployer.deploy(GovernanceProxy, **make_tx_params(), publish_source=True)

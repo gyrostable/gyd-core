@@ -60,4 +60,4 @@ def proxy(governance_proxy, gyro_config):
 @as_singleton(GyroConfig)
 def main():
     deployer = get_deployer()
-    deployer.deploy(GyroConfig, **make_tx_params())
+    deployer.deploy(GyroConfig, **make_tx_params(), publish_source=True)
