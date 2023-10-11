@@ -55,26 +55,30 @@ def get_pool_setting_str(gyroconfig, setting: bytes, get_method: str):
     return str(v)
 
 
-def main():
-    """Show settings for the MATIC/STMATIC ECLP."""
-    pool_address = "0xf0ad209e2e969EAAA8C882aac71f02D8a047d5c2"
-    gyroconfig_address = "0xfdc2e9e03f515804744a40d0f8d25c16e93fbe67"  # The one on Polygon used by vaults
+def main(gyro_config_address, pool_address: Optional[str] = None):
+    # TODO SOMEDAY also do per-pool-type values. This is implemented in mk_pool_setting but need some dict of the pool type byte strings somehow.
 
-    gyroconfig = GyroConfig.at(gyroconfig_address)  # type: ignore
+    # pool = Contract.from_explorer(pool_address)
+    # gyroconfig = Contract.from_explorer(pool.gyroConfig)
+    gyroconfig = GyroConfig.at(gyro_config_address)  # type: ignore
 
     for key in ["BAL_TREASURY", "GYRO_TREASURY"]:
         vstr = get_pool_setting_str(gyroconfig, mk_pool_setting(key), "getAddress")
         print(f"global   {key} = {vstr}")
 
-    for key in ["PROTOCOL_SWAP_FEE_PERC", "PROTOCOL_FEE_GYRO_PORTION"]:
+    keys = ["PROTOCOL_SWAP_FEE_PERC", "PROTOCOL_FEE_GYRO_PORTION"]
+
+    for key in keys:
         vstr = get_pool_setting_str(gyroconfig, mk_pool_setting(key), "getUint")
         print(f"global   {key} = {vstr}")
 
-    for key in ["PROTOCOL_SWAP_FEE_PERC", "PROTOCOL_FEE_GYRO_PORTION"]:
-        vstr = get_pool_setting_str(
-            gyroconfig, mk_pool_setting(key, pool_address=pool_address), "getUint"
-        )
-        print(f"per-pool {key} = {vstr}")
+    if pool_address is not None:
+        pool_address = pool_address.lower()
+        for key in keys:
+            vstr = get_pool_setting_str(
+                gyroconfig, mk_pool_setting(key, pool_address=pool_address), "getUint"
+            )
+            print(f"per-pool {key} = {vstr}")
 
 
 def unscale(x: int) -> Decimal:
