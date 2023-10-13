@@ -3,7 +3,7 @@
 #
 # Usage:
 # $ # ...set up WEB3_INFURA_PROJECT_ID in environment...
-# $ brownie run --network=polygon-main $0
+# $ brownie run $0 main <GyroConfig address> [pool address] [pool type string] --network=<network, e.g., polygon-main>
 
 from eth_utils import keccak
 from eth_abi import encode_abi
@@ -41,7 +41,7 @@ def mk_pool_setting(
         return encode_abi(["bytes32"], [setting])
 
 
-def get_pool_setting_str(gyroconfig, setting: bytes, get_method: str):
+def get_pool_setting_str(gyroconfig, setting: bytes, get_method: str) -> str:
     """Get and format pool setting."""
     try:
         v = getattr(gyroconfig, get_method)(setting)
@@ -55,22 +55,35 @@ def get_pool_setting_str(gyroconfig, setting: bytes, get_method: str):
     return str(v)
 
 
-def main(gyro_config_address, pool_address: Optional[str] = None):
-    # TODO SOMEDAY also do per-pool-type values. This is implemented in mk_pool_setting but need some dict of the pool type byte strings somehow.
-
+def main(gyro_config_address, pool_address: Optional[str] = None, pool_type: Optional[str] = None):
     # pool = Contract.from_explorer(pool_address)
     # gyroconfig = Contract.from_explorer(pool.gyroConfig)
-    gyroconfig = GyroConfig.at(gyro_config_address)  # type: ignore
+    gyroconfig = interface.IGyroConfig(gyro_config_address)
+    # gyroconfig = GyroConfig.at(gyro_config_address)  # type: ignore
 
     for key in ["BAL_TREASURY", "GYRO_TREASURY"]:
         vstr = get_pool_setting_str(gyroconfig, mk_pool_setting(key), "getAddress")
-        print(f"global   {key} = {vstr}")
+        print(f"global        {key} = {vstr}")
 
     keys = ["PROTOCOL_SWAP_FEE_PERC", "PROTOCOL_FEE_GYRO_PORTION"]
 
+    vstrs = dict()
+
     for key in keys:
         vstr = get_pool_setting_str(gyroconfig, mk_pool_setting(key), "getUint")
-        print(f"global   {key} = {vstr}")
+        print(f"global        {key} = {vstr}")
+        vstrs[key] = vstr
+        if vstr != "not set":
+            vstrs[key] = vstr
+
+    if pool_type is not None:
+        for key in keys:
+            vstr = get_pool_setting_str(
+                gyroconfig, mk_pool_setting(key, pool_type=pool_type.encode()), "getUint"
+            )
+            print(f"per-pool-type {key} = {vstr}")
+            if vstr != "not set":
+                vstrs[key] = vstr
 
     if pool_address is not None:
         pool_address = pool_address.lower()
@@ -78,8 +91,14 @@ def main(gyro_config_address, pool_address: Optional[str] = None):
             vstr = get_pool_setting_str(
                 gyroconfig, mk_pool_setting(key, pool_address=pool_address), "getUint"
             )
-            print(f"per-pool {key} = {vstr}")
+            print(f"per-pool      {key} = {vstr}")
+            if vstr != "not set":
+                vstrs[key] = vstr
+
+    for key in keys:
+        print(f"EFFECTIVE     {key} = {vstrs[key]}")
 
 
 def unscale(x: int) -> Decimal:
     return Decimal(x) / Decimal("1e18")
+
