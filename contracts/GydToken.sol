@@ -6,14 +6,10 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20Pe
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./auth/GovernableUpgradeable.sol";
 
-import "../interfaces/IGyroConfig.sol";
 import "../interfaces/IGYDToken.sol";
-
-import "../libraries/ConfigHelpers.sol";
 
 contract GydToken is ERC20PermitUpgradeable, GovernableUpgradeable, IGYDToken {
     using EnumerableSet for EnumerableSet.AddressSet;
-    using ConfigHelpers for IGyroConfig;
 
     EnumerableSet.AddressSet internal _minters;
 

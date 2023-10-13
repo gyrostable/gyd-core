@@ -9,6 +9,7 @@ from scripts.utils import (
     with_gas_usage,
 )
 from tests.support import config_keys
+from tests.support.constants import MAINNET_GOVERNANCE_ADDRESS
 
 
 @with_gas_usage
@@ -17,14 +18,15 @@ def proxy(gyd_token):
     token_name, token_symbol = get_token_name_and_symbol()
     deploy_proxy(
         gyd_token,
-        config_key=config_keys.GYD_TOKEN_ADDRESS,
-        init_data=gyd_token.initialize.encode_input(token_name, token_symbol),
+        # config_key=config_keys.GYD_TOKEN_ADDRESS,
+        init_data=gyd_token.initialize.encode_input(
+            MAINNET_GOVERNANCE_ADDRESS, token_name, token_symbol
+        ),
     )
 
 
 @with_gas_usage
 @as_singleton(GydToken)
-@with_deployed(GyroConfig)
-def main(gyro_config):
+def main():
     deployer = get_deployer()
-    deployer.deploy(GydToken, gyro_config, **make_tx_params())
+    deployer.deploy(GydToken, **make_tx_params())
