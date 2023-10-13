@@ -235,9 +235,12 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         override
         returns (uint256[] memory outputAmounts, string memory err)
     {
-        require(gydToRedeem <= mintedSupply(), Errors.TRYING_TO_REDEEM_MORE_THAN_SUPPLY);
-
         outputAmounts = new uint256[](assets.length);
+
+        if (gydToRedeem > mintedSupply()) {
+            return (outputAmounts, Errors.TRYING_TO_REDEEM_MORE_THAN_SUPPLY);
+        }
+
         DataTypes.ReserveState memory reserveState = gyroConfig
             .getReserveManager()
             .getReserveState();
