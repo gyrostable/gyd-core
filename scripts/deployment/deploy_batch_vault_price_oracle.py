@@ -17,13 +17,11 @@ from tests.support.types import VaultType
 @with_deployed(BalancerCPMMPriceOracle)
 @with_deployed(Balancer2CLPPriceOracle)
 @with_deployed(Balancer3CLPPriceOracle)
-@with_deployed(BalancerECLPPriceOracle)
 @with_deployed(BalancerECLPV2PriceOracle)
 @with_deployed(GovernanceProxy)
 def initialize(
     governance_proxy,
     balancer_eclpv2_price_oracle,
-    balancer_eclp_price_oracle,
     balancer_3clp_price_oracle,
     balancer_2clp_price_oracle,
     balancer_cpmm_price_oracle,
@@ -65,7 +63,7 @@ def initialize(
     governance_proxy.executeCall(
         batch_vault_price_oracle,
         batch_vault_price_oracle.registerVaultPriceOracle.encode_input(
-            VaultType.BALANCER_ECLP, balancer_eclp_price_oracle
+            VaultType.BALANCER_ECLP, balancer_eclpv2_price_oracle
         ),
         {"from": deployer, **make_tx_params()},
     )

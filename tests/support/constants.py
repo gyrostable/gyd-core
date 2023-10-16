@@ -47,6 +47,7 @@ SUSHISWAP_ROUTER = "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
 
 # deployed from the uniswap-oracle repo
 UNISWAP_V3_ORACLE = {
+    1: "0x5AdA07Ff0d2772E202776be8a8EC69ac3345050f",
     137: "0xfE5d9082B689D239c264001B2a5dBf9fC3E7d6b0",
 }
 

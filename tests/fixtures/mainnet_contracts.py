@@ -19,6 +19,7 @@ _token_addresses = {
         "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
         "GUSD": "0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd",
         "HUSD": "0xdF574c24545E5FfEcb9a659c229253D4111d87e1",
+        "crvUSD": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
     },
     137: {
         "DAI": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
@@ -142,6 +143,11 @@ class TokenAddresses:
     @property
     def WMATIC(cls):
         return _token_address("WMATIC")
+
+    @classmethod
+    @property
+    def crvUSD(cls):
+        return _token_address("crvUSD")
 
 
 _chainlink_feeds = {
