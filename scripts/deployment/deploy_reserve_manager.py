@@ -7,6 +7,7 @@ from scripts.utils import (
     with_gas_usage,
 )
 from tests.support import config_keys
+from tests.support.constants import MAINNET_GOVERNANCE_ADDRESS
 
 
 @with_gas_usage
@@ -17,7 +18,7 @@ def main(governance_proxy, gyro_config):
     deployer = get_deployer()
 
     reserve_manager = deployer.deploy(
-        ReserveManager, governance_proxy, gyro_config, **make_tx_params()
+        ReserveManager, MAINNET_GOVERNANCE_ADDRESS, gyro_config, **make_tx_params()
     )
     governance_proxy.executeCall(
         gyro_config,

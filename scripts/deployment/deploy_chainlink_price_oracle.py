@@ -33,9 +33,9 @@ def set_feeds(governance_proxy, chainlink_oracle):
 
 
 @with_gas_usage
-@as_singleton(CrashProtectedChainlinkPriceOracle)
+@as_singleton(ChainlinkPriceOracle)
 @with_deployed(GovernanceProxy)
 def main(governance_proxy):
     return get_deployer().deploy(
-        CrashProtectedChainlinkPriceOracle, governance_proxy, **make_tx_params()
+        ChainlinkPriceOracle, governance_proxy, **make_tx_params()
     )

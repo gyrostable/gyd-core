@@ -8,16 +8,16 @@ from scripts.utils import (
     with_gas_usage,
 )
 from tests.support import config_keys
+from tests.support.constants import MAINNET_GOVERNANCE_ADDRESS
 
 
 @with_gas_usage
 @with_deployed(Reserve)
-@with_deployed(GovernanceProxy)
-def proxy(governance_proxy, reserve):
+def proxy(reserve):
     deploy_proxy(
         reserve,
         config_key=config_keys.RESERVE_ADDRESS,
-        init_data=reserve.initialize.encode_input(governance_proxy),
+        init_data=reserve.initialize.encode_input(MAINNET_GOVERNANCE_ADDRESS),
     )
 
 

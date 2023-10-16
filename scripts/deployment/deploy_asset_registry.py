@@ -14,55 +14,57 @@ from tests.support import config_keys, constants
 
 
 @with_gas_usage
+@with_deployed(GyroConfig)
 @with_deployed(AssetRegistry)
 @with_deployed(GovernanceProxy)
-def initialize(governance_proxy, asset_registry):
+def initialize(governance_proxy, asset_registry, gyro_config):
+    asset_registry_address = gyro_config.getAddress(config_keys.ASSET_REGISTRY_ADDRESS)
     deployer = get_deployer()
     governance_proxy.executeCall(
-        asset_registry,
+        asset_registry_address,
         asset_registry.setAssetAddress.encode_input("ETH", TokenAddresses.WETH),
-        {"from": deployer},
+        {**make_tx_params(), "from": deployer},
     )
     governance_proxy.executeCall(
-        asset_registry,
+        asset_registry_address,
         asset_registry.setAssetAddress.encode_input("WETH", TokenAddresses.WETH),
-        {"from": deployer},
+        {**make_tx_params(), "from": deployer},
     )
     governance_proxy.executeCall(
-        asset_registry,
+        asset_registry_address,
         asset_registry.setAssetAddress.encode_input("DAI", TokenAddresses.DAI),
-        {"from": deployer},
+        {**make_tx_params(), "from": deployer},
     )
     governance_proxy.executeCall(
-        asset_registry,
+        asset_registry_address,
         asset_registry.setAssetAddress.encode_input("WBTC", TokenAddresses.WBTC),
-        {"from": deployer},
+        {**make_tx_params(), "from": deployer},
     )
     governance_proxy.executeCall(
-        asset_registry,
+        asset_registry_address,
         asset_registry.setAssetAddress.encode_input("USDC", TokenAddresses.USDC),
-        {"from": deployer},
+        {**make_tx_params(), "from": deployer},
     )
     governance_proxy.executeCall(
-        asset_registry,
+        asset_registry_address,
         asset_registry.setAssetAddress.encode_input("USDT", TokenAddresses.USDT),
-        {"from": deployer},
+        {**make_tx_params(), "from": deployer},
     )
 
     governance_proxy.executeCall(
-        asset_registry,
+        asset_registry_address,
         asset_registry.addStableAsset.encode_input(TokenAddresses.USDT),
-        {"from": deployer},
+        {**make_tx_params(), "from": deployer},
     )
     governance_proxy.executeCall(
-        asset_registry,
+        asset_registry_address,
         asset_registry.addStableAsset.encode_input(TokenAddresses.USDC),
-        {"from": deployer},
+        {**make_tx_params(), "from": deployer},
     )
     governance_proxy.executeCall(
-        asset_registry,
+        asset_registry_address,
         asset_registry.addStableAsset.encode_input(TokenAddresses.DAI),
-        {"from": deployer},
+        {**make_tx_params(), "from": deployer},
     )
 
     return asset_registry

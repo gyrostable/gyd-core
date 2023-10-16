@@ -1,4 +1,5 @@
-from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, MockPriceOracle, CrashProtectedChainlinkPriceOracle  # type: ignore
+from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, MockPriceOracle, ChainlinkPriceOracle  # type: ignore
+from brownie import chain
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -16,9 +17,6 @@ from tests.support.constants import UNISWAP_V3_ORACLE
 @with_deployed(TrustedSignerPriceOracle)
 @with_deployed(GovernanceProxy)
 def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
-    checked_price_oracle = CheckedPriceOracle.at(
-        "0xFEfEEE9ED22B243E8CD52fA353172C3d44fFB434"
-    )
     deployer = get_deployer()
     tx_params = {"from": deployer, **make_tx_params()}
     governance_proxy.executeCall(
@@ -65,18 +63,18 @@ def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
 
 @with_gas_usage
 @as_singleton(CheckedPriceOracle)
-@with_deployed(CrashProtectedChainlinkPriceOracle)
+@with_deployed(ChainlinkPriceOracle)
 @with_deployed(GovernanceProxy)
-def main(governance_proxy, crash_protected_chainlink_oracle):
+def main(governance_proxy, chainlink_oracle):
     deployer = get_deployer()
     if is_live():
-        relative_oracle = UNISWAP_V3_ORACLE
+        relative_oracle = UNISWAP_V3_ORACLE[chain.id]
     else:
         relative_oracle = MockPriceOracle[0]
     deployer.deploy(
         CheckedPriceOracle,
         governance_proxy,
-        crash_protected_chainlink_oracle,
+        chainlink_oracle,
         relative_oracle,
         TokenAddresses.WETH,
         **make_tx_params()

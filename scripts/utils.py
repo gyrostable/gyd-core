@@ -191,9 +191,9 @@ def deploy_proxy(contract, init_data=b"", config_key=None):
             gyro_config.setAddress.encode_input(config_key, proxy),
             {"from": deployer, **make_tx_params()},
         )
-    container = getattr(brownie, contract._name)
+    # container = getattr(brownie, contract._name)
 
-    FreezableTransparentUpgradeableProxy.remove(proxy)
-    container.remove(contract)
-    container.at(proxy.address)
+    # FreezableTransparentUpgradeableProxy.remove(proxy)
+    # container.remove(contract)
+    # container.at(proxy.address)
     return proxy

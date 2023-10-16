@@ -18,7 +18,7 @@ def proxy(gyd_token):
     token_name, token_symbol = get_token_name_and_symbol()
     deploy_proxy(
         gyd_token,
-        # config_key=config_keys.GYD_TOKEN_ADDRESS,
+        config_key=config_keys.GYD_TOKEN_ADDRESS,
         init_data=gyd_token.initialize.encode_input(
             MAINNET_GOVERNANCE_ADDRESS, token_name, token_symbol
         ),
