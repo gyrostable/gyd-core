@@ -43,7 +43,9 @@ interface IPAMM {
         uint256 reserveUSDValue
     ) external view returns (uint256);
 
-    /// @notice Like computeRedeemAmount(gydAmount, reserveUSDValue) but at a hypothetical different starting state. This can be used to simulate the impact of different changes to the system state, e.g., prior redemptions or time passing.
+    /// @notice Like computeRedeemAmount(gydAmount, reserveUSDValue) but at a hypothetical different
+    /// starting state. This can be used to simulate the impact of different changes to the system
+    /// state, e.g., prior redemptions or time passing.
     /// @param gydAmount the amount GYD to redeem
     /// @param reserveUSDValue hypothetical total value of the reserve in USD.
     /// @param redemptionLevel hypothetical redemption level.

@@ -618,12 +618,13 @@ contract PrimaryAMMV1 is IPAMM, Governable {
     }
 
     function getRedemptionLevel() external view returns (uint256) {
-        return Flow.updateFlow(
-            redemptionLevel,
-            block.number,
-            lastRedemptionBlock,
-            _systemParams.outflowMemory
-        );
+        return
+            Flow.updateFlow(
+                redemptionLevel,
+                block.number,
+                lastRedemptionBlock,
+                _systemParams.outflowMemory
+            );
     }
 
     function computeStartingRedeemState(uint256 reserveUSDValue, Params memory params)
