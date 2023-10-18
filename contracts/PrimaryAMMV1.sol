@@ -600,6 +600,32 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         return computeRedeemAmount(currentState, params, derived, gydAmount);
     }
 
+    function computeRedeemAmountFromState(
+        uint256 gydAmount,
+        uint256 reserveUSDValue,
+        uint256 redemptionLevel_,
+        uint256 totalGyroSupply
+    ) external view returns (uint256) {
+        if (gydAmount == 0) return 0;
+        Params memory params = _systemParams;
+        DerivedParams memory derived = createDerivedParams(params);
+        State memory state = State({
+            reserveValue: reserveUSDValue,
+            redemptionLevel: redemptionLevel_,
+            totalGyroSupply: totalGyroSupply
+        });
+        return computeRedeemAmount(state, params, derived, gydAmount);
+    }
+
+    function getRedemptionLevel() external view returns (uint256) {
+        return Flow.updateFlow(
+            redemptionLevel,
+            block.number,
+            lastRedemptionBlock,
+            _systemParams.outflowMemory
+        );
+    }
+
     function computeStartingRedeemState(uint256 reserveUSDValue, Params memory params)
         internal
         view
