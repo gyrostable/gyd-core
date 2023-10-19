@@ -561,7 +561,11 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         return _getNormalizedAnchoredReserveValueAtState(state);
     }
 
-    function _getNormalizedAnchoredReserveValueAtState(State memory state) internal view returns (uint256) {
+    function _getNormalizedAnchoredReserveValueAtState(State memory state)
+        internal
+        view
+        returns (uint256)
+    {
         // This is copied & adjusted from the two variants of computeRedeemAmount(), but we exit earlier.
         Params memory params = _systemParams;
 

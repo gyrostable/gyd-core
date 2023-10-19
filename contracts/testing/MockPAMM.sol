@@ -33,8 +33,7 @@ contract MockPAMM is IPAMM {
 
     function systemParams() external view returns (Params memory) {}
 
-    function getRedemptionLevel() external view returns (uint256)
-    {
+    function getRedemptionLevel() external view returns (uint256) {
         return 0;
     }
 

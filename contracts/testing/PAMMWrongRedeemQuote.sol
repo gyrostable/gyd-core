@@ -57,8 +57,7 @@ contract PAMMWrongRedeemQuote is IPAMM {
         uint256 reserveUSDValue,
         uint256 redemptionLevel,
         uint256 totalGyroSupply
-    ) external view returns (uint256)
-    {
+    ) external view returns (uint256) {
         return 0;
     }
 }
