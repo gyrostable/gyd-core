@@ -158,6 +158,8 @@ _chainlink_feeds = {
         "CRV_USD_FEED": "0xCd627aA160A6fA45Eb793D19Ef54f5062F20f33f",
         "USDC_USD_FEED": "0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6",
         "USDT_USD_FEED": "0x3E7d1eAB13ad0104d2750B8863b489D65364e32D",
+        "CRVUSD_USD_FEED": "0xEEf0C605546958c1f899b6fB336C20671f9cD49F",
+        "USDP_USD_FEED": "0x09023c0DA49Aaf8fc3fA3ADF34C6A7016D38D5e3",
     },
     137: {
         "ETH_USD_FEED": "0xF9680D99D6C9589e2a93a78A04A279e509205945",
@@ -245,6 +247,16 @@ class ChainlinkFeeds:
     def BUSD_USD_FEED(cls):
         return _chainlink_feed("BUSD_USD_FEED")
 
+    @classmethod
+    @property
+    def CRVUSD_USD_FEED(cls):
+        return _chainlink_feed("CRVUSD_USD_FEED")
+
+    @classmethod
+    @property
+    def USDP_USD_FEED(cls):
+        return _chainlink_feed("USDP_USD_FEED")
+
 
 def get_chainlink_feeds():
     if chain.id in (1, 1337):
@@ -256,6 +268,8 @@ def get_chainlink_feeds():
             (TokenAddresses.CRV, ChainlinkFeeds.CRV_USD_FEED),
             (TokenAddresses.USDC, ChainlinkFeeds.USDC_USD_FEED),
             (TokenAddresses.USDT, ChainlinkFeeds.USDT_USD_FEED),
+            (TokenAddresses.crvUSD, ChainlinkFeeds.CRVUSD_USD_FEED),
+            (TokenAddresses.USDP, ChainlinkFeeds.USDP_USD_FEED),
         ]
     if chain.id == 137:
         return [

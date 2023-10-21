@@ -28,8 +28,6 @@ def set_feeds(governance_proxy, chainlink_oracle):
             chainlink_oracle.setFeed.encode_input(asset, feed),
             {"from": deployer, **make_tx_params()},
         )
-        # avoid issues with txs not processed
-        time.sleep(3)
 
 
 @with_gas_usage

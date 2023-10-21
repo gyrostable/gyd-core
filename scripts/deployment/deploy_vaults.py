@@ -1,5 +1,5 @@
-from brownie import BalancerPoolVault, StaticPercentageFeeHandler, network  # type: ignore
-from scripts.utils import get_deployer, with_deployed, with_gas_usage
+from brownie import BalancerPoolVault, StaticPercentageFeeHandler, network, GenericVault  # type: ignore
+from scripts.utils import get_deployer, make_tx_params, with_deployed, with_gas_usage
 from scripts.config import vaults
 from tests.support import constants
 
@@ -18,16 +18,27 @@ def set_fees(static_percentage_fee_handler):
         )
 
 
+# def set_vaults():
+#     vaults_to_deploy = vaults[network.chain.id]
+#     deployer = get_deployer()
+
+
 @with_gas_usage
-def main():
-    vaults_to_deploy = vaults[network.chain.id]
+def balancer(name):
+    vault_to_deploy = _get_vault_to_deploy(name)
     deployer = get_deployer()
-    for vault_to_deploy in vaults_to_deploy:
-        deployer.deploy(
-            BalancerPoolVault,
-            vault_to_deploy.vault_type,
-            vault_to_deploy.pool_id,
-            constants.BALANCER_VAULT_ADDRESS,
-            vault_to_deploy.name,
-            vault_to_deploy.symbol,
-        )
+    deployer.deploy(
+        BalancerPoolVault,
+        constants.MAINNET_GOVERNANCE_ADDRESS,
+        vault_to_deploy.vault_type,
+        vault_to_deploy.pool_id,
+        constants.BALANCER_VAULT_ADDRESS,
+        vault_to_deploy.name,
+        vault_to_deploy.symbol,
+        **make_tx_params()
+    )
+
+
+def _get_vault_to_deploy(name):
+    vaults_to_deploy = vaults[network.chain.id]
+    return [vault for vault in vaults_to_deploy if vault.symbol == name][0]
