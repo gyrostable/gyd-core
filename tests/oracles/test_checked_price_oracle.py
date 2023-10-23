@@ -12,6 +12,7 @@ from tests.fixtures.mainnet_contracts import TokenAddresses
 from tests.support import error_codes
 from tests.support.price_signing import make_message, sign_message
 from tests.support.quantized_decimal import QuantizedDecimal as D
+from tests.support.types import RateProviderInfo
 from tests.support.utils import scale, to_decimal
 
 ETH_USD_UNSCALED_PRICE = "2700"
@@ -310,6 +311,40 @@ def test_get_on_chain_usd_prices(mainnet_checked_price_oracle):
     assert scale(800) <= weth_price <= scale(10_000)
     assert scale(15_000) <= wbtc_price <= scale(100_000)
     assert scale("0.99") <= usdc_price <= scale("1.01")
+
+
+@pytest.mark.mainnetFork
+@pytest.mark.usefixtures(
+    "set_common_chainlink_feeds",
+    "initialize_mainnet_oracles",
+)
+def test_get_on_chain_prices_with_rate(
+    mainnet_checked_price_oracle, rate_manager, admin
+):
+    sdai_provider = "0xc7177B6E18c1Abd725F5b75792e5F7A3bA5DBC2c"
+    rate_manager.setRateProviderInfo(
+        TokenAddresses.sDAI,
+        RateProviderInfo(underlying=TokenAddresses.DAI, provider=sdai_provider),
+        {"from": admin},
+    )
+    prices = mainnet_checked_price_oracle.getPricesUSD(
+        [
+            TokenAddresses.USDC,
+            TokenAddresses.sDAI,
+            TokenAddresses.USDT,
+        ]
+    )
+    prices_without_providers = mainnet_checked_price_oracle.getPricesUSD(
+        [
+            TokenAddresses.USDC,
+            TokenAddresses.DAI,
+            TokenAddresses.USDT,
+        ]
+    )
+    assert prices[0] == prices_without_providers[0]
+    assert prices_without_providers[1] < prices[1] < prices_without_providers[1] * 1.1
+    print(prices[1])
+    assert prices[2] == prices_without_providers[2]
 
 
 @given(

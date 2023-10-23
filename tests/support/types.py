@@ -168,3 +168,8 @@ class ExternalAction(NamedTuple):
 class VaultConfiguration(NamedTuple):
     vault_address: str
     metadata: PersistedVaultMetadata
+
+
+class RateProviderInfo(NamedTuple):
+    underlying: str
+    provider: str

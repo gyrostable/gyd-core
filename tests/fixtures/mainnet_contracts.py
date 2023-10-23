@@ -20,6 +20,9 @@ _token_addresses = {
         "GUSD": "0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd",
         "HUSD": "0xdF574c24545E5FfEcb9a659c229253D4111d87e1",
         "crvUSD": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+        "sDAI": "0x83F20F44975D03b1b09e64809B757c47f942BEeA",
+        "fSDC": "0x465a5a630482f3abD6d3b84B39B29b07214d19e5",
+        "aUSDT": "0x71fc860F7D3A592A4a98740e39dB31d25db65ae8",
     },
     137: {
         "DAI": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
@@ -61,6 +64,11 @@ class TokenAddresses:
 
     @classmethod
     @property
+    def sDAI(cls):
+        return _token_address("sDAI")
+
+    @classmethod
+    @property
     def WBTC(cls):
         return _token_address("WBTC")
 
@@ -68,6 +76,11 @@ class TokenAddresses:
     @property
     def USDC(cls):
         return _token_address("USDC")
+
+    @classmethod
+    @property
+    def fUSDC(cls):
+        return _token_address("fUSDC")
 
     @classmethod
     @property
@@ -113,6 +126,11 @@ class TokenAddresses:
     @property
     def USDT(cls):
         return _token_address("USDT")
+
+    @classmethod
+    @property
+    def aUSDT(cls):
+        return _token_address("aUSDT")
 
     @classmethod
     @property

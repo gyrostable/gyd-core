@@ -24,17 +24,17 @@ dependencies:
 networks:
   development:
     cmd_settings:
-      evm_version: london
+      evm_version: shanghai
     priority_fee: 2
   mainnet-fork:
     cmd_settings:
-      evm_version: london
+      evm_version: shanghai
     priority_fee: 2
     unlock:
       - 0x8780779CAF2bC6D402DA5c3EC79A5007bB2edD90
   polygon-fork:
     cmd_settings:
-      evm_version: london
+      evm_version: shanghai
       unlock:
         - 0x8780779CAF2bC6D402DA5c3EC79A5007bB2edD90
     priority_fee: 2

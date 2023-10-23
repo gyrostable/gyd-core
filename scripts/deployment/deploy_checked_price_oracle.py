@@ -1,4 +1,4 @@
-from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, MockPriceOracle, ChainlinkPriceOracle  # type: ignore
+from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, MockPriceOracle, ChainlinkPriceOracle, RateManager  # type: ignore
 from brownie import chain
 from scripts.utils import (
     as_singleton,
@@ -71,7 +71,8 @@ def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
 @as_singleton(CheckedPriceOracle)
 @with_deployed(ChainlinkPriceOracle)
 @with_deployed(GovernanceProxy)
-def main(governance_proxy, chainlink_oracle):
+@with_deployed(RateManager)
+def main(rate_manager, governance_proxy, chainlink_oracle):
     deployer = get_deployer()
     if is_live():
         relative_oracle = UNISWAP_V3_ORACLE[chain.id]
@@ -82,6 +83,7 @@ def main(governance_proxy, chainlink_oracle):
         governance_proxy,
         chainlink_oracle,
         relative_oracle,
+        rate_manager,
         TokenAddresses.WETH,
         **make_tx_params()
     )

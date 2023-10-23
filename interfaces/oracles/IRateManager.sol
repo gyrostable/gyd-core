@@ -23,12 +23,5 @@ interface IRateManager {
         returns (address[] memory underlyingTokens, uint256[] memory rates);
 
     /// @return the info about the rate provider for the given token
-    function getProviderInfo(address token)
-        external
-        view
-        override
-        returns (RateProviderInfo memory)
-    {
-        return _providers[token];
-    }
+    function getProviderInfo(address token) external view returns (RateProviderInfo memory);
 }

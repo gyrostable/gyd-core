@@ -228,12 +228,20 @@ def crash_protected_chainlink_oracle(CrashProtectedChainlinkPriceOracle, admin):
 
 
 @pytest.fixture(scope="module")
-def local_checked_price_oracle(admin, mock_price_oracle, CheckedPriceOracle):
+def rate_manager(admin, RateManager):
+    return admin.deploy(RateManager, admin)
+
+
+@pytest.fixture(scope="module")
+def local_checked_price_oracle(
+    admin, mock_price_oracle, rate_manager, CheckedPriceOracle
+):
     return admin.deploy(
         CheckedPriceOracle,
         admin,
         mock_price_oracle,
         mock_price_oracle,
+        rate_manager,
         TokenAddresses.WETH,
     )
 
@@ -247,13 +255,18 @@ def testing_checked_price_oracle(admin, mock_price_oracle, TestingCheckedPriceOr
 
 @pytest.fixture(scope="module")
 def mainnet_checked_price_oracle(
-    admin, chainlink_price_oracle, uniswap_spot_price_oracle, CheckedPriceOracle
+    admin,
+    chainlink_price_oracle,
+    uniswap_spot_price_oracle,
+    CheckedPriceOracle,
+    rate_manager,
 ):
     mainnet_checked_price_oracle = admin.deploy(
         CheckedPriceOracle,
         admin,
         chainlink_price_oracle,
         uniswap_spot_price_oracle,
+        rate_manager,
         TokenAddresses.WETH,
     )
     # set the relative max epsilon slightly larger to avoid tests randomly failing
