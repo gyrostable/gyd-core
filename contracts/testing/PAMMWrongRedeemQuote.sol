@@ -41,11 +41,23 @@ contract PAMMWrongRedeemQuote is IPAMM {
 
     function systemParams() external view returns (Params memory) {}
 
+    function getRedemptionLevel() external view returns (uint256) {
+        return 0;
+    }
+
     function getNormalizedAnchoredReserveValue(uint256 reserveUSDValue)
         external
         view
         returns (uint256)
     {
+        return 0;
+    }
+
+    function getNormalizedAnchoredReserveValueAtState(
+        uint256 reserveUSDValue,
+        uint256 redemptionLevel,
+        uint256 totalGyroSupply
+    ) external view returns (uint256) {
         return 0;
     }
 }

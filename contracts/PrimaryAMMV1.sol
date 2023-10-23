@@ -544,36 +544,55 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         view
         returns (uint256)
     {
+        State memory state = computeStartingRedeemState(reserveUSDValue, _systemParams);
+        return _getNormalizedAnchoredReserveValueAtState(state);
+    }
+
+    function getNormalizedAnchoredReserveValueAtState(
+        uint256 reserveUSDValue,
+        uint256 _redemptionLevel,
+        uint256 totalGyroSupply
+    ) external view returns (uint256) {
+        State memory state = State({
+            reserveValue: reserveUSDValue,
+            redemptionLevel: _redemptionLevel,
+            totalGyroSupply: totalGyroSupply
+        });
+        return _getNormalizedAnchoredReserveValueAtState(state);
+    }
+
+    function _getNormalizedAnchoredReserveValueAtState(State memory state)
+        internal
+        view
+        returns (uint256)
+    {
         // This is copied & adjusted from the two variants of computeRedeemAmount(), but we exit earlier.
         Params memory params = _systemParams;
-        DerivedParams memory derived = createDerivedParams(params);
-        State memory state = computeStartingRedeemState(reserveUSDValue, params);
-
-        State memory normalizedState;
-        uint256 ya = state.totalGyroSupply + state.redemptionLevel;
 
         state.reserveValue = _computeDiscountedReserveValue(
             state.reserveValue,
             state.totalGyroSupply
         );
 
-        normalizedState.redemptionLevel = state.redemptionLevel.divDown(ya);
-        normalizedState.reserveValue = state.reserveValue.divDown(ya);
-        normalizedState.totalGyroSupply = state.totalGyroSupply.divDown(ya);
+        uint256 ya = state.totalGyroSupply + state.redemptionLevel;
+        State memory normalizedState = State({
+            redemptionLevel: state.redemptionLevel.divDown(ya),
+            reserveValue: state.reserveValue.divDown(ya),
+            totalGyroSupply: state.totalGyroSupply.divDown(ya)
+        });
 
         uint256 normalizedNav = normalizedState.reserveValue.divDown(
             normalizedState.totalGyroSupply
         );
-
         if (normalizedNav >= ONE) {
             return ONE;
         }
-
         if (normalizedNav <= params.thetaBar) {
             uint256 nav = state.reserveValue.divDown(state.totalGyroSupply);
             return nav;
         }
 
+        DerivedParams memory derived = createDerivedParams(params);
         return computeAnchoredReserveValue(normalizedState, params, derived);
     }
 
@@ -598,6 +617,16 @@ contract PrimaryAMMV1 is IPAMM, Governable {
         DerivedParams memory derived = createDerivedParams(params);
         State memory currentState = computeStartingRedeemState(reserveUSDValue, params);
         return computeRedeemAmount(currentState, params, derived, gydAmount);
+    }
+
+    function getRedemptionLevel() external view returns (uint256) {
+        return
+            Flow.updateFlow(
+                redemptionLevel,
+                block.number,
+                lastRedemptionBlock,
+                _systemParams.outflowMemory
+            );
     }
 
     function computeStartingRedeemState(uint256 reserveUSDValue, Params memory params)

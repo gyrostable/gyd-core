@@ -43,6 +43,9 @@ interface IPAMM {
         uint256 reserveUSDValue
     ) external view returns (uint256);
 
+    /// @notice Current redemption level
+    function getRedemptionLevel() external view returns (uint256);
+
     /// @notice Quotes and records the output USD value given an amount of GYD
     /// @param gydAmount the amount GYD to redeem
     /// @param reserveUSDValue total value of the reserve in USD. Can be pulled from
@@ -69,4 +72,16 @@ interface IPAMM {
     /// Note that, in the two edge cases, the mapping is not 1:1 and the anchor reserve value is not
     /// actually used by the PAMM to compute redemption amounts.
     function getNormalizedAnchoredReserveValue(uint256 reserveUSDValue) external view returns (uint256);
+
+    /// @notice Like computeRedeemAmount(gydAmount, reserveUSDValue) but at a hypothetical different
+    /// starting state. This can be used to simulate the impact of different changes to the system
+    /// state, e.g., prior redemptions or time passing.
+    /// @param reserveUSDValue hypothetical total value of the reserve in USD.
+    /// @param redemptionLevel hypothetical redemption level.
+    /// @param totalGyroSupply hypothetical value of gydToken.totalSupply().
+    function getNormalizedAnchoredReserveValueAtState(
+        uint256 reserveUSDValue,
+        uint256 redemptionLevel,
+        uint256 totalGyroSupply
+    ) external view returns (uint256);
 }
