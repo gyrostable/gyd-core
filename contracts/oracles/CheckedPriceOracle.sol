@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "../../interfaces/oracles/IUSDPriceOracle.sol";
 import "../../interfaces/oracles/IRelativePriceOracle.sol";
 import "../../interfaces/oracles/IUSDBatchPriceOracle.sol";
+import "../../interfaces/oracles/IRateManager.sol";
 import "../../libraries/EnumerableExtensions.sol";
 
 import "../auth/Governable.sol";
@@ -31,6 +32,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     IUSDPriceOracle public usdOracle;
     IRelativePriceOracle public relativeOracle;
+    IRateManager public rateManager;
 
     uint256 public maxPctWethUsdDeviation;
 
@@ -51,6 +53,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
     event USDOracleUpdated(address indexed oracle);
     event RelativeOracleUpdated(address indexed oracle);
+    event RateManagerUpdated(address indexed rateManager);
 
     event PriceLevelTWAPQuoteAssetAdded(address _addressToAdd);
     event PriceLevelTWAPQuoteAssetRemoved(address _addressToRemove);
@@ -69,6 +72,7 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         address _governor,
         address _usdOracle,
         address _relativeOracle,
+        address _rateManager,
         address _wethAddress
     ) Governable(_governor) {
         require(_usdOracle != address(0), Errors.INVALID_ARGUMENT);
@@ -77,12 +81,18 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
         relativeOracle = IRelativePriceOracle(_relativeOracle);
         relativeEpsilon = INITIAL_RELATIVE_EPSILON;
         wethAddress = _wethAddress;
+        rateManager = IRateManager(_rateManager);
         maxPctWethUsdDeviation = INITIAL_MAX_PCT_WETH_USD_DEVIATION;
     }
 
     function setUSDOracle(address _usdOracle) external governanceOnly {
         usdOracle = IUSDPriceOracle(_usdOracle);
         emit USDOracleUpdated(_usdOracle);
+    }
+
+    function setRateManager(address _rateManager) external governanceOnly {
+        rateManager = IRateManager(_rateManager);
+        emit RateManagerUpdated(_rateManager);
     }
 
     function setRelativeOracle(address _relativeOracle) external governanceOnly {
@@ -245,12 +255,16 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
 
         uint256[] memory prices = new uint256[](tokenAddresses.length);
 
+        (address[] memory underlyingTokens, uint256[] memory rates) = rateManager.getTokensAndRates(
+            tokenAddresses
+        );
+
         /// Will start with this being the WETH/USD price, this can be modified later if desired.
         uint256 priceLevel;
 
-        for (uint256 i = 0; i < tokenAddresses.length; i++) {
-            prices[i] = usdOracle.getPriceUSD(tokenAddresses[i]);
-            if (tokenAddresses[i] == wethAddress) {
+        for (uint256 i = 0; i < underlyingTokens.length; i++) {
+            prices[i] = usdOracle.getPriceUSD(underlyingTokens[i]);
+            if (underlyingTokens[i] == wethAddress) {
                 priceLevel = prices[i];
             }
         }
@@ -260,11 +274,15 @@ contract CheckedPriceOracle is IUSDPriceOracle, IUSDBatchPriceOracle, Governable
             priceLevel = usdOracle.getPriceUSD(wethAddress);
         }
 
-        uint256[] memory priceLevelTwaps = batchRelativePriceCheck(tokenAddresses, prices);
+        uint256[] memory priceLevelTwaps = batchRelativePriceCheck(underlyingTokens, prices);
 
         uint256[] memory ethPrices = getETHPrices();
 
         _checkPriceLevel(priceLevel, ethPrices, priceLevelTwaps);
+
+        for (uint256 i; i < prices.length; i++) {
+            prices[i] = prices[i].mulDown(rates[i]);
+        }
 
         return (prices, priceLevel, ethPrices, priceLevelTwaps);
     }
