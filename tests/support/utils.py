@@ -124,3 +124,7 @@ def unscale(x, decimals=18):
     if isinstance(x, (list, tuple)):
         return [unscale_scalar(v, decimals) for v in x]
     return unscale_scalar(x, decimals)
+
+
+def bp(value: DecimalLike) -> int:
+    return int(scale(value, 14))

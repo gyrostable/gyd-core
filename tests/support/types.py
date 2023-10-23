@@ -137,6 +137,17 @@ class VaultToDeploy(NamedTuple):
     redeem_fee: int
 
 
+class GenericVaultToDeploy(NamedTuple):
+    underlying: str
+    name: str
+    symbol: str
+    initial_weight: int
+    short_flow_memory: int
+    short_flow_threshold: int
+    mint_fee: int
+    redeem_fee: int
+
+
 class DeployedVault(NamedTuple):
     address: str
     vault_to_deploy: VaultToDeploy

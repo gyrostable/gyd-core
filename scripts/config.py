@@ -1,7 +1,8 @@
 from brownie import ZERO_ADDRESS
+from tests.fixtures.mainnet_contracts import TokenAddresses
 from tests.support import constants
-from tests.support.types import VaultToDeploy, VaultType
-from tests.support.utils import scale
+from tests.support.types import GenericVaultToDeploy, VaultToDeploy, VaultType
+from tests.support.utils import bp, scale
 
 
 vaults = {
@@ -15,7 +16,7 @@ vaults = {
             short_flow_memory=int(constants.OUTFLOW_MEMORY),
             short_flow_threshold=4_400_000,  # USD value
             mint_fee=0,
-            redeem_fee=int(scale("0.0002")),
+            redeem_fee=bp(5),
         ),
         VaultToDeploy(
             pool_id=constants.BALANCER_POOL_IDS[1]["LUSD_CRVUSD"],
@@ -25,19 +26,38 @@ vaults = {
             initial_weight=int(scale("0.1")),
             short_flow_memory=int(constants.OUTFLOW_MEMORY),
             short_flow_threshold=5_500_000,  # USD value
-            mint_fee=int(scale("0.001")),
-            redeem_fee=int(scale("0.005")),
+            mint_fee=bp(1),
+            redeem_fee=bp(5),
         ),
-        VaultToDeploy(
-            pool_id=constants.BALANCER_POOL_IDS["WBTC_WETH"],
-            vault_type=VaultType.BALANCER_CPMM,
-            name="Balancer CPMM WBTC-WETH",
-            symbol="BAL-CPMM-WBTC-WETH",
+        GenericVaultToDeploy(
+            underlying=TokenAddresses.USDC,
+            name="Gyroscope USDC Vault",
+            symbol="V-USDC",
+            initial_weight=int(scale("0.16")),
+            short_flow_memory=int(constants.OUTFLOW_MEMORY),
+            short_flow_threshold=8_700_000,  # USD value
+            mint_fee=0,
+            redeem_fee=bp(2),
+        ),
+        GenericVaultToDeploy(
+            underlying=TokenAddresses.DAI,
+            name="Gyroscope DAI Vault",
+            symbol="V-DAI",
+            initial_weight=int(scale("0.56")),
+            short_flow_memory=int(constants.OUTFLOW_MEMORY),
+            short_flow_threshold=30_000_000,  # USD value
+            mint_fee=0,
+            redeem_fee=bp(3),
+        ),
+        GenericVaultToDeploy(
+            underlying=TokenAddresses.USDT,
+            name="Gyroscope USDT Vault",
+            symbol="V-USDT",
             initial_weight=int(scale("0.1")),
             short_flow_memory=int(constants.OUTFLOW_MEMORY),
-            short_flow_threshold=int(scale(1_000_000)),
-            mint_fee=int(scale("0.004")),
-            redeem_fee=int(scale("0.015")),
+            short_flow_threshold=5_500_000,  # USD value
+            mint_fee=0,
+            redeem_fee=bp(3),
         ),
     ],
     137: [
