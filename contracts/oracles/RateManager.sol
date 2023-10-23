@@ -6,7 +6,7 @@ import "../auth/Governable.sol";
 import "../../interfaces/oracles/IRateManager.sol";
 
 contract RateManager is IRateManager, Governable {
-    mapping(address => IRateProvider) internal _providers;
+    mapping(address => RateProviderInfo) internal _providers;
 
     constructor(address _governor) Governable(_governor) {}
 
@@ -21,23 +21,31 @@ contract RateManager is IRateManager, Governable {
 
         for (uint256 i; i < inputTokens.length; i++) {
             address token = inputTokens[i];
-            IRateProvider provider = _providers[token];
+            IRateProvider provider = _providers[token].provider;
             if (address(provider) == address(0)) {
                 underlyingTokens[i] = token;
                 rates[i] = 1e18;
             } else {
-                underlyingTokens[i] = provider.getUnderlying();
+                underlyingTokens[i] = _providers[token].underlying;
                 rates[i] = provider.getRate();
             }
         }
     }
 
-    function getProvider(address token) external view override returns (IRateProvider) {
+    function getProviderInfo(address token)
+        external
+        view
+        override
+        returns (RateProviderInfo memory)
+    {
         return _providers[token];
     }
 
-    function setRateProvider(address token, address provider) external governanceOnly {
-        _providers[token] = IRateProvider(provider);
-        emit RateProviderChanged(token, provider);
+    function setRateProviderInfo(address token, RateProviderInfo memory providerInfo)
+        external
+        governanceOnly
+    {
+        _providers[token] = providerInfo;
+        emit RateProviderChanged(token, providerInfo);
     }
 }

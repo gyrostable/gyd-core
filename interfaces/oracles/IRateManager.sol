@@ -5,7 +5,12 @@ pragma solidity ^0.8.4;
 import "./IRateProvider.sol";
 
 interface IRateManager {
-    event RateProviderChanged(address indexed token, address indexed provider);
+    event RateProviderChanged(address indexed token, RateProviderInfo providerInfo);
+
+    struct RateProviderInfo {
+        address underlying;
+        IRateProvider provider;
+    }
 
     /// @notice input tokens may contain tokens that have a rate, such as sDAI or aUSDC
     /// @return underlyingTokens the array of "underlying" tokens, e.g. DAI instead of sDAI
@@ -17,6 +22,13 @@ interface IRateManager {
         view
         returns (address[] memory underlyingTokens, uint256[] memory rates);
 
-    /// @return the rate provider for the given token
-    function getProvider(address token) external view returns (IRateProvider);
+    /// @return the info about the rate provider for the given token
+    function getProviderInfo(address token)
+        external
+        view
+        override
+        returns (RateProviderInfo memory)
+    {
+        return _providers[token];
+    }
 }
