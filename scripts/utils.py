@@ -13,8 +13,11 @@ DEV_CHAIN_IDS = {1337}
 REQUIRED_CONFIRMATIONS = 1
 MAINNET_DEPLOYER_ADDRESS = "0x8780779CAF2bC6D402DA5c3EC79A5007bB2edD90"
 
+MAINNET_DAO_TREASURY_ADDRESS = "0x9543b9F3450C17f1e5E558cC135fD8964dbef92a"
+
 GYRO_CONFIG_POLYGON_ADDRESS = "0x3c00e4663be7262E50251380EBE5fE4A17e68B51"
 GYRO_ASSET_REGISTRY_ADDRESS = "0x0FEfDfCa029822C18ae73c2b76c4602949621fe1"
+GYFI_TOKEN_MAINNET_ADDRESS = "0x70c4430f9d98B4184A4ef3E44CE10c320a8B7383"
 GYFI_TOKEN_POLYGON_ADDRESS = "0x815c288dD62a761025f69B7dac2C93143Da4c0a8"
 
 BROWNIE_GWEI = os.environ.get("BROWNIE_GWEI", "35")
@@ -136,12 +139,16 @@ def get_gyro_config():
 
 
 def get_dao_treasury():
+    if brownie.chain.id == 1:
+        return MAINNET_DAO_TREASURY_ADDRESS
     if brownie.chain.id == 1337:
         return accounts[8]
     raise ValueError("GYFI token not available on this network")
 
 
 def get_gyfi_token():
+    if brownie.chain.id == 1:
+        return interface.ERC20(GYFI_TOKEN_MAINNET_ADDRESS)
     if brownie.chain.id == 137:
         return interface.ERC20(GYFI_TOKEN_POLYGON_ADDRESS)
     raise ValueError("GYFI token not available on this network")
