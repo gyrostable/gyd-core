@@ -16,29 +16,6 @@ from tests.support import config_keys, constants
 @with_deployed(GovernanceProxy)
 def set_initial_config(governance_proxy, gyro_config):
     deployer = get_deployer()
-    governance_proxy.executeCall(
-        gyro_config,
-        gyro_config.setUint.encode_input(
-            config_keys.GYD_GLOBAL_SUPPLY_CAP, constants.GYD_GLOBAL_SUPPLY_CAP
-        ),
-        {"from": deployer, **make_tx_params()},
-    )
-
-    governance_proxy.executeCall(
-        gyro_config,
-        gyro_config.setUint.encode_input(
-            config_keys.GYD_AUTHENTICATED_USER_CAP, constants.GYD_AUTHENTICATED_USER_CAP
-        ),
-        {"from": deployer, **make_tx_params()},
-    )
-
-    governance_proxy.executeCall(
-        gyro_config,
-        gyro_config.setUint.encode_input(
-            config_keys.GYD_USER_CAP, constants.GYD_USER_CAP
-        ),
-        {"from": deployer, **make_tx_params()},
-    )
 
     governance_proxy.executeCall(
         gyro_config,
