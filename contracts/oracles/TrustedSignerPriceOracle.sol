@@ -132,6 +132,8 @@ contract TrustedSignerPriceOracle is IUSDPriceOracle {
     {
         bytes32 signedHash = keccak256(message).toEthSignedMessageHash();
         (bytes32 r, bytes32 s, uint8 v) = abi.decode(signature, (bytes32, bytes32, uint8));
-        return signedHash.recover(v, r, s);
+        address signer = ecrecover(signedHash, v, r, s);
+        require(signer != address(0), Errors.INVALID_MESSAGE);
+        return signer;
     }
 }

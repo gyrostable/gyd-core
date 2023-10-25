@@ -30,9 +30,9 @@ vaults = {
             redeem_fee=bp(5),
         ),
         GenericVaultToDeploy(
-            underlying=TokenAddresses.USDC,
-            name="Gyroscope USDC Vault",
-            symbol="V-USDC",
+            underlying=TokenAddresses.fUSDC,
+            name="Gyroscope fUSDC Vault",
+            symbol="V-fUSDC",
             initial_weight=int(scale("0.16")),
             short_flow_memory=int(constants.OUTFLOW_MEMORY),
             short_flow_threshold=8_700_000,  # USD value
@@ -40,9 +40,9 @@ vaults = {
             redeem_fee=bp(2),
         ),
         GenericVaultToDeploy(
-            underlying=TokenAddresses.DAI,
-            name="Gyroscope DAI Vault",
-            symbol="V-DAI",
+            underlying=TokenAddresses.sDAI,
+            name="Gyroscope sDAI Vault",
+            symbol="V-sDAI",
             initial_weight=int(scale("0.56")),
             short_flow_memory=int(constants.OUTFLOW_MEMORY),
             short_flow_threshold=30_000_000,  # USD value
@@ -50,9 +50,9 @@ vaults = {
             redeem_fee=bp(3),
         ),
         GenericVaultToDeploy(
-            underlying=TokenAddresses.USDT,
-            name="Gyroscope USDT Vault",
-            symbol="V-USDT",
+            underlying=TokenAddresses.aUSDT,
+            name="Gyroscope aUSDT Vault",
+            symbol="V-aUSDT",
             initial_weight=int(scale("0.1")),
             short_flow_memory=int(constants.OUTFLOW_MEMORY),
             short_flow_threshold=5_500_000,  # USD value
