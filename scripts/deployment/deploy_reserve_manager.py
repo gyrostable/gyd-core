@@ -18,7 +18,7 @@ def main(governance_proxy, gyro_config):
     deployer = get_deployer()
 
     reserve_manager = deployer.deploy(
-        ReserveManager, MAINNET_GOVERNANCE_ADDRESS, gyro_config, **make_tx_params()
+        ReserveManager, governance_proxy, gyro_config, **make_tx_params()
     )
     governance_proxy.executeCall(
         gyro_config,

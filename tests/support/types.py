@@ -169,6 +169,12 @@ class VaultConfiguration(NamedTuple):
     vault_address: str
     metadata: PersistedVaultMetadata
 
+    def as_dict(self):
+        return {
+            "vault_address": self.vault_address,
+            "metadata": self.metadata._asdict(),
+        }
+
 
 class RateProviderInfo(NamedTuple):
     underlying: str

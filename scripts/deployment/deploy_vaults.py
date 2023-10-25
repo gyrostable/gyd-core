@@ -1,7 +1,10 @@
+import json
+from os import path
 from pprint import pprint
 import time
 from typing import Union
-from brownie import BalancerPoolVault, StaticPercentageFeeHandler, network, interface, ChainlinkPriceOracle, BalancerECLPV2PriceOracle, GenericVault, CheckedPriceOracle  # type: ignore
+from brownie import BalancerPoolVault, StaticPercentageFeeHandler, network, interface, ChainlinkPriceOracle  # type: ignore
+from brownie import BalancerECLPV2PriceOracle, GenericVault, CheckedPriceOracle, GovernanceProxy, ReserveManager  # type: ignore
 from scripts.utils import get_deployer, make_tx_params, with_deployed, with_gas_usage
 from scripts.config import vaults
 from tests.support import constants
@@ -11,21 +14,55 @@ from tests.support.types import (
     PricedToken,
     VaultConfiguration,
     VaultToDeploy,
+    VaultType,
 )
+
+ROOT_DIR = path.dirname(path.dirname(path.dirname(__file__)))
 
 
 @with_gas_usage
 @with_deployed(StaticPercentageFeeHandler)
-def set_fees(static_percentage_fee_handler):
-    vaults_to_deploy = vaults[network.chain.id]
+@with_deployed(GovernanceProxy)
+def set_fees(governance_proxy, static_percentage_fee_handler):
     deployer = get_deployer()
-    for i, vault in enumerate(vaults_to_deploy):
-        static_percentage_fee_handler.setVaultFees(
-            BalancerPoolVault[i],
-            vault.mint_fee,
-            vault.redeem_fee,
-            {"from": deployer},
+    vault_addresses = _get_all_vault_addresses()
+    symbols = [interface.ERC20(v).symbol() for v in vault_addresses]
+    for vault_address, vault_symbol in zip(vault_addresses, symbols):
+        vault_config = _get_vault_to_deploy(vault_symbol)
+        governance_proxy.executeCall(
+            static_percentage_fee_handler,
+            static_percentage_fee_handler.setVaultFees.encode_input(
+                vault_address,
+                vault_config.mint_fee,
+                vault_config.redeem_fee,
+            ),
+            {"from": deployer, **make_tx_params()},
         )
+
+
+@with_deployed(ReserveManager)
+@with_deployed(GovernanceProxy)
+def set_vaults(governance_proxy, reserve_manager):
+    deployer = get_deployer()
+    vault_addresses = _get_all_vault_addresses()
+    current_time = int(time.time())
+    configs = [get_vault_config(v, current_time) for v in vault_addresses]
+    with open(path.join(ROOT_DIR, "config", f"vaults-{current_time}.json"), "w") as f:
+        json.dump([c.as_dict() for c in configs], f, indent=2)
+    governance_proxy.executeCall(
+        reserve_manager,
+        reserve_manager.setVaults.encode_input(configs),
+        {"from": deployer, **make_tx_params()},
+    )
+
+
+def get_vault_config(vault_address, time_of_calibration=None):
+    vault = interface.IGyroVault(vault_address)
+    vault_type = vault.vaultType()
+    if vault_type == VaultType.GENERIC:
+        return get_generic_vault_config(vault_address, time_of_calibration)
+    else:
+        return get_balancer_vault_config(vault_address, time_of_calibration)
 
 
 def get_balancer_vault_config(vault_address, time_of_calibration=None):
@@ -101,7 +138,7 @@ def balancer(name):
         constants.BALANCER_VAULT_ADDRESS,
         vault_to_deploy.name,
         vault_to_deploy.symbol,
-        **make_tx_params()
+        **make_tx_params(),
     )
 
 
@@ -115,10 +152,14 @@ def generic(name):
         vault_to_deploy.underlying,
         vault_to_deploy.name,
         vault_to_deploy.symbol,
-        **make_tx_params()
+        **make_tx_params(),
     )
 
 
 def _get_vault_to_deploy(name):
     vaults_to_deploy = vaults[network.chain.id]
     return [vault for vault in vaults_to_deploy if vault.symbol == name][0]
+
+
+def _get_all_vault_addresses():
+    return [v.address for v in list(GenericVault) + list(BalancerPoolVault)]
