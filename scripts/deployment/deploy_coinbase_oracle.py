@@ -31,6 +31,6 @@ def main(gyro_config):
         TrustedSignerPriceOracle,
         asset_registry_address,
         COINBASE_SIGNING_ADDRESS,
-        False,
+        True,
         **make_tx_params()
     )
