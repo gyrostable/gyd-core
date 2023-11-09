@@ -4,7 +4,7 @@ from pprint import pprint
 import time
 from typing import Union
 from brownie import BalancerPoolVault, StaticPercentageFeeHandler, network, interface, ChainlinkPriceOracle  # type: ignore
-from brownie import BalancerECLPV2PriceOracle, GenericVault, CheckedPriceOracle, GovernanceProxy, ReserveManager  # type: ignore
+from brownie import BalancerECLPPriceOracle, GenericVault, CheckedPriceOracle, GovernanceProxy, ReserveManager  # type: ignore
 from scripts.utils import get_deployer, make_tx_params, with_deployed, with_gas_usage
 from scripts.config import vaults
 from tests.support import constants
@@ -69,7 +69,7 @@ def get_balancer_vault_config(vault_address, time_of_calibration=None):
     if time_of_calibration is None:
         time_of_calibration = int(time.time())
     chainlink_oracle = ChainlinkPriceOracle[0]
-    eclp_oracle = BalancerECLPV2PriceOracle[0]
+    eclp_oracle = BalancerECLPPriceOracle[0]
 
     vault = interface.IGyroVault(vault_address)
     vault_to_deploy = _get_vault_to_deploy(vault.symbol())

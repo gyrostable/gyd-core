@@ -44,7 +44,7 @@
 * `BatchVaultPriceOracle`: [0x2DecAE9C1E605F20C79b91856A3121FB2d2cb615](https://etherscan.io/address/0x2DecAE9C1E605F20C79b91856A3121FB2d2cb615)
 * `ChainlinkPriceOracle`: [0xa2b76e60215617e676c6a0041B26a7C3C126DB5E](https://etherscan.io/address/0xa2b76e60215617e676c6a0041B26a7C3C126DB5E)
 * `CheckedPriceOracle`: [0x9B337C6dD33F99538A620F2670Be76920fA45287](https://etherscan.io/address/0x9B337C6dD33F99538A620F2670Be76920fA45287)
-* `TrustedSignerPriceOracle`: [0x28f93F0dcCdaC0A7891250Fb9c72156595b9464A](https://etherscan.io/address/0x28f93F0dcCdaC0A7891250Fb9c72156595b9464A)
+* `TrustedSignerPriceOracle`: [0xf4cA93C70a00032856e6d942Be2eB1cea54b4Aa5](https://etherscan.io/address/0xf4cA93C70a00032856e6d942Be2eB1cea54b4Aa5)
 * `ConstantRateProvider`: [0x5413E8e572759787FBEcE0A8e8d65EB5188556d8](https://etherscan.io/address/0x5413E8e572759787FBEcE0A8e8d65EB5188556d8)
 * `RateManager`: [0x2eC43d68c03b1d90d53B19c4a6f01185867ea792](https://etherscan.io/address/0x2eC43d68c03b1d90d53B19c4a6f01185867ea792)
 * `GenericVaultPriceOracle`: [0xAB42c40a560A7DCA6489eD5fd0828a106b64f44b](https://etherscan.io/address/0xAB42c40a560A7DCA6489eD5fd0828a106b64f44b)

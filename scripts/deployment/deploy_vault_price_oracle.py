@@ -1,4 +1,4 @@
-from brownie import GenericVaultPriceOracle, BalancerECLPPriceOracle, BalancerECLPV2PriceOracle, BalancerCPMMPriceOracle, Balancer2CLPPriceOracle, Balancer3CLPPriceOracle  # type: ignore
+from brownie import GenericVaultPriceOracle, BalancerECLPPriceOracle, BalancerCPMMPriceOracle, Balancer2CLPPriceOracle, Balancer3CLPPriceOracle  # type: ignore
 from scripts.utils import as_singleton, get_deployer, make_tx_params, with_gas_usage
 
 
@@ -27,7 +27,3 @@ def g3clp():
 @with_gas_usage
 def eclp():
     get_deployer().deploy(BalancerECLPPriceOracle, **make_tx_params())
-
-@with_gas_usage
-def eclpv2():
-    get_deployer().deploy(BalancerECLPV2PriceOracle, **make_tx_params())

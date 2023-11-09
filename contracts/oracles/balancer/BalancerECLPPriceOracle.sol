@@ -9,18 +9,10 @@ import "../../../libraries/TypeConversion.sol";
 
 import "../../../interfaces/balancer/IECLP.sol";
 
-/// @notice OBSOLETE, only here for backwards compatibility. Use ECLPV2 instead!
 contract BalancerECLPPriceOracle is BaseBalancerPriceOracle {
     using TypeConversion for DataTypes.PricedToken[];
     using TypeConversion for IECLP.DerivedParams;
     using FixedPoint for uint256;
-
-    function getInvariantDivSupply(IMinimalPoolView pool) internal view returns (uint256) {
-        // Temporary workaround. To be removed (so the base class's version is used) in the mainnet deployment.
-        uint256 invariant = pool.getLastInvariant();
-        uint256 totalSupply = pool.totalSupply();
-        return invariant.divDown(totalSupply);
-    }
 
     /// @inheritdoc BaseVaultPriceOracle
     function getPoolTokenPriceUSD(
@@ -30,12 +22,18 @@ contract BalancerECLPPriceOracle is BaseBalancerPriceOracle {
         IECLP pool = IECLP(vault.underlying());
         (IECLP.Params memory params, IECLP.DerivedParams memory derivedParams) = pool
             .getECLPParams();
+
+        (uint256 rate0, uint256 rate1) = pool.getTokenRates();
+        uint256[] memory underlyingPrices = underlyingPricedTokens.pluckPrices();
+        underlyingPrices[0] = underlyingPrices[0].divDown(rate0);
+        underlyingPrices[1] = underlyingPrices[1].divDown(rate1);
+
         return
             BalancerLPSharePricing.priceBptECLP(
                 params,
                 derivedParams.downscaleDerivedParams(),
-                getInvariantDivSupply(pool),
-                underlyingPricedTokens.pluckPrices()
+                pool.getInvariantDivActualSupply(),
+                underlyingPrices
             );
     }
 }
