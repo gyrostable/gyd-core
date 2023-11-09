@@ -41,18 +41,17 @@ def set_fees(governance_proxy, static_percentage_fee_handler):
 
 
 @with_deployed(ReserveManager)
-@with_deployed(GovernanceProxy)
-def set_vaults(governance_proxy, reserve_manager):
-    deployer = get_deployer()
+def set_vaults(reserve_manager):
     vault_addresses = _get_all_vault_addresses()
     current_time = int(time.time())
     configs = [get_vault_config(v, current_time) for v in vault_addresses]
     with open(path.join(ROOT_DIR, "config", f"vaults-{current_time}.json"), "w") as f:
         json.dump([c.as_dict() for c in configs], f, indent=2)
-    governance_proxy.executeCall(
-        reserve_manager,
-        reserve_manager.setVaults.encode_input(configs),
-        {"from": deployer, **make_tx_params()},
+    print("Encoded data:")
+    print(
+        json.dumps(
+            [(reserve_manager.address, reserve_manager.setVaults.encode_input(configs))]
+        )
     )
 
 
