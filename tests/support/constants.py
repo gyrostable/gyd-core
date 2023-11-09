@@ -61,6 +61,9 @@ BALANCER_POOL_IDS = {
     },
 }
 
+TELLOR_ORACLE_ADDRESS = "0xD9157453E2668B2fc45b7A803D3FEF3642430cC0"
+STALE_PRICE_DELAY = 86400  # 1 day
+
 
 def address_from_pool_id(pool_id):
     return pool_id[:42]
