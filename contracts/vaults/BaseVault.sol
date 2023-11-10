@@ -3,16 +3,16 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-import "../auth/Governable.sol";
+import "../auth/GovernableUpgradeable.sol";
 import "../../interfaces/IGyroVault.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../libraries/Errors.sol";
 
-abstract contract BaseVault is IGyroVault, ERC20Permit, Governable {
+abstract contract BaseVault is IGyroVault, ERC20PermitUpgradeable, GovernableUpgradeable {
     using FixedPoint for uint256;
     using SafeERC20 for IERC20;
 
@@ -26,28 +26,25 @@ abstract contract BaseVault is IGyroVault, ERC20Permit, Governable {
     uint256 internal constant _SHARES_HIGH_DECIMALS = 1000;
     uint8 internal constant _HIGH_DECIMALS_THRESHOLD = 8;
 
-    /// @inheritdoc IGyroVault
-    address public immutable override underlying;
+    uint256[50] internal __gapBaseVault;
 
     /// @inheritdoc IGyroVault
-    uint256 public immutable override deployedAt;
+    address public override underlying;
+
+    /// @inheritdoc IGyroVault
+    uint256 public override deployedAt;
 
     /// @inheritdoc IGyroVault
     address public override strategy;
 
-    constructor(
-        address _governor,
-        address _underlying,
-        string memory name,
-        string memory symbol
-    ) Governable(_governor) ERC20(name, symbol) ERC20Permit(name) {
-        require(address(_underlying) != address(0), Errors.INVALID_ARGUMENT);
-        underlying = _underlying;
-        deployedAt = block.number;
-    }
-
-    /// @inheritdoc IERC20Metadata
-    function decimals() public view virtual override(ERC20, IERC20Metadata) returns (uint8) {
+    /// @inheritdoc IERC20MetadataUpgradeable
+    function decimals()
+        public
+        view
+        virtual
+        override(ERC20Upgradeable, IERC20MetadataUpgradeable)
+        returns (uint8)
+    {
         return IERC20Metadata(underlying).decimals();
     }
 
@@ -163,5 +160,19 @@ abstract contract BaseVault is IGyroVault, ERC20Permit, Governable {
 
     function _sharesToBurn() internal view returns (uint256) {
         return decimals() > _HIGH_DECIMALS_THRESHOLD ? _SHARES_HIGH_DECIMALS : _SHARES_LOW_DECIMALS;
+    }
+
+    function __BaseVault_initialize(
+        address _underlying,
+        address governor,
+        string memory name,
+        string memory symbol
+    ) internal {
+        require(address(_underlying) != address(0), Errors.INVALID_ARGUMENT);
+        underlying = _underlying;
+        deployedAt = block.number;
+        __GovernableUpgradeable_initialize(governor);
+        __ERC20_init(name, symbol);
+        __ERC20Permit_init(name);
     }
 }
