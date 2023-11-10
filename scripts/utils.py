@@ -182,12 +182,14 @@ def with_deployed(Contract):
     return wrapped
 
 
-def deploy_proxy(contract, init_data=b"", config_key=None):
+def deploy_proxy(contract, init_data=b"", config_key=None, overwrite_proxy=False):
     deployer = get_deployer()
+    # proxy_admin = ProxyAdmin[0]
+    proxy_admin = ProxyAdmin.at("0x581aE43498196e3Dc274F3F23FF7718d287BC2C6")
     proxy = deployer.deploy(
         FreezableTransparentUpgradeableProxy,
         contract,
-        ProxyAdmin[0],
+        proxy_admin,
         init_data,
         **make_tx_params(),
     )
@@ -198,9 +200,11 @@ def deploy_proxy(contract, init_data=b"", config_key=None):
             gyro_config.setAddress.encode_input(config_key, proxy),
             {"from": deployer, **make_tx_params()},
         )
-    # container = getattr(brownie, contract._name)
+    if not overwrite_proxy:
+        return proxy
+    container = getattr(brownie, contract._name)
 
-    # FreezableTransparentUpgradeableProxy.remove(proxy)
-    # container.remove(contract)
-    # container.at(proxy.address)
-    return proxy
+    FreezableTransparentUpgradeableProxy.remove(proxy)
+    container.remove(contract)
+    container.at(proxy.address)
+    return container
