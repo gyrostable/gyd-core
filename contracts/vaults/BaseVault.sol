@@ -59,6 +59,11 @@ abstract contract BaseVault is IGyroVault, ERC20PermitUpgradeable, GovernableUpg
         return _exchangeRate(false);
     }
 
+    /// @inheritdoc IRateProvider
+    function getRate() public view override returns (uint256) {
+        return _exchangeRate(false);
+    }
+
     /// @inheritdoc IGyroVault
     function deposit(uint256 underlyingAmount, uint256 minVaultTokensOut)
         external

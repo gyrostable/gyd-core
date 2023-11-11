@@ -8,12 +8,14 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol";
 
+import "./oracles/IRateProvider.sol";
+
 /// @notice A vault is one of the component of the reserve and has a one-to-one
 /// mapping to an underlying pool (e.g. Balancer pool, Curve pool, Uniswap pool...)
 /// It is itself an ERC-20 token that is used to track the ownership of the LP tokens
 /// deposited in the vault
 /// A vault can be associated with a strategy to generate yield on the deposited funds
-interface IGyroVault is IERC20MetadataUpgradeable, IERC20PermitUpgradeable {
+interface IGyroVault is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, IRateProvider {
     /// @return The type of the vault
     function vaultType() external view returns (Vaults.Type);
 
@@ -30,6 +32,7 @@ interface IGyroVault is IERC20MetadataUpgradeable, IERC20PermitUpgradeable {
     /// @return The total amount of underlying tokens in the vault
     function totalUnderlying() external view returns (uint256);
 
+    /// @notice The same as getRate() from IRateProvider.
     /// @return The exchange rate between an underlying tokens and the token of this vault
     function exchangeRate() external view returns (uint256);
 
