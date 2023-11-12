@@ -147,6 +147,13 @@ class GenericVaultToDeploy(NamedTuple):
     redeem_fee: int
 
 
+class DisconnectedGenericVaultToDeploy(NamedTuple):
+    """For GenericVaults that are not going into the reserve (aka wrappers)."""
+    underlying: str
+    name: str
+    symbol: str
+
+
 class DeployedVault(NamedTuple):
     address: str
     vault_to_deploy: VaultToDeploy
