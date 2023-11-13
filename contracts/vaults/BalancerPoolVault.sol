@@ -7,25 +7,27 @@ import "../../interfaces/balancer/IVault.sol";
 import "./BaseVault.sol";
 
 contract BalancerPoolVault is BaseVault {
-    /// @notice Balancer pool ID
-    bytes32 public immutable poolId;
-
     IVault public immutable balancerVault;
 
     /// @inheritdoc IGyroVault
     Vaults.Type public immutable override vaultType;
 
-    constructor(
-        address _governor,
-        Vaults.Type _vaultType,
-        bytes32 _poolId,
-        IVault _balancerVault,
-        string memory name,
-        string memory symbol
-    ) BaseVault(_governor, _getPoolAddress(_poolId), name, symbol) {
-        poolId = _poolId;
+    /// @notice Balancer pool ID
+    bytes32 public poolId;
+
+    constructor(Vaults.Type _vaultType, IVault _balancerVault) {
         balancerVault = _balancerVault;
         vaultType = _vaultType;
+    }
+
+    function initialize(
+        bytes32 _poolId,
+        address governor,
+        string memory name,
+        string memory symbol
+    ) external virtual initializer {
+        __BaseVault_initialize(_getPoolAddress(_poolId), governor, name, symbol);
+        poolId = _poolId;
     }
 
     /// @inheritdoc IGyroVault

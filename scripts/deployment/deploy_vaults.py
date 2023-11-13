@@ -5,7 +5,13 @@ import time
 from typing import Union
 from brownie import BalancerPoolVault, StaticPercentageFeeHandler, network, interface, ChainlinkPriceOracle  # type: ignore
 from brownie import BalancerECLPPriceOracle, GenericVault, CheckedPriceOracle, GovernanceProxy, ReserveManager  # type: ignore
-from scripts.utils import get_deployer, make_tx_params, with_deployed, with_gas_usage
+from scripts.utils import (
+    deploy_proxy,
+    get_deployer,
+    make_tx_params,
+    with_deployed,
+    with_gas_usage,
+)
 from scripts.config import vaults
 from tests.support import constants
 from tests.support.types import (
@@ -129,15 +135,21 @@ def _get_vault_configuration(
 def balancer(name):
     vault_to_deploy = _get_vault_to_deploy(name)
     deployer = get_deployer()
-    deployer.deploy(
+    vault = deployer.deploy(
         BalancerPoolVault,
-        constants.MAINNET_GOVERNANCE_ADDRESS,
         vault_to_deploy.vault_type,
-        vault_to_deploy.pool_id,
         constants.BALANCER_VAULT_ADDRESS,
-        vault_to_deploy.name,
-        vault_to_deploy.symbol,
         **make_tx_params(),
+    )
+    deploy_proxy(
+        vault,
+        vault.initialize.encode_input(
+            vault_to_deploy.pool_id,
+            constants.MAINNET_GOVERNANCE_ADDRESS,
+            vault_to_deploy.name,
+            vault_to_deploy.symbol,
+        ),
+        overwrite_proxy=True,
     )
 
 
@@ -145,13 +157,16 @@ def balancer(name):
 def generic(name):
     vault_to_deploy = _get_vault_to_deploy(name)
     deployer = get_deployer()
-    deployer.deploy(
-        GenericVault,
-        constants.MAINNET_GOVERNANCE_ADDRESS,
-        vault_to_deploy.underlying,
-        vault_to_deploy.name,
-        vault_to_deploy.symbol,
-        **make_tx_params(),
+    vault = deployer.deploy(GenericVault)
+    deploy_proxy(
+        vault,
+        vault.initialize.encode_input(
+            vault_to_deploy.underlying,
+            constants.MAINNET_GOVERNANCE_ADDRESS,
+            vault_to_deploy.name,
+            vault_to_deploy.symbol,
+        ),
+        overwrite_proxy=True,
     )
 
 

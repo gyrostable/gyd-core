@@ -366,8 +366,13 @@ def decimals(underlying, interface):
 
 
 @pytest.fixture(scope="module")
-def vault(admin, GenericVault, underlying):
-    return admin.deploy(GenericVault, admin, underlying, "Base Vault Token", "BVT")
+def vault(admin, GenericVault, underlying, deploy_with_proxy):
+    return deploy_with_proxy(
+        GenericVault,
+        lambda v: v.initialize.encode_input(
+            underlying, admin, "Base Vault Token", "BVT"
+        ),
+    )
 
 
 # NOTE: this is a vault that contains only USDC as underlying
