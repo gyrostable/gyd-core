@@ -33,11 +33,16 @@
 
 ## Reserve vaults
 
-* `BalancerPoolVault` - ECLP LUSD/crvUSD: [0x4aE17B5e327Cd659f64912333FBc5039b0441dd5](https://etherscan.io/address/0x4aE17B5e327Cd659f64912333FBc5039b0441dd5)
-* `BalancerPoolVault` - ECLP USDP/GUSD: [0xD4f032c193Fd6e0a222769efbfd936B53bDAc7a9](https://etherscan.io/address/0xD4f032c193Fd6e0a222769efbfd936B53bDAc7a9)
-* `GenericVault` - fUSDC: [0x1AdD0c81f9c4eEe727C3BdB5f7298177b40d8f17](https://etherscan.io/address/0x1AdD0c81f9c4eEe727C3BdB5f7298177b40d8f17)
-* `GenericVault` - sDAI: [0x3543890fb851c3361D3009f04b3749F8B3CB2cdA](https://etherscan.io/address/0x3543890fb851c3361D3009f04b3749F8B3CB2cdA)
-* `GenericVault` - aUSDT: [0x2E77c9cF8df912007f524C300cF203d308091C15](https://etherscan.io/address/0x2E77c9cF8df912007f524C300cF203d308091C15)
+* `BalancerPoolVault` - ECLP LUSD/crvUSD: [0x29609B3fD68C647c3a619e69DE386F2F02Ee26e6](https://etherscan.io/address/0x29609B3fD68C647c3a619e69DE386F2F02Ee26e6)
+  * Implementation: [0xfcA17aF880B0f159bD68BBAF136Fec81Cf139d6B](https://etherscan.io/address/0xfcA17aF880B0f159bD68BBAF136Fec81Cf139d6B)
+* `BalancerPoolVault` - ECLP USDP/GUSD: [0x8E17873fe6C257Fcd4b32777658914B4B1a94fF2](https://etherscan.io/address/0x8E17873fe6C257Fcd4b32777658914B4B1a94fF2)
+  * Implementation: [0x77F2Aeb44088cdb35F6D3070dC072C56Ff5e0014](https://etherscan.io/address/0x77F2Aeb44088cdb35F6D3070dC072C56Ff5e0014)
+* `GenericVault` - fUSDC: [0x88F3b40E45213131860F81b32CA12a3d54821d65](https://etherscan.io/address/0x88F3b40E45213131860F81b32CA12a3d54821d65)
+  * Implementation: [0x86D794C2fA75b774C85B65778f33FdF0302fe1E2](https://etherscan.io/address/0x86D794C2fA75b774C85B65778f33FdF0302fe1E2)
+* `GenericVault` - sDAI: [0x830913c917B07311EAE53687BE27C1c0B589aB31](https://etherscan.io/address/0x830913c917B07311EAE53687BE27C1c0B589aB31)
+  * Implementation: [0x42ABd55848431aB545eFB34d611A95342DF68e56](https://etherscan.io/address/0x42ABd55848431aB545eFB34d611A95342DF68e56)
+* `GenericVault` - aUSDT: [0x98962bEC8Bf0363D00D97D9049B40079356A4953](https://etherscan.io/address/0x98962bEC8Bf0363D00D97D9049B40079356A4953)
+  * Implementation: [0x1a7F722018A8064A6Abd5b24e9Bf2f9460BB6A3D](https://etherscan.io/address/0x1a7F722018A8064A6Abd5b24e9Bf2f9460BB6A3D)
 
 ## Consolidated Price Feed
 

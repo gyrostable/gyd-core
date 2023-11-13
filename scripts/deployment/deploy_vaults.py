@@ -53,12 +53,14 @@ def set_vaults(reserve_manager):
     configs = [get_vault_config(v, current_time) for v in vault_addresses]
     with open(path.join(ROOT_DIR, "config", f"vaults-{current_time}.json"), "w") as f:
         json.dump([c.as_dict() for c in configs], f, indent=2)
-    print("Encoded data:")
-    print(
-        json.dumps(
-            [(reserve_manager.address, reserve_manager.setVaults.encode_input(configs))]
-        )
-    )
+    deployer = get_deployer()
+    reserve_manager.setVaults(configs, {"from": deployer, **make_tx_params()})
+    # print("Encoded data:")
+    # print(
+    #     json.dumps(
+    #         [(reserve_manager.address, reserve_manager.setVaults.encode_input(configs))]
+    #     )
+    # )
 
 
 def get_vault_config(vault_address, time_of_calibration=None):
@@ -157,7 +159,7 @@ def balancer(name):
 def generic(name):
     vault_to_deploy = _get_vault_to_deploy(name)
     deployer = get_deployer()
-    vault = deployer.deploy(GenericVault)
+    vault = deployer.deploy(GenericVault, **make_tx_params())
     deploy_proxy(
         vault,
         vault.initialize.encode_input(
