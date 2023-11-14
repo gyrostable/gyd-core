@@ -20,7 +20,8 @@ def make_vault_config(admin, MockGyroVault, dai, static_percentage_fee_handler):
         weight: DecimalLike, vault_address: Optional[str] = None
     ) -> VaultConfiguration:
         if vault_address is None:
-            vault = admin.deploy(MockGyroVault, dai)
+            vault = admin.deploy(MockGyroVault)
+            vault.initialize(dai)
             vault_address = vault.address
         assert vault_address is not None
         static_percentage_fee_handler.setVaultFees(vault_address, 0, 0)

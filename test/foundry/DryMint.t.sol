@@ -153,7 +153,12 @@ contract DryMint is Test {
 
 contract MockReserveManager {
     // Vaults
-    MockGyroVault internal vault1 = new MockGyroVault(0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619); // WETH Vault
+    MockGyroVault internal vault1;
+
+    constructor() {
+        vault1 = new MockGyroVault(); // WETH Vault
+        vault1.initialize(0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619);
+    }
 
     function getReserveState() public view returns (DataTypes.ReserveState memory) {
         uint256 totalUSDValue = 10432425163587914422052;

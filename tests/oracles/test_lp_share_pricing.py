@@ -166,7 +166,7 @@ def test_price_bpt_cpmm_equal_weights_3(
 def test_price_bpt_cpmm_equal_weights_4(
     gyro_lp_price_testing, invariant_div_supply, underlying_prices
 ):
-    weight = D('0.25')
+    weight = D("0.25")
     bpt_price_sol = gyro_lp_price_testing.priceBptCPMMEqualWeights(
         scale(weight), scale(invariant_div_supply), scale(underlying_prices)
     )
@@ -233,19 +233,21 @@ def gen_root3Alpha():
 
 
 @st.composite
-def gen_three_prices(draw, min_price=MIN_PRICE, max_price=MAX_PRICE, max_rel_price = None):
+def gen_three_prices(
+    draw, min_price=MIN_PRICE, max_price=MAX_PRICE, max_rel_price=None
+):
     if max_rel_price is not None:
         max_rel_price = to_decimal(max_rel_price)
     min_price = to_decimal(min_price)
     max_price = to_decimal(min_price)
     pz = draw(qdecimals(min_price, max_price))
     if max_rel_price is not None:
-        min_price = max(min_price, pz / max_rel_price + D('2e-18'))
-        max_price = min(max_price, pz * max_rel_price - D('2e-18'))
+        min_price = max(min_price, pz / max_rel_price + D("2e-18"))
+        max_price = min(max_price, pz * max_rel_price - D("2e-18"))
     px = draw(qdecimals(min_price, max_price))
     if max_rel_price is not None:
-        min_price = max(min_price, px / max_rel_price + D('2e-18'))
-        max_price = min(max_price, px * max_rel_price - D('2e-18'))
+        min_price = max(min_price, px / max_rel_price + D("2e-18"))
+        max_price = min(max_price, px * max_rel_price - D("2e-18"))
     py = draw(qdecimals(min_price, max_price))
     return px, py, pz
 

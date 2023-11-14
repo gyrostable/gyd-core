@@ -43,7 +43,12 @@ def _create_order(vault_amounts: Iterable[Tuple[Contract, int]], mint: bool) -> 
 
 @pytest.fixture(scope="module")
 def mock_vaults(MockGyroVault, admin, dai):
-    return [admin.deploy(MockGyroVault, dai) for _ in range(3)]
+    def _deploy():
+        vault = admin.deploy(MockGyroVault)
+        vault.initialize(dai)
+        return vault
+
+    return [_deploy() for _ in range(3)]
 
 
 @pytest.fixture(scope="module", autouse=True)

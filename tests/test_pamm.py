@@ -232,12 +232,12 @@ def test_compute_reserve(pamm, args, alpha_min):
         (("0.7", "0.8499", 1), "0.3"),  #  Region.CASE_III_H
         (("0.7", "0.8501", 1), "0.3"),  #  Region.CASE_II_H
         (("0.2", "0.65", 1), "0.3"),  #  Region.CASE_III_L
-        (("0.4994994994994995", "0.9", 1), "2.0")
+        (("0.4994994994994995", "0.9", 1), "2.0"),
     ],
 )
 def test_compute_region(pamm, args, alpha_min):
     x_s, ba_s, ya_s = args
-    if QD(ba_s)/QD(ya_s) <= UNSCALED_THETA_FLOOR:
+    if QD(ba_s) / QD(ya_s) <= UNSCALED_THETA_FLOOR:
         return
 
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
@@ -270,7 +270,7 @@ def test_compute_reserve_value(pamm, args, alpha_min):
     x, ba, ya = qd_args(args)
 
     # TODO generate test samples so that this never happens.
-    if ba/ya <= pyparams.target_reserve_ratio_floor:
+    if ba / ya <= pyparams.target_reserve_ratio_floor:
         pytest.xfail("ba/ya <= theta_bar")
 
     b = pypamm.compute_reserve(x, ba, ya, pyparams)
@@ -291,7 +291,7 @@ def test_compute_reserve_value_gas(pamm, args, alpha_min):
     pyparams = pypamm.Params(QD(alpha_min), UNSCALED_XU_MAX_REL, UNSCALED_THETA_FLOOR)
     x, ba, ya = qd_args(args)
     # TODO generate test samples so that this never happens.
-    if ba/ya <= pyparams.target_reserve_ratio_floor:
+    if ba / ya <= pyparams.target_reserve_ratio_floor:
         pytest.xfail("ba/ya <= theta_bar")
 
     pamm.setDecaySlopeLowerBound(scale(alpha_min))
