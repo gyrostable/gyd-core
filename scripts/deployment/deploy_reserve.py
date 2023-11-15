@@ -1,4 +1,4 @@
-from brownie import GovernanceProxy, Reserve  # type: ignore
+from brownie import GovernanceProxy, Reserve, PrimaryAMMV1, ReserveManager, ReserveSystemRead  # type: ignore
 from scripts.utils import (
     as_singleton,
     deploy_proxy,
@@ -26,3 +26,12 @@ def proxy(reserve):
 def main():
     deployer = get_deployer()
     deployer.deploy(Reserve, **make_tx_params())
+
+
+@with_gas_usage
+@as_singleton(ReserveSystemRead)
+@with_deployed(PrimaryAMMV1)
+@with_deployed(ReserveManager)
+def reserve_reader(reserve_manager, pamm):
+    deployer = get_deployer()
+    deployer.deploy(ReserveSystemRead, reserve_manager, pamm, **make_tx_params())

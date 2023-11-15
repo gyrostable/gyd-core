@@ -35,10 +35,9 @@ contract ReserveSystemRead {
 
         IPAMM.Params memory systemParams = primaryAMMV1.systemParams();
         uint256 redemptionLevel = primaryAMMV1.redemptionLevel();
-        uint256 redemptionPrice = primaryAMMV1.computeRedeemAmount(
-            1e18,
-            reserveState.totalUSDValue
-        );
+        uint256 redemptionPrice = reserveState.totalUSDValue == 0
+            ? 1e18
+            : primaryAMMV1.computeRedeemAmount(1e18, reserveState.totalUSDValue);
 
         return ReadValues(reserveState, systemParams, redemptionLevel, redemptionPrice);
     }
