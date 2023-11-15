@@ -15,8 +15,8 @@ interface ICToken {
     function decimals() external view returns (uint8);
 }
 
-/// @notice This is used for Compound or Flux tokens
-contract CompoundRateProvider is IRateProvider {
+/// @notice This is used for Compound V2 or Flux tokens
+contract CompoundV2RateProvider is IRateProvider {
     using DecimalScale for uint256;
 
     ICToken public immutable cToken;

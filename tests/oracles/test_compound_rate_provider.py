@@ -4,8 +4,8 @@ from tests.fixtures.mainnet_contracts import TokenAddresses
 
 
 @pytest.fixture(scope="module")
-def fusdc_rate_provider(CompoundRateProvider, admin):
-    return admin.deploy(CompoundRateProvider, TokenAddresses.fUSDC)
+def fusdc_rate_provider(CompoundV2RateProvider, admin):
+    return admin.deploy(CompoundV2RateProvider, TokenAddresses.fUSDC)
 
 
 @pytest.mark.mainnetFork
