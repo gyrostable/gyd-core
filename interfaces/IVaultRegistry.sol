@@ -21,4 +21,11 @@ interface IVaultRegistry {
 
     /// @notice Registers a new vault
     function setVaults(DataTypes.VaultConfiguration[] memory vaults) external;
+
+    /// @notice updates the vaults' flow params
+    function updatePersistedVaultFlowParams(
+        address[] memory vaultsToUpdate,
+        uint256[] memory newShortFlowMemory,
+        uint256[] memory newShortFlowThreshold
+    ) external;
 }
