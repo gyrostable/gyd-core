@@ -42,6 +42,7 @@ _token_addresses = {
         "WMATIC": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
         "BUSD": "0x9C9e5fD8bbc25984B178FdCE6117Defa39d2db39",
         "aDAI": "0x82E64f49Ed5EC1bC6e43DAD4FC8Af9bb3A2312EE",
+        "aDAIv2": "0x27f8d03b3a2196956ed754badc28d73be8830a6e",
     },
 }
 
@@ -172,6 +173,11 @@ class TokenAddresses:
     @property
     def aDAI(cls):
         return _token_address("aDAI")
+
+    @classmethod
+    @property
+    def aDAIv2(cls):
+        return _token_address("aDAIv2")
 
 
 _chainlink_feeds = {
