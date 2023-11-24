@@ -55,6 +55,19 @@ def get_pool_setting_str(gyroconfig, setting: bytes, get_method: str) -> str:
     return str(v)
 
 
+def get_pool_setting(gyroconfig, setting: bytes, get_method: str, fail: bool = False) -> str:
+    """Get pool setting. Return None if not found."""
+    try:
+        return getattr(gyroconfig, get_method)(setting)
+    except VirtualMachineError as e:
+        if e.revert_msg == "32":  # error code for key not found
+            if fail:
+                raise ValueError("Setting not found")
+            else:
+                return None
+        raise
+
+
 def main(gyro_config_address, pool_address: Optional[str] = None, pool_type: Optional[str] = None):
     # pool = Contract.from_explorer(pool_address)
     # gyroconfig = Contract.from_explorer(pool.gyroConfig)
