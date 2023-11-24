@@ -58,3 +58,5 @@
 * `BalancerCPMMPriceOracle`: [0xc0682b356ab9115F2cB4Dd0d9A471143f46a5Ff5](https://etherscan.io/address/0xc0682b356ab9115F2cB4Dd0d9A471143f46a5Ff5)
 * `BalancerECLPPriceOracle`: [0xeAD80EBeE8FA790AC45ced2048e598920dC911ba](https://etherscan.io/address/0xeAD80EBeE8FA790AC45ced2048e598920dC911ba)
 * `BalancerECLPV2PriceOracle`: [0x5879839cF7D0a314160fd7c2236e89BA9b8eb5cC](https://etherscan.io/address/0x5879839cF7D0a314160fd7c2236e89BA9b8eb5cC)
+* `TellorOracle`: [0xe22188F5d6ACc1dd951Bd20F531624b690F9D9a0](https://etherscan.io/address/0xe22188F5d6ACc1dd951Bd20F531624b690F9D9a0)
+* `UniswapV3TwapOracle`: [0x5AdA07Ff0d2772E202776be8a8EC69ac3345050f](https://etherscan.io/address/0x5AdA07Ff0d2772E202776be8a8EC69ac3345050f)
