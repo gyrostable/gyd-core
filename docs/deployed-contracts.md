@@ -56,7 +56,6 @@
 * `Balancer2CLPPriceOracle`: [0xCF9CDdB1dD40c1C1476E896AE2263934fc18dd10](https://etherscan.io/address/0xCF9CDdB1dD40c1C1476E896AE2263934fc18dd10)
 * `Balancer3CLPPriceOracle`: [0x4Bd408099486600234A91851582c969470A78039](https://etherscan.io/address/0x4Bd408099486600234A91851582c969470A78039)
 * `BalancerCPMMPriceOracle`: [0xc0682b356ab9115F2cB4Dd0d9A471143f46a5Ff5](https://etherscan.io/address/0xc0682b356ab9115F2cB4Dd0d9A471143f46a5Ff5)
-* `BalancerECLPPriceOracle`: [0xeAD80EBeE8FA790AC45ced2048e598920dC911ba](https://etherscan.io/address/0xeAD80EBeE8FA790AC45ced2048e598920dC911ba)
-* `BalancerECLPV2PriceOracle`: [0x5879839cF7D0a314160fd7c2236e89BA9b8eb5cC](https://etherscan.io/address/0x5879839cF7D0a314160fd7c2236e89BA9b8eb5cC)
+* `BalancerECLPPriceOracle`: [0x21cE2C302fFeFe0C1f601156A1E2c54eF4C0D094](https://etherscan.io/address/0x21cE2C302fFeFe0C1f601156A1E2c54eF4C0D094)
 * `TellorOracle`: [0xe22188F5d6ACc1dd951Bd20F531624b690F9D9a0](https://etherscan.io/address/0xe22188F5d6ACc1dd951Bd20F531624b690F9D9a0)
 * `UniswapV3TwapOracle`: [0x5AdA07Ff0d2772E202776be8a8EC69ac3345050f](https://etherscan.io/address/0x5AdA07Ff0d2772E202776be8a8EC69ac3345050f)
