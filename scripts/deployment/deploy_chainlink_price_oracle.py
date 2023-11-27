@@ -28,14 +28,12 @@ def set_feeds(governance_proxy, chainlink_oracle):
             chainlink_oracle.setFeed.encode_input(asset, feed),
             {"from": deployer, **make_tx_params()},
         )
-        # avoid issues with txs not processed
-        time.sleep(3)
 
 
 @with_gas_usage
-@as_singleton(CrashProtectedChainlinkPriceOracle)
+@as_singleton(ChainlinkPriceOracle)
 @with_deployed(GovernanceProxy)
 def main(governance_proxy):
     return get_deployer().deploy(
-        CrashProtectedChainlinkPriceOracle, governance_proxy, **make_tx_params()
+        ChainlinkPriceOracle, governance_proxy, **make_tx_params()
     )

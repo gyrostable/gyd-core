@@ -1,4 +1,5 @@
-from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, MockPriceOracle, CrashProtectedChainlinkPriceOracle  # type: ignore
+from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, MockPriceOracle, ChainlinkPriceOracle, RateManager  # type: ignore
+from brownie import chain
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -16,9 +17,6 @@ from tests.support.constants import UNISWAP_V3_ORACLE
 @with_deployed(TrustedSignerPriceOracle)
 @with_deployed(GovernanceProxy)
 def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
-    checked_price_oracle = CheckedPriceOracle.at(
-        "0xFEfEEE9ED22B243E8CD52fA353172C3d44fFB434"
-    )
     deployer = get_deployer()
     tx_params = {"from": deployer, **make_tx_params()}
     governance_proxy.executeCall(
@@ -26,58 +24,66 @@ def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
         checked_price_oracle.addETHPriceOracle.encode_input(coinbase_price_oracle),
         tx_params,
     )
-    governance_proxy.executeCall(
-        checked_price_oracle,
-        checked_price_oracle.addQuoteAssetsForPriceLevelTwap.encode_input(
-            TokenAddresses.USDC
-        ),
-        tx_params,
-    )
-    governance_proxy.executeCall(
-        checked_price_oracle,
-        checked_price_oracle.addQuoteAssetsForPriceLevelTwap.encode_input(
-            TokenAddresses.USDT
-        ),
-        tx_params,
-    )
-    governance_proxy.executeCall(
-        checked_price_oracle,
-        checked_price_oracle.addQuoteAssetsForPriceLevelTwap.encode_input(
-            TokenAddresses.DAI
-        ),
-        tx_params,
-    )
-    governance_proxy.executeCall(
-        checked_price_oracle,
-        checked_price_oracle.addAssetForRelativePriceCheck.encode_input(
-            TokenAddresses.USDC
-        ),
-        tx_params,
-    )
-    governance_proxy.executeCall(
-        checked_price_oracle,
-        checked_price_oracle.addAssetForRelativePriceCheck.encode_input(
-            TokenAddresses.WETH
-        ),
-        tx_params,
-    )
+
+    assets_for_price_level_twap = [
+        TokenAddresses.USDC,
+        TokenAddresses.USDT,
+        TokenAddresses.DAI,
+    ]
+    for asset in assets_for_price_level_twap:
+        governance_proxy.executeCall(
+            checked_price_oracle,
+            checked_price_oracle.addQuoteAssetsForPriceLevelTwap.encode_input(asset),
+            tx_params,
+        )
+
+    assets_for_relative_price_check = [
+        TokenAddresses.WETH,
+        TokenAddresses.USDC,
+        TokenAddresses.USDT,
+        TokenAddresses.DAI,
+        TokenAddresses.LUSD,
+    ]
+
+    for asset in assets_for_relative_price_check:
+        governance_proxy.executeCall(
+            checked_price_oracle,
+            checked_price_oracle.addAssetForRelativePriceCheck.encode_input(asset),
+            tx_params,
+        )
+
+    asset_with_ignorable_relative_prices = [
+        TokenAddresses.crvUSD,
+        TokenAddresses.GUSD,
+        TokenAddresses.USDP,
+    ]
+    for asset in asset_with_ignorable_relative_prices:
+        governance_proxy.executeCall(
+            checked_price_oracle,
+            checked_price_oracle.addAssetsWithIgnorableRelativePriceCheck.encode_input(
+                asset
+            ),
+            tx_params,
+        )
 
 
 @with_gas_usage
 @as_singleton(CheckedPriceOracle)
-@with_deployed(CrashProtectedChainlinkPriceOracle)
+@with_deployed(ChainlinkPriceOracle)
 @with_deployed(GovernanceProxy)
-def main(governance_proxy, crash_protected_chainlink_oracle):
+@with_deployed(RateManager)
+def main(rate_manager, governance_proxy, chainlink_oracle):
     deployer = get_deployer()
     if is_live():
-        relative_oracle = UNISWAP_V3_ORACLE
+        relative_oracle = UNISWAP_V3_ORACLE[chain.id]
     else:
         relative_oracle = MockPriceOracle[0]
     deployer.deploy(
         CheckedPriceOracle,
         governance_proxy,
-        crash_protected_chainlink_oracle,
+        chainlink_oracle,
         relative_oracle,
+        rate_manager,
         TokenAddresses.WETH,
         **make_tx_params()
     )

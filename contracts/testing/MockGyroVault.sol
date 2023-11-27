@@ -2,7 +2,7 @@
 // for information on licensing please see the README in the GitHub repository <https://github.com/gyrostable/core-protocol>.
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -10,17 +10,19 @@ import "../../interfaces/IGyroVault.sol";
 
 import "../../libraries/FixedPoint.sol";
 
-contract MockGyroVault is IGyroVault, ERC20Permit {
+contract MockGyroVault is IGyroVault, ERC20PermitUpgradeable {
     using SafeERC20 for IERC20;
 
     address internal _strategy;
     address internal _underlying;
     IERC20[] internal _tokens;
 
-    uint256 public immutable deployedAt;
+    uint256 public deployedAt;
 
-    constructor(address underlying_) ERC20("Vault", "VLT") ERC20Permit("Vault") {
+    function initialize(address underlying_) external initializer {
         _underlying = underlying_;
+        __ERC20_init("Vault", "VLT");
+        __ERC20Permit_init("Vault");
         deployedAt = block.number;
     }
 

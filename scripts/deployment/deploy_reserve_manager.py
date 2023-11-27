@@ -7,6 +7,7 @@ from scripts.utils import (
     with_gas_usage,
 )
 from tests.support import config_keys
+from tests.support.constants import MAINNET_GOVERNANCE_ADDRESS
 
 
 @with_gas_usage

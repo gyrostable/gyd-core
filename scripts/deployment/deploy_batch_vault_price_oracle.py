@@ -1,5 +1,5 @@
 from brownie import GovernanceProxy, GyroConfig, CheckedPriceOracle, GenericVaultPriceOracle, BatchVaultPriceOracle  # type: ignore
-from brownie import BalancerCPMMPriceOracle, Balancer2CLPPriceOracle, Balancer3CLPPriceOracle, BalancerECLPPriceOracle, BalancerECLPV2PriceOracle  # type: ignore
+from brownie import BalancerCPMMPriceOracle, Balancer2CLPPriceOracle, Balancer3CLPPriceOracle, BalancerECLPPriceOracle  # type: ignore
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -18,11 +18,9 @@ from tests.support.types import VaultType
 @with_deployed(Balancer2CLPPriceOracle)
 @with_deployed(Balancer3CLPPriceOracle)
 @with_deployed(BalancerECLPPriceOracle)
-@with_deployed(BalancerECLPV2PriceOracle)
 @with_deployed(GovernanceProxy)
 def initialize(
     governance_proxy,
-    balancer_eclpv2_price_oracle,
     balancer_eclp_price_oracle,
     balancer_3clp_price_oracle,
     balancer_2clp_price_oracle,
@@ -66,13 +64,6 @@ def initialize(
         batch_vault_price_oracle,
         batch_vault_price_oracle.registerVaultPriceOracle.encode_input(
             VaultType.BALANCER_ECLP, balancer_eclp_price_oracle
-        ),
-        {"from": deployer, **make_tx_params()},
-    )
-    governance_proxy.executeCall(
-        batch_vault_price_oracle,
-        batch_vault_price_oracle.registerVaultPriceOracle.encode_input(
-            VaultType.BALANCER_ECLPV2, balancer_eclpv2_price_oracle
         ),
         {"from": deployer, **make_tx_params()},
     )

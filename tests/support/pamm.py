@@ -229,7 +229,8 @@ def compute_region_ext(
 
     This computes the 'extended' region, which also always stores i-iii and is slightly more than we need to know for reconstruction.
 
-    prec = precision for fuzzy comparison. This can be 0; otherwise, it biases the comparison towards 'higher' regions."""
+    prec = precision for fuzzy comparison. This can be 0; otherwise, it biases the comparison towards 'higher' regions.
+    """
 
     xu_max = params.stable_redeem_threshold_upper_bound * ya
     alpha_min = params.decay_slope_lower_bound / ya
@@ -280,27 +281,33 @@ def compute_region_ext(
     return d1, d2, d3
 
 
-def compute_region(
-    x: D, ba: D, ya: D, params: Params, prec=D(0)
-) -> Region:
+def compute_region(x: D, ba: D, ya: D, params: Params, prec=D(0)) -> Region:
     """For testing. Compute the Region, which should also be detected by Pamm._compute_current_region().
 
-    We return None iff we are below the floor (which doesn't have a region b/c it's caught early)"""
+    We return None iff we are below the floor (which doesn't have a region b/c it's caught early)
+    """
     print("PARAMS", params)
     r = compute_region_ext(x, ba, ya, params, prec)
     return Region.from_pieces(*r)
 
-def compute_price(
-    x: D, ba: D, ya: D, params: Params
-) -> D:
+
+def compute_price(x: D, ba: D, ya: D, params: Params) -> D:
     """Spot price."""
     if ba >= ya:
         return D(1)
     if ba <= ya * params.target_reserve_ratio_floor:
-        return ba/ya
+        return ba / ya
 
-    alpha = compute_slope(ba, ya, params.target_reserve_ratio_floor, params.decay_slope_lower_bound)
-    xu = compute_upper_redemption_threshold(ba, ya, alpha, params.stable_redeem_threshold_upper_bound, params.target_utilization_ceiling)
+    alpha = compute_slope(
+        ba, ya, params.target_reserve_ratio_floor, params.decay_slope_lower_bound
+    )
+    xu = compute_upper_redemption_threshold(
+        ba,
+        ya,
+        alpha,
+        params.stable_redeem_threshold_upper_bound,
+        params.target_utilization_ceiling,
+    )
     xl = compute_lower_redemption_threshold(ba, ya, alpha, xu)
     if x <= xu:
         return D(1)

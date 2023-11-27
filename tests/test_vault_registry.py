@@ -20,7 +20,8 @@ def make_vault_config(admin, MockGyroVault, dai, static_percentage_fee_handler):
         weight: DecimalLike, vault_address: Optional[str] = None
     ) -> VaultConfiguration:
         if vault_address is None:
-            vault = admin.deploy(MockGyroVault, dai)
+            vault = admin.deploy(MockGyroVault)
+            vault.initialize(dai)
             vault_address = vault.address
         assert vault_address is not None
         static_percentage_fee_handler.setVaultFees(vault_address, 0, 0)
@@ -97,6 +98,8 @@ def test_set_vaults_unordered_tokens(
 ):
     vaults = [make_vault_config(w) for w in ["0.5", "0.5"]]
     vault = MockGyroVault.at(vaults[0].vault_address)
-    vault.setTokens(sorted([v.vault_address for v in vaults], reverse=True))
+    vault.setTokens(
+        sorted([v.vault_address for v in vaults], reverse=True, key=lambda a: a.lower())
+    )
     with reverts(error_codes.TOKENS_NOT_SORTED):
         vault_registry.setVaults(vaults, {"from": admin})

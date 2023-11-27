@@ -36,7 +36,7 @@ def reserve_safety_manager(governance_proxy):
     return deployer.deploy(
         ReserveSafetyManager,
         governance_proxy,
-        scale("0.1"),
+        constants.MAX_ALLOWED_VAULT_DEVIATION,
         constants.MIN_TOKEN_PRICE,
         **make_tx_params(),
     )
@@ -52,8 +52,6 @@ def vault_safety_mode(governance_proxy, gyro_config):
     deployer.deploy(
         VaultSafetyMode,
         governance_proxy,
-        constants.SAFETY_BLOCKS_AUTOMATIC,
-        constants.SAFETY_BLOCKS_GUARDIAN,
         gyro_config,
         **make_tx_params(),
     )

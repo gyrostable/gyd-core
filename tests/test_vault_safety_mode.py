@@ -16,7 +16,7 @@ from tests.support.utils import scale
 
 
 def _create_vault_info(admin, MockGyroVault, decimals, short_flow_threshold):
-    vault = admin.deploy(MockGyroVault, ZERO_ADDRESS)
+    vault = admin.deploy(MockGyroVault)
     return VaultInfo(
         vault=vault,
         current_weight=0,

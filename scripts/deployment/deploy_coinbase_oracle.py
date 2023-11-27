@@ -1,4 +1,4 @@
-from brownie import TrustedSignerPriceOracle, AssetRegistry  # type: ignore
+from brownie import TrustedSignerPriceOracle, GyroConfig  # type: ignore
 from scripts.utils import (
     as_singleton,
     get_deployer,
@@ -6,6 +6,7 @@ from scripts.utils import (
     with_deployed,
     with_gas_usage,
 )
+from tests.support import config_keys
 from tests.support.constants import COINBASE_SIGNING_ADDRESS
 from tests.support.retrieve_coinbase_prices import fetch_prices, find_price
 
@@ -21,14 +22,15 @@ def post_prices(oracle):
 
 
 @with_gas_usage
-@with_deployed(AssetRegistry)
+@with_deployed(GyroConfig)
 @as_singleton(TrustedSignerPriceOracle)
-def main(asset_registry):
+def main(gyro_config):
+    asset_registry_address = gyro_config.getAddress(config_keys.ASSET_REGISTRY_ADDRESS)
     deployer = get_deployer()
     deployer.deploy(
         TrustedSignerPriceOracle,
-        asset_registry,
+        asset_registry_address,
         COINBASE_SIGNING_ADDRESS,
-        False,
+        True,
         **make_tx_params()
     )

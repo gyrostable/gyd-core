@@ -17,7 +17,6 @@ from tests.support.types import (
     VaultType,
 )
 from tests.support.utils import scale
-from scripts.config import vaults
 
 OUTFLOW_MEMORY = 999993123563518195
 
@@ -104,6 +103,8 @@ def set_mainnet_fees(
 
 @pytest.fixture(scope="module")
 def mainnet_vaults(BalancerPoolVault, admin, balancer_vault):
+    from scripts.config import vaults
+
     return [
         DeployedVault(
             address=admin.deploy(

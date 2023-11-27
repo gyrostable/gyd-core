@@ -16,7 +16,8 @@ interface IBalancerPool {
             uint256 bufferPeriodEndTime
         );
 
+    function getPoolId() external view returns (bytes32);
+
     /// @notice Returns the normalized weights of a pool, in the same order as the pool tokens
     function getNormalizedWeights() external view returns (uint256[] memory);
-
 }

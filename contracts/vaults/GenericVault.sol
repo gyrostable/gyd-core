@@ -5,12 +5,14 @@ pragma solidity ^0.8.4;
 import "./BaseVault.sol";
 
 contract GenericVault is BaseVault {
-    constructor(
-        address _governor,
+    function initialize(
         address _underlying,
+        address governor,
         string memory name,
         string memory symbol
-    ) BaseVault(_governor, _underlying, name, symbol) {}
+    ) external virtual initializer {
+        __BaseVault_initialize(_underlying, governor, name, symbol);
+    }
 
     /// @inheritdoc IGyroVault
     function vaultType() external view virtual override returns (Vaults.Type) {

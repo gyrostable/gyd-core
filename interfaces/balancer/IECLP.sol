@@ -3,8 +3,9 @@
 pragma solidity ^0.8.4;
 
 import "./IMinimalPoolView.sol";
+import "./IGyroPool.sol";
 
-interface IECLP is IMinimalPoolView {
+interface IECLP is IMinimalPoolView, IGyroPool {
     struct Vector2 {
         int256 x;
         int256 y;
@@ -42,4 +43,6 @@ interface IECLP is IMinimalPoolView {
     }
 
     function getECLPParams() external view returns (Params memory params, DerivedParams memory d);
+
+    function getTokenRates() external view returns (uint256, uint256);
 }

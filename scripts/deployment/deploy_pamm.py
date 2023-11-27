@@ -18,7 +18,7 @@ def main(governance_proxy, gyro_config):
     deployer = get_deployer()
     pamm = deployer.deploy(
         PrimaryAMMV1,
-        governance_proxy,
+        constants.MAINNET_GOVERNANCE_ADDRESS,
         gyro_config,
         PammParams(
             alpha_bar=int(constants.ALPHA_MIN_REL),

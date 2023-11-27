@@ -2,6 +2,11 @@ import pytest
 
 from brownie.test.managers.runner import RevertContextManager as reverts
 from brownie import chain
+from tests.fixtures.deployments import (
+    STEWARDSHIP_INC_DURATION,
+    STEWARDSHIP_INC_MAX_VIOLATIONS,
+    STEWARDSHIP_INC_MIN_CR,
+)
 
 from tests.support.types import (
     MintAsset,
@@ -70,19 +75,18 @@ def test_start(
 
     tx = stewardship_incentives.startInitiative(reward_percentage, {"from": admin})
     start_time = tx.timestamp
-    end_time = start_time + constants.STEWARDSHIP_INC_DURATION
+    end_time = start_time + STEWARDSHIP_INC_DURATION
     assert tx.events["InitiativeStarted"]["endTime"] == end_time
     assert (
-        tx.events["InitiativeStarted"]["minCollateralRatio"]
-        == constants.STEWARDSHIP_INC_MIN_CR
+        tx.events["InitiativeStarted"]["minCollateralRatio"] == STEWARDSHIP_INC_MIN_CR
     )
     assert tx.events["InitiativeStarted"]["rewardPercentage"] == reward_percentage
 
     assert stewardship_incentives.activeInitiative() == (
         start_time,
         end_time,
-        constants.STEWARDSHIP_INC_MIN_CR,
-        constants.STEWARDSHIP_INC_MAX_VIOLATIONS,
+        STEWARDSHIP_INC_MIN_CR,
+        STEWARDSHIP_INC_MAX_VIOLATIONS,
         reward_percentage,
     )
 
@@ -109,7 +113,7 @@ def test_start_end_const(
     reward_percentage_scaled = scale(reward_percentage)
     stewardship_incentives.startInitiative(reward_percentage_scaled, {"from": admin})
 
-    chain.sleep(constants.STEWARDSHIP_INC_DURATION)
+    chain.sleep(STEWARDSHIP_INC_DURATION)
     chain.mine()
 
     reward_expd_scaled = gyd_token.totalSupply() * reward_percentage
@@ -146,7 +150,7 @@ def test_start_end_supplychange(
 
     gyd_supply0 = unscale(gyd_token.totalSupply())
 
-    chain.sleep(constants.STEWARDSHIP_INC_DURATION // 2)
+    chain.sleep(STEWARDSHIP_INC_DURATION // 2)
     chain.mine()
 
     # Create additional GYD. We drop the price and mint. This means that this will be our one day where
@@ -169,7 +173,7 @@ def test_start_end_supplychange(
         stewardship_incentives.completeInitiative()
 
     gyd_supply1 = unscale(gyd_token.totalSupply())
-    chain.sleep(constants.STEWARDSHIP_INC_DURATION // 2)
+    chain.sleep(STEWARDSHIP_INC_DURATION // 2)
     chain.mine()
 
     avg_gyd_supply = (gyd_supply0 + gyd_supply1) / 2
@@ -230,7 +234,7 @@ def test_violations(
     assert stewardship_incentives.hasFailed()
 
     # Let enough time pass and try to complete. This will fail.
-    chain.sleep(constants.STEWARDSHIP_INC_DURATION)
+    chain.sleep(STEWARDSHIP_INC_DURATION)
     chain.mine()
 
     with reverts("initiative failed: too many health violations"):

@@ -267,7 +267,8 @@ class ECLP:
     def _tau_px(self):
         """tau(px) where px is the price offered by the AMM at the current state.
 
-        Definition of tau and eta together with the comment on computing sqrt(1 + _pxc^2) in section 2.1.5."""
+        Definition of tau and eta together with the comment on computing sqrt(1 + _pxc^2) in section 2.1.5.
+        """
         pxcz = -self.r / self.params.A_times_y(self.x - self.a, self.y - self.b)
         return self._pxc / pxcz, 1 / pxcz
 
@@ -295,7 +296,8 @@ class ECLP:
 
         Returns None and changes nothing if the trade is not possible given the current reserve.
 
-        Signs for dx and the return value refer to how the *reserve* changes. So paying to the reserve = positive; receiving from the reserve = negative."""
+        Signs for dx and the return value refer to how the *reserve* changes. So paying to the reserve = positive; receiving from the reserve = negative.
+        """
         xnew = self.x + dx
         ynew = self._compute_y_for_x(xnew)
         if ynew is None:
@@ -326,7 +328,8 @@ class ECLP:
         """Depends on the current invariant r. Return None iff this x value is impossible given the current
         invariant.
 
-        nomaxvals: For TESTING only. Don't use xmax and ymax to determine legitimacy, but instead check if the result of the trade would not be allowed."""
+        nomaxvals: For TESTING only. Don't use xmax and ymax to determine legitimacy, but instead check if the result of the trade would not be allowed.
+        """
         if x < 0:
             return None
 

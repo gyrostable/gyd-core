@@ -3,7 +3,7 @@ import pytest
 from tests.fixtures.mainnet_contracts import TokenAddresses
 
 
-TELLOR_ORACLE_ADDRESS = "0xD9157453E2668B2fc45b7A803D3FEF3642430cC0"
+TELLOR_ORACLE_ADDRESS = "0x8cFc184c877154a8F9ffE0fe75649dbe5e2DBEbf"
 
 
 @pytest.fixture(scope="module")

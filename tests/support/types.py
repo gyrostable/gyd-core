@@ -116,7 +116,6 @@ class VaultType:
     BALANCER_2CLP = 2
     BALANCER_3CLP = 3
     BALANCER_ECLP = 4
-    BALANCER_ECLPV2 = 5
 
 
 class FlowDirection:
@@ -128,6 +127,17 @@ class FlowDirection:
 class VaultToDeploy(NamedTuple):
     pool_id: str
     vault_type: int
+    name: str
+    symbol: str
+    initial_weight: int
+    short_flow_memory: int
+    short_flow_threshold: int
+    mint_fee: int
+    redeem_fee: int
+
+
+class GenericVaultToDeploy(NamedTuple):
+    underlying: str
     name: str
     symbol: str
     initial_weight: int
@@ -157,3 +167,14 @@ class ExternalAction(NamedTuple):
 class VaultConfiguration(NamedTuple):
     vault_address: str
     metadata: PersistedVaultMetadata
+
+    def as_dict(self):
+        return {
+            "vault_address": self.vault_address,
+            "metadata": self.metadata._asdict(),
+        }
+
+
+class RateProviderInfo(NamedTuple):
+    underlying: str
+    provider: str

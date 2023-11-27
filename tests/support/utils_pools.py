@@ -90,5 +90,8 @@ def qdecimals(
     *args, allow_nan=False, allow_infinity=False, **kwargs
 ) -> st.SearchStrategy[QuantizedDecimal]:
     return st.decimals(
-        *map(to_raw_decimal, args), allow_nan=allow_nan, allow_infinity=allow_infinity, **kwargs
+        *map(to_raw_decimal, args),
+        allow_nan=allow_nan,
+        allow_infinity=allow_infinity,
+        **kwargs
     ).map(QuantizedDecimal)

@@ -4,15 +4,16 @@ pragma solidity ^0.8.4;
 
 import "../libraries/Vaults.sol";
 
-import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol";
 
 /// @notice A vault is one of the component of the reserve and has a one-to-one
 /// mapping to an underlying pool (e.g. Balancer pool, Curve pool, Uniswap pool...)
 /// It is itself an ERC-20 token that is used to track the ownership of the LP tokens
 /// deposited in the vault
 /// A vault can be associated with a strategy to generate yield on the deposited funds
-interface IGyroVault is IERC20Metadata, IERC20Permit {
+interface IGyroVault is IERC20MetadataUpgradeable, IERC20PermitUpgradeable {
     /// @return The type of the vault
     function vaultType() external view returns (Vaults.Type);
 
