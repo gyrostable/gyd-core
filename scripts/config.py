@@ -7,23 +7,23 @@ from tests.support.utils import bp, scale
 
 vaults = {
     1: [
-        VaultToDeploy(
-            pool_id=constants.BALANCER_POOL_IDS[1]["USDP_GUSD"],
-            vault_type=VaultType.BALANCER_ECLP,
-            name="Gyroscope ECLP USDP/GUSD Vault",
-            symbol="V-ECLP-USDP-GUSD",
-            initial_weight=int(scale("0.08")),
-            short_flow_memory=int(constants.SHORT_FLOW_MEMORY),
-            short_flow_threshold=4_400_000,  # USD value
-            mint_fee=0,
-            redeem_fee=bp(5),
-        ),
+        # VaultToDeploy(
+        #     pool_id=constants.BALANCER_POOL_IDS[1]["USDP_GUSD"],
+        #     vault_type=VaultType.BALANCER_ECLP,
+        #     name="Gyroscope ECLP USDP/GUSD Vault",
+        #     symbol="V-ECLP-USDP-GUSD",
+        #     initial_weight=int(scale("0.08")),
+        #     short_flow_memory=int(constants.SHORT_FLOW_MEMORY),
+        #     short_flow_threshold=4_400_000,  # USD value
+        #     mint_fee=0,
+        #     redeem_fee=bp(5),
+        # ),
         VaultToDeploy(
             pool_id=constants.BALANCER_POOL_IDS[1]["LUSD_CRVUSD"],
             vault_type=VaultType.BALANCER_ECLP,
             name="Gyroscope ECLP LUSD/crvUSD Vault",
             symbol="V-ECLP-LUSD-crvUSD",
-            initial_weight=int(scale("0.1")),
+            initial_weight=int(scale("0.12")),
             short_flow_memory=int(constants.SHORT_FLOW_MEMORY),
             short_flow_threshold=5_500_000,  # USD value
             mint_fee=bp(1),
@@ -33,7 +33,7 @@ vaults = {
             underlying=TokenAddresses.fUSDC,
             name="Gyroscope fUSDC Vault",
             symbol="V-fUSDC",
-            initial_weight=int(scale("0.16")),
+            initial_weight=int(scale("0.18")),
             short_flow_memory=int(constants.SHORT_FLOW_MEMORY),
             short_flow_threshold=8_700_000,  # USD value
             mint_fee=0,
@@ -43,7 +43,7 @@ vaults = {
             underlying=TokenAddresses.sDAI,
             name="Gyroscope sDAI Vault",
             symbol="V-sDAI",
-            initial_weight=int(scale("0.56")),
+            initial_weight=int(scale("0.58")),
             short_flow_memory=int(constants.SHORT_FLOW_MEMORY),
             short_flow_threshold=30_000_000,  # USD value
             mint_fee=0,
@@ -53,7 +53,7 @@ vaults = {
             underlying=TokenAddresses.aUSDT,
             name="Gyroscope aUSDT Vault",
             symbol="V-aUSDT",
-            initial_weight=int(scale("0.1")),
+            initial_weight=int(scale("0.12")),
             short_flow_memory=int(constants.SHORT_FLOW_MEMORY),
             short_flow_threshold=5_500_000,  # USD value
             mint_fee=0,

@@ -23,6 +23,11 @@ from tests.support.types import (
     VaultType,
 )
 
+
+class VaultNotFound(Exception):
+    pass
+
+
 ROOT_DIR = path.dirname(path.dirname(path.dirname(__file__)))
 
 
@@ -49,10 +54,7 @@ def set_fees(governance_proxy, static_percentage_fee_handler):
 @with_deployed(ReserveManager)
 def set_vaults(reserve_manager):
     vault_addresses = _get_all_vault_addresses()
-    current_time = int(time.time())
-    configs = [get_vault_config(v, current_time) for v in vault_addresses]
-    with open(path.join(ROOT_DIR, "config", f"vaults-{current_time}.json"), "w") as f:
-        json.dump([c.as_dict() for c in configs], f, indent=2)
+    configs = get_vault_configs(vault_addresses)
     deployer = get_deployer()
     reserve_manager.setVaults(configs, {"from": deployer, **make_tx_params()})
     # print("Encoded data:")
@@ -61,6 +63,19 @@ def set_vaults(reserve_manager):
     #         [(reserve_manager.address, reserve_manager.setVaults.encode_input(configs))]
     #     )
     # )
+
+
+def get_vault_configs(vault_addresses):
+    current_time = int(time.time())
+    configs = []
+    for vault in vault_addresses:
+        try:
+            configs.append(get_vault_config(vault, current_time))
+        except VaultNotFound:
+            pass
+    with open(path.join(ROOT_DIR, "config", f"vaults-{current_time}.json"), "w") as f:
+        json.dump([c.as_dict() for c in configs], f, indent=2)
+    return configs
 
 
 def get_vault_config(vault_address, time_of_calibration=None):
@@ -174,7 +189,10 @@ def generic(name):
 
 def _get_vault_to_deploy(name):
     vaults_to_deploy = vaults[network.chain.id]
-    return [vault for vault in vaults_to_deploy if vault.symbol == name][0]
+    found_vaults = [vault for vault in vaults_to_deploy if vault.symbol == name]
+    if not found_vaults:
+        raise VaultNotFound(name)
+    return found_vaults[0]
 
 
 def _get_all_vault_addresses():
