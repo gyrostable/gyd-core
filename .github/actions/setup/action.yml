@@ -11,7 +11,7 @@ runs:
       run: pip3 install install -r requirements.txt
       shell: bash
     - name: Install ganache
-      run: yarn global add ganache@7.6.0
+      run: yarn global add ganache@7.9.1
       shell: bash
     - name: Compile contracts
       run: brownie compile
