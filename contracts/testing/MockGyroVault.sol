@@ -19,7 +19,8 @@ contract MockGyroVault is IGyroVault, ERC20PermitUpgradeable {
 
     uint256 public deployedAt;
 
-    function initialize(address underlying) external initializer {
+    function initialize(address underlying_) external initializer {
+        _underlying = underlying_;
         __ERC20_init("Vault", "VLT");
         __ERC20Permit_init("Vault");
         deployedAt = block.number;

@@ -9,6 +9,16 @@ from tests.support.types import (
 )
 from tests.support.utils import scale
 
+GYD_RECOVERY_WITHDRAWAL_WAIT_DURATION = 30 * constants.SECONDS_PER_DAY
+GYD_RECOVERY_MAX_WITHDRAWAL_WAIT_DURATION = 90 * constants.SECONDS_PER_DAY
+GYD_RECOVERY_MAX_TRIGGER_CR = scale("1.0")
+GYD_RECOVERY_TRIGGER_CR = scale("0.8")
+GYD_RECOVERY_TARGET_CR = scale("1.0")
+
+STEWARDSHIP_INC_MIN_CR = scale("1.05")
+STEWARDSHIP_INC_DURATION = 365 * 24 * 60 * 60
+STEWARDSHIP_INC_MAX_VIOLATIONS = 1
+
 
 @pytest.fixture(scope="module")
 def vault_registry(admin, VaultRegistry, gyro_config, deploy_with_proxy):
@@ -76,20 +86,16 @@ def gyd_recovery(admin, GydRecovery, gyro_config, mock_gyfi, treasury):
         gyro_config,
         mock_gyfi,
         treasury,
-        constants.GYD_RECOVERY_WITHDRAWAL_WAIT_DURATION,
-        constants.GYD_RECOVERY_MAX_WITHDRAWAL_WAIT_DURATION,
-        constants.GYD_RECOVERY_MAX_TRIGGER_CR,
+        GYD_RECOVERY_WITHDRAWAL_WAIT_DURATION,
+        GYD_RECOVERY_MAX_WITHDRAWAL_WAIT_DURATION,
+        GYD_RECOVERY_MAX_TRIGGER_CR,
     )
     gyro_config.setAddress(
         config_keys.GYD_RECOVERY_ADDRESS, gyd_recovery, {"from": admin}
     )
 
-    gyro_config.setUint(
-        config_keys.GYD_RECOVERY_TRIGGER_CR, constants.GYD_RECOVERY_TRIGGER_CR
-    )
-    gyro_config.setUint(
-        config_keys.GYD_RECOVERY_TARGET_CR, constants.GYD_RECOVERY_TARGET_CR
-    )
+    gyro_config.setUint(config_keys.GYD_RECOVERY_TRIGGER_CR, GYD_RECOVERY_TRIGGER_CR)
+    gyro_config.setUint(config_keys.GYD_RECOVERY_TARGET_CR, GYD_RECOVERY_TARGET_CR)
 
     return gyd_recovery
 
@@ -184,15 +190,10 @@ def stewardship_incentives(ReserveStewardshipIncentives, admin, gyro_config, gyd
         config_keys.STEWARDSHIP_INC_ADDRESS, stewardship_incentives, {"from": admin}
     )
 
+    gyro_config.setUint(config_keys.STEWARDSHIP_INC_MIN_CR, STEWARDSHIP_INC_MIN_CR)
+    gyro_config.setUint(config_keys.STEWARDSHIP_INC_DURATION, STEWARDSHIP_INC_DURATION)
     gyro_config.setUint(
-        config_keys.STEWARDSHIP_INC_MIN_CR, constants.STEWARDSHIP_INC_MIN_CR
-    )
-    gyro_config.setUint(
-        config_keys.STEWARDSHIP_INC_DURATION, constants.STEWARDSHIP_INC_DURATION
-    )
-    gyro_config.setUint(
-        config_keys.STEWARDSHIP_INC_MAX_VIOLATIONS,
-        constants.STEWARDSHIP_INC_MAX_VIOLATIONS,
+        config_keys.STEWARDSHIP_INC_MAX_VIOLATIONS, STEWARDSHIP_INC_MAX_VIOLATIONS
     )
 
     return stewardship_incentives
@@ -378,13 +379,19 @@ def vault(admin, GenericVault, underlying, deploy_with_proxy):
 # NOTE: this is a vault that contains only USDC as underlying
 # this is for testing purposes only
 @pytest.fixture(scope="module")
-def usdc_vault(admin, GenericVault, usdc):
-    return admin.deploy(GenericVault, admin, usdc, "USDC Vault", "gUSDC")
+def usdc_vault(admin, GenericVault, usdc, deploy_with_proxy):
+    return deploy_with_proxy(
+        GenericVault,
+        lambda v: v.initialize.encode_input(usdc, admin, "USDC Vault", "gUSDC"),
+    )
 
 
 @pytest.fixture(scope="module")
-def mock_vaults(admin, MockGyroVault, dai):
-    return [admin.deploy(MockGyroVault, dai) for _ in range(constants.RESERVE_VAULTS)]
+def mock_vaults(admin, MockGyroVault, dai, deploy_with_proxy):
+    return [
+        deploy_with_proxy(MockGyroVault, lambda v: v.initialize.encode_input(dai))
+        for _ in range(constants.RESERVE_VAULTS)
+    ]
 
 
 @pytest.fixture(scope="module")
@@ -395,8 +402,11 @@ def batch_vault_price_oracle(admin, TestingBatchVaultPriceOracle, mock_price_ora
 # NOTE: this is a vault that contains only DAI as underlying
 # this is for testing purposes only
 @pytest.fixture(scope="module")
-def dai_vault(admin, GenericVault, dai):
-    return admin.deploy(GenericVault, admin, dai, "DAI Vault", "gDAI")
+def dai_vault(admin, GenericVault, dai, deploy_with_proxy):
+    return deploy_with_proxy(
+        GenericVault,
+        lambda v: v.initialize.encode_input(dai, admin, "DAI Vault", "gDAI"),
+    )
 
 
 @pytest.fixture(scope="module")

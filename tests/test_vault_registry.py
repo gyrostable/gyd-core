@@ -98,6 +98,8 @@ def test_set_vaults_unordered_tokens(
 ):
     vaults = [make_vault_config(w) for w in ["0.5", "0.5"]]
     vault = MockGyroVault.at(vaults[0].vault_address)
-    vault.setTokens(sorted([v.vault_address for v in vaults], reverse=True))
+    vault.setTokens(
+        sorted([v.vault_address for v in vaults], reverse=True, key=lambda a: a.lower())
+    )
     with reverts(error_codes.TOKENS_NOT_SORTED):
         vault_registry.setVaults(vaults, {"from": admin})
