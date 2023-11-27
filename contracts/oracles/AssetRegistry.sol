@@ -59,13 +59,7 @@ contract AssetRegistry is IAssetRegistry, GovernableUpgradeable {
     /// @inheritdoc IAssetRegistry
     function getAssetRange(address asset) external view override returns (DataTypes.Range memory) {
         DataTypes.Range memory range = assetRanges[asset];
-        if (range.ceiling == 0) {
-            uint256 maxDeviation = gyroConfig.getUint(ConfigKeys.STABLECOIN_MAX_DEVIATION);
-            range = DataTypes.Range(
-                STABLECOIN_IDEAL_PRICE - maxDeviation,
-                STABLECOIN_IDEAL_PRICE + maxDeviation
-            );
-        }
+        require(range.ceiling > 0, Errors.ASSET_NOT_SUPPORTED);
         return range;
     }
 

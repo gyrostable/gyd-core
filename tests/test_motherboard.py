@@ -5,7 +5,7 @@ from tests.support import config_keys, error_codes
 from tests.support.balancer import join_pool
 from tests.support.constants import BALANCER_POOL_IDS, address_from_pool_id
 from tests.support.quantized_decimal import QuantizedDecimal as D
-from tests.support.types import MintAsset, RedeemAsset, ExternalAction
+from tests.support.types import MintAsset, RedeemAsset, ExternalAction, Range
 from tests.support.utils import scale
 
 
@@ -41,6 +41,7 @@ def test_dry_mint_vault_underlying_over_peg(
 ):
     asset_registry.setAssetAddress("USDC", usdc, {"from": admin})
     asset_registry.addStableAsset(usdc, {"from": admin})
+    asset_registry.setAssetRange(usdc, Range(), {"from": admin})
     mock_price_oracle.setUSDPrice(usdc, scale("1.1"))
     mock_price_oracle.setUSDPrice(usdc_vault, scale("1.1"))
     decimals = usdc.decimals()

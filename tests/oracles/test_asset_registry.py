@@ -84,9 +84,10 @@ def test_remove_asset(asset_registry):
     assert not asset_registry.isAssetStable(TokenAddresses.DAI)
 
 
-def test_default_asset_range(asset_registry):
+def test_inexistent_asset_range(asset_registry):
     asset_registry.setAssetAddress("DAI", TokenAddresses.DAI)
-    assert asset_registry.getAssetRange(TokenAddresses.DAI) == Range()
+    with reverts(error_codes.ASSET_NOT_SUPPORTED):
+        asset_registry.getAssetRange(TokenAddresses.DAI)
 
 
 def test_set_asset_range(admin, asset_registry):
