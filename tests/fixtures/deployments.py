@@ -248,9 +248,15 @@ def local_checked_price_oracle(
 
 
 @pytest.fixture(scope="module")
-def testing_checked_price_oracle(admin, mock_price_oracle, TestingCheckedPriceOracle):
+def testing_checked_price_oracle(
+    admin, mock_price_oracle, TestingCheckedPriceOracle, rate_manager
+):
     return admin.deploy(
-        TestingCheckedPriceOracle, admin, mock_price_oracle, mock_price_oracle
+        TestingCheckedPriceOracle,
+        admin,
+        mock_price_oracle,
+        mock_price_oracle,
+        rate_manager,
     )
 
 
