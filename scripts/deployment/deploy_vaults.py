@@ -4,7 +4,7 @@ from pprint import pprint
 import time
 from typing import Union
 from brownie import BalancerPoolVault, StaticPercentageFeeHandler, network, interface, ChainlinkPriceOracle  # type: ignore
-from brownie import BalancerECLPPriceOracle, GenericVault, CheckedPriceOracle, GovernanceProxy, ReserveManager  # type: ignore
+from brownie import BalancerECLPPriceOracle, GenericVault, CheckedPriceOracle, GovernanceProxy, ReserveManager, GyroConfig  # type: ignore
 from scripts.utils import (
     deploy_proxy,
     get_deployer,
@@ -149,11 +149,13 @@ def _get_vault_configuration(
 
 
 @with_gas_usage
-def balancer(name):
+@with_deployed(GyroConfig)
+def balancer(gyro_config, name):
     vault_to_deploy = _get_vault_to_deploy(name)
     deployer = get_deployer()
     vault = deployer.deploy(
         BalancerPoolVault,
+        gyro_config,
         vault_to_deploy.vault_type,
         constants.BALANCER_VAULT_ADDRESS,
         **make_tx_params(),
@@ -171,10 +173,11 @@ def balancer(name):
 
 
 @with_gas_usage
-def generic(name):
+@with_deployed(GyroConfig)
+def generic(gyro_config, name):
     vault_to_deploy = _get_vault_to_deploy(name)
     deployer = get_deployer()
-    vault = deployer.deploy(GenericVault, **make_tx_params())
+    vault = deployer.deploy(GenericVault, gyro_config, **make_tx_params())
     deploy_proxy(
         vault,
         vault.initialize.encode_input(

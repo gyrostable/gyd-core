@@ -12,15 +12,14 @@ interface IRateManager {
         IRateProvider provider;
     }
 
-    /// @notice input tokens may contain tokens that have a rate, such as sDAI or aUSDC
-    /// @return underlyingTokens the array of "underlying" tokens, e.g. DAI instead of sDAI
-    /// @return rates the array of rates for each token in the tokens array
-    /// @dev if a token does not have a rate, its address will be returned in `tokens`
-    /// and its rate will be 1e18
-    function getTokensAndRates(address[] memory inputTokens)
+    /// @notice input token may have a rate such as sDAI or aUSDC, or be a "normal" token such as DAI or USDC
+    /// @return underlyingToken the "underlying" token, e.g. DAI instead of sDAI
+    /// @return rate the rate of the token
+    /// @dev if the token does not have a rate, its address will be returned as-is and its rate will be 1e18
+    function getUnderlyingAndRate(address token)
         external
         view
-        returns (address[] memory underlyingTokens, uint256[] memory rates);
+        returns (address underlyingToken, uint256 rate);
 
     /// @return the info about the rate provider for the given token
     function getProviderInfo(address token) external view returns (RateProviderInfo memory);

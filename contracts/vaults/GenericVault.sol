@@ -3,8 +3,14 @@
 pragma solidity ^0.8.4;
 
 import "./BaseVault.sol";
+import "../../libraries/ConfigHelpers.sol";
+import "../../interfaces/oracles/IRateManager.sol";
 
 contract GenericVault is BaseVault {
+    using ConfigHelpers for IGyroConfig;
+
+    constructor(address _config) BaseVault(_config) {}
+
     function initialize(
         address _underlying,
         address governor,
@@ -22,7 +28,14 @@ contract GenericVault is BaseVault {
     /// @inheritdoc IGyroVault
     function getTokens() external view virtual override returns (IERC20[] memory) {
         IERC20[] memory tokens = new IERC20[](1);
-        tokens[0] = IERC20(underlying);
+        IRateManager.RateProviderInfo memory providerInfo = gyroConfig
+            .getRateManager()
+            .getProviderInfo(underlying);
+        if (providerInfo.underlying != address(0)) {
+            tokens[0] = IERC20(providerInfo.underlying);
+        } else {
+            tokens[0] = IERC20(underlying);
+        }
         return tokens;
     }
 }

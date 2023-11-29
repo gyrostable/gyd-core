@@ -10,25 +10,17 @@ contract RateManager is IRateManager, Governable {
 
     constructor(address _governor) Governable(_governor) {}
 
-    function getTokensAndRates(address[] memory inputTokens)
+    function getUnderlyingAndRate(address token)
         external
         view
         override
-        returns (address[] memory underlyingTokens, uint256[] memory rates)
+        returns (address underlyingToken, uint256 rate)
     {
-        underlyingTokens = new address[](inputTokens.length);
-        rates = new uint256[](inputTokens.length);
-
-        for (uint256 i; i < inputTokens.length; i++) {
-            address token = inputTokens[i];
-            IRateProvider provider = _providers[token].provider;
-            if (address(provider) == address(0)) {
-                underlyingTokens[i] = token;
-                rates[i] = 1e18;
-            } else {
-                underlyingTokens[i] = _providers[token].underlying;
-                rates[i] = provider.getRate();
-            }
+        IRateProvider provider = _providers[token].provider;
+        if (address(provider) == address(0)) {
+            return (token, 1e18);
+        } else {
+            return (_providers[token].underlying, provider.getRate());
         }
     }
 

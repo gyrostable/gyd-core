@@ -15,7 +15,11 @@ contract BalancerPoolVault is BaseVault {
     /// @notice Balancer pool ID
     bytes32 public poolId;
 
-    constructor(Vaults.Type _vaultType, IVault _balancerVault) {
+    constructor(
+        address _gyroConfig,
+        Vaults.Type _vaultType,
+        IVault _balancerVault
+    ) BaseVault(_gyroConfig) {
         balancerVault = _balancerVault;
         vaultType = _vaultType;
     }

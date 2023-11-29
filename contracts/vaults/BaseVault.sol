@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 import "../auth/GovernableUpgradeable.sol";
 import "../../interfaces/IGyroVault.sol";
+import "../../interfaces/IGyroConfig.sol";
 import "../../libraries/FixedPoint.sol";
 import "../../libraries/Errors.sol";
 
@@ -28,6 +29,8 @@ abstract contract BaseVault is IGyroVault, ERC20PermitUpgradeable, GovernableUpg
 
     uint256[50] internal __gapBaseVault;
 
+    IGyroConfig public immutable gyroConfig;
+
     /// @inheritdoc IGyroVault
     address public override underlying;
 
@@ -36,6 +39,10 @@ abstract contract BaseVault is IGyroVault, ERC20PermitUpgradeable, GovernableUpg
 
     /// @inheritdoc IGyroVault
     address public override strategy;
+
+    constructor(address _config) {
+        gyroConfig = IGyroConfig(_config);
+    }
 
     /// @inheritdoc IERC20MetadataUpgradeable
     function decimals()

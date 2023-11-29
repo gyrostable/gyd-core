@@ -2,6 +2,7 @@ import time
 
 from brownie import interface  # type: ignore
 import pytest
+from tests.fixtures.mainnet_contracts import TokenAddresses
 from tests.support.constants import (
     DAI_ADDRESS,
     SUSHISWAP_ROUTER,
@@ -59,6 +60,20 @@ def dai(Token, accounts, is_forked):
         )
     for i in range(1, 10):
         token.transfer(accounts[i], scale(100), {"from": accounts[0]})
+    yield token
+
+
+@pytest.fixture(scope="module")
+def fusdc(Token, accounts, is_forked):
+    if is_forked:
+        token = interface.ERC20(TokenAddresses.fUSDC)
+        mint_coin_for(accounts[0], token, DEFAULT_MINT_AMOUNT)
+    else:
+        token = Token.deploy(
+            "Flow USDC", "fUSDC", 6, scale(10_000, 6), {"from": accounts[0]}
+        )
+    for i in range(1, 10):
+        token.transfer(accounts[i], scale(100, 6), {"from": accounts[0]})
     yield token
 
 

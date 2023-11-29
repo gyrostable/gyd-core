@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./ConfigKeys.sol";
 
 import "../interfaces/oracles/IBatchVaultPriceOracle.sol";
+import "../interfaces/oracles/IRateManager.sol";
 import "../interfaces/IMotherboard.sol";
 import "../interfaces/ISafetyCheck.sol";
 import "../interfaces/IGyroConfig.sol";
@@ -112,5 +113,9 @@ library ConfigHelpers {
 
     function getGovTreasuryAddress(IGyroConfig gyroConfig) internal view returns (address) {
         return gyroConfig.getAddress(ConfigKeys.GOV_TREASURY_ADDRESS);
+    }
+
+    function getRateManager(IGyroConfig gyroConfig) internal view returns (IRateManager) {
+        return IRateManager(gyroConfig.getAddress(ConfigKeys.RATE_MANAGER_ADDRESS));
     }
 }
