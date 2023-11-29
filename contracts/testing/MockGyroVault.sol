@@ -58,6 +58,10 @@ contract MockGyroVault is IGyroVault, ERC20PermitUpgradeable {
         return FixedPoint.ONE;
     }
 
+    function getRate() public pure override returns (uint256) {
+        return FixedPoint.ONE;
+    }
+
     function depositFor(
         address beneficiary,
         uint256 lpTokenAmount,
