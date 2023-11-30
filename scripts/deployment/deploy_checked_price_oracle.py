@@ -1,4 +1,5 @@
-from brownie import GovernanceProxy, CheckedPriceOracle, TrustedSignerPriceOracle, MockPriceOracle, ChainlinkPriceOracle, RateManager  # type: ignore
+import json
+from brownie import GovernanceProxy, CheckedPriceOracle, TellorOracle, TrustedSignerPriceOracle, MockPriceOracle, ChainlinkPriceOracle, RateManager  # type: ignore
 from brownie import chain
 from scripts.utils import (
     as_singleton,
@@ -12,18 +13,15 @@ from tests.fixtures.mainnet_contracts import TokenAddresses
 from tests.support.constants import UNISWAP_V3_ORACLE
 
 
-@with_gas_usage
+@with_deployed(TellorOracle)
 @with_deployed(CheckedPriceOracle)
 @with_deployed(TrustedSignerPriceOracle)
-@with_deployed(GovernanceProxy)
-def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
-    deployer = get_deployer()
-    tx_params = {"from": deployer, **make_tx_params()}
-    governance_proxy.executeCall(
-        checked_price_oracle,
-        checked_price_oracle.addETHPriceOracle.encode_input(coinbase_price_oracle),
-        tx_params,
-    )
+def initialize(coinbase_price_oracle, checked_price_oracle, tellor_oracle):
+    calls_data = []
+
+    eth_price_oracles = [coinbase_price_oracle, tellor_oracle]
+    for oracle in eth_price_oracles:
+        calls_data.append(checked_price_oracle.addETHPriceOracle.encode_input(oracle))
 
     assets_for_price_level_twap = [
         TokenAddresses.USDC,
@@ -31,10 +29,8 @@ def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
         TokenAddresses.DAI,
     ]
     for asset in assets_for_price_level_twap:
-        governance_proxy.executeCall(
-            checked_price_oracle,
-            checked_price_oracle.addQuoteAssetsForPriceLevelTwap.encode_input(asset),
-            tx_params,
+        calls_data.append(
+            checked_price_oracle.addQuoteAssetsForPriceLevelTwap.encode_input(asset)
         )
 
     assets_for_relative_price_check = [
@@ -46,10 +42,8 @@ def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
     ]
 
     for asset in assets_for_relative_price_check:
-        governance_proxy.executeCall(
-            checked_price_oracle,
-            checked_price_oracle.addAssetForRelativePriceCheck.encode_input(asset),
-            tx_params,
+        calls_data.append(
+            checked_price_oracle.addAssetForRelativePriceCheck.encode_input(asset)
         )
 
     asset_with_ignorable_relative_prices = [
@@ -58,13 +52,14 @@ def initialize(governance_proxy, coinbase_price_oracle, checked_price_oracle):
         TokenAddresses.USDP,
     ]
     for asset in asset_with_ignorable_relative_prices:
-        governance_proxy.executeCall(
-            checked_price_oracle,
+        calls_data.append(
             checked_price_oracle.addAssetsWithIgnorableRelativePriceCheck.encode_input(
                 asset
-            ),
-            tx_params,
+            )
         )
+
+    calls = [(checked_price_oracle.address, data) for data in calls_data]
+    print(json.dumps(calls))
 
 
 @with_gas_usage

@@ -1,3 +1,4 @@
+import json
 from scripts.utils import (
     get_deployer,
     make_tx_params,
@@ -50,12 +51,13 @@ providers_info = [
 
 
 @with_deployed(RateManager)
-@with_deployed(GovernanceProxy)
-def set_rate_providers(governance_proxy, rate_manager):
-    deployer = get_deployer()
+def set_rate_providers(rate_manager):
+    calls = []
     for asset, info in providers_info:
-        governance_proxy.executeCall(
-            rate_manager,
-            rate_manager.setRateProviderInfo.encode_input(asset, info),
-            {"from": deployer, **make_tx_params()},
+        calls.append(
+            (
+                rate_manager.address,
+                rate_manager.setRateProviderInfo.encode_input(asset, info),
+            )
         )
+    print(json.dumps(calls))

@@ -156,7 +156,6 @@ def balancer(gyro_config, name):
     vault = deployer.deploy(
         BalancerPoolVault,
         gyro_config,
-        vault_to_deploy.vault_type,
         constants.BALANCER_VAULT_ADDRESS,
         **make_tx_params(),
     )
@@ -167,6 +166,7 @@ def balancer(gyro_config, name):
             constants.MAINNET_GOVERNANCE_ADDRESS,
             vault_to_deploy.name,
             vault_to_deploy.symbol,
+            vault_to_deploy.vault_type,
         ),
         overwrite_proxy=True,
     )
