@@ -18,6 +18,7 @@ library ConfigKeys {
     bytes32 internal constant CAP_AUTHENTICATION_ADDRESS = "CAP_AUTHENTICATION_ADDRESS";
     bytes32 internal constant GYD_RECOVERY_ADDRESS = "GYD_RECOVERY_ADDRESS";
     bytes32 internal constant BALANCER_VAULT_ADDRESS = "BALANCER_VAULT_ADDRESS";
+    bytes32 internal constant RATE_MANAGER_ADDRESS = "RATE_MANAGER_ADDRESS";
 
     bytes32 internal constant STEWARDSHIP_INC_ADDRESS = "STEWARDSHIP_INC_ADDRESS";
     bytes32 internal constant STEWARDSHIP_INC_MIN_CR = "STEWARDSHIP_INC_MIN_CR";

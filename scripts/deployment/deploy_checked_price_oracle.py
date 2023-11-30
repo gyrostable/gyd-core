@@ -83,7 +83,6 @@ def main(rate_manager, governance_proxy, chainlink_oracle):
         governance_proxy,
         chainlink_oracle,
         relative_oracle,
-        rate_manager,
         TokenAddresses.WETH,
         **make_tx_params()
     )

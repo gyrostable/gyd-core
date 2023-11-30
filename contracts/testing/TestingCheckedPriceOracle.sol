@@ -8,14 +8,12 @@ contract TestingCheckedPriceOracle is CheckedPriceOracle {
     constructor(
         address _governor,
         IUSDPriceOracle _priceOracle,
-        IRelativePriceOracle _relativeOracle,
-        IRateManager _rateManager
+        IRelativePriceOracle _relativeOracle
     )
         CheckedPriceOracle(
             _governor,
             address(_priceOracle),
             address(_relativeOracle),
-            address(_rateManager),
             address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)
         )
     {}

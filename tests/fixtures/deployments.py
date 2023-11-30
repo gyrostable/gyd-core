@@ -43,7 +43,13 @@ def balancer_cpmm_price_oracle(BalancerCPMMPriceOracle, admin):
 
 @pytest.fixture(scope="module")
 def reserve_manager(admin, ReserveManager, gyro_config, request):
-    dependencies = ["reserve", "asset_registry", "mock_price_oracle", "vault_registry"]
+    dependencies = [
+        "reserve",
+        "asset_registry",
+        "mock_price_oracle",
+        "vault_registry",
+        "rate_manager",
+    ]
     for dep in dependencies:
         request.getfixturevalue(dep)
     reserve_manager = admin.deploy(ReserveManager, admin, gyro_config)
@@ -229,34 +235,30 @@ def crash_protected_chainlink_oracle(CrashProtectedChainlinkPriceOracle, admin):
 
 
 @pytest.fixture(scope="module")
-def rate_manager(admin, RateManager):
-    return admin.deploy(RateManager, admin)
+def rate_manager(admin, RateManager, gyro_config):
+    manager = admin.deploy(RateManager, admin)
+    gyro_config.setAddress(config_keys.RATE_MANAGER_ADDRESS, manager, {"from": admin})
+    return manager
 
 
 @pytest.fixture(scope="module")
-def local_checked_price_oracle(
-    admin, mock_price_oracle, rate_manager, CheckedPriceOracle
-):
+def local_checked_price_oracle(admin, mock_price_oracle, CheckedPriceOracle):
     return admin.deploy(
         CheckedPriceOracle,
         admin,
         mock_price_oracle,
         mock_price_oracle,
-        rate_manager,
         TokenAddresses.WETH,
     )
 
 
 @pytest.fixture(scope="module")
-def testing_checked_price_oracle(
-    admin, mock_price_oracle, TestingCheckedPriceOracle, rate_manager
-):
+def testing_checked_price_oracle(admin, mock_price_oracle, TestingCheckedPriceOracle):
     return admin.deploy(
         TestingCheckedPriceOracle,
         admin,
         mock_price_oracle,
         mock_price_oracle,
-        rate_manager,
     )
 
 
@@ -266,14 +268,12 @@ def mainnet_checked_price_oracle(
     chainlink_price_oracle,
     uniswap_spot_price_oracle,
     CheckedPriceOracle,
-    rate_manager,
 ):
     mainnet_checked_price_oracle = admin.deploy(
         CheckedPriceOracle,
         admin,
         chainlink_price_oracle,
         uniswap_spot_price_oracle,
-        rate_manager,
         TokenAddresses.WETH,
     )
     # set the relative max epsilon slightly larger to avoid tests randomly failing
@@ -303,6 +303,7 @@ def motherboard(
         "mock_balancer_vault",
         "gyd_recovery",
         "stewardship_incentives",
+        "rate_manager",
     ]
     for dep in extra_dependencies:
         request.getfixturevalue(dep)
@@ -373,27 +374,38 @@ def decimals(underlying, interface):
 
 
 @pytest.fixture(scope="module")
-def vault(admin, GenericVault, underlying, deploy_with_proxy):
+def vault(admin, GenericVault, underlying, deploy_with_proxy, gyro_config):
     return deploy_with_proxy(
         GenericVault,
         lambda v: v.initialize.encode_input(
             underlying, admin, "Base Vault Token", "BVT"
         ),
+        gyro_config,
     )
 
 
 # NOTE: this is a vault that contains only USDC as underlying
 # this is for testing purposes only
 @pytest.fixture(scope="module")
-def usdc_vault(admin, GenericVault, usdc, deploy_with_proxy):
+def usdc_vault(admin, GenericVault, usdc, deploy_with_proxy, gyro_config):
     return deploy_with_proxy(
         GenericVault,
         lambda v: v.initialize.encode_input(usdc, admin, "USDC Vault", "gUSDC"),
+        gyro_config,
     )
 
 
 @pytest.fixture(scope="module")
-def mock_vaults(admin, MockGyroVault, dai, deploy_with_proxy):
+def fusdc_vault(admin, GenericVault, fusdc, deploy_with_proxy, gyro_config):
+    return deploy_with_proxy(
+        GenericVault,
+        lambda v: v.initialize.encode_input(fusdc, admin, "fUSDC Vault", "gfUSDC"),
+        gyro_config,
+    )
+
+
+@pytest.fixture(scope="module")
+def mock_vaults(admin, MockGyroVault, dai, deploy_with_proxy, gyro_config):
     return [
         deploy_with_proxy(MockGyroVault, lambda v: v.initialize.encode_input(dai))
         for _ in range(constants.RESERVE_VAULTS)
@@ -408,10 +420,11 @@ def batch_vault_price_oracle(admin, TestingBatchVaultPriceOracle, mock_price_ora
 # NOTE: this is a vault that contains only DAI as underlying
 # this is for testing purposes only
 @pytest.fixture(scope="module")
-def dai_vault(admin, GenericVault, dai, deploy_with_proxy):
+def dai_vault(admin, GenericVault, dai, deploy_with_proxy, gyro_config):
     return deploy_with_proxy(
         GenericVault,
         lambda v: v.initialize.encode_input(dai, admin, "DAI Vault", "gDAI"),
+        gyro_config,
     )
 
 
