@@ -37,7 +37,7 @@ providers_info = [
         TokenAddresses.fUSDC,
         RateProviderInfo(
             underlying=TokenAddresses.USDC,
-            provider="0x8ee79Eb3f37b0ea4544DF2a0b9E228b6fcd8c718",
+            provider="0xE08407336B6D9878c9561FcE6052a0404D1Ec143",
         ),
     ),
     (
