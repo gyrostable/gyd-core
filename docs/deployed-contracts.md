@@ -46,7 +46,7 @@
 
 ## Consolidated Price Feed
 
-* `BatchVaultPriceOracle`: [0x2DecAE9C1E605F20C79b91856A3121FB2d2cb615](https://etherscan.io/address/0x2DecAE9C1E605F20C79b91856A3121FB2d2cb615)
+* `BatchVaultPriceOracle`: [0x46412cdEC90b266629bf05188185E9fD109EC881](https://etherscan.io/address/0x46412cdEC90b266629bf05188185E9fD109EC881)
 * `ChainlinkPriceOracle`: [0xa2b76e60215617e676c6a0041B26a7C3C126DB5E](https://etherscan.io/address/0xa2b76e60215617e676c6a0041B26a7C3C126DB5E)
 * `CheckedPriceOracle`: [0x2a18F596283f9082Fd88F82556d5F78E3c482411](https://etherscan.io/address/0x2a18F596283f9082Fd88F82556d5F78E3c482411)
 * `TrustedSignerPriceOracle`: [0xf4cA93C70a00032856e6d942Be2eB1cea54b4Aa5](https://etherscan.io/address/0xf4cA93C70a00032856e6d942Be2eB1cea54b4Aa5)
