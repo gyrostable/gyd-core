@@ -30,7 +30,7 @@ def test_dry_mint_vault_underlying(motherboard, usdc, usdc_vault, alice):
     mint_asset = MintAsset(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
-    gyd_minted, err = motherboard.dryMint([mint_asset], 0, alice, {"from": alice})
+    gyd_minted, err = motherboard.dryMint([mint_asset], 0, {"from": alice})
     assert err == ""
     assert gyd_minted == scale(10)
 
@@ -50,7 +50,7 @@ def test_dry_mint_vault_underlying_over_peg(
     mint_asset = MintAsset(
         inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
     )
-    gyd_minted, err = motherboard.dryMint([mint_asset], 0, alice, {"from": alice})
+    gyd_minted, err = motherboard.dryMint([mint_asset], 0, {"from": alice})
     assert err == ""
     assert gyd_minted == scale(10)
 
@@ -444,9 +444,7 @@ def test_simple_mint_bpt(
         make_bpt_mint_asset("WETH_USDC"),
     ]
 
-    amount, error = full_motherboard.dryMint(
-        mint_assets, scale(60), alice, {"from": alice}
-    )
+    amount, error = full_motherboard.dryMint(mint_assets, scale(60), {"from": alice})
     assert error == ""
     assert scale(60) <= amount <= scale(180)
 
@@ -589,3 +587,29 @@ def test_boostrapping_supply(
 
     assert gyd_token.totalSupply() == 0
     assert motherboard.mintedSupply() == 0
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_dry_mint_above_cap(motherboard, usdc, usdc_vault, alice, gyro_config, admin):
+    decimals = usdc.decimals()
+    usdc_amount = scale(10, decimals)
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    gyro_config.setUint(config_keys.GYD_GLOBAL_SUPPLY_CAP, scale(5), {"from": admin})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    gyd_minted, err = motherboard.dryMint([mint_asset], 0, {"from": alice})
+    assert err == error_codes.SUPPLY_CAP_EXCEEDED
+    assert gyd_minted == scale(10)
+
+
+@pytest.mark.usefixtures("register_usdc_vault")
+def test_mint_above_cap(admin, motherboard, usdc, usdc_vault, alice, gyro_config):
+    usdc_amount = scale(10, usdc.decimals())
+    usdc.approve(motherboard, usdc_amount, {"from": alice})
+    mint_asset = MintAsset(
+        inputToken=usdc, inputAmount=usdc_amount, destinationVault=usdc_vault
+    )
+    gyro_config.setUint(config_keys.GYD_GLOBAL_SUPPLY_CAP, scale(5), {"from": admin})
+    with reverts(error_codes.SUPPLY_CAP_EXCEEDED):
+        motherboard.mint([mint_asset], 0, {"from": alice})
