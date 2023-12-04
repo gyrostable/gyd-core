@@ -54,10 +54,9 @@ interface IMotherboard {
     ///
     /// @param assets the assets and associated amounts used to mint GYD
     /// @param minReceivedAmount the minimum amount of GYD to be minted
-    /// @param account the account that wants to mint
     /// @return mintedGYDAmount the amount that would be minted, or 0 if it an error would occur
     /// @return err a non-empty error message in case an error would happen when minting
-    function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount, address account)
+    function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
         external
         view
         returns (uint256 mintedGYDAmount, string memory err);
@@ -80,14 +79,14 @@ interface IMotherboard {
     function mintStewardshipIncRewards(uint256 amount) external;
 
     /// @notice Supply preminted for bootstrapping.
-    function bootstrappingSupply() view external returns (uint256);
+    function bootstrappingSupply() external view returns (uint256);
 
     /// @notice Total supply created through minting via the reserve (`Motherboard.mint()`).
     /// Excludes supply created for bootstrapping.
     /// @dev Reverts if bootstrappingSupply() > totalSupply(), but this never happens, assuming
     /// that governance consistently calls setBootstrappingSupply() with minting/burning
-    /// bootstrapping supply. 
-    function mintedSupply() view external returns (uint256);
+    /// bootstrapping supply.
+    function mintedSupply() external view returns (uint256);
 
     /// @notice Set bootstrappingSupply. Only to be used by governance when setting up / unwinding
     /// bootstrapping pools.

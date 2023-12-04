@@ -126,6 +126,7 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         mintedGYDAmount = pamm().mint(usdValue, reserveState.totalUSDValue);
 
         require(mintedGYDAmount >= minReceivedAmount, Errors.TOO_MUCH_SLIPPAGE);
+        require(!_isOverCap(mintedGYDAmount), Errors.SUPPLY_CAP_EXCEEDED);
 
         gydToken.mint(msg.sender, mintedGYDAmount);
 
@@ -194,11 +195,12 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
     }
 
     /// @inheritdoc IMotherboard
-    function dryMint(
-        DataTypes.MintAsset[] calldata assets,
-        uint256 minReceivedAmount,
-        address account
-    ) external view override returns (uint256 mintedGYDAmount, string memory err) {
+    function dryMint(DataTypes.MintAsset[] calldata assets, uint256 minReceivedAmount)
+        external
+        view
+        override
+        returns (uint256 mintedGYDAmount, string memory err)
+    {
         DataTypes.MonetaryAmount[] memory vaultAmounts;
         (vaultAmounts, err) = _dryConvertMintInputAssetsToVaultTokens(assets);
         if (bytes(err).length > 0) {
@@ -225,6 +227,10 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
 
         if (mintedGYDAmount < minReceivedAmount) {
             return (mintedGYDAmount, Errors.TOO_MUCH_SLIPPAGE);
+        }
+
+        if (_isOverCap(mintedGYDAmount)) {
+            return (mintedGYDAmount, Errors.SUPPLY_CAP_EXCEEDED);
         }
     }
 
@@ -563,15 +569,20 @@ contract Motherboard is IMotherboard, GovernableUpgradeable {
         balancerVault.manageUserBalance(ops);
     }
 
-    function _oracle() internal view returns (IBatchVaultPriceOracle) {
-        return gyroConfig.getRootPriceOracle();
-    }
-
     function mintedSupply() public view returns (uint256) {
         return gydToken.totalSupply() - bootstrappingSupply;
     }
 
     function setBootstrappingSupply(uint256 _bootstrappingSupply) external governanceOnly {
         bootstrappingSupply = _bootstrappingSupply;
+    }
+
+    function _isOverCap(uint256 mintedGYDAmount) internal view returns (bool) {
+        uint256 globalSupplyCap = gyroConfig.getGlobalSupplyCap();
+        return gydToken.totalSupply() + mintedGYDAmount > globalSupplyCap;
+    }
+
+    function _oracle() internal view returns (IBatchVaultPriceOracle) {
+        return gyroConfig.getRootPriceOracle();
     }
 }

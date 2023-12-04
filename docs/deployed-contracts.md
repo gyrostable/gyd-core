@@ -7,7 +7,7 @@
 * `GyroConfig`: [0xaC89cc9d78BBAd7EB3a02601B4D65dAa1f908aA6](https://etherscan.io/address/0xaC89cc9d78BBAd7EB3a02601B4D65dAa1f908aA6)
   * Implementation: [0xe0074199dda10dafbd267cf01cc6e6ed3d45986b](https://etherscan.io/address/0xe0074199dda10dafbd267cf01cc6e6ed3d45986b)
 * `Motherboard`: [0x8De76bF863E0A571be7165d9c85A1116c0fFf393](https://etherscan.io/address/0x8De76bF863E0A571be7165d9c85A1116c0fFf393)
-  * Implementation: [0x19144E641bfe62b624296A211D47798187Bc09Ba](https://etherscan.io/address/0x19144E641bfe62b624296A211D47798187Bc09Ba)
+  * Implementation: [0xBaF6A0bE2DCA3350D3558783740dd8d540A6CC95](https://etherscan.io/address/0xBaF6A0bE2DCA3350D3558783740dd8d540A6CC95)
 * `PrimaryAMMV1`: [0xE7eA594b5905eC0dd321E61d7625711B635a6Ce5](https://etherscan.io/address/0xE7eA594b5905eC0dd321E61d7625711B635a6Ce5)
 * `ReserveManager`: [0x2519A729535470830D345b78109818F94C1c2869](https://etherscan.io/address/0x2519A729535470830D345b78109818F94C1c2869)
 * `VaultRegistry`: [0xf2865bf37c820af6FE3A1b4a0B92fa050aEd4eB5](https://etherscan.io/address/0xf2865bf37c820af6FE3A1b4a0B92fa050aEd4eB5)

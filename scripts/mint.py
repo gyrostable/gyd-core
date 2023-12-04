@@ -39,5 +39,5 @@ def main():
 
     print(mint_assets)
 
-    print(motherboard.dryMint(mint_assets, 0, deployer))
+    print(motherboard.dryMint(mint_assets, 0))
     # motherboard.mint(mint_assets, 0, {"from": deployer, **make_tx_params()})

@@ -124,7 +124,7 @@ contract DryMint is Test {
         }
 
         // Test against real value
-        (, string memory err) = motherboard.dryMint(assets, 0, userAddress);
+        (, string memory err) = motherboard.dryMint(assets, 0);
 
         if (expectFail) {
             assertEq("52", err);
