@@ -1,6 +1,6 @@
 # Gyroscope V1
 
-This repository contains the code for Gyroscope V1.
+This repository contains the code for Gyroscope V1, the Gyro dollar stablecoin (GYD).
 
 The documentation here is intended for contributors to this repository.
 
